@@ -1,0 +1,65 @@
+{
+  "name": "queclink-parser",
+  "version": "0.0.0",
+  "description": "Parse raw data from Queclink devices",
+  "main": "src",
+  "scripts": {
+    "lint": "eslint ."
+  },
+  "engines": {
+    "node": ">=4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jaayesta/queclink-parser.git"
+  },
+  "keywords": [
+    "queclink",
+    "avl",
+    "gps",
+    "tracking",
+    "parser"
+  ],
+  "author": "Jose Andres Ayestaran <ja.ayestaran@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jaayesta/queclink-parser/issues"
+  },
+  "homepage": "https://github.com/jaayesta/queclink-parser#readme",
+  "dependencies": {
+    "lodash": "^4.14.0",
+    "moment": "^2.13.0"
+  },
+  "devDependencies": {
+    "eslint": "3.1.1"
+  },
+  "eslintConfig": {
+    "env": {
+      "es6": true,
+      "node": true
+    },
+    "extends": "eslint:recommended",
+    "rules": {
+      "indent": [
+        2,
+        2
+      ],
+      "linebreak-style": [
+        2,
+        "unix"
+      ],
+      "quotes": [
+        2,
+        "single"
+      ],
+      "semi": [
+        2,
+        "always"
+      ],
+      "radix": [
+        "error",
+        "always"
+      ]
+    }
+  }
+}
