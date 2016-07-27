@@ -59,10 +59,10 @@ const parse = raw => {
   let result = {type: 'UNKNOWN', raw: raw.toString()};
   const device = getDevice(raw);
   if (patterns.ack.test(raw.toString()) && !patterns.heartbeat.test(raw.toString())) {
-    result = getAckCommand(raw);
+    result = getAckCommand(raw.toString());
   }
   else if (device === 'GV300') {
-    result = getGV300(raw);
+    result = getGV300(raw.toString());
   }
   // else if (device === 'GMT200') {
   //   result = getGM200(raw);
@@ -88,6 +88,7 @@ const getDevice = raw => {
 */
 const getProtocolVersion = protocol => {
   return {
+    raw: protocol,
     deviceType: devices.hasOwnProperty(protocol.substring(0,2)) ? devices[protocol.substring(0,2)] : null,
     version: `${parseInt(protocol.substring(2,4),16)}.${parseInt(protocol.substring(4,6),16)}`
   };
@@ -210,7 +211,7 @@ const getGV300 = raw => {
     device: 'Queclink-GV300',
     type: 'data',
     imei: parsedData[2],
-    protocolVersion: parsedData[1],
+    protocolVersion: getProtocolVersion(parsedData[1]),
     track: null,
     magneticVariation: null,
     gpsMode: null,
@@ -622,7 +623,7 @@ const getGMT100 = raw => {
     device: 'Queclink-GMT100',
     type: 'data',
     imei: parsedData[2],
-    protocolVersion: parsedData[1],
+    protocolVersion: getProtocolVersion(parsedData[1]),
     track: null,
     magneticVariation: null,
     gpsMode: null,
