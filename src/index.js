@@ -64,9 +64,9 @@ const parse = raw => {
   else if (device === 'GV300') {
     result = getGV300(raw.toString());
   }
-  // else if (device === 'GMT200') {
-  //   result = getGM200(raw);
-  // }
+  else if (device === 'GMT100') {
+    result = getGMT100(raw);
+  }
   // else if (devide === 'GV200'){
   //   result = getGV200(raw);
   // }
