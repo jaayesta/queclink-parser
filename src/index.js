@@ -113,8 +113,8 @@ const getAlarm = (command, report) => {
     return {type: 'Gps'};
   }
   else if(command === 'GTDIS'){
-    const reportID = parseInt(report.substring(0,4),16);
-    const reportType = parseInt(report.substring(4,8),16);
+    const reportID = parseInt(report[0],10);
+    const reportType = parseInt(report[1],10);
     return {type: 'DI', number: reportID, status: reportType === 1};
   }
   else if(command === 'GTTOW'){
@@ -124,11 +124,11 @@ const getAlarm = (command, report) => {
     return {type: 'SOS_Button'};
   }
   else if(command === 'GTSPD'){
-    const reportType = parseInt(report.substring(4,8),16);
+    const reportType = parseInt(report[1],10);
     return {type: 'Over_Speed', status: reportType === 0};
   }
   else if (command === 'GTIGL'){
-    const reportType = parseInt(report.substring(4,8),16);
+    const reportType = parseInt(report[1],16);
     return {type: 'DI', number: 3, status: reportType === 0};
   }
   else if (command === 'GTIGN'){
@@ -168,8 +168,8 @@ const getAlarm = (command, report) => {
     return {type: 'External_Low_battery'};
   }
   else if(command === 'GTAIS'){
-    const reportID = parseInt(report.substring(0,4),16);
-    const reportType = parseInt(report.substring(4,8),16);
+    const reportID = parseInt(report[0],10);
+    const reportType = parseInt(report[1],10);
     return {type: 'AI', number: reportID , status: reportType === '0'};
   }
   else if(command === 'GTANT'){
