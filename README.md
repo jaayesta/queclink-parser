@@ -5,7 +5,7 @@
 [![dependency Status](https://img.shields.io/david/jaayesta/queclink-parser.svg?style=flat-square)](https://david-dm.org/jaayesta/queclink-parser#info=dependencies)
 [![devDependency Status](https://img.shields.io/david/dev/jaayesta/queclink-parser.svg?style=flat-square)](https://david-dm.org/jaayesta/queclink-parser#info=devDependencies)
 
-Parse raw data from queclink devices
+Parses raw data from Queclink devices
 
 ## Installation
 
