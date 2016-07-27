@@ -65,7 +65,7 @@ const parse = raw => {
     result = getGV300(raw.toString());
   }
   else if (device === 'GMT100') {
-    result = getGMT100(raw);
+    result = getGMT100(raw.toString());
   }
   // else if (devide === 'GV200'){
   //   result = getGV200(raw);
@@ -162,7 +162,7 @@ const getAlarm = (command, report) => {
     return {type: 'Jamming', status: true};
   }
   else if(command === 'GTJDS'){
-    return {type: 'Jamming', status: report === 2};
+    return {type: 'Jamming', status: report === '2'};
   }
   else if(command === 'GTEPS'){
     return {type: 'External_Low_battery'};
