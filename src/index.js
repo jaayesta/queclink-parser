@@ -57,7 +57,7 @@ const getRebootCommand = (password, serial) => {
 */
 const parse = raw => {
   let result = {type: 'UNKNOWN', raw: raw.toString()};
-  const device = getDevice(raw);
+  const device = getDevice(raw.toString());
   if (patterns.ack.test(raw.toString()) && !patterns.heartbeat.test(raw.toString())) {
     result = getAckCommand(raw.toString());
   }
