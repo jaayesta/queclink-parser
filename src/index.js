@@ -232,7 +232,7 @@ const getGV300 = raw => {
       gpsStatus: checkGps(parseFloat(parsedData[11]), parseFloat(parsedData[12])),
       hdop: parseFloat(parsedData[7]),
       status: { //parsedData[24]
-        raw: parsedData[24]+parsedData[25],
+        raw: parsedData[24],
         sos: false,
         input: {
           '1': parsedData[24][0] === '1',
@@ -317,44 +317,6 @@ const getGV300 = raw => {
       hourmeter: null
     });
   }
-  else if (command[1] === 'GTERI') {
-    _.extend(data, {
-      alarm: getAlarm(command[1], parsedData[6]),
-      loc: { type: 'Point', coordinates: [ parseFloat(parsedData[12]), parseFloat(parsedData[13]) ] },
-      speed: parseFloat(parsedData[9]),
-      gpsStatus: checkGps(parseFloat(parsedData[12]), parseFloat(parsedData[13])),
-      hdop: parseFloat(parsedData[8]),
-      status: { //parsedData[24]
-        raw: parsedData[24]+parsedData[25],
-        sos: false,
-        input: {
-          '1': parsedData[25][0] === '1',
-          '2': parsedData[25][1] === '1',
-          '3': parsedData[25][2] === '1'
-        },
-        output: {
-          '1': parsedData[25][3] === '1',
-          '2': parsedData[25][4] === '1'
-        },
-        charge: parseFloat(parsedData[4]) > 5
-      },
-      azimuth: parsedData[10],
-      altitude: parsedData[11],
-      datetime: moment(`${parsedData[14]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
-      voltage: {
-        battery: parseFloat(parsedData[24]),//percentage
-        inputCharge: parseFloat(parsedData[5]),
-        ada: parseFloat(parsedData[22]),
-        adb: parseFloat(parsedData[23]),
-      },
-      mcc: parsedData[15],
-      mnc: parsedData[16],
-      lac: parseInt(parsedData[17],10),
-      cid: parseInt(parsedData[18],10),
-      odometer: parseFloat(parsedData[20]),
-      hourmeter: parseFloat(parsedData[21])
-    });
-  }
   //External low battery
   else if (command[1] === 'GTEPS') {
     _.extend(data, {
@@ -363,20 +325,7 @@ const getGV300 = raw => {
       speed: parseFloat(parsedData[8]),
       gpsStatus: checkGps(parseFloat(parsedData[11]), parseFloat(parsedData[12])),
       hdop: parseFloat(parsedData[7]),
-      status: { //parsedData[24]
-        raw: parsedData[24]+parsedData[25],
-        sos: false,
-        input: {
-          '1': parsedData[24][0] === '1',
-          '2': parsedData[24][1] === '1',
-          '3': parsedData[24][2] === '1'
-        },
-        output: {
-          '1': parsedData[24][3] === '1',
-          '2': parsedData[24][4] === '1'
-        },
-        charge: parseFloat(parsedData[4]) > 5
-      },
+      status: null,
       azimuth: parsedData[9],
       altitude: parsedData[10],
       datetime: moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
@@ -726,44 +675,6 @@ const getGMT100 = raw => {
       odometer: parseFloat(parsedData[19])
     });
   }
-  else if (command[1] === 'GTERI') {
-    _.extend(data, {
-      alarm: getAlarm(command[1], parsedData[6]),
-      loc: { type: 'Point', coordinates: [ parseFloat(parsedData[12]), parseFloat(parsedData[13]) ] },
-      speed: parseFloat(parsedData[9]),
-      gpsStatus: checkGps(parseFloat(parsedData[12]), parseFloat(parsedData[13])),
-      hdop: parseFloat(parsedData[8]),
-      status: { //parsedData[24]
-        raw: parsedData[24]+parsedData[25],
-        sos: false,
-        input: {
-          '1': parsedData[25][0] === '1',
-          '2': parsedData[25][1] === '1',
-          '3': parsedData[25][2] === '1'
-        },
-        output: {
-          '1': parsedData[25][3] === '1',
-          '2': parsedData[25][4] === '1'
-        },
-        charge: parseFloat(parsedData[4]) > 5
-      },
-      azimuth: parsedData[10],
-      altitude: parsedData[11],
-      datetime: moment(`${parsedData[14]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
-      voltage: {
-        battery: parseFloat(parsedData[24]),//percentage
-        inputCharge: parseFloat(parsedData[5]),
-        ada: parseFloat(parsedData[22]),
-        adb: parseFloat(parsedData[23]),
-      },
-      mcc: parsedData[15],
-      mnc: parsedData[16],
-      lac: parseInt(parsedData[17],10),
-      cid: parseInt(parsedData[18],10),
-      odometer: parseFloat(parsedData[20]),
-      hourmeter: parseFloat(parsedData[21])
-    });
-  }
   //External low battery
   else if (command[1] === 'GTEPS') {
     _.extend(data, {
@@ -772,20 +683,7 @@ const getGMT100 = raw => {
       speed: parseFloat(parsedData[8]),
       gpsStatus: checkGps(parseFloat(parsedData[11]), parseFloat(parsedData[12])),
       hdop: parseFloat(parsedData[7]),
-      status: { //parsedData[24]
-        raw: parsedData[24]+parsedData[25],
-        sos: false,
-        input: {
-          '1': parsedData[24][0] === '1',
-          '2': parsedData[24][1] === '1',
-          '3': parsedData[24][2] === '1'
-        },
-        output: {
-          '1': parsedData[24][3] === '1',
-          '2': parsedData[24][4] === '1'
-        },
-        charge: parseFloat(parsedData[4]) > 5
-      },
+      status: null,
       azimuth: parsedData[9],
       altitude: parsedData[10],
       datetime: moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
