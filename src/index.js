@@ -259,7 +259,7 @@ const getGV300 = raw => {
       lac: parseInt(parsedData[16],10),
       cid: parseInt(parsedData[17],10),
       odometer: parseFloat(parsedData[19]),
-      hourmeter: parseFloat(parsedData[20])
+      hourmeter: parsedData[20]
     });
   }
   //Heartbeat. It must response an ACK command
@@ -340,7 +340,7 @@ const getGV300 = raw => {
       lac: parseInt(parsedData[16],10),
       cid: parseInt(parsedData[17],10),
       odometer: parseFloat(parsedData[19]),
-      hourmeter: parseFloat(parsedData[20])
+      hourmeter: parsedData[20]
     });
   }
   //Low voltage for analog input
@@ -366,7 +366,7 @@ const getGV300 = raw => {
       lac: parseInt(parsedData[16],10),
       cid: parseInt(parsedData[17],10),
       odometer: parseFloat(parsedData[19]),
-      hourmeter: parseFloat(parsedData[20])
+      hourmeter: parsedData[20]
     });
   }
   //Event report (It uses the last GPS data and MCC info)
@@ -492,7 +492,7 @@ const getGV300 = raw => {
       lac: parseInt(parsedData[14],10),
       cid: parseInt(parsedData[15],10),
       odometer: parseFloat(parsedData[18]),
-      hourmeter: parseFloat(parsedData[17])
+      hourmeter: parsedData[17]
     });
   }
   else if (command[1] === 'GTIDN' || command[1] === 'GTIDF') {
@@ -619,7 +619,7 @@ const getGMT100 = raw => {
       mnc: parsedData[15],
       lac: parseInt(parsedData[16],10),
       cid: parseInt(parsedData[17],10),
-      odometer: parseFloat(parsedData[19]),
+      odometer: parseFloat(parsedData[19])
     });
   }
   //Heartbeat. It must response an ACK command
