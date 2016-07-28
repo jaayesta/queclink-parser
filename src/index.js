@@ -207,7 +207,7 @@ const getGV300 = raw => {
   }
 
   const data = {
-    raw: raw.toString(),
+    raw: `${raw.toString()}$`,
     device: 'Queclink-GV300',
     type: 'data',
     imei: parsedData[2],
@@ -249,10 +249,10 @@ const getGV300 = raw => {
       altitude: parsedData[10],
       datetime: moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
       voltage: {
-        battery: parseFloat(parsedData[23]),//percentage
-        inputCharge: parseFloat(parsedData[4]),
-        ada: parseFloat(parsedData[21]),
-        adb: parseFloat(parsedData[22]),
+        battery: parsedData[23] != '' ? parseFloat(parsedData[23]): null,//percentage
+        inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4]): null,
+        ada: parsedData[21] != '' ? parseFloat(parsedData[21]): null,
+        adb: parsedData[22] != '' ? parseFloat(parsedData[22]): null
       },
       mcc: parsedData[14],
       mnc: parsedData[15],
@@ -330,10 +330,10 @@ const getGV300 = raw => {
       altitude: parsedData[10],
       datetime: moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
       voltage: {
-        battery: parseFloat(parsedData[23]),//percentage
-        inputCharge: parseFloat(parsedData[4]),
-        ada: parseFloat(parsedData[21]),
-        adb: parseFloat(parsedData[22]),
+        battery: parsedData[23] != '' ? parseFloat(parsedData[23]): null,//percentage
+        inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4]): null,
+        ada: parsedData[21] != '' ? parseFloat(parsedData[21]): null,
+        adb: parsedData[22] != '' ? parseFloat(parsedData[22]): null
       },
       mcc: parsedData[14],
       mnc: parsedData[15],
@@ -356,10 +356,10 @@ const getGV300 = raw => {
       altitude: parsedData[10],
       datetime: moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
       voltage: {
-        battery: parseFloat(parsedData[23]),//percentage
-        inputCharge: parseFloat(parsedData[4]),
-        ada: parseFloat(parsedData[21]),
-        adb: parseFloat(parsedData[22]),
+        battery: parsedData[23] != '' ? parseFloat(parsedData[23]): null,//percentage
+        inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4]): null,
+        ada: parsedData[21] != '' ? parseFloat(parsedData[21]): null,
+        adb: parsedData[22] != '' ? parseFloat(parsedData[22]): null
       },
       mcc: parsedData[14],
       mnc: parsedData[15],
@@ -410,7 +410,7 @@ const getGV300 = raw => {
         battery: null,
         inputCharge: null,
         ada: null,
-        adb: null,
+        adb: null
       },
       mcc: parsedData[11],
       mnc: parsedData[12],
@@ -435,7 +435,7 @@ const getGV300 = raw => {
         battery: null,
         inputCharge: null,
         ada: null,
-        adb: null,
+        adb: null
       },
       mcc: parsedData[12],
       mnc: parsedData[13],
@@ -457,10 +457,10 @@ const getGV300 = raw => {
       altitude: parsedData[7],
       datetime: moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
       voltage: {
-        battery: parseFloat(parsedData[4]),
+        battery: parsedData[4] != '' ? parseFloat(parsedData[4]): null,
         inputCharge: null,
         ada: null,
-        adb: null,
+        adb: null
       },
       mcc: parsedData[12],
       mnc: parsedData[13],
@@ -485,7 +485,7 @@ const getGV300 = raw => {
         battery: null,
         inputCharge: null,
         ada: null,
-        adb: null,
+        adb: null
       },
       mcc: parsedData[12],
       mnc: parsedData[13],
@@ -510,7 +510,7 @@ const getGV300 = raw => {
         battery: null,
         inputCharge: null,
         ada: null,
-        adb: null,
+        adb: null
       },
       mcc: parsedData[13],
       mnc: parsedData[14],
@@ -535,7 +535,7 @@ const getGV300 = raw => {
         battery: null,
         inputCharge: null,
         ada: null,
-        adb: null,
+        adb: null
       },
       mcc: parsedData[13],
       mnc: parsedData[14],
@@ -568,7 +568,7 @@ const getGMT100 = raw => {
   }
 
   const data = {
-    raw: raw.toString(),
+    raw: `${raw.toString()}$`,
     device: 'Queclink-GMT100',
     type: 'data',
     imei: parsedData[2],
@@ -610,9 +610,9 @@ const getGMT100 = raw => {
       altitude: parsedData[10],
       datetime: moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
       voltage: {
-        battery: parseFloat(parsedData[23]),//percentage
-        inputCharge: parseFloat(parsedData[4]),
-        ada: parseFloat(parsedData[21]),
+        battery: parsedData[23] != '' ? parseFloat(parsedData[23]): null,//percentage
+        inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4]): null,
+        ada: parsedData[21] != '' ? parseFloat(parsedData[21]): null,
         adb: null
       },
       mcc: parsedData[14],
@@ -688,10 +688,10 @@ const getGMT100 = raw => {
       altitude: parsedData[10],
       datetime: moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
       voltage: {
-        battery: parseFloat(parsedData[23]),//percentage
-        inputCharge: parseFloat(parsedData[4]),
-        ada: parseFloat(parsedData[21]),
-        adb: parseFloat(parsedData[22]),
+        battery: parsedData[23] != '' ? parseFloat(parsedData[23]): null,//percentage
+        inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4]): null,
+        ada: parsedData[21] != '' ? parseFloat(parsedData[21]): null,
+        adb: null
       },
       mcc: parsedData[14],
       mnc: parsedData[15],
@@ -713,10 +713,10 @@ const getGMT100 = raw => {
       altitude: parsedData[10],
       datetime: moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
       voltage: {
-        battery: parseFloat(parsedData[23]),//percentage
-        inputCharge: parseFloat(parsedData[4]),
-        ada: parseFloat(parsedData[21]),
-        adb: parseFloat(parsedData[22]),
+        battery: parsedData[23] != '' ? parseFloat(parsedData[23]): null,//percentage
+        inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4]): null,
+        ada: parsedData[21] != '' ? parseFloat(parsedData[21]): null,
+        adb: null
       },
       mcc: parsedData[14],
       mnc: parsedData[15],
@@ -765,7 +765,7 @@ const getGMT100 = raw => {
         battery: null,
         inputCharge: null,
         ada: null,
-        adb: null,
+        adb: null
       },
       mcc: parsedData[11],
       mnc: parsedData[12],
@@ -789,7 +789,7 @@ const getGMT100 = raw => {
         battery: null,
         inputCharge: null,
         ada: null,
-        adb: null,
+        adb: null
       },
       mcc: parsedData[12],
       mnc: parsedData[13],
@@ -813,7 +813,7 @@ const getGMT100 = raw => {
         battery: parseFloat(parsedData[4]),
         inputCharge: null,
         ada: null,
-        adb: null,
+        adb: null
       },
       mcc: parsedData[12],
       mnc: parsedData[13],
@@ -837,7 +837,7 @@ const getGMT100 = raw => {
         battery: null,
         inputCharge: null,
         ada: null,
-        adb: null,
+        adb: null
       },
       mcc: parsedData[12],
       mnc: parsedData[13],
@@ -861,7 +861,7 @@ const getGMT100 = raw => {
         battery: null,
         inputCharge: null,
         ada: null,
-        adb: null,
+        adb: null
       },
       mcc: parsedData[13],
       mnc: parsedData[14],
@@ -885,7 +885,7 @@ const getGMT100 = raw => {
         battery: null,
         inputCharge: null,
         ada: null,
-        adb: null,
+        adb: null
       },
       mcc: parsedData[13],
       mnc: parsedData[14],
