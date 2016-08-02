@@ -1,6 +1,6 @@
-
-
 'use strict';
+
+
 const ConvertBase = num => {
   return {
     from : function (baseFrom) {

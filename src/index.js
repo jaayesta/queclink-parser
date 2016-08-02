@@ -1247,9 +1247,9 @@ const getAckCommand = raw => {
   else if(command === 'GTOUT'){
     data.command = 'SETIOSWITCH';
   }
-  else if (command === 'GTRTO') {
-    data.command = 'RBOOT';
-  }
+  // else if (command === 'GTRTO') {
+  //   data.command = 'RBOOT';
+  // }
   else if (command === 'GTRTO') {
     data.command = 'CLEARBUF';
   }
@@ -1263,17 +1263,22 @@ const parseCommand = data => {
   let command = '';
   const password = data.password || '000000';
   const serial = data.serial || '0000';
-  let state, digit, port, max_speed, interval, validity, mode;
+  let state, digit, port, max_speed, interval, validity, mode, prevOutputs;
 
   //Digital Outputs
   if (/^[1-4]{1}_(on|off)$/.test(data.instruction)) {
     let _data = data.instruction.split('_');
-    port = _data[0];
+    port = parseInt(_data[0],10);
     state = _data[1];
-    const ports = {'1': 'A', '2': 'B', '3': 'C', '4': 'D'};
+    prevOutputs = data.previousOutput || {'1': false, '2': false, '3': false, '4': false};
+    const outputs = Object.keys(prevOutputs).map(key => prevOutputs[key] === true ? 1 : 0);
+    outputs[0] = !outputs[0] ? 0: outputs[0];
+    outputs[1] = !outputs[1] ? 0: outputs[1];
+    outputs[2] = !outputs[2] ? 0: outputs[2];
+    outputs[3] = !outputs[3] ? 0: outputs[3];
     digit = state === 'on' ? 1 : 0;
-
-    command = `AT+GTOUT=${password},4,FRI,${digit},${ports[port]},,,${serial}$`;
+    outputs[port-1] = digit;
+    command = `AT+GTOUT=${password},${outputs[0]},0,0,${outputs[1]},0,0,${outputs[2]},0,0,${outputs[3]},0,0,0,1111,${serial}$`;
   }
 
   else if (data.instruction === 'clear_mem') {

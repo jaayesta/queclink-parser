@@ -45,7 +45,7 @@ const data = queclink.parse(raw);
      output: { '1': true, '2': false },
      charge: false },
   azimuth: '92',
-  altitude: '70.0',
+  altitude: 70.0,
   datetime: 2009-02-14T01:32:54.000Z,
   voltage: { battery: 80, inputCharge: null, ada: null, adb: null },
   mcc: '0460',
