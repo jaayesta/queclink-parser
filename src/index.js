@@ -13,11 +13,17 @@ const patterns = {
 };
 
 const devices = {
-  '25': 'GV300',
+  '02': 'GL200',
+  '04': 'GV200',
   '06': 'GV300',
   '08': 'GMT100',
-  '04': 'GV200',
-  '35': 'GV200',
+  '0F': 'GV55',
+  '10': 'GV55 LITE',
+  '11': 'GL500',
+  '1A': 'GL300',
+  '1F': 'GV500',
+  '25': 'GV300', // New Version
+  '35': 'GV200' // New Version
 };
 
 /*
@@ -227,9 +233,9 @@ const getGV300 = raw => {
     _.extend(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[11]), parseFloat(parsedData[12]) ] },
-      speed: parseFloat(parsedData[8]),
+      speed: parsedData[8] != '' ? parseFloat(parsedData[8]): null,
       gpsStatus: checkGps(parseFloat(parsedData[11]), parseFloat(parsedData[12])),
-      hdop: parseFloat(parsedData[7]),
+      hdop: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       status: { //parsedData[24]
         raw: parsedData[24],
         sos: false,
@@ -247,20 +253,20 @@ const getGV300 = raw => {
         },
         charge: parseFloat(parsedData[4]) > 5
       },
-      azimuth: parsedData[9],
-      altitude: parseFloat(parsedData[10]),
-      datetime: moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
+      azimuth: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
+      altitude: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
+      datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
       voltage: {
         battery: parsedData[23] != '' ? parseFloat(parsedData[23]): null,//percentage
         inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4]): null,
         ada: parsedData[21] != '' ? parseFloat(parsedData[21]): null,
         adb: parsedData[22] != '' ? parseFloat(parsedData[22]): null
       },
-      mcc: parsedData[14],
-      mnc: parsedData[15],
-      lac: parseInt(parsedData[16],10),
-      cid: parseInt(parsedData[17],10),
-      odometer: parseFloat(parsedData[19]),
+      mcc: parsedData[14] != '' ? parseInt(parsedData[14],10) : null,
+      mnc: parsedData[15] != '' ? parseInt(parsedData[15],10) : null,
+      lac: parsedData[16] != '' ? parseInt(parsedData[16],16) : null,
+      cid: parsedData[17] != '' ? parseInt(parsedData[17],16) : null,
+      odometer: parsedData[19] != '' ? parseFloat(parsedData[19]) : null,
       hourmeter: parsedData[20]
     });
   }
@@ -278,24 +284,24 @@ const getGV300 = raw => {
     _.extend(data, {
       alarm: getAlarm(command[1], parsedData[5]),
       loc: { type: 'Point', coordinates: [parseFloat(parsedData[11]), parseFloat(parsedData[12])] },
-      speed: parseFloat(parsedData[8]),
+      speed: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
       gpsStatus: checkGps(parseFloat(parsedData[11]), parseFloat(parsedData[12])),
-      hdop: parseFloat(parsedData[7]),
+      hdop: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       status: null,
-      azimuth: parsedData[9],
-      altitude: parseFloat(parsedData[10]),
-      datetime: moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
+      azimuth: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
+      altitude: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
+      datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
       voltage: {
         battery: null,
         inputCharge: null,
         ada: null,
         adb: null
       },
-      mcc: parsedData[14],
-      mnc: parsedData[15],
-      lac: parseInt(parsedData[16],10),
-      cid: parseInt(parsedData[17],10),
-      odometer: parseFloat(parsedData[19]),
+      mcc: parsedData[14] != '' ? parseInt(parsedData[14],10) : null,
+      mnc: parsedData[15] != '' ? parseInt(parsedData[15],10) : null,
+      lac: parsedData[16] != '' ? parseInt(parsedData[16],16) : null,
+      cid: parsedData[17] != '' ? parseInt(parsedData[17],16) : null,
+      odometer: parsedData[19] != '' ? parseFloat(parsedData[19]) : null,
       hourmeter: null
     });
   }
@@ -304,24 +310,24 @@ const getGV300 = raw => {
     _.extend(data, {
       alarm: getAlarm(command[1], parsedData[5]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[11]), parseFloat(parsedData[12]) ] },
-      speed: parseFloat(parsedData[8]),
+      speed: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
       gpsStatus: checkGps(parseFloat(parsedData[11]), parseFloat(parsedData[12])),
-      hdop: parseFloat(parsedData[7]),
+      hdop: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       status: null,
-      azimuth: parsedData[9],
-      altitude: parseFloat(parsedData[10]),
-      datetime: moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
+      azimuth: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
+      altitude: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
+      datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
       voltage: {
         battery: parsedData[23] != '' ? parseFloat(parsedData[23]): null,//percentage
         inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4]): null,
         ada: parsedData[21] != '' ? parseFloat(parsedData[21]): null,
         adb: parsedData[22] != '' ? parseFloat(parsedData[22]): null
       },
-      mcc: parsedData[14],
-      mnc: parsedData[15],
-      lac: parseInt(parsedData[16],10),
-      cid: parseInt(parsedData[17],10),
-      odometer: parseFloat(parsedData[19]),
+      mcc: parsedData[14] != '' ? parseInt(parsedData[14],10) : null,
+      mnc: parsedData[15] != '' ? parseInt(parsedData[15],10) : null,
+      lac: parsedData[16] != '' ? parseInt(parsedData[16],16) : null,
+      cid: parsedData[17] != '' ? parseInt(parsedData[17],16) : null,
+      odometer: parsedData[19] != '' ? parseFloat(parsedData[19]) : null,
       hourmeter: parsedData[20]
     });
   }
@@ -336,7 +342,7 @@ const getGV300 = raw => {
       status: null,
       azimuth: null,
       altitude: null,
-      datetime: moment(`${parsedData[4]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
+      datetime: parsedData[4] != '' ? moment(`${parsedData[4]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -355,23 +361,23 @@ const getGV300 = raw => {
     _.extend(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[8]), parseFloat(parsedData[9])]},
-      speed: parseFloat(parsedData[5]),
+      speed: parsedData[5] != '' ? parseFloat(parsedData[5]) : null,
       gpsStatus: checkGps(parseFloat(parsedData[8]), parseFloat(parsedData[9])),
-      hdop: parseFloat(parsedData[4]),
+      hdop: parsedData[4] != '' ? parseFloat(parsedData[4]) : null,
       status: null,
-      azimuth: parsedData[6],
-      altitude: parseFloat(parsedData[7]),
-      datetime: moment(`${parsedData[10]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
+      azimuth: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
+      altitude: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
+      datetime: parsedData[10] != '' ? moment(`${parsedData[10]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
       voltage: {
         battery: null,
         inputCharge: null,
         ada: null,
         adb: null
       },
-      mcc: parsedData[11],
-      mnc: parsedData[12],
-      lac: parseInt(parsedData[13],10),
-      cid: parseInt(parsedData[14],10),
+      mcc: parsedData[11] != '' ? parseInt(parsedData[11],10) : null,
+      mnc: parsedData[12] != '' ? parseInt(parsedData[12],10) : null,
+      lac: parsedData[13] != '' ? parseInt(parsedData[13],16) : null,
+      cid: parsedData[14] != '' ? parseInt(parsedData[14],16) : null,
       odometer: null,
       hourmeter: null
     });
@@ -380,23 +386,23 @@ const getGV300 = raw => {
     _.extend(data, {
       alarm: getAlarm(command[1], parsedData[4]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
-      speed: parseFloat(parsedData[6]),
+      speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
       gpsStatus: checkGps(parseFloat(parsedData[9]), parseFloat(parsedData[10])),
-      hdop: parseFloat(parsedData[5]),
+      hdop: parsedData[5] != '' ? parseFloat(parsedData[5]) : null,
       status: null,
-      azimuth: parsedData[7],
-      altitude: parseFloat(parsedData[8]),
-      datetime: moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
+      azimuth: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
+      altitude: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
+      datetime: parsedData[11] != '' ? moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
       voltage: {
         battery: null,
         inputCharge: null,
         ada: null,
         adb: null
       },
-      mcc: parsedData[12],
-      mnc: parsedData[13],
-      lac: parseInt(parsedData[14],10),
-      cid: parseInt(parsedData[15],10),
+      mcc: parsedData[12] != '' ? parseInt(parsedData[12],10) : null,
+      mnc: parsedData[13] != '' ? parseInt(parsedData[13],10) : null,
+      lac: parsedData[14] != '' ? parseInt(parsedData[14],16) : null,
+      cid: parsedData[15] != '' ? parseInt(parsedData[15],16) : null,
       odometer: null,
       hourmeter: null
     });
@@ -405,23 +411,23 @@ const getGV300 = raw => {
     _.extend(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
-      speed: parseFloat(parsedData[6]),
+      speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
       gpsStatus: checkGps(parseFloat(parsedData[9]), parseFloat(parsedData[10])),
-      hdop: parseFloat(parsedData[5]),
+      hdop: parsedData[5] != '' ? parseFloat(parsedData[5]) : null,
       status: null,
-      azimuth: parsedData[6],
-      altitude: parseFloat(parsedData[7]),
-      datetime: moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
+      azimuth: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
+      altitude: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
+      datetime: parsedData[11] != '' ? moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
       voltage: {
         battery: parsedData[4] != '' ? parseFloat(parsedData[4]): null,
         inputCharge: null,
         ada: null,
         adb: null
       },
-      mcc: parsedData[12],
-      mnc: parsedData[13],
-      lac: parseInt(parsedData[14],10),
-      cid: parseInt(parsedData[15],10),
+      mcc: parsedData[12] != '' ? parseInt(parsedData[12],10) : null,
+      mnc: parsedData[13] != '' ? parseInt(parsedData[13],10) : null,
+      lac: parsedData[14] != '' ? parseInt(parsedData[14],16) : null,
+      cid: parsedData[15] != '' ? parseInt(parsedData[15],16) : null,
       odometer: null,
       hourmeter: null
     });
@@ -430,24 +436,24 @@ const getGV300 = raw => {
     _.extend(data, {
       alarm: getAlarm(command[1], parsedData[4]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
-      speed: parseFloat(parsedData[6]),
+      speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
       gpsStatus: checkGps(parseFloat(parsedData[9]), parseFloat(parsedData[10])),
-      hdop: parseFloat(parsedData[5]),
+      hdop: parsedData[5] != '' ? parseFloat(parsedData[5]) : null,
       status: null,
-      azimuth: parsedData[7],
-      altitude: parseFloat(parsedData[8]),
-      datetime: moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
+      azimuth: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
+      altitude: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
+      datetime: parsedData[11] != '' ? moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
       voltage: {
         battery: null,
         inputCharge: null,
         ada: null,
         adb: null
       },
-      mcc: parsedData[12],
-      mnc: parsedData[13],
-      lac: parseInt(parsedData[14],10),
-      cid: parseInt(parsedData[15],10),
-      odometer: parseFloat(parsedData[18]),
+      mcc: parsedData[12] != '' ? parseInt(parsedData[12],10) : null,
+      mnc: parsedData[13] != '' ? parseInt(parsedData[13],10) : null,
+      lac: parsedData[14] != '' ? parseInt(parsedData[14],16) : null,
+      cid: parsedData[15] != '' ? parseInt(parsedData[15],16) : null,
+      odometer: parsedData[18] != '' ? parseFloat(parsedData[18]) : null,
       hourmeter: parsedData[17]
     });
   }
@@ -455,24 +461,24 @@ const getGV300 = raw => {
     _.extend(data, {
       alarm: getAlarm(command[1], parsedData[5]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[10]), parseFloat(parsedData[11])]},
-      speed: parseFloat(parsedData[7]),
+      speed: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       gpsStatus: checkGps(parseFloat(parsedData[10]), parseFloat(parsedData[11])),
-      hdop: parseFloat(parsedData[5]),
+      hdop: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
       status: null,
-      azimuth: parsedData[8],
-      altitude: parseFloat(parsedData[9]),
-      datetime: moment(`${parsedData[12]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
+      azimuth: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
+      altitude: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
+      datetime: parsedData[12] != '' ? moment(`${parsedData[12]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
       voltage: {
         battery: null,
         inputCharge: null,
         ada: null,
         adb: null
       },
-      mcc: parsedData[13],
-      mnc: parsedData[14],
-      lac: parseInt(parsedData[15],10),
-      cid: parseInt(parsedData[16],10),
-      odometer: parseFloat(parsedData[18]),
+      mcc: parsedData[13] != '' ? parseInt(parsedData[13],10) : null,
+      mnc: parsedData[14] != '' ? parseInt(parsedData[14],10) : null,
+      lac: parsedData[15] != '' ? parseInt(parsedData[15],16) : null,
+      cid: parsedData[16] != '' ? parseInt(parsedData[16],16) : null,
+      odometer: parsedData[18] != '' ? parseFloat(parsedData[18]) : null,
       hourmeter: null
     });
   }
@@ -480,24 +486,24 @@ const getGV300 = raw => {
     _.extend(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[10]), parseFloat(parsedData[11])]},
-      speed: parseFloat(parsedData[7]),
+      speed: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       gpsStatus: checkGps(parseFloat(parsedData[10]), parseFloat(parsedData[11])),
-      hdop: parseFloat(parsedData[6]),
+      hdop: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
       status: null,
-      azimuth: parsedData[8],
-      altitude: parseFloat(parsedData[9]),
-      datetime: moment(`${parsedData[12]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
+      azimuth: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
+      altitude: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
+      datetime: parsedData[12] != '' ? moment(`${parsedData[12]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
       voltage: {
         battery: null,
         inputCharge: null,
         ada: null,
         adb: null
       },
-      mcc: parsedData[13],
-      mnc: parsedData[14],
-      lac: parseInt(parsedData[15],10),
-      cid: parseInt(parsedData[16],10),
-      odometer: parseFloat(parsedData[18]),
+      mcc: parsedData[13] != '' ? parseInt(parsedData[13],10) : null,
+      mnc: parsedData[14] != '' ? parseInt(parsedData[14],10) : null,
+      lac: parsedData[15] != '' ? parseInt(parsedData[15],16) : null,
+      cid: parsedData[16] != '' ? parseInt(parsedData[16],16) : null,
+      odometer: parsedData[18] != '' ? parseFloat(parsedData[18]) : null,
       hourmeter: null
     });
   }
@@ -540,9 +546,9 @@ const getGV200 = raw => {
     _.extend(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[11]), parseFloat(parsedData[12]) ] },
-      speed: parseFloat(parsedData[8]),
+      speed: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
       gpsStatus: checkGps(parseFloat(parsedData[11]), parseFloat(parsedData[12])),
-      hdop: parseFloat(parsedData[7]),
+      hdop: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       status: { //parsedData[24]
         raw: parsedData[24]+parsedData[25],
         sos: false,
@@ -560,9 +566,9 @@ const getGV200 = raw => {
         },
         charge: parseFloat(parsedData[4]) > 5
       },
-      azimuth: parsedData[9],
-      altitude: parseFloat(parsedData[10]),
-      datetime: moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
+      azimuth: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
+      altitude: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
+      datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
       voltage: {
         battery: parsedData[23] != '' ? parseFloat(parsedData[23]): null,//percentage
         inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4]): null,
@@ -570,11 +576,11 @@ const getGV200 = raw => {
         adb: parsedData[22] != '' ? parseFloat(parsedData[22]): null,
         adc: parsedData[23] != '' ? parseFloat(parsedData[23]): null
       },
-      mcc: parsedData[14],
-      mnc: parsedData[15],
-      lac: parseInt(parsedData[16],10),
-      cid: parseInt(parsedData[17],10),
-      odometer: parseFloat(parsedData[19]),
+      mcc: parsedData[14] != '' ? parseInt(parsedData[14],10) : null,
+      mnc: parsedData[15] != '' ? parseInt(parsedData[15],10) : null,
+      lac: parsedData[16] != '' ? parseInt(parsedData[16],16) : null,
+      cid: parsedData[17] != '' ? parseInt(parsedData[17],16) : null,
+      odometer: parsedData[19] != '' ? parseFloat(parsedData[19]) : null,
       hourmeter: parsedData[20]
     });
   }
@@ -592,24 +598,24 @@ const getGV200 = raw => {
     _.extend(data, {
       alarm: getAlarm(command[1], parsedData[5]),
       loc: { type: 'Point', coordinates: [parseFloat(parsedData[11]), parseFloat(parsedData[12])] },
-      speed: parseFloat(parsedData[8]),
+      speed: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
       gpsStatus: checkGps(parseFloat(parsedData[11]), parseFloat(parsedData[12])),
-      hdop: parseFloat(parsedData[7]),
+      hdop: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       status: null,
-      azimuth: parsedData[9],
-      altitude: parseFloat(parsedData[10]),
-      datetime: moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
+      azimuth: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
+      altitude: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
+      datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
       voltage: {
         battery: null,
         inputCharge: null,
         ada: null,
         adb: null
       },
-      mcc: parsedData[14],
-      mnc: parsedData[15],
-      lac: parseInt(parsedData[16],10),
-      cid: parseInt(parsedData[17],10),
-      odometer: parseFloat(parsedData[19]),
+      mcc: parsedData[14] != '' ? parseInt(parsedData[14],10) : null,
+      mnc: parsedData[15] != '' ? parseInt(parsedData[15],10) : null,
+      lac: parsedData[16] != '' ? parseInt(parsedData[16],16) : null,
+      cid: parsedData[17] != '' ? parseInt(parsedData[17],16) : null,
+      odometer: parsedData[19] != '' ? parseFloat(parsedData[19]) : null,
       hourmeter: null
     });
   }
@@ -618,24 +624,24 @@ const getGV200 = raw => {
     _.extend(data, {
       alarm: getAlarm(command[1], parsedData[5]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[11]), parseFloat(parsedData[12]) ] },
-      speed: parseFloat(parsedData[8]),
+      speed: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
       gpsStatus: checkGps(parseFloat(parsedData[11]), parseFloat(parsedData[12])),
-      hdop: parseFloat(parsedData[7]),
+      hdop: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       status: null,
-      azimuth: parsedData[9],
-      altitude: parseFloat(parsedData[10]),
-      datetime: moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
+      azimuth: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
+      altitude: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
+      datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
       voltage: {
         battery: parsedData[23] != '' ? parseFloat(parsedData[23]): null,//percentage
         inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4]): null,
         ada: parsedData[21] != '' ? parseFloat(parsedData[21]): null,
         adb: parsedData[22] != '' ? parseFloat(parsedData[22]): null
       },
-      mcc: parsedData[14],
-      mnc: parsedData[15],
-      lac: parseInt(parsedData[16],10),
-      cid: parseInt(parsedData[17],10),
-      odometer: parseFloat(parsedData[19]),
+      mcc: parsedData[14] != '' ? parseInt(parsedData[14],10) : null,
+      mnc: parsedData[15] != '' ? parseInt(parsedData[15],10) : null,
+      lac: parsedData[16] != '' ? parseInt(parsedData[16],16) : null,
+      cid: parsedData[17] != '' ? parseInt(parsedData[17],16) : null,
+      odometer: parsedData[19] != '' ? parseFloat(parsedData[19]) : null,
       hourmeter: parsedData[20]
     });
   }
@@ -644,24 +650,24 @@ const getGV200 = raw => {
     _.extend(data, {
       alarm: getAlarm(command[1], parsedData[5]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[11]), parseFloat(parsedData[12]) ] },
-      speed: parseFloat(parsedData[8]),
+      speed: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
       gpsStatus: checkGps(parseFloat(parsedData[11]), parseFloat(parsedData[12])),
-      hdop: parseFloat(parsedData[7]),
+      hdop: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       status: null,
-      azimuth: parsedData[9],
-      altitude: parseFloat(parsedData[10]),
-      datetime: moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
+      azimuth: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
+      altitude: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
+      datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
       voltage: {
         battery: parsedData[23] != '' ? parseFloat(parsedData[23]): null,//percentage
         inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4]): null,
         ada: parsedData[21] != '' ? parseFloat(parsedData[21]): null,
         adb: parsedData[22] != '' ? parseFloat(parsedData[22]): null
       },
-      mcc: parsedData[14],
-      mnc: parsedData[15],
-      lac: parseInt(parsedData[16],10),
-      cid: parseInt(parsedData[17],10),
-      odometer: parseFloat(parsedData[19]),
+      mcc: parsedData[14] != '' ? parseInt(parsedData[14],10) : null,
+      mnc: parsedData[15] != '' ? parseInt(parsedData[15],10) : null,
+      lac: parsedData[16] != '' ? parseInt(parsedData[16],16) : null,
+      cid: parsedData[17] != '' ? parseInt(parsedData[17],16) : null,
+      odometer: parsedData[19] != '' ? parseFloat(parsedData[19]) : null,
       hourmeter: parsedData[20]
     });
   }
@@ -676,7 +682,7 @@ const getGV200 = raw => {
       status: null,
       azimuth: null,
       altitude: null,
-      datetime: moment(`${parsedData[4]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
+      datetime: parsedData[4] != '' ? moment(`${parsedData[4]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -695,23 +701,23 @@ const getGV200 = raw => {
     _.extend(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[8]), parseFloat(parsedData[9])]},
-      speed: parseFloat(parsedData[5]),
+      speed: parsedData[5] != '' ? parseFloat(parsedData[5]) : null,
       gpsStatus: checkGps(parseFloat(parsedData[8]), parseFloat(parsedData[9])),
-      hdop: parseFloat(parsedData[4]),
+      hdop: parsedData[4] != '' ? parseFloat(parsedData[4]) : null,
       status: null,
-      azimuth: parsedData[6],
-      altitude: parseFloat(parsedData[7]),
-      datetime: moment(`${parsedData[10]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
+      azimuth: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
+      altitude: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
+      datetime: parsedData[10] != '' ? moment(`${parsedData[10]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
       voltage: {
         battery: null,
         inputCharge: null,
         ada: null,
         adb: null
       },
-      mcc: parsedData[11],
-      mnc: parsedData[12],
-      lac: parseInt(parsedData[13],10),
-      cid: parseInt(parsedData[14],10),
+      mcc: parsedData[11] != '' ? parseInt(parsedData[11],10) : null,
+      mnc: parsedData[12] != '' ? parseInt(parsedData[12],10) : null,
+      lac: parsedData[13] != '' ? parseInt(parsedData[13],16) : null,
+      cid: parsedData[14] != '' ? parseInt(parsedData[14],16) : null,
       odometer: null,
       hourmeter: null
     });
@@ -720,23 +726,23 @@ const getGV200 = raw => {
     _.extend(data, {
       alarm: getAlarm(command[1], parsedData[4]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
-      speed: parseFloat(parsedData[6]),
+      speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
       gpsStatus: checkGps(parseFloat(parsedData[9]), parseFloat(parsedData[10])),
-      hdop: parseFloat(parsedData[5]),
+      hdop: parsedData[5] != '' ? parseFloat(parsedData[5]) : null,
       status: null,
-      azimuth: parsedData[7],
-      altitude: parseFloat(parsedData[8]),
-      datetime: moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
+      azimuth: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
+      altitude: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
+      datetime: parsedData[11] != '' ? moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
       voltage: {
         battery: null,
         inputCharge: null,
         ada: null,
         adb: null
       },
-      mcc: parsedData[12],
-      mnc: parsedData[13],
-      lac: parseInt(parsedData[14],10),
-      cid: parseInt(parsedData[15],10),
+      mcc: parsedData[12] != '' ? parseInt(parsedData[12],10) : null,
+      mnc: parsedData[13] != '' ? parseInt(parsedData[13],10) : null,
+      lac: parsedData[14] != '' ? parseInt(parsedData[14],16) : null,
+      cid: parsedData[15] != '' ? parseInt(parsedData[15],16) : null,
       odometer: null,
       hourmeter: null
     });
@@ -745,23 +751,23 @@ const getGV200 = raw => {
     _.extend(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
-      speed: parseFloat(parsedData[6]),
+      speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
       gpsStatus: checkGps(parseFloat(parsedData[9]), parseFloat(parsedData[10])),
-      hdop: parseFloat(parsedData[5]),
+      hdop: parsedData[5] != '' ? parseFloat(parsedData[5]) : null,
       status: null,
-      azimuth: parsedData[6],
-      altitude: parseFloat(parsedData[7]),
-      datetime: moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
+      azimuth: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
+      altitude: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
+      datetime: parsedData[11] != '' ? moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
       voltage: {
         battery: parsedData[4] != '' ? parseFloat(parsedData[4]): null,
         inputCharge: null,
         ada: null,
         adb: null
       },
-      mcc: parsedData[12],
-      mnc: parsedData[13],
-      lac: parseInt(parsedData[14],10),
-      cid: parseInt(parsedData[15],10),
+      mcc: parsedData[12] != '' ? parseInt(parsedData[12],10) : null,
+      mnc: parsedData[13] != '' ? parseInt(parsedData[13],10) : null,
+      lac: parsedData[14] != '' ? parseInt(parsedData[14],16) : null,
+      cid: parsedData[15] != '' ? parseInt(parsedData[15],16) : null,
       odometer: null,
       hourmeter: null
     });
@@ -770,24 +776,24 @@ const getGV200 = raw => {
     _.extend(data, {
       alarm: getAlarm(command[1], parsedData[4]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
-      speed: parseFloat(parsedData[6]),
+      speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
       gpsStatus: checkGps(parseFloat(parsedData[9]), parseFloat(parsedData[10])),
-      hdop: parseFloat(parsedData[5]),
+      hdop: parsedData[5] != '' ? parseFloat(parsedData[5]) : null,
       status: null,
-      azimuth: parsedData[7],
-      altitude: parseFloat(parsedData[8]),
-      datetime: moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
+      azimuth: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
+      altitude: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
+      datetime: parsedData[11] != '' ? moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
       voltage: {
         battery: null,
         inputCharge: null,
         ada: null,
         adb: null
       },
-      mcc: parsedData[12],
-      mnc: parsedData[13],
-      lac: parseInt(parsedData[14],10),
-      cid: parseInt(parsedData[15],10),
-      odometer: parseFloat(parsedData[18]),
+      mcc: parsedData[12] != '' ? parseInt(parsedData[12],10) : null,
+      mnc: parsedData[13] != '' ? parseInt(parsedData[13],10) : null,
+      lac: parsedData[14] != '' ? parseInt(parsedData[14],16) : null,
+      cid: parsedData[15] != '' ? parseInt(parsedData[15],16) : null,
+      odometer: parsedData[18] != '' ? parseFloat(parsedData[18]) : null,
       hourmeter: parsedData[17]
     });
   }
@@ -795,24 +801,24 @@ const getGV200 = raw => {
     _.extend(data, {
       alarm: getAlarm(command[1], parsedData[5]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[10]), parseFloat(parsedData[11])]},
-      speed: parseFloat(parsedData[7]),
+      speed: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       gpsStatus: checkGps(parseFloat(parsedData[10]), parseFloat(parsedData[11])),
-      hdop: parseFloat(parsedData[5]),
+      hdop: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
       status: null,
-      azimuth: parsedData[8],
-      altitude: parseFloat(parsedData[9]),
-      datetime: moment(`${parsedData[12]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
+      azimuth: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
+      altitude: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
+      datetime: parsedData[12] != '' ? moment(`${parsedData[12]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
       voltage: {
         battery: null,
         inputCharge: null,
         ada: null,
         adb: null
       },
-      mcc: parsedData[13],
-      mnc: parsedData[14],
-      lac: parseInt(parsedData[15],10),
-      cid: parseInt(parsedData[16],10),
-      odometer: parseFloat(parsedData[18]),
+      mcc: parsedData[13] != '' ? parseInt(parsedData[13],10) : null,
+      mnc: parsedData[14] != '' ? parseInt(parsedData[14],10) : null,
+      lac: parsedData[15] != '' ? parseInt(parsedData[15],16) : null,
+      cid: parsedData[16] != '' ? parseInt(parsedData[16],16) : null,
+      odometer: parsedData[18] != '' ? parseFloat(parsedData[18]) : null,
       hourmeter: null
     });
   }
@@ -820,24 +826,24 @@ const getGV200 = raw => {
     _.extend(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[10]), parseFloat(parsedData[11])]},
-      speed: parseFloat(parsedData[7]),
+      speed: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       gpsStatus: checkGps(parseFloat(parsedData[10]), parseFloat(parsedData[11])),
-      hdop: parseFloat(parsedData[6]),
+      hdop: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
       status: null,
-      azimuth: parsedData[8],
-      altitude: parseFloat(parsedData[9]),
-      datetime: moment(`${parsedData[12]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
+      azimuth: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
+      altitude: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
+      datetime: parsedData[12] != '' ? moment(`${parsedData[12]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
       voltage: {
         battery: null,
         inputCharge: null,
         ada: null,
         adb: null
       },
-      mcc: parsedData[13],
-      mnc: parsedData[14],
-      lac: parseInt(parsedData[15],10),
-      cid: parseInt(parsedData[16],10),
-      odometer: parseFloat(parsedData[18]),
+      mcc: parsedData[13] != '' ? parseInt(parsedData[13],10) : null,
+      mnc: parsedData[14] != '' ? parseInt(parsedData[14],10) : null,
+      lac: parsedData[15] != '' ? parseInt(parsedData[15],16) : null,
+      cid: parsedData[16] != '' ? parseInt(parsedData[16],16) : null,
+      odometer: parsedData[18] != '' ? parseFloat(parsedData[18]) : null,
       hourmeter: null
     });
   }
@@ -881,9 +887,9 @@ const getGMT100 = raw => {
     _.extend(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[11]), parseFloat(parsedData[12]) ] },
-      speed: parseFloat(parsedData[8]),
+      speed: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
       gpsStatus: checkGps(parseFloat(parsedData[11]), parseFloat(parsedData[12])),
-      hdop: parseFloat(parsedData[7]),
+      hdop: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       status: { //parsedData[24]
         raw: parsedData[24]+parsedData[25],
         sos: false,
@@ -897,20 +903,20 @@ const getGMT100 = raw => {
         },
         charge: parseFloat(parsedData[4]) > 5
       },
-      azimuth: parsedData[9],
-      altitude: parseFloat(parsedData[10]),
-      datetime: moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
+      azimuth: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
+      altitude: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
+      datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
       voltage: {
         battery: parsedData[23] != '' ? parseFloat(parsedData[23]): null,//percentage
         inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4]): null,
         ada: parsedData[21] != '' ? parseFloat(parsedData[21]): null,
         adb: null
       },
-      mcc: parsedData[14],
-      mnc: parsedData[15],
-      lac: parseInt(parsedData[16],10),
-      cid: parseInt(parsedData[17],10),
-      odometer: parseFloat(parsedData[19])
+      mcc: parsedData[14] != '' ? parseInt(parsedData[14],10): null,
+      mnc: parsedData[15] != '' ? parseInt(parsedData[15],10): null,
+      lac: parsedData[16] != '' ? parseInt(parsedData[16],16) : null,
+      cid: parsedData[17] != '' ? parseInt(parsedData[17],16) : null,
+      odometer: parsedData[19] != '' ? parseFloat(parsedData[19]): null
     });
   }
   //Heartbeat. It must response an ACK command
@@ -927,24 +933,24 @@ const getGMT100 = raw => {
     _.extend(data, {
       alarm: getAlarm(command[1], parsedData[5]),
       loc: { type: 'Point', coordinates: [parseFloat(parsedData[11]), parseFloat(parsedData[12])] },
-      speed: parseFloat(parsedData[8]),
+      speed: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
       gpsStatus: checkGps(parseFloat(parsedData[11]), parseFloat(parsedData[12])),
-      hdop: parseFloat(parsedData[7]),
+      hdop: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       status: null,
-      azimuth: parsedData[9],
-      altitude: parseFloat(parsedData[10]),
-      datetime: moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
+      azimuth: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
+      altitude: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
+      datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
       voltage: {
         battery: null,
         inputCharge: null,
         ada: null,
         adb: null
       },
-      mcc: parsedData[14],
-      mnc: parsedData[15],
-      lac: parseInt(parsedData[16],10),
-      cid: parseInt(parsedData[17],10),
-      odometer: parseFloat(parsedData[19])
+      mcc: parsedData[14] != '' ? parseInt(parsedData[14],10): null,
+      mnc: parsedData[15] != '' ? parseInt(parsedData[15],10): null,
+      lac: parsedData[16] != '' ? parseInt(parsedData[16],16) : null,
+      cid: parsedData[17] != '' ? parseInt(parsedData[17],16) : null,
+      odometer: parsedData[19] != '' ? parseFloat(parsedData[19]): null
     });
   }
   //External low battery
@@ -952,24 +958,24 @@ const getGMT100 = raw => {
     _.extend(data, {
       alarm: getAlarm(command[1], parsedData[5]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[11]), parseFloat(parsedData[12]) ] },
-      speed: parseFloat(parsedData[8]),
+      speed: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
       gpsStatus: checkGps(parseFloat(parsedData[11]), parseFloat(parsedData[12])),
-      hdop: parseFloat(parsedData[7]),
+      hdop: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       status: null,
-      azimuth: parsedData[9],
-      altitude: parseFloat(parsedData[10]),
-      datetime: moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
+      azimuth: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
+      altitude: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
+      datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
       voltage: {
         battery: parsedData[23] != '' ? parseFloat(parsedData[23]): null,//percentage
         inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4]): null,
         ada: parsedData[21] != '' ? parseFloat(parsedData[21]): null,
         adb: null
       },
-      mcc: parsedData[14],
-      mnc: parsedData[15],
-      lac: parseInt(parsedData[16],10),
-      cid: parseInt(parsedData[17],10),
-      odometer: parseFloat(parsedData[19])
+      mcc: parsedData[14] != '' ? parseInt(parsedData[14],10): null,
+      mnc: parsedData[15] != '' ? parseInt(parsedData[15],10): null,
+      lac: parsedData[16] != '' ? parseInt(parsedData[16],16) : null,
+      cid: parsedData[17] != '' ? parseInt(parsedData[17],16) : null,
+      odometer: parsedData[19] != '' ? parseFloat(parsedData[19]): null
     });
   }
   //Low voltage from analog input
@@ -977,24 +983,24 @@ const getGMT100 = raw => {
     _.extend(data, {
       alarm: getAlarm(command[1], parsedData[5]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[11]), parseFloat(parsedData[12]) ] },
-      speed: parseFloat(parsedData[8]),
+      speed: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
       gpsStatus: checkGps(parseFloat(parsedData[11]), parseFloat(parsedData[12])),
-      hdop: parseFloat(parsedData[7]),
+      hdop: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       status: null,
-      azimuth: parsedData[9],
-      altitude: parseFloat(parsedData[10]),
-      datetime: moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
+      azimuth: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
+      altitude: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
+      datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
       voltage: {
         battery: parsedData[23] != '' ? parseFloat(parsedData[23]): null,//percentage
         inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4]): null,
         ada: parsedData[21] != '' ? parseFloat(parsedData[21]): null,
         adb: null
       },
-      mcc: parsedData[14],
-      mnc: parsedData[15],
-      lac: parseInt(parsedData[16],10),
-      cid: parseInt(parsedData[17],10),
-      odometer: parseFloat(parsedData[19])
+      mcc: parsedData[14] != '' ? parseInt(parsedData[14],10): null,
+      mnc: parsedData[15] != '' ? parseInt(parsedData[15],10): null,
+      lac: parsedData[16] != '' ? parseInt(parsedData[16],16) : null,
+      cid: parsedData[17] != '' ? parseInt(parsedData[17],16) : null,
+      odometer: parsedData[19] != '' ? parseFloat(parsedData[19]): null
     });
   }
   //Event report (It uses the last GPS data and MCC info)
@@ -1008,7 +1014,7 @@ const getGMT100 = raw => {
       status: null,
       azimuth: null,
       altitude: null,
-      datetime: moment(`${parsedData[4]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
+      datetime: parsedData[4] != '' ? moment(`${parsedData[4]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -1026,23 +1032,23 @@ const getGMT100 = raw => {
     _.extend(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[8]), parseFloat(parsedData[9])]},
-      speed: parseFloat(parsedData[5]),
+      speed: parsedData[5] != '' ? parseFloat(parsedData[5]) : null,
       gpsStatus: checkGps(parseFloat(parsedData[8]), parseFloat(parsedData[9])),
-      hdop: parseFloat(parsedData[4]),
+      hdop: parsedData[4] != '' ? parseFloat(parsedData[4]) : null,
       status: null,
-      azimuth: parsedData[6],
-      altitude: parseFloat(parsedData[7]),
-      datetime: moment(`${parsedData[10]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
+      azimuth: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
+      altitude: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
+      datetime: parsedData[10] != '' ? moment(`${parsedData[10]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
       voltage: {
         battery: null,
         inputCharge: null,
         ada: null,
         adb: null
       },
-      mcc: parsedData[11],
-      mnc: parsedData[12],
-      lac: parseInt(parsedData[13],10),
-      cid: parseInt(parsedData[14],10),
+      mcc: parsedData[11] != '' ? parseInt(parsedData[11],10): null,
+      mnc: parsedData[12] != '' ? parseInt(parsedData[12],10): null,
+      lac: parsedData[13] != '' ? parseInt(parsedData[13],16) : null,
+      cid: parsedData[14] != '' ? parseInt(parsedData[14],16) : null,
       odometer: null
     });
   }
@@ -1050,23 +1056,23 @@ const getGMT100 = raw => {
     _.extend(data, {
       alarm: getAlarm(command[1], parsedData[4]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
-      speed: parseFloat(parsedData[6]),
+      speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
       gpsStatus: checkGps(parseFloat(parsedData[9]), parseFloat(parsedData[10])),
-      hdop: parseFloat(parsedData[5]),
+      hdop: parsedData[5] != '' ? parseFloat(parsedData[5]) : null,
       status: null,
-      azimuth: parsedData[7],
-      altitude: parseFloat(parsedData[8]),
-      datetime: moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
+      azimuth: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
+      altitude: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
+      datetime: parsedData[11] != '' ? moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
       voltage: {
         battery: null,
         inputCharge: null,
         ada: null,
         adb: null
       },
-      mcc: parsedData[12],
-      mnc: parsedData[13],
-      lac: parseInt(parsedData[14],10),
-      cid: parseInt(parsedData[15],10),
+      mcc: parsedData[12] != '' ? parseInt(parsedData[12],10): null,
+      mnc: parsedData[13] != '' ? parseInt(parsedData[13],10): null,
+      lac: parsedData[14] != '' ? parseInt(parsedData[14],16) : null,
+      cid: parsedData[15] != '' ? parseInt(parsedData[15],16) : null,
       odometer: null
     });
   }
@@ -1074,23 +1080,23 @@ const getGMT100 = raw => {
     _.extend(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
-      speed: parseFloat(parsedData[6]),
+      speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
       gpsStatus: checkGps(parseFloat(parsedData[9]), parseFloat(parsedData[10])),
-      hdop: parseFloat(parsedData[5]),
+      hdop: parsedData[5] != '' ? parseFloat(parsedData[5]) : null,
       status: null,
-      azimuth: parsedData[6],
-      altitude: parseFloat(parsedData[7]),
-      datetime: moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
+      azimuth: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
+      altitude: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
+      datetime: parsedData[11] != '' ? moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
       voltage: {
-        battery: parseFloat(parsedData[4]),
+        battery: parsedData[4] != '' ? parseFloat(parsedData[4]) : null,
         inputCharge: null,
         ada: null,
         adb: null
       },
-      mcc: parsedData[12],
-      mnc: parsedData[13],
-      lac: parseInt(parsedData[14],10),
-      cid: parseInt(parsedData[15],10),
+      mcc: parsedData[12] != '' ? parseInt(parsedData[12],10): null,
+      mnc: parsedData[13] != '' ? parseInt(parsedData[13],10): null,
+      lac: parsedData[14] != '' ? parseInt(parsedData[14],16) : null,
+      cid: parsedData[15] != '' ? parseInt(parsedData[15],16) : null,
       odometer: null
     });
   }
@@ -1098,72 +1104,72 @@ const getGMT100 = raw => {
     _.extend(data, {
       alarm: getAlarm(command[1], parsedData[4]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
-      speed: parseFloat(parsedData[6]),
+      speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
       gpsStatus: checkGps(parseFloat(parsedData[9]), parseFloat(parsedData[10])),
-      hdop: parseFloat(parsedData[5]),
+      hdop: parsedData[5] != '' ? parseFloat(parsedData[5]) : null,
       status: null,
-      azimuth: parsedData[7],
-      altitude: parseFloat(parsedData[8]),
-      datetime: moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
+      azimuth: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
+      altitude: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
+      datetime: parsedData[11] != '' ? moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
       voltage: {
         battery: null,
         inputCharge: null,
         ada: null,
         adb: null
       },
-      mcc: parsedData[12],
-      mnc: parsedData[13],
-      lac: parseInt(parsedData[14],10),
-      cid: parseInt(parsedData[15],10),
-      odometer: parseFloat(parsedData[18])
+      mcc: parsedData[12] != '' ? parseInt(parsedData[12],10): null,
+      mnc: parsedData[13] != '' ? parseInt(parsedData[13],10): null,
+      lac: parsedData[14] != '' ? parseInt(parsedData[14],16) : null,
+      cid: parsedData[15] != '' ? parseInt(parsedData[15],16) : null,
+      odometer: parsedData[18] != '' ? parseFloat(parsedData[18]) : null
     });
   }
   else if (command[1] === 'GTIDN' || command[1] === 'GTIDF') {
     _.extend(data, {
       alarm: getAlarm(command[1], parsedData[5]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[10]), parseFloat(parsedData[11])]},
-      speed: parseFloat(parsedData[7]),
+      speed: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       gpsStatus: checkGps(parseFloat(parsedData[10]), parseFloat(parsedData[11])),
-      hdop: parseFloat(parsedData[5]),
+      hdop: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
       status: null,
-      azimuth: parsedData[8],
-      altitude: parseFloat(parsedData[9]),
-      datetime: moment(`${parsedData[12]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
+      azimuth: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
+      altitude: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
+      datetime: parsedData[12] != '' ? moment(`${parsedData[12]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
       voltage: {
         battery: null,
         inputCharge: null,
         ada: null,
         adb: null
       },
-      mcc: parsedData[13],
-      mnc: parsedData[14],
-      lac: parseInt(parsedData[15],10),
-      cid: parseInt(parsedData[16],10),
-      odometer: parseFloat(parsedData[18])
+      mcc: parsedData[13] != '' ? parseInt(parsedData[13],10): null,
+      mnc: parsedData[14] != '' ? parseInt(parsedData[14],10): null,
+      lac: parsedData[15] != '' ? parseInt(parsedData[15],16) : null,
+      cid: parsedData[16] != '' ? parseInt(parsedData[16],16) : null,
+      odometer: parsedData[18] != '' ? parseFloat(parsedData[18]) : null
     });
   }
   else if (command[1] === 'GTSTR' || command[1] === 'GTSTP' || command[1] === 'GTLSP') {
     _.extend(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[10]), parseFloat(parsedData[11])]},
-      speed: parseFloat(parsedData[7]),
+      speed: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       gpsStatus: checkGps(parseFloat(parsedData[10]), parseFloat(parsedData[11])),
-      hdop: parseFloat(parsedData[6]),
+      hdop: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
       status: null,
-      azimuth: parsedData[8],
-      altitude: parseFloat(parsedData[9]),
-      datetime: moment(`${parsedData[12]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
+      azimuth: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
+      altitude: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
+      datetime: parsedData[12] != '' ? moment(`${parsedData[12]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
       voltage: {
         battery: null,
         inputCharge: null,
         ada: null,
         adb: null
       },
-      mcc: parsedData[13],
-      mnc: parsedData[14],
-      lac: parseInt(parsedData[15],10),
-      cid: parseInt(parsedData[16],10),
-      odometer: parseFloat(parsedData[18])
+      mcc: parsedData[13] != '' ? parseInt(parsedData[13],10): null,
+      mnc: parsedData[14] != '' ? parseInt(parsedData[14],10): null,
+      lac: parsedData[15] != '' ? parseInt(parsedData[15],16) : null,
+      cid: parsedData[16] != '' ? parseInt(parsedData[16],16) : null,
+      odometer: parsedData[18] != '' ? parseFloat(parsedData[18]) : null
     });
   }
   else{
