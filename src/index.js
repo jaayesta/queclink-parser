@@ -14,8 +14,10 @@ const patterns = {
 
 const devices = {
   '25': 'GV300',
+  '06': 'GV300',
   '08': 'GMT100',
-  '04': 'GV200'
+  '04': 'GV200',
+  '35': 'GV200',
 };
 
 /*
@@ -131,13 +133,13 @@ const getAlarm = (command, report) => {
   }
   else if (command === 'GTIGL'){
     const reportType = parseInt(report[1],16);
-    return {type: 'DI', number: 3, status: reportType === 0};
+    return {type: 'DI', number: 1, status: reportType === 0};
   }
   else if (command === 'GTIGN'){
-    return {type: 'DI', number: 3, status: true, duration: report};
+    return {type: 'DI', number: 1, status: true, duration: report};
   }
   else if (command === 'GTIGF'){
-    return {type: 'DI', number: 3, status: false, duration: report};
+    return {type: 'DI', number: 1, status: false, duration: report};
   }
   else if(command === 'GTPNA'){
     return {type: 'Power', status: true};
@@ -265,27 +267,7 @@ const getGV300 = raw => {
   //Heartbeat. It must response an ACK command
   else if (command[1] === 'GTHBD'){
     _.extend(data, {
-      alarm: getAlarm(command[1], null),
-      loc: null,
-      speed: null,
-      gpsStatus: null,
-      hdop: null,
-      status: null,
-      azimuth: null,
-      altitude: null,
-      datetime: null,
-      voltage: {
-        battery: null,
-        inputCharge: null,
-        ada: null,
-        adb: null
-      },
-      mcc: null,
-      mnc: null,
-      lac: null,
-      cid: null,
-      odometer: null,
-      hourmeter: null
+      alarm: getAlarm(command[1], null)
     });
   }
   // Common Alarms
@@ -599,27 +581,7 @@ const getGV200 = raw => {
   //Heartbeat. It must response an ACK command
   else if (command[1] === 'GTHBD'){
     _.extend(data, {
-      alarm: getAlarm(command[1], null),
-      loc: null,
-      speed: null,
-      gpsStatus: null,
-      hdop: null,
-      status: null,
-      azimuth: null,
-      altitude: null,
-      datetime: null,
-      voltage: {
-        battery: null,
-        inputCharge: null,
-        ada: null,
-        adb: null
-      },
-      mcc: null,
-      mnc: null,
-      lac: null,
-      cid: null,
-      odometer: null,
-      hourmeter: null
+      alarm: getAlarm(command[1], null)
     });
   }
   // Common Alarms
@@ -954,26 +916,7 @@ const getGMT100 = raw => {
   //Heartbeat. It must response an ACK command
   else if (command[1] === 'GTHBD'){
     _.extend(data, {
-      alarm: getAlarm(command[1], null),
-      loc: null,
-      speed: null,
-      gpsStatus: null,
-      hdop: null,
-      status: null,
-      azimuth: null,
-      altitude: null,
-      datetime: null,
-      voltage: {
-        battery: null,
-        inputCharge: null,
-        ada: null,
-        adb: null
-      },
-      mcc: null,
-      mnc: null,
-      lac: null,
-      cid: null,
-      odometer: null
+      alarm: getAlarm(command[1], null)
     });
   }
   // Common Alarms
