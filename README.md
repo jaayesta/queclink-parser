@@ -53,7 +53,8 @@ const data = queclink.parse(raw);
      inputCharge: 12.372,
      ada: 2.788,
      adb: 0.705,
-     adc: 0.164 },
+     adc: 0.164 
+   },
   mcc: 730,
   mnc: 2,
   lac: 29712,

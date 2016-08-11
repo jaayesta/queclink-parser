@@ -1371,7 +1371,7 @@ const parseCommand = data => {
   }
 
   else if (data.instruction === 'clear_mem') {
-    command = `AT+GTRTO=${password},4,FRI,,,,,${serial}$`;
+    command = `AT+GTRTO=${password},4,BUF,,,,,${serial}$`;
   }
 
   else if (/^set_speed_(on|off)(E)?$/.test(data.instruction)) {
@@ -1388,7 +1388,7 @@ const parseCommand = data => {
   }
 
   else if (/^reboot$/.test(data.instruction)) {
-    return `AT+GTRTO=${password},3,,,,,,${serial}$`;
+    command = `AT+GTRTO=${password},3,,,,,,${serial}$`;
   }
   return command;
 };
