@@ -234,6 +234,10 @@ const getAlarm = (command, report) => {
   else if(command === 'GTGSS'){
     return {type: 'Gps_Status', status: report === '1'};
   }
+  else if(command === 'GTCAN'){
+    const reportType = parseInt(report,10);
+    return {type: 'CAN_Bus', report: reportType};
+  }
   else{
     return {type: command};
   }
@@ -997,6 +1001,58 @@ const getGV200 = raw => {
       cid: parsedData[16] != '' ? parseInt(parsedData[16],16) : null,
       odometer: null,
       hourmeter: null
+    });
+  }
+  else if(command[1] === 'GTCAN'){
+    extend(data, {
+      alarm: getAlarm(command[1], command[4]),
+      loc: { type: 'Point', coordinates: [ parseFloat(parsedData[35]), parseFloat(parsedData[36])]},
+      speed: parsedData[32] != '' ? parseFloat(parsedData[32]) : null,
+      gpsStatus: checkGps(parseFloat(parsedData[35]), parseFloat(parsedData[36])),
+      hdop: parsedData[31] != '' ? parseFloat(parsedData[31]) : null,
+      status: null,
+      azimuth: parsedData[33] != '' ? parseFloat(parsedData[33]) : null,
+      altitude: parsedData[34] != '' ? parseFloat(parsedData[34]) : null,
+      datetime: parsedData[37] != '' ? moment(`${parsedData[37]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      voltage: {
+        battery: null,
+        inputCharge: null,
+        ada: null,
+        adb: null,
+        adc: null
+      },
+      mcc: parsedData[38] != '' ? parseInt(parsedData[38],10) : null,
+      mnc: parsedData[39] != '' ? parseInt(parsedData[39],10) : null,
+      lac: parsedData[40] != '' ? parseInt(parsedData[40],16) : null,
+      cid: parsedData[41] != '' ? parseInt(parsedData[41],16) : null,
+      odometer: null,
+      hourmeter: null,
+      can: {
+        comunicationOk: parsedData[5] === '1',
+        vin: parsedData[7] != '' ? parsedData[7] : null,
+        ignitionKey: parsedData[8] != '' ? parseInt(parsedData[8],10) : null,
+        distance: parsedData[9],
+        fuelUsed: parsedData[10], //float
+        rpm: parsedData[11], //int
+        speed: parsedData[12] != '' ? parseFloat(parsedData[12]) : null,
+        coolantTemp: parsedData[13] != '' ? parseInt(parsedData[13],10) : null,
+        fuelConsumption: parsedData[14],
+        fuelLevel: parsedData[15],
+        range: parsedData[16],
+        acceleratorPressure: parsedData[17],
+        engineHours: parsedData[18],
+        drivingTime: parsedData[19],
+        idleTime: parsedData[20],
+        idleFuelUsed: parsedData[21],
+        axleWight: parsedData[22],
+        tachograph: parsedData[23],
+        detailedInfo: parsedData[24],
+        lights: parsedData[25],
+        doors: parsedData[26],
+        overSpeedTime: parsedData[27],
+        overSpeedEngineTime: parsedData[28]
+      }
+
     });
   }
   else{
