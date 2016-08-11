@@ -190,6 +190,9 @@ const getAlarm = (command, report) => {
   else if(command === 'GTJDS'){
     return {type: 'Jamming', status: report === '2'};
   }
+  else if(command === 'GTGPJ'){
+    return {type: 'Jamming', status: report === '3', extra: 'GPS_Jamming'};
+  }
   else if(command === 'GTEPS'){
     return {type: 'External_Low_battery'};
   }
@@ -961,6 +964,32 @@ const getGV200 = raw => {
       hourmeter: null
     });
   }
+  else if(command[1] === 'GTGPJ'){
+    _.extend(data,{
+      alarm: getAlarm(command[1], command[5]),
+      loc: { type: 'Point', coordinates: [ parseFloat(parsedData[10]), parseFloat(parsedData[11])]},
+      speed: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
+      gpsStatus: checkGps(parseFloat(parsedData[10]), parseFloat(parsedData[11])),
+      hdop: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
+      status: null,
+      azimuth: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
+      altitude: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
+      datetime: parsedData[12] != '' ? moment(`${parsedData[12]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      voltage: {
+        battery: null,
+        inputCharge: null,
+        ada: null,
+        adb: null,
+        adc: null
+      },
+      mcc: parsedData[13] != '' ? parseInt(parsedData[13],10) : null,
+      mnc: parsedData[14] != '' ? parseInt(parsedData[14],10) : null,
+      lac: parsedData[15] != '' ? parseInt(parsedData[15],16) : null,
+      cid: parsedData[16] != '' ? parseInt(parsedData[16],16) : null,
+      odometer: null,
+      hourmeter: null
+    });
+  }
   else{
     extend(data, {
       alarm: getAlarm(command[1], null)
@@ -1396,7 +1425,6 @@ const parseCommand = data => {
 
 module.exports = {
   parse: parse,
-  getAckCommand: getAckCommand,
   isQueclink: isQueclink,
   isHeartBeat: isHeartBeat,
   getAckHeartBeat: getAckHeartBeat,
