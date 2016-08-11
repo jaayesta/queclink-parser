@@ -49,8 +49,8 @@ const isHeartBeat = raw => {
 /*
   Gets the ACK command to Hearbeat message
 */
-const getAckHeartBeat = count => {
-  return `+SACK:GTHBD,,${count}$`;
+const getAckHeartBeat = (protocolVersion, count) => {
+  return `+SACK:GTHBD,${protocolVersion},${count}$`;
 };
 
 /*
@@ -153,11 +153,24 @@ const getAlarm = (command, report) => {
   else if(command === 'GTPFA'){
     return {type: 'Power', status: false};
   }
+  //Change for connected to power supply
   else if(command === 'GTMPN'){
     return {type: 'Charge', status: true};
   }
   else if(command === 'GTMPF'){
     return {type: 'Charge', status: false};
+  }
+  // else if(command === 'GTMPN'){
+  //   return {type: 'Power_Supply', status: true};
+  // }
+  // else if(command === 'GTMPF'){
+  //   return {type: 'Power_Supply', status: false};
+  // }
+  else if(command === 'GTBTC'){
+    return {type: 'Charging', status: true};
+  }
+  else if(command === 'GTSTC'){
+    return {type: 'Charging', status: false};
   }
   else if(command === 'GTBPL'){
     return {type: 'Low_Battery'};
@@ -196,6 +209,9 @@ const getAlarm = (command, report) => {
   }
   else if(command === 'GTHBD'){
     return {type: 'Heartbeat'};
+  }
+  else if(command === 'GTSTT'){
+    return {type: 'Motion_State_Changed'};
   }
   else{
     return {type: command};
@@ -507,6 +523,32 @@ const getGV300 = raw => {
       hourmeter: null
     });
   }
+  // Motion State Changed
+  else if(command[1] === 'GTSTT'){
+    _.extend(data, {
+      alarm: getAlarm(command[1], null),
+      loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
+      speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
+      gpsStatus: checkGps(parseFloat(parsedData[9]), parseFloat(parsedData[10])),
+      hdop: parsedData[5] != '' ? parseFloat(parsedData[5]) : null,
+      status: null,
+      azimuth: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
+      altitude: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
+      datetime: parsedData[11] != '' ? moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      voltage: {
+        battery: null,
+        inputCharge: null,
+        ada: null,
+        adb: null
+      },
+      mcc: parsedData[12] != '' ? parseInt(parsedData[12],10) : null,
+      mnc: parsedData[13] != '' ? parseInt(parsedData[13],10) : null,
+      lac: parsedData[14] != '' ? parseInt(parsedData[14],16) : null,
+      cid: parsedData[15] != '' ? parseInt(parsedData[15],16) : null,
+      odometer: null,
+      hourmeter: null
+    });
+  }
   else{
     _.extend(data, {
       alarm: getAlarm(command[1], null)
@@ -697,7 +739,7 @@ const getGV200 = raw => {
       hourmeter: null
     });
   }
-  else if(command[1] === 'GTMPN' || command[1] === 'GTMPF' || command[1] === 'GTCRA' || command[1] === 'GTJDR') {
+  else if(command[1] === 'GTMPN' || command[1] === 'GTMPF' || command === 'GTBTC' || command[1] === 'GTCRA' || command[1] === 'GTJDR') {
     _.extend(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[8]), parseFloat(parsedData[9])]},
@@ -844,6 +886,32 @@ const getGV200 = raw => {
       lac: parsedData[15] != '' ? parseInt(parsedData[15],16) : null,
       cid: parsedData[16] != '' ? parseInt(parsedData[16],16) : null,
       odometer: parsedData[18] != '' ? parseFloat(parsedData[18]) : null,
+      hourmeter: null
+    });
+  }
+  // Motion State Changed
+  else if(command[1] === 'GTSTT'){
+    _.extend(data, {
+      alarm: getAlarm(command[1], null),
+      loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
+      speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
+      gpsStatus: checkGps(parseFloat(parsedData[9]), parseFloat(parsedData[10])),
+      hdop: parsedData[5] != '' ? parseFloat(parsedData[5]) : null,
+      status: null,
+      azimuth: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
+      altitude: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
+      datetime: parsedData[11] != '' ? moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      voltage: {
+        battery: null,
+        inputCharge: null,
+        ada: null,
+        adb: null
+      },
+      mcc: parsedData[12] != '' ? parseInt(parsedData[12],10) : null,
+      mnc: parsedData[13] != '' ? parseInt(parsedData[13],10) : null,
+      lac: parsedData[14] != '' ? parseInt(parsedData[14],16) : null,
+      cid: parsedData[15] != '' ? parseInt(parsedData[15],16) : null,
+      odometer: null,
       hourmeter: null
     });
   }
@@ -1170,6 +1238,32 @@ const getGMT100 = raw => {
       lac: parsedData[15] != '' ? parseInt(parsedData[15],16) : null,
       cid: parsedData[16] != '' ? parseInt(parsedData[16],16) : null,
       odometer: parsedData[18] != '' ? parseFloat(parsedData[18]) : null
+    });
+  }
+  // Motion State Changed
+  else if(command[1] === 'GTSTT'){
+    _.extend(data, {
+      alarm: getAlarm(command[1], null),
+      loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
+      speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
+      gpsStatus: checkGps(parseFloat(parsedData[9]), parseFloat(parsedData[10])),
+      hdop: parsedData[5] != '' ? parseFloat(parsedData[5]) : null,
+      status: null,
+      azimuth: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
+      altitude: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
+      datetime: parsedData[11] != '' ? moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      voltage: {
+        battery: null,
+        inputCharge: null,
+        ada: null,
+        adb: null
+      },
+      mcc: parsedData[12] != '' ? parseInt(parsedData[12],10) : null,
+      mnc: parsedData[13] != '' ? parseInt(parsedData[13],10) : null,
+      lac: parsedData[14] != '' ? parseInt(parsedData[14],16) : null,
+      cid: parsedData[15] != '' ? parseInt(parsedData[15],16) : null,
+      odometer: null,
+      hourmeter: null
     });
   }
   else{
