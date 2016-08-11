@@ -627,7 +627,7 @@ const getGV200 = raw => {
       hdop: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       status: { //parsedData[24]
         raw: parsedData[24]+parsedData[25],
-        sos: false,
+        sos: utils.hex2bin(parsedData[24][1])[1] === '1',
         input: {
           '4': utils.hex2bin(parsedData[24][1])[3] === '1',
           '3': utils.hex2bin(parsedData[24][1])[2] === '1',
@@ -646,11 +646,11 @@ const getGV200 = raw => {
       altitude: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
       datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
       voltage: {
-        battery: parsedData[23] != '' ? parseFloat(parsedData[23]): null,//percentage
-        inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4]): null,
-        ada: parsedData[21] != '' ? parseFloat(parsedData[21]): null,
-        adb: parsedData[22] != '' ? parseFloat(parsedData[22]): null,
-        adc: parsedData[23] != '' ? parseFloat(parsedData[23]): null
+        battery: null,//percentage
+        inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4])/1000 : null,
+        ada: parsedData[21] != '' ? parseFloat(parsedData[21])/1000 : null,
+        adb: parsedData[22] != '' ? parseFloat(parsedData[22])/1000 : null,
+        adc: parsedData[23] != '' ? parseFloat(parsedData[23])/1000 : null
       },
       mcc: parsedData[14] != '' ? parseInt(parsedData[14],10) : null,
       mnc: parsedData[15] != '' ? parseInt(parsedData[15],10) : null,
@@ -685,7 +685,8 @@ const getGV200 = raw => {
         battery: null,
         inputCharge: null,
         ada: null,
-        adb: null
+        adb: null,
+        adc: null
       },
       mcc: parsedData[14] != '' ? parseInt(parsedData[14],10) : null,
       mnc: parsedData[15] != '' ? parseInt(parsedData[15],10) : null,
@@ -693,32 +694,6 @@ const getGV200 = raw => {
       cid: parsedData[17] != '' ? parseInt(parsedData[17],16) : null,
       odometer: parsedData[19] != '' ? parseFloat(parsedData[19]) : null,
       hourmeter: null
-    });
-  }
-  //External low battery
-  else if (command[1] === 'GTEPS') {
-    _.extend(data, {
-      alarm: getAlarm(command[1], parsedData[5]),
-      loc: { type: 'Point', coordinates: [ parseFloat(parsedData[11]), parseFloat(parsedData[12]) ] },
-      speed: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
-      gpsStatus: checkGps(parseFloat(parsedData[11]), parseFloat(parsedData[12])),
-      hdop: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
-      status: null,
-      azimuth: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
-      altitude: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
-      datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
-      voltage: {
-        battery: parsedData[23] != '' ? parseFloat(parsedData[23]): null,//percentage
-        inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4]): null,
-        ada: parsedData[21] != '' ? parseFloat(parsedData[21]): null,
-        adb: parsedData[22] != '' ? parseFloat(parsedData[22]): null
-      },
-      mcc: parsedData[14] != '' ? parseInt(parsedData[14],10) : null,
-      mnc: parsedData[15] != '' ? parseInt(parsedData[15],10) : null,
-      lac: parsedData[16] != '' ? parseInt(parsedData[16],16) : null,
-      cid: parsedData[17] != '' ? parseInt(parsedData[17],16) : null,
-      odometer: parsedData[19] != '' ? parseFloat(parsedData[19]) : null,
-      hourmeter: parsedData[20]
     });
   }
   //Low voltage for analog input
@@ -734,10 +709,11 @@ const getGV200 = raw => {
       altitude: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
       datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
       voltage: {
-        battery: parsedData[23] != '' ? parseFloat(parsedData[23]): null,//percentage
+        battery: null,//percentage
         inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4]): null,
-        ada: parsedData[21] != '' ? parseFloat(parsedData[21]): null,
-        adb: parsedData[22] != '' ? parseFloat(parsedData[22]): null
+        ada: parsedData[21] != '' ? parseFloat(parsedData[21])/1000 : null,
+        adb: parsedData[22] != '' ? parseFloat(parsedData[22])/1000 : null,
+        adc: parsedData[23] != '' ? parseFloat(parsedData[22])/1000 : null
       },
       mcc: parsedData[14] != '' ? parseInt(parsedData[14],10) : null,
       mnc: parsedData[15] != '' ? parseInt(parsedData[15],10) : null,
@@ -764,6 +740,7 @@ const getGV200 = raw => {
         inputCharge: null,
         ada: null,
         adb: null,
+        adc: null
       },
       mcc: null,
       mnc: null,
@@ -788,7 +765,8 @@ const getGV200 = raw => {
         battery: null,
         inputCharge: null,
         ada: null,
-        adb: null
+        adb: null,
+        adc: null
       },
       mcc: parsedData[11] != '' ? parseInt(parsedData[11],10) : null,
       mnc: parsedData[12] != '' ? parseInt(parsedData[12],10) : null,
@@ -813,7 +791,8 @@ const getGV200 = raw => {
         battery: null,
         inputCharge: null,
         ada: null,
-        adb: null
+        adb: null,
+        adc: null
       },
       mcc: parsedData[12] != '' ? parseInt(parsedData[12],10) : null,
       mnc: parsedData[13] != '' ? parseInt(parsedData[13],10) : null,
@@ -838,7 +817,8 @@ const getGV200 = raw => {
         battery: parsedData[4] != '' ? parseFloat(parsedData[4]): null,
         inputCharge: null,
         ada: null,
-        adb: null
+        adb: null,
+        adc: null
       },
       mcc: parsedData[12] != '' ? parseInt(parsedData[12],10) : null,
       mnc: parsedData[13] != '' ? parseInt(parsedData[13],10) : null,
@@ -863,7 +843,8 @@ const getGV200 = raw => {
         battery: null,
         inputCharge: null,
         ada: null,
-        adb: null
+        adb: null,
+        adc: null
       },
       mcc: parsedData[12] != '' ? parseInt(parsedData[12],10) : null,
       mnc: parsedData[13] != '' ? parseInt(parsedData[13],10) : null,
@@ -888,7 +869,8 @@ const getGV200 = raw => {
         battery: null,
         inputCharge: null,
         ada: null,
-        adb: null
+        adb: null,
+        adc: null
       },
       mcc: parsedData[13] != '' ? parseInt(parsedData[13],10) : null,
       mnc: parsedData[14] != '' ? parseInt(parsedData[14],10) : null,
@@ -913,7 +895,8 @@ const getGV200 = raw => {
         battery: null,
         inputCharge: null,
         ada: null,
-        adb: null
+        adb: null,
+        adc: null
       },
       mcc: parsedData[13] != '' ? parseInt(parsedData[13],10) : null,
       mnc: parsedData[14] != '' ? parseInt(parsedData[14],10) : null,
@@ -939,7 +922,8 @@ const getGV200 = raw => {
         battery: null,
         inputCharge: null,
         ada: null,
-        adb: null
+        adb: null,
+        adc: null
       },
       mcc: parsedData[12] != '' ? parseInt(parsedData[12],10) : null,
       mnc: parsedData[13] != '' ? parseInt(parsedData[13],10) : null,
@@ -965,7 +949,8 @@ const getGV200 = raw => {
         battery: null,
         inputCharge: null,
         ada: null,
-        adb: null
+        adb: null,
+        adc: null
       },
       mcc: parsedData[15] != '' ? parseInt(parsedData[15],10) : null,
       mnc: parsedData[16] != '' ? parseInt(parsedData[16],10) : null,
