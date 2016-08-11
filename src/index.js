@@ -142,10 +142,12 @@ const getAlarm = (command, report) => {
     return {type: 'DI', number: 1, status: reportType === 0};
   }
   else if (command === 'GTIGN'){
-    return {type: 'DI', number: 1, status: true, duration: report};
+    const duration = report != '' ? parseInt(report,10): null;
+    return {type: 'DI', number: 1, status: true, duration: duration};
   }
   else if (command === 'GTIGF'){
-    return {type: 'DI', number: 1, status: false, duration: report};
+    const duration = report != '' ? parseInt(report,10): null;
+    return {type: 'DI', number: 1, status: false, duration: duration};
   }
   else if(command === 'GTPNA'){
     return {type: 'Power', status: true};
@@ -212,6 +214,12 @@ const getAlarm = (command, report) => {
   }
   else if(command === 'GTSTT'){
     return {type: 'Motion_State_Changed'};
+  }
+  else if(command === 'GTPDP'){
+    return {type: 'GSP_Connection_Established'};
+  }
+  else if(command === 'GTGSS'){
+    return {type: 'Gps_Status', status: report === '1'};
   }
   else{
     return {type: command};
@@ -545,6 +553,32 @@ const getGV300 = raw => {
       mnc: parsedData[13] != '' ? parseInt(parsedData[13],10) : null,
       lac: parsedData[14] != '' ? parseInt(parsedData[14],16) : null,
       cid: parsedData[15] != '' ? parseInt(parsedData[15],16) : null,
+      odometer: null,
+      hourmeter: null
+    });
+  }
+  //GPS Status
+  else if(command[1] === 'GTGSS'){
+    _.extend(data, {
+      alarm: getAlarm(command[1], command[4]),
+      loc: { type: 'Point', coordinates: [ parseFloat(parsedData[12]), parseFloat(parsedData[13])]},
+      speed: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
+      gpsStatus: checkGps(parseFloat(parsedData[12]), parseFloat(parsedData[13])),
+      hdop: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
+      status: null,
+      azimuth: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
+      altitude: parsedData[11] != '' ? parseFloat(parsedData[11]) : null,
+      datetime: parsedData[14] != '' ? moment(`${parsedData[14]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      voltage: {
+        battery: null,
+        inputCharge: null,
+        ada: null,
+        adb: null
+      },
+      mcc: parsedData[15] != '' ? parseInt(parsedData[15],10) : null,
+      mnc: parsedData[16] != '' ? parseInt(parsedData[16],10) : null,
+      lac: parsedData[17] != '' ? parseInt(parsedData[17],16) : null,
+      cid: parsedData[18] != '' ? parseInt(parsedData[18],16) : null,
       odometer: null,
       hourmeter: null
     });
@@ -911,6 +945,32 @@ const getGV200 = raw => {
       mnc: parsedData[13] != '' ? parseInt(parsedData[13],10) : null,
       lac: parsedData[14] != '' ? parseInt(parsedData[14],16) : null,
       cid: parsedData[15] != '' ? parseInt(parsedData[15],16) : null,
+      odometer: null,
+      hourmeter: null
+    });
+  }
+  //GPS Status
+  else if(command[1] === 'GTGSS'){
+    _.extend(data, {
+      alarm: getAlarm(command[1], command[4]),
+      loc: { type: 'Point', coordinates: [ parseFloat(parsedData[12]), parseFloat(parsedData[13])]},
+      speed: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
+      gpsStatus: checkGps(parseFloat(parsedData[12]), parseFloat(parsedData[13])),
+      hdop: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
+      status: null,
+      azimuth: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
+      altitude: parsedData[11] != '' ? parseFloat(parsedData[11]) : null,
+      datetime: parsedData[14] != '' ? moment(`${parsedData[14]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      voltage: {
+        battery: null,
+        inputCharge: null,
+        ada: null,
+        adb: null
+      },
+      mcc: parsedData[15] != '' ? parseInt(parsedData[15],10) : null,
+      mnc: parsedData[16] != '' ? parseInt(parsedData[16],10) : null,
+      lac: parsedData[17] != '' ? parseInt(parsedData[17],16) : null,
+      cid: parsedData[18] != '' ? parseInt(parsedData[18],16) : null,
       odometer: null,
       hourmeter: null
     });
