@@ -4,7 +4,11 @@
   "description": "Parse raw data from Queclink devices",
   "main": "src",
   "scripts": {
-    "lint": "eslint ."
+    "pretest": "eslint .",
+    "test": "istanbul cover _mocha",
+    "release:major": "changelog -M && git add CHANGELOG.md && git commit -m 'updated CHANGELOG.md' && npm version major && git push origin && git push origin --tags && npm publish",
+    "release:minor": "changelog -m && git add CHANGELOG.md && git commit -m 'updated CHANGELOG.md' && npm version minor && git push origin && git push origin --tags && npm publish",
+    "release:patch": "changelog -p && git add CHANGELOG.md && git commit -m 'updated CHANGELOG.md' && npm version patch && git push origin && git push origin --tags && npm publish"
   },
   "engines": {
     "node": ">=4"
@@ -27,16 +31,21 @@
   },
   "homepage": "https://github.com/jaayesta/queclink-parser#readme",
   "dependencies": {
-    "lodash": "^4.14.0",
-    "moment": "^2.13.0"
+    "lodash": "^4.14.2",
+    "moment": "^2.14.1"
   },
   "devDependencies": {
-    "eslint": "3.1.1"
+    "chai": "^3.5.0",
+    "eslint": "3.2.2",
+    "generate-changelog": "^1.0.2",
+    "istanbul": "^0.4.4",
+    "mocha": "^3.0.2"
   },
   "eslintConfig": {
     "env": {
       "es6": true,
-      "node": true
+      "node": true,
+      "mocha": true
     },
     "extends": "eslint:recommended",
     "rules": {
@@ -61,5 +70,6 @@
         "always"
       ]
     }
-  }
+  },
+  "tonicExampleFilename": "example.js"
 }

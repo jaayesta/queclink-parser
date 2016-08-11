@@ -1,7 +1,7 @@
 'use strict';
 
 const moment = require('moment');
-const _ = require('lodash');
+const extend = require('lodash/extend');
 const utils = require('./utils.js');
 
 
@@ -258,7 +258,7 @@ const getGV300 = raw => {
 
   // GPS
   if (command[1] === 'GTFRI') {
-    _.extend(data, {
+    extend(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[11]), parseFloat(parsedData[12]) ] },
       speed: parsedData[8] != '' ? parseFloat(parsedData[8]): null,
@@ -300,7 +300,7 @@ const getGV300 = raw => {
   }
   //Heartbeat. It must response an ACK command
   else if (command[1] === 'GTHBD'){
-    _.extend(data, {
+    extend(data, {
       alarm: getAlarm(command[1], null)
     });
   }
@@ -309,7 +309,7 @@ const getGV300 = raw => {
       command[1] === 'GTSPD' || command[1] === 'GTSOS' || command[1] === 'GTRTL' ||
       command[1] === 'GTDOG' || command[1] === 'GTIGL' || command[1] === 'GTHBM') {
 
-    _.extend(data, {
+    extend(data, {
       alarm: getAlarm(command[1], parsedData[5]),
       loc: { type: 'Point', coordinates: [parseFloat(parsedData[11]), parseFloat(parsedData[12])] },
       speed: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
@@ -335,7 +335,7 @@ const getGV300 = raw => {
   }
   //External low battery and Low voltage for analog input
   else if (command[1] === 'GTEPS' || command[1] === 'GTAIS') {
-    _.extend(data, {
+    extend(data, {
       alarm: getAlarm(command[1], parsedData[5]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[11]), parseFloat(parsedData[12]) ] },
       speed: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
@@ -361,7 +361,7 @@ const getGV300 = raw => {
   }
   //Event report (It uses the last GPS data and MCC info)
   else if(command[1] === 'GTPNA' || command[1] === 'GTPFA' || command[1] === 'GTPDP') {
-    _.extend(data, {
+    extend(data, {
       alarm: getAlarm(command[1], null),
       loc: null,
       speed: null,
@@ -386,7 +386,7 @@ const getGV300 = raw => {
     });
   }
   else if(command[1] === 'GTMPN' || command[1] === 'GTMPF' || command[1] === 'GTCRA' || command[1] === 'GTJDR') {
-    _.extend(data, {
+    extend(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[8]), parseFloat(parsedData[9])]},
       speed: parsedData[5] != '' ? parseFloat(parsedData[5]) : null,
@@ -411,7 +411,7 @@ const getGV300 = raw => {
     });
   }
   else if (command[1] === 'GTJDS' || command[1] === 'GTANT' || command[1] === 'GTRMD') {
-    _.extend(data, {
+    extend(data, {
       alarm: getAlarm(command[1], parsedData[4]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
       speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
@@ -436,7 +436,7 @@ const getGV300 = raw => {
     });
   }
   else if (command[1] === 'GTBPL') {
-    _.extend(data, {
+    extend(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
       speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
@@ -461,7 +461,7 @@ const getGV300 = raw => {
     });
   }
   else if (command[1] === 'GTIGN' || command[1] === 'GTIGF') {
-    _.extend(data, {
+    extend(data, {
       alarm: getAlarm(command[1], parsedData[4]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
       speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
@@ -486,7 +486,7 @@ const getGV300 = raw => {
     });
   }
   else if (command[1] === 'GTIDN' || command[1] === 'GTIDF') {
-    _.extend(data, {
+    extend(data, {
       alarm: getAlarm(command[1], parsedData[5]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[10]), parseFloat(parsedData[11])]},
       speed: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
@@ -511,7 +511,7 @@ const getGV300 = raw => {
     });
   }
   else if (command[1] === 'GTSTR' || command[1] === 'GTSTP' || command[1] === 'GTLSP') {
-    _.extend(data, {
+    extend(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[10]), parseFloat(parsedData[11])]},
       speed: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
@@ -537,7 +537,7 @@ const getGV300 = raw => {
   }
   // Motion State Changed
   else if(command[1] === 'GTSTT'){
-    _.extend(data, {
+    extend(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
       speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
@@ -563,7 +563,7 @@ const getGV300 = raw => {
   }
   //GPS Status
   else if(command[1] === 'GTGSS'){
-    _.extend(data, {
+    extend(data, {
       alarm: getAlarm(command[1], command[4]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[12]), parseFloat(parsedData[13])]},
       speed: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
@@ -588,7 +588,7 @@ const getGV300 = raw => {
     });
   }
   else{
-    _.extend(data, {
+    extend(data, {
       alarm: getAlarm(command[1], null)
     });
   }
@@ -623,7 +623,7 @@ const getGV200 = raw => {
 
   // GPS
   if (command[1] === 'GTFRI') {
-    _.extend(data, {
+    extend(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[11]), parseFloat(parsedData[12]) ] },
       speed: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
@@ -666,7 +666,7 @@ const getGV200 = raw => {
   }
   //Heartbeat. It must response an ACK command
   else if (command[1] === 'GTHBD'){
-    _.extend(data, {
+    extend(data, {
       alarm: getAlarm(command[1], null)
     });
   }
@@ -675,7 +675,7 @@ const getGV200 = raw => {
       command[1] === 'GTSPD' || command[1] === 'GTSOS' || command[1] === 'GTRTL' ||
       command[1] === 'GTDOG' || command[1] === 'GTIGL' || command[1] === 'GTHBM') {
 
-    _.extend(data, {
+    extend(data, {
       alarm: getAlarm(command[1], parsedData[5]),
       loc: { type: 'Point', coordinates: [parseFloat(parsedData[11]), parseFloat(parsedData[12])] },
       speed: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
@@ -702,7 +702,7 @@ const getGV200 = raw => {
   }
   //Low voltage for analog input
   else if(command[1] === 'GTAIS'){
-    _.extend(data, {
+    extend(data, {
       alarm: getAlarm(command[1], parsedData[5]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[11]), parseFloat(parsedData[12]) ] },
       speed: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
@@ -729,7 +729,7 @@ const getGV200 = raw => {
   }
   //Event report (It uses the last GPS data and MCC info)
   else if(command[1] === 'GTPNA' || command[1] === 'GTPFA' || command[1] === 'GTPDP') {
-    _.extend(data, {
+    extend(data, {
       alarm: getAlarm(command[1], null),
       loc: null,
       speed: null,
@@ -755,7 +755,7 @@ const getGV200 = raw => {
     });
   }
   else if(command[1] === 'GTMPN' || command[1] === 'GTMPF' || command === 'GTBTC' || command[1] === 'GTCRA' || command[1] === 'GTJDR') {
-    _.extend(data, {
+    extend(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[8]), parseFloat(parsedData[9])]},
       speed: parsedData[5] != '' ? parseFloat(parsedData[5]) : null,
@@ -781,7 +781,7 @@ const getGV200 = raw => {
     });
   }
   else if (command[1] === 'GTJDS' || command[1] === 'GTANT' || command[1] === 'GTRMD') {
-    _.extend(data, {
+    extend(data, {
       alarm: getAlarm(command[1], parsedData[4]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
       speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
@@ -807,7 +807,7 @@ const getGV200 = raw => {
     });
   }
   else if (command[1] === 'GTBPL') {
-    _.extend(data, {
+    extend(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
       speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
@@ -833,7 +833,7 @@ const getGV200 = raw => {
     });
   }
   else if (command[1] === 'GTIGN' || command[1] === 'GTIGF') {
-    _.extend(data, {
+    extend(data, {
       alarm: getAlarm(command[1], parsedData[4]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
       speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
@@ -859,7 +859,7 @@ const getGV200 = raw => {
     });
   }
   else if (command[1] === 'GTIDN' || command[1] === 'GTIDF') {
-    _.extend(data, {
+    extend(data, {
       alarm: getAlarm(command[1], parsedData[5]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[10]), parseFloat(parsedData[11])]},
       speed: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
@@ -885,7 +885,7 @@ const getGV200 = raw => {
     });
   }
   else if (command[1] === 'GTSTR' || command[1] === 'GTSTP' || command[1] === 'GTLSP') {
-    _.extend(data, {
+    extend(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[10]), parseFloat(parsedData[11])]},
       speed: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
@@ -912,7 +912,7 @@ const getGV200 = raw => {
   }
   // Motion State Changed
   else if(command[1] === 'GTSTT'){
-    _.extend(data, {
+    extend(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
       speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
@@ -939,7 +939,7 @@ const getGV200 = raw => {
   }
   //GPS Status
   else if(command[1] === 'GTGSS'){
-    _.extend(data, {
+    extend(data, {
       alarm: getAlarm(command[1], command[4]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[12]), parseFloat(parsedData[13])]},
       speed: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
@@ -991,7 +991,7 @@ const getGV200 = raw => {
     });
   }
   else{
-    _.extend(data, {
+    extend(data, {
       alarm: getAlarm(command[1], null)
     });
   }
@@ -1027,7 +1027,7 @@ const getGMT100 = raw => {
 
   // GPS
   if (command[1] === 'GTFRI') {
-    _.extend(data, {
+    extend(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[11]), parseFloat(parsedData[12]) ] },
       speed: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
@@ -1064,7 +1064,7 @@ const getGMT100 = raw => {
   }
   //Heartbeat. It must response an ACK command
   else if (command[1] === 'GTHBD'){
-    _.extend(data, {
+    extend(data, {
       alarm: getAlarm(command[1], null)
     });
   }
@@ -1073,7 +1073,7 @@ const getGMT100 = raw => {
       command[1] === 'GTSPD' || command[1] === 'GTSOS' || command[1] === 'GTRTL' ||
       command[1] === 'GTDOG' || command[1] === 'GTIGL' || command[1] === 'GTHBM') {
 
-    _.extend(data, {
+    extend(data, {
       alarm: getAlarm(command[1], parsedData[5]),
       loc: { type: 'Point', coordinates: [parseFloat(parsedData[11]), parseFloat(parsedData[12])] },
       speed: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
@@ -1098,7 +1098,7 @@ const getGMT100 = raw => {
   }
   //External low battery
   else if (command[1] === 'GTEPS') {
-    _.extend(data, {
+    extend(data, {
       alarm: getAlarm(command[1], parsedData[5]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[11]), parseFloat(parsedData[12]) ] },
       speed: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
@@ -1123,7 +1123,7 @@ const getGMT100 = raw => {
   }
   //Low voltage from analog input
   else if (command[1] === 'GTAIS'){
-    _.extend(data, {
+    extend(data, {
       alarm: getAlarm(command[1], parsedData[5]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[11]), parseFloat(parsedData[12]) ] },
       speed: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
@@ -1148,7 +1148,7 @@ const getGMT100 = raw => {
   }
   //Event report (It uses the last GPS data and MCC info)
   else if(command[1] === 'GTPNA' || command[1] === 'GTPFA' || command[1] === 'GTPDP') {
-    _.extend(data, {
+    extend(data, {
       alarm: getAlarm(command[1], null),
       loc: null,
       speed: null,
@@ -1172,7 +1172,7 @@ const getGMT100 = raw => {
     });
   }
   else if(command[1] === 'GTMPN' || command[1] === 'GTMPF' || command[1] === 'GTCRA' || command[1] === 'GTJDR') {
-    _.extend(data, {
+    extend(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[8]), parseFloat(parsedData[9])]},
       speed: parsedData[5] != '' ? parseFloat(parsedData[5]) : null,
@@ -1196,7 +1196,7 @@ const getGMT100 = raw => {
     });
   }
   else if (command[1] === 'GTJDS' || command[1] === 'GTANT' || command[1] === 'GTRMD') {
-    _.extend(data, {
+    extend(data, {
       alarm: getAlarm(command[1], parsedData[4]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
       speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
@@ -1220,7 +1220,7 @@ const getGMT100 = raw => {
     });
   }
   else if (command[1] === 'GTBPL') {
-    _.extend(data, {
+    extend(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
       speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
@@ -1244,7 +1244,7 @@ const getGMT100 = raw => {
     });
   }
   else if (command[1] === 'GTIGN' || command[1] === 'GTIGF') {
-    _.extend(data, {
+    extend(data, {
       alarm: getAlarm(command[1], parsedData[4]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
       speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
@@ -1268,7 +1268,7 @@ const getGMT100 = raw => {
     });
   }
   else if (command[1] === 'GTIDN' || command[1] === 'GTIDF') {
-    _.extend(data, {
+    extend(data, {
       alarm: getAlarm(command[1], parsedData[5]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[10]), parseFloat(parsedData[11])]},
       speed: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
@@ -1292,7 +1292,7 @@ const getGMT100 = raw => {
     });
   }
   else if (command[1] === 'GTSTR' || command[1] === 'GTSTP' || command[1] === 'GTLSP') {
-    _.extend(data, {
+    extend(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[10]), parseFloat(parsedData[11])]},
       speed: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
@@ -1317,7 +1317,7 @@ const getGMT100 = raw => {
   }
   // Motion State Changed
   else if(command[1] === 'GTSTT'){
-    _.extend(data, {
+    extend(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
       speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
@@ -1342,7 +1342,7 @@ const getGMT100 = raw => {
     });
   }
   else{
-    _.extend(data, {
+    extend(data, {
       alarm: getAlarm(command[1], null)
     });
   }
@@ -1359,16 +1359,16 @@ const getAckCommand = raw => {
   const command = parsedData[0].split(':');
 
   let data = {device: 'Queclink-COMMAND-OK', type: 'ok'};
-  if (command === 'GTSPD'){
+  if (command[1] === 'GTSPD'){
     data.command = 'SETOVERSPEEDALARM';
   }
-  else if(command === 'GTOUT'){
+  else if(command[1] === 'GTOUT'){
     data.command = 'SETIOSWITCH';
   }
-  // else if (command === 'GTRTO') {
+  // else if (command[1] === 'GTRTO') {
   //   data.command = 'RBOOT';
   // }
-  else if (command === 'GTRTO') {
+  else if (command[1] === 'GTRTO') {
     data.command = 'CLEARBUF';
   }
   return data;
