@@ -181,7 +181,8 @@ const getAlarm = (command, report) => {
     return {type: 'Idling', status: true};
   }
   else if(command === 'GTIDF'){
-    return {type: 'Idling', status: false, duration: report };
+    const duration = report != '' ? parseInt(report,10): null;
+    return {type: 'Idling', status: false, duration: duration };
   }
   else if(command === 'GTJDR'){
     return {type: 'Jamming', status: true};
