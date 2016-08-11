@@ -965,7 +965,7 @@ const getGV200 = raw => {
     });
   }
   else if(command[1] === 'GTGPJ'){
-    _.extend(data,{
+    extend(data,{
       alarm: getAlarm(command[1], command[5]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[10]), parseFloat(parsedData[11])]},
       speed: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
