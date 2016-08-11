@@ -1,3 +1,15 @@
+#### 0.1.2 (2016-8-11)
+
+##### Chores
+
+* **src:** Only import extend module from lodash ([90108cb3](https://github.com/jaayesta/queclink-parser/commit/90108cb3f42576f7378b8e52766697398d344e4b))
+* **test:** Add tests ([7737d74f](https://github.com/jaayesta/queclink-parser/commit/7737d74f3cafb57eaa490d58c5e28911364497ac))
+* **package:** Update dependencies and add devDependencies for tests ([f12f1449](https://github.com/jaayesta/queclink-parser/commit/f12f1449447bdd46acd81e7eb2b66d1f46247071))
+
+##### Bug Fixes
+
+* **getAckCommand:** Fix get command ([b7878fa9](https://github.com/jaayesta/queclink-parser/commit/b7878fa9de0797bf6bda9440a1068d49f3341233))
+
 #### 0.1.1 (2016-08-11)
 
 * Added sos in status and mV to V in analog inputs in GV200 ([4bea809](https://github.com/jaayesta/queclink-parser/commit/4bea809))
