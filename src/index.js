@@ -629,16 +629,16 @@ const getGV200 = raw => {
         raw: parsedData[24]+parsedData[25],
         sos: false,
         input: {
-          '1': utils.hex2bin(parsedData[24][1])[3] === '1',
-          '2': utils.hex2bin(parsedData[24][1])[2] === '1',
-          '3': utils.hex2bin(parsedData[24][1])[1] === '1',
-          '4': utils.hex2bin(parsedData[24][1])[0] === '1'
+          '4': utils.hex2bin(parsedData[24][1])[3] === '1',
+          '3': utils.hex2bin(parsedData[24][1])[2] === '1',
+          '2': utils.hex2bin(parsedData[24][1])[1] === '1',
+          '1': utils.hex2bin(parsedData[24][1])[0] === '1'
         },
         output: {
-          '1': utils.hex2bin(parsedData[25][1])[3] === '1',
-          '2': utils.hex2bin(parsedData[25][1])[2] === '1',
-          '3': utils.hex2bin(parsedData[25][1])[1] === '1',
-          '4': utils.hex2bin(parsedData[25][1])[0] === '1'
+          '4': utils.hex2bin(parsedData[25][1])[3] === '1',
+          '3': utils.hex2bin(parsedData[25][1])[2] === '1',
+          '2': utils.hex2bin(parsedData[25][1])[1] === '1',
+          '1': utils.hex2bin(parsedData[25][1])[0] === '1'
         },
         charge: parseFloat(parsedData[4]) > 5
       },
@@ -1022,12 +1022,12 @@ const getGMT100 = raw => {
         raw: parsedData[24]+parsedData[25],
         sos: false,
         input: {
-          '1': utils.hex2bin(parsedData[24][1])[1] === '1',
-          '2': utils.hex2bin(parsedData[24][1])[0] === '1'
+          '2': utils.hex2bin(parsedData[24][1])[1] === '1',
+          '1': utils.hex2bin(parsedData[24][1])[0] === '1'
         },
         output: {
-          '1': utils.hex2bin(parsedData[25][1])[1] === '1',
-          '2': utils.hex2bin(parsedData[25][1])[0] === '1'
+          '2': utils.hex2bin(parsedData[25][1])[1] === '1',
+          '1': utils.hex2bin(parsedData[25][1])[0] === '1'
         },
         charge: parseFloat(parsedData[4]) > 5
       },
