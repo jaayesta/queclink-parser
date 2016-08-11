@@ -1330,16 +1330,16 @@ const getAckCommand = raw => {
   const command = parsedData[0].split(':');
 
   let data = {device: 'Queclink-COMMAND-OK', type: 'ok'};
-  if (command === 'GTSPD'){
+  if (command[1] === 'GTSPD'){
     data.command = 'SETOVERSPEEDALARM';
   }
-  else if(command === 'GTOUT'){
+  else if(command[1] === 'GTOUT'){
     data.command = 'SETIOSWITCH';
   }
-  // else if (command === 'GTRTO') {
+  // else if (command[1] === 'GTRTO') {
   //   data.command = 'RBOOT';
   // }
-  else if (command === 'GTRTO') {
+  else if (command[1] === 'GTRTO') {
     data.command = 'CLEARBUF';
   }
   return data;
