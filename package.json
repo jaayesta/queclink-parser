@@ -70,5 +70,6 @@
         "always"
       ]
     }
-  }
+  },
+  "tonicExampleFilename": "example.js"
 }
