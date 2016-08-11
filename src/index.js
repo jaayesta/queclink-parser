@@ -63,6 +63,15 @@ const getRebootCommand = (password, serial) => {
 };
 
 /*
+  Returns the imei
+*/
+const getImei = raw => {
+  raw = raw.toString();
+  const parsedData = raw.split(',');
+  return parsedData[2];
+};
+
+/*
   Parses the raw data
 */
 const parse = raw => {
@@ -1429,5 +1438,6 @@ module.exports = {
   isHeartBeat: isHeartBeat,
   getAckHeartBeat: getAckHeartBeat,
   parseCommand: parseCommand,
-  getRebootCommand: getRebootCommand
+  getRebootCommand: getRebootCommand,
+  getImei: getImei
 };
