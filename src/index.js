@@ -281,7 +281,7 @@ const getGV300W = raw => {
       speed: parsedData[8] != '' ? parseFloat(parsedData[8]): null,
       gpsStatus: checkGps(parseFloat(parsedData[11]), parseFloat(parsedData[12])),
       hdop: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
-      status: { //parsedData[24]
+      status: {
         raw: parsedData[24],
         sos: utils.hex2bin(parsedData[24].substring(2,4))[1] === '1',
         tow: utils.hex2bin(parsedData[24].substring(0,1)) === '16',
@@ -604,32 +604,6 @@ const getGV300W = raw => {
       hourmeter: null
     });
   }
-  else if(command[1] === 'GTGPJ'){
-    extend(data,{
-      alarm: getAlarm(command[1], command[5]),
-      loc: { type: 'Point', coordinates: [ parseFloat(parsedData[10]), parseFloat(parsedData[11])]},
-      speed: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
-      gpsStatus: checkGps(parseFloat(parsedData[10]), parseFloat(parsedData[11])),
-      hdop: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
-      status: null,
-      azimuth: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
-      altitude: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
-      datetime: parsedData[12] != '' ? moment(`${parsedData[12]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
-      voltage: {
-        battery: null,
-        inputCharge: null,
-        ada: null,
-        adb: null,
-        adc: null
-      },
-      mcc: parsedData[13] != '' ? parseInt(parsedData[13],10) : null,
-      mnc: parsedData[14] != '' ? parseInt(parsedData[14],10) : null,
-      lac: parsedData[15] != '' ? parseInt(parsedData[15],16) : null,
-      cid: parsedData[16] != '' ? parseInt(parsedData[16],16) : null,
-      odometer: null,
-      hourmeter: null
-    });
-  }
   else if(command[1] === 'GTCAN'){
     extend(data, {
       alarm: getAlarm(command[1], command[4]),
@@ -724,20 +698,20 @@ const getGV300 = raw => {
       speed: parsedData[8] != '' ? parseFloat(parsedData[8]): null,
       gpsStatus: checkGps(parseFloat(parsedData[11]), parseFloat(parsedData[12])),
       hdop: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
-      status: { //parsedData[24]
+      status: {
         raw: parsedData[24],
-        sos: false,
+        sos: utils.hex2bin(parsedData[24].substring(2,4))[1] === '1',
+        tow: utils.hex2bin(parsedData[24].substring(0,1)) === '16',
         input: {
-          '1': parsedData[24][0] === '1',
-          '2': parsedData[24][1] === '1',
-          '3': parsedData[24][6] === '1',
-          '4': parsedData[24][7] === '1'
+          '1': utils.hex2bin(parsedData[24].substring(2,4))[0] === '1',
+          '2': utils.hex2bin(parsedData[24].substring(2,4))[1] === '1',
+          '3': utils.hex2bin(parsedData[24].substring(2,4))[2] === '1',
+          '4': utils.hex2bin(parsedData[24].substring(2,4))[3] === '1'
         },
         output: {
-          '1': parsedData[24][2] === '1',
-          '2': parsedData[24][3] === '1',
-          '3': parsedData[24][8] === '1',
-          '4': parsedData[24][9] === '1'
+          '1': utils.hex2bin(parsedData[24].substring(4,6))[0] === '1',
+          '2': utils.hex2bin(parsedData[24].substring(4,6))[1] === '1',
+          '3': utils.hex2bin(parsedData[24].substring(4,6))[2] === '1'
         },
         charge: parseFloat(parsedData[4]) > 5
       },
