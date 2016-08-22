@@ -303,9 +303,9 @@ const getGV300W = raw => {
       datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
       voltage: {
         battery: parsedData[23] != '' ? parseFloat(parsedData[23]): null,//percentage
-        inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4]): null,
-        ada: parsedData[21] != '' ? parseFloat(parsedData[21]): null,
-        adb: parsedData[22] != '' ? parseFloat(parsedData[22]): null
+        inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4])/1000 : null,
+        ada: parsedData[21] != '' ? parseFloat(parsedData[21])/1000 : null,
+        adb: parsedData[22] != '' ? parseFloat(parsedData[22])/1000 : null
       },
       mcc: parsedData[14] != '' ? parseInt(parsedData[14],10) : null,
       mnc: parsedData[15] != '' ? parseInt(parsedData[15],10) : null,
@@ -364,9 +364,9 @@ const getGV300W = raw => {
       datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
       voltage: {
         battery: parsedData[23] != '' ? parseFloat(parsedData[23]): null,//percentage
-        inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4]): null,
-        ada: parsedData[21] != '' ? parseFloat(parsedData[21]): null,
-        adb: parsedData[22] != '' ? parseFloat(parsedData[22]): null
+        inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4])/1000 : null,
+        ada: parsedData[21] != '' ? parseFloat(parsedData[21])/1000 : null,
+        adb: parsedData[22] != '' ? parseFloat(parsedData[22])/1000 : null
       },
       mcc: parsedData[14] != '' ? parseInt(parsedData[14],10) : null,
       mnc: parsedData[15] != '' ? parseInt(parsedData[15],10) : null,
