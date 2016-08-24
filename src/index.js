@@ -245,6 +245,10 @@ const getAlarm = (command, report) => {
     const reportType = parseInt(report,10);
     return {type: 'CAN_Bus', report: reportType};
   }
+  else if(command === 'GTTMP'){
+    const number = parseInt(report[0],10);
+    return {type: 'Outside_Temperature', number: number, status: report[1] === '0'}; //0 means outside the range, 1 means inside
+  }
   else{
     return {type: command};
   }
@@ -1424,6 +1428,50 @@ const getGV200 = raw => {
       cid: parsedData[16] != '' ? parseInt(parsedData[16],16) : null,
       odometer: null,
       hourmeter: null
+    });
+  }
+  //Temperature Alarm
+  else if(command[1] === 'GTTMP'){
+    extend(data, {
+      alarm: getAlarm(command[1], parsedData[6]),
+      loc: { type: 'Point', coordinates: [ parseFloat(parsedData[12]), parseFloat(parsedData[13]) ] },
+      speed: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
+      gpsStatus: checkGps(parseFloat(parsedData[12]), parseFloat(parsedData[13])),
+      hdop: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
+      status: { //parsedData[24]
+        raw: parsedData[24]+parsedData[25],
+        sos: utils.hex2bin(parsedData[24][1])[1] === '1',
+        input: {
+          '4': utils.hex2bin(parsedData[25][1])[3] === '1',
+          '3': utils.hex2bin(parsedData[25][1])[2] === '1',
+          '2': utils.hex2bin(parsedData[25][1])[1] === '1',
+          '1': utils.hex2bin(parsedData[25][1])[0] === '1'
+        },
+        output: {
+          '4': utils.hex2bin(parsedData[26][1])[3] === '1',
+          '3': utils.hex2bin(parsedData[26][1])[2] === '1',
+          '2': utils.hex2bin(parsedData[26][1])[1] === '1',
+          '1': utils.hex2bin(parsedData[26][1])[0] === '1'
+        },
+        charge: parseFloat(parsedData[4]) > 5
+      },
+      azimuth: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
+      altitude: parsedData[11] != '' ? parseFloat(parsedData[11]) : null,
+      datetime: parsedData[14] != '' ? moment(`${parsedData[14]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      voltage: {
+        battery: null,//percentage
+        inputCharge: parsedData[5] != '' ? parseFloat(parsedData[4])/1000 : null,
+        ada: parsedData[22] != '' ? parseFloat(parsedData[22])/1000 : null,
+        adb: parsedData[23] != '' ? parseFloat(parsedData[23])/1000 : null,
+        adc: parsedData[24] != '' ? parseFloat(parsedData[24])/1000 : null
+      },
+      mcc: parsedData[15] != '' ? parseInt(parsedData[15],10) : null,
+      mnc: parsedData[16] != '' ? parseInt(parsedData[16],10) : null,
+      lac: parsedData[17] != '' ? parseInt(parsedData[17],16) : null,
+      cid: parsedData[18] != '' ? parseInt(parsedData[18],16) : null,
+      odometer: parsedData[20] != '' ? parseFloat(parsedData[20]) : null,
+      hourmeter: parsedData[21],
+      extTemperature: parsedData[32] != '' ? parseInt(parsedData[32],10) : null //C
     });
   }
   else if(command[1] === 'GTCAN'){
