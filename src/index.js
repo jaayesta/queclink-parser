@@ -90,6 +90,9 @@ const parse = raw => {
   else if (device === 'GV200'){
     result = getGV200(raw.toString());
   }
+  else if (device === 'GV55'){
+    result = getGV55(raw.toString());
+  }
   else if (device === 'GMT100') {
     result = getGMT100(raw.toString());
   }
@@ -619,8 +622,7 @@ const getGV300W = raw => {
         battery: null,
         inputCharge: null,
         ada: null,
-        adb: null,
-        adc: null
+        adb: null
       },
       mcc: parsedData[38] != '' ? parseInt(parsedData[38],10) : null,
       mnc: parsedData[39] != '' ? parseInt(parsedData[39],10) : null,
@@ -1822,6 +1824,344 @@ const getGMT100 = raw => {
       mnc: parsedData[13] != '' ? parseInt(parsedData[13],10) : null,
       lac: parsedData[14] != '' ? parseInt(parsedData[14],16) : null,
       cid: parsedData[15] != '' ? parseInt(parsedData[15],16) : null,
+      odometer: null,
+      hourmeter: null
+    });
+  }
+  else{
+    extend(data, {
+      alarm: getAlarm(command[1], null)
+    });
+  }
+  return data;
+};
+
+/*
+  Parses messages data from GV55 devices
+*/
+const getGV55 = raw => {
+  raw = raw.substr(0, raw.length - 1);
+
+  const parsedData = raw.split(',');
+  const command = parsedData[0].split(':');
+
+  let history = false;
+  if(patterns.buffer.test(command[0])){
+    history = true;
+  }
+
+  const data = {
+    raw: `${raw.toString()}$`,
+    device: 'Queclink-GV55',
+    type: 'data',
+    imei: parsedData[2],
+    protocolVersion: getProtocolVersion(parsedData[1]),
+    temperature: null,
+    history: history,
+    sentTime: moment(`${parsedData[parsedData.length - 2]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
+    serialId: parseInt(parsedData[parsedData.length - 1],10)
+  };
+
+  // GPS
+  if (command[1] === 'GTFRI') {
+    extend(data, {
+      alarm: getAlarm(command[1], null),
+      loc: { type: 'Point', coordinates: [ parseFloat(parsedData[11]), parseFloat(parsedData[12]) ] },
+      speed: parsedData[8] != '' ? parseFloat(parsedData[8]): null,
+      gpsStatus: checkGps(parseFloat(parsedData[11]), parseFloat(parsedData[12])),
+      hdop: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
+      status: {
+        raw: parsedData[24],
+        sos: utils.hex2bin(parsedData[24].substring(2,4))[1] === '1',
+        tow: utils.hex2bin(parsedData[24].substring(0,1)) === '16',
+        input: {
+          '1': utils.hex2bin(parsedData[24].substring(2,4))[0] === '1',
+          '2': utils.hex2bin(parsedData[24].substring(2,4))[1] === '1'
+        },
+        output: {
+          '1': utils.hex2bin(parsedData[24].substring(4,6))[0] === '1',
+          '2': utils.hex2bin(parsedData[24].substring(4,6))[1] === '1'
+        },
+        charge: parseFloat(parsedData[4]) > 5
+      },
+      azimuth: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
+      altitude: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
+      datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      voltage: {
+        battery: parsedData[23] != '' ? parseFloat(parsedData[23]): null,//percentage
+        inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4])/1000 : null
+      },
+      mcc: parsedData[14] != '' ? parseInt(parsedData[14],10) : null,
+      mnc: parsedData[15] != '' ? parseInt(parsedData[15],10) : null,
+      lac: parsedData[16] != '' ? parseInt(parsedData[16],16) : null,
+      cid: parsedData[17] != '' ? parseInt(parsedData[17],16) : null,
+      odometer: parsedData[19] != '' ? parseFloat(parsedData[19]) : null,
+      hourmeter: parsedData[20]
+    });
+  }
+  //Heartbeat. It must response an ACK command
+  else if (command[1] === 'GTHBD'){
+    extend(data, {
+      alarm: getAlarm(command[1], null)
+    });
+  }
+  // Common Alarms
+  else if (command[1] === 'GTTOW' || command[1] === 'GTDIS' || command[1] === 'GTIOB' ||
+      command[1] === 'GTSPD' || command[1] === 'GTSOS' || command[1] === 'GTRTL' ||
+      command[1] === 'GTDOG' || command[1] === 'GTIGL' || command[1] === 'GTHBM') {
+
+    extend(data, {
+      alarm: getAlarm(command[1], parsedData[5]),
+      loc: { type: 'Point', coordinates: [parseFloat(parsedData[11]), parseFloat(parsedData[12])] },
+      speed: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
+      gpsStatus: checkGps(parseFloat(parsedData[11]), parseFloat(parsedData[12])),
+      hdop: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
+      status: null,
+      azimuth: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
+      altitude: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
+      datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      voltage: {
+        battery: null,
+        inputCharge: null
+      },
+      mcc: parsedData[14] != '' ? parseInt(parsedData[14],10) : null,
+      mnc: parsedData[15] != '' ? parseInt(parsedData[15],10) : null,
+      lac: parsedData[16] != '' ? parseInt(parsedData[16],16) : null,
+      cid: parsedData[17] != '' ? parseInt(parsedData[17],16) : null,
+      odometer: parsedData[19] != '' ? parseFloat(parsedData[19]) : null,
+      hourmeter: null
+    });
+  }
+  //External low battery and Low voltage for analog input
+  else if (command[1] === 'GTEPS' || command[1] === 'GTAIS') {
+    extend(data, {
+      alarm: getAlarm(command[1], parsedData[5]),
+      loc: { type: 'Point', coordinates: [ parseFloat(parsedData[11]), parseFloat(parsedData[12]) ] },
+      speed: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
+      gpsStatus: checkGps(parseFloat(parsedData[11]), parseFloat(parsedData[12])),
+      hdop: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
+      status: null,
+      azimuth: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
+      altitude: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
+      datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      voltage: {
+        battery: parsedData[23] != '' ? parseFloat(parsedData[23]): null,//percentage
+        inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4])/1000 : null
+      },
+      mcc: parsedData[14] != '' ? parseInt(parsedData[14],10) : null,
+      mnc: parsedData[15] != '' ? parseInt(parsedData[15],10) : null,
+      lac: parsedData[16] != '' ? parseInt(parsedData[16],16) : null,
+      cid: parsedData[17] != '' ? parseInt(parsedData[17],16) : null,
+      odometer: parsedData[19] != '' ? parseFloat(parsedData[19]) : null,
+      hourmeter: parsedData[20]
+    });
+  }
+  //Event report (It uses the last GPS data and MCC info)
+  else if(command[1] === 'GTPNA' || command[1] === 'GTPFA' || command[1] === 'GTPDP') {
+    extend(data, {
+      alarm: getAlarm(command[1], null),
+      loc: null,
+      speed: null,
+      gpsStatus: null,
+      hdop: null,
+      status: null,
+      azimuth: null,
+      altitude: null,
+      datetime: parsedData[4] != '' ? moment(`${parsedData[4]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      voltage: {
+        battery: null,
+        inputCharge: null
+      },
+      mcc: null,
+      mnc: null,
+      lac: null,
+      cid: null,
+      odometer: null,
+      hourmeter: null
+    });
+  }
+  else if(command[1] === 'GTMPN' || command[1] === 'GTMPF' || command[1] === 'GTCRA' || command[1] === 'GTJDR') {
+    extend(data, {
+      alarm: getAlarm(command[1], null),
+      loc: { type: 'Point', coordinates: [ parseFloat(parsedData[8]), parseFloat(parsedData[9])]},
+      speed: parsedData[5] != '' ? parseFloat(parsedData[5]) : null,
+      gpsStatus: checkGps(parseFloat(parsedData[8]), parseFloat(parsedData[9])),
+      hdop: parsedData[4] != '' ? parseFloat(parsedData[4]) : null,
+      status: null,
+      azimuth: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
+      altitude: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
+      datetime: parsedData[10] != '' ? moment(`${parsedData[10]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      voltage: {
+        battery: null,
+        inputCharge: null
+      },
+      mcc: parsedData[11] != '' ? parseInt(parsedData[11],10) : null,
+      mnc: parsedData[12] != '' ? parseInt(parsedData[12],10) : null,
+      lac: parsedData[13] != '' ? parseInt(parsedData[13],16) : null,
+      cid: parsedData[14] != '' ? parseInt(parsedData[14],16) : null,
+      odometer: null,
+      hourmeter: null
+    });
+  }
+  else if (command[1] === 'GTJDS' || command[1] === 'GTANT' || command[1] === 'GTRMD') {
+    extend(data, {
+      alarm: getAlarm(command[1], parsedData[4]),
+      loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
+      speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
+      gpsStatus: checkGps(parseFloat(parsedData[9]), parseFloat(parsedData[10])),
+      hdop: parsedData[5] != '' ? parseFloat(parsedData[5]) : null,
+      status: null,
+      azimuth: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
+      altitude: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
+      datetime: parsedData[11] != '' ? moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      voltage: {
+        battery: null,
+        inputCharge: null
+      },
+      mcc: parsedData[12] != '' ? parseInt(parsedData[12],10) : null,
+      mnc: parsedData[13] != '' ? parseInt(parsedData[13],10) : null,
+      lac: parsedData[14] != '' ? parseInt(parsedData[14],16) : null,
+      cid: parsedData[15] != '' ? parseInt(parsedData[15],16) : null,
+      odometer: null,
+      hourmeter: null
+    });
+  }
+  else if (command[1] === 'GTBPL') {
+    extend(data, {
+      alarm: getAlarm(command[1], null),
+      loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
+      speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
+      gpsStatus: checkGps(parseFloat(parsedData[9]), parseFloat(parsedData[10])),
+      hdop: parsedData[5] != '' ? parseFloat(parsedData[5]) : null,
+      status: null,
+      azimuth: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
+      altitude: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
+      datetime: parsedData[11] != '' ? moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      voltage: {
+        battery: parsedData[4] != '' ? parseFloat(parsedData[4]): null,
+        inputCharge: null
+      },
+      mcc: parsedData[12] != '' ? parseInt(parsedData[12],10) : null,
+      mnc: parsedData[13] != '' ? parseInt(parsedData[13],10) : null,
+      lac: parsedData[14] != '' ? parseInt(parsedData[14],16) : null,
+      cid: parsedData[15] != '' ? parseInt(parsedData[15],16) : null,
+      odometer: null,
+      hourmeter: null
+    });
+  }
+  else if (command[1] === 'GTIGN' || command[1] === 'GTIGF') {
+    extend(data, {
+      alarm: getAlarm(command[1], parsedData[4]),
+      loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
+      speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
+      gpsStatus: checkGps(parseFloat(parsedData[9]), parseFloat(parsedData[10])),
+      hdop: parsedData[5] != '' ? parseFloat(parsedData[5]) : null,
+      status: null,
+      azimuth: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
+      altitude: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
+      datetime: parsedData[11] != '' ? moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      voltage: {
+        battery: null,
+        inputCharge: null
+      },
+      mcc: parsedData[12] != '' ? parseInt(parsedData[12],10) : null,
+      mnc: parsedData[13] != '' ? parseInt(parsedData[13],10) : null,
+      lac: parsedData[14] != '' ? parseInt(parsedData[14],16) : null,
+      cid: parsedData[15] != '' ? parseInt(parsedData[15],16) : null,
+      odometer: parsedData[18] != '' ? parseFloat(parsedData[18]) : null,
+      hourmeter: parsedData[17]
+    });
+  }
+  else if (command[1] === 'GTIDN' || command[1] === 'GTIDF') {
+    extend(data, {
+      alarm: getAlarm(command[1], parsedData[5]),
+      loc: { type: 'Point', coordinates: [ parseFloat(parsedData[10]), parseFloat(parsedData[11])]},
+      speed: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
+      gpsStatus: checkGps(parseFloat(parsedData[10]), parseFloat(parsedData[11])),
+      hdop: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
+      status: null,
+      azimuth: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
+      altitude: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
+      datetime: parsedData[12] != '' ? moment(`${parsedData[12]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      voltage: {
+        battery: null,
+        inputCharge: null
+      },
+      mcc: parsedData[13] != '' ? parseInt(parsedData[13],10) : null,
+      mnc: parsedData[14] != '' ? parseInt(parsedData[14],10) : null,
+      lac: parsedData[15] != '' ? parseInt(parsedData[15],16) : null,
+      cid: parsedData[16] != '' ? parseInt(parsedData[16],16) : null,
+      odometer: parsedData[18] != '' ? parseFloat(parsedData[18]) : null,
+      hourmeter: null
+    });
+  }
+  else if (command[1] === 'GTSTR' || command[1] === 'GTSTP' || command[1] === 'GTLSP') {
+    extend(data, {
+      alarm: getAlarm(command[1], null),
+      loc: { type: 'Point', coordinates: [ parseFloat(parsedData[10]), parseFloat(parsedData[11])]},
+      speed: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
+      gpsStatus: checkGps(parseFloat(parsedData[10]), parseFloat(parsedData[11])),
+      hdop: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
+      status: null,
+      azimuth: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
+      altitude: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
+      datetime: parsedData[12] != '' ? moment(`${parsedData[12]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      voltage: {
+        battery: null,
+        inputCharge: null
+      },
+      mcc: parsedData[13] != '' ? parseInt(parsedData[13],10) : null,
+      mnc: parsedData[14] != '' ? parseInt(parsedData[14],10) : null,
+      lac: parsedData[15] != '' ? parseInt(parsedData[15],16) : null,
+      cid: parsedData[16] != '' ? parseInt(parsedData[16],16) : null,
+      odometer: parsedData[18] != '' ? parseFloat(parsedData[18]) : null,
+      hourmeter: null
+    });
+  }
+  // Motion State Changed
+  else if(command[1] === 'GTSTT'){
+    extend(data, {
+      alarm: getAlarm(command[1], null),
+      loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
+      speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
+      gpsStatus: checkGps(parseFloat(parsedData[9]), parseFloat(parsedData[10])),
+      hdop: parsedData[5] != '' ? parseFloat(parsedData[5]) : null,
+      status: null,
+      azimuth: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
+      altitude: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
+      datetime: parsedData[11] != '' ? moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      voltage: {
+        battery: null,
+        inputCharge: null
+      },
+      mcc: parsedData[12] != '' ? parseInt(parsedData[12],10) : null,
+      mnc: parsedData[13] != '' ? parseInt(parsedData[13],10) : null,
+      lac: parsedData[14] != '' ? parseInt(parsedData[14],16) : null,
+      cid: parsedData[15] != '' ? parseInt(parsedData[15],16) : null,
+      odometer: null,
+      hourmeter: null
+    });
+  }
+  //GPS Status
+  else if(command[1] === 'GTGSS'){
+    extend(data, {
+      alarm: getAlarm(command[1], command[4]),
+      loc: { type: 'Point', coordinates: [ parseFloat(parsedData[12]), parseFloat(parsedData[13])]},
+      speed: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
+      gpsStatus: checkGps(parseFloat(parsedData[12]), parseFloat(parsedData[13])),
+      hdop: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
+      status: null,
+      azimuth: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
+      altitude: parsedData[11] != '' ? parseFloat(parsedData[11]) : null,
+      datetime: parsedData[14] != '' ? moment(`${parsedData[14]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      voltage: {
+        battery: null,
+        inputCharge: null
+      },
+      mcc: parsedData[15] != '' ? parseInt(parsedData[15],10) : null,
+      mnc: parsedData[16] != '' ? parseInt(parsedData[16],10) : null,
+      lac: parsedData[17] != '' ? parseInt(parsedData[17],16) : null,
+      cid: parsedData[18] != '' ? parseInt(parsedData[18],16) : null,
       odometer: null,
       hourmeter: null
     });

@@ -5,7 +5,7 @@
 [![dependency Status](https://img.shields.io/david/jaayesta/queclink-parser.svg?style=flat-square)](https://david-dm.org/jaayesta/queclink-parser#info=dependencies)
 [![devDependency Status](https://img.shields.io/david/dev/jaayesta/queclink-parser.svg?style=flat-square)](https://david-dm.org/jaayesta/queclink-parser#info=devDependencies)
 
-> Parses raw data from Queclink devices (TCP). Devices suported: GV300, GV300W, GV200, GMT100
+> Parses raw data from Queclink devices (TCP). Devices suported: GV300, GV300W, GV200, GV55, GMT100
 
 ## Installation
 
@@ -20,7 +20,7 @@ npm i -S queclink-parser
 
 const queclink = require('queclink-parser');
 
-const raw = new Buffer('++RESP:GTFRI,350302,867844003012625,,12372,10,1,0,0.0,0,820.8,-70.514872,-33.361021,20160811154617,0730,0002,7410,C789,00,0.0,00000:15:30,2788,705,164,0D,00,,,20160811154651,061D$');
+const raw = new Buffer('+RESP:GTFRI,350302,867844003012625,,12372,10,1,0,0.0,0,820.8,-70.514872,-33.361021,20160811154617,0730,0002,7410,C789,00,0.0,00000:15:30,2788,705,164,0D,00,,,20160811154651,061D$');
 const data = queclink.parse(raw);
 
 /*
