@@ -277,7 +277,7 @@ const getGV300W = raw => {
     temperature: null,
     history: history,
     sentTime: moment(`${parsedData[parsedData.length - 2]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
-    serialId: parseInt(parsedData[parsedData.length - 1],10)
+    serialId: parseInt(parsedData[parsedData.length - 1],16)
   };
 
   // GPS
@@ -693,7 +693,7 @@ const getGV300 = raw => {
     temperature: null,
     history: history,
     sentTime: moment(`${parsedData[parsedData.length - 2]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
-    serialId: parseInt(parsedData[parsedData.length - 1],10)
+    serialId: parseInt(parsedData[parsedData.length - 1],16)
   };
 
   // GPS
@@ -1058,7 +1058,7 @@ const getGV200 = raw => {
     temperature: null,
     history: history,
     sentTime: moment(`${parsedData[parsedData.length - 2]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
-    serialId: parseInt(parsedData[parsedData.length - 1],10)
+    serialId: parseInt(parsedData[parsedData.length - 1],16)
   };
 
   // GPS
@@ -1556,7 +1556,7 @@ const getGMT100 = raw => {
     temperature: null,
     history: history,
     sentTime: moment(`${parsedData[parsedData.length - 2]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
-    serialId: parseInt(parsedData[parsedData.length - 1],10),
+    serialId: parseInt(parsedData[parsedData.length - 1],16),
     hourmeter: null
   };
 
@@ -1907,7 +1907,7 @@ const getGV55 = raw => {
     temperature: null,
     history: history,
     sentTime: moment(`${parsedData[parsedData.length - 2]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
-    serialId: parseInt(parsedData[parsedData.length - 1],10)
+    serialId: parseInt(parsedData[parsedData.length - 1],16)
   };
 
   // GPS
