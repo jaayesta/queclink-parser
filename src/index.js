@@ -236,7 +236,7 @@ const getAlarm = (command, report) => {
     return {type: 'Motion_State_Changed'};
   }
   else if(command === 'GTPDP'){
-    return {type: 'GSP_Connection_Established'};
+    return {type: 'GPRS_Connection_Established'};
   }
   else if(command === 'GTGSS'){
     return {type: 'Gps_Status', status: report === '1'};
@@ -248,6 +248,12 @@ const getAlarm = (command, report) => {
   else if(command === 'GTTMP'){
     const number = parseInt(report[0],10);
     return {type: 'Outside_Temperature', number: number, status: report[1] === '0'}; //0 means outside the range, 1 means inside
+  }
+  else if(command === 'GTFLA'){
+    const before = report.split(',')[0] != null ? parseInt(report.split(',')[0],10) : 0;
+    const now = report.split(',')[1] != null ? parseInt(report.split(',')[1],10) : 0;
+    const consumption = before-now;
+    return {type: 'Unusual_Fuel_Consumption', status: consumption};
   }
   else{
     return {type: command};
@@ -1472,6 +1478,33 @@ const getGV200 = raw => {
       odometer: parsedData[20] != '' ? parseFloat(parsedData[20]) : null,
       hourmeter: parsedData[21],
       extTemperature: parsedData[32] != '' ? parseInt(parsedData[32],10) : null //C
+    });
+  }
+  // Unusual fuel consumption
+  else if(command[1] === 'GTFLA'){
+    extend(data,{
+      alarm: getAlarm(command[1], `${parsedData[5]},${parsedData[6]}`),
+      loc: { type: 'Point', coordinates: [ parseFloat(parsedData[11]), parseFloat(parsedData[12])]},
+      speed: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
+      gpsStatus: checkGps(parseFloat(parsedData[11]), parseFloat(parsedData[12])),
+      hdop: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
+      status: null,
+      azimuth: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
+      altitude: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
+      datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      voltage: {
+        battery: null,
+        inputCharge: null,
+        ada: null,
+        adb: null,
+        adc: null
+      },
+      mcc: parsedData[14] != '' ? parseInt(parsedData[14],10) : null,
+      mnc: parsedData[15] != '' ? parseInt(parsedData[15],10) : null,
+      lac: parsedData[16] != '' ? parseInt(parsedData[16],16) : null,
+      cid: parsedData[17] != '' ? parseInt(parsedData[17],16) : null,
+      odometer: null,
+      hourmeter: null
     });
   }
   else if(command[1] === 'GTCAN'){
