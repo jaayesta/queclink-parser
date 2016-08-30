@@ -304,5 +304,20 @@ describe('queclink-parzer', () => {
       const raw = queclink.parseCommand(data);
       expect(raw).to.eql('AT+GTRTO=404040,3,,,,,,4040$');
     });
+
+  });
+
+  describe('getImei', () => {
+    it('should return null imei', () => {
+      const raw = new Buffer('$$B6869444005480041|AA$GPRMC,194329.000,A,3321.6735,S,07030.7640,W,0.00,0.00,090216,,,A*6C|02.1|01.3|01.7|000000000000|20160209194326|13981188|00000000|32D3A03F|0000|0.6376|0100|995F\r\n');
+      const imei = queclink.getImei(raw);
+      expect(imei).to.be.null;
+    });
+
+    it('should return valid imei', () => {
+      const raw = new Buffer('+ACK:GTSPD,350302,867844003012625,,0018,20040101000148,0017$');
+      const imei = queclink.getImei(raw);
+      expect(imei).to.eq('867844003012625');
+    });
   });
 });
