@@ -67,9 +67,14 @@ const getRebootCommand = (password, serial) => {
   Returns the imei
 */
 const getImei = raw => {
+  let imei = null;
   raw = raw.toString();
-  const parsedData = raw.split(',');
-  return parsedData[2];
+  const isValid = Object.keys(patterns).map(x => patterns[x].test(raw)).find(x => x === true) || false;
+  if (isValid) {
+    const parsedData = raw.split(',');
+    imei = parsedData[2];
+  }
+  return imei ? imei.toString() : null;
 };
 
 /*
