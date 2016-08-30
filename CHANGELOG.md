@@ -1,3 +1,9 @@
+#### 0.2.3 (2016-8-30)
+
+##### Bug Fixes
+
+* **parser:** Fix getimei and add tests ([e05e1f23](https://github.com/jaayesta/queclink-parser/commit/e05e1f237fc78158661b9cd702ab59fbd5ac1489))
+
 #### 0.2.2 (2016-8-30)
 
 #### 0.2.1 (2016-8-25)
