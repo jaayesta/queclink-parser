@@ -231,7 +231,7 @@ describe('queclink-parzer', () => {
         }
       };
       const raw = queclink.parseCommand(data);
-      expect(raw).to.eql('AT+GTOUT=101010,1,0,0,1,0,0,0,0,0,1,0,0,0,1111,1010$');
+      expect(raw).to.eql('AT+GTOUT=101010,1,0,0,1,0,0,0,0,0,1,0,0,0,0,,,1010$');
     });
 
     it('should return raw di off command', () => {
@@ -247,7 +247,7 @@ describe('queclink-parzer', () => {
         }
       };
       const raw = queclink.parseCommand(data);
-      expect(raw).to.eql('AT+GTOUT=101010,1,0,0,0,0,0,0,0,0,1,0,0,0,1111,1010$');
+      expect(raw).to.eql('AT+GTOUT=101010,1,0,0,0,0,0,0,0,0,1,0,0,0,0,,,1010$');
     });
 
     it('should return raw clear mem command', () => {

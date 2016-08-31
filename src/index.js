@@ -2309,7 +2309,7 @@ const parseCommand = data => {
     outputs[3] = !outputs[3] ? 0: outputs[3];
     digit = state === 'on' ? 1 : 0;
     outputs[port-1] = digit;
-    command = `AT+GTOUT=${password},${outputs[0]},0,0,${outputs[1]},0,0,${outputs[2]},0,0,${outputs[3]},0,0,0,1111,${serialId}$`;
+    command = `AT+GTOUT=${password},${outputs[0]},0,0,${outputs[1]},0,0,${outputs[2]},0,0,${outputs[3]},0,0,0,0,,,${serialId}$`;
   }
 
   else if (data.instruction === 'clear_mem') {
