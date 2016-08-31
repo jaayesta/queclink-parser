@@ -44,11 +44,21 @@ const hex2dec = num => {
   return ConvertBase(num).from(16).to(10);
 };
 
+// hexadecimal num with n digits
+const nHexDigit = (num, n) => {
+  let hex = num;
+  while(hex.length < n){
+    hex = `0${hex}`
+  }
+  return hex;
+}
+
 module.exports = {
   bin2dec: bin2dec,
   bin2hex: bin2hex,
   dec2bin: dec2bin,
   dec2hex: dec2hex,
   hex2bin: hex2bin,
-  hex2dec: hex2dec
+  hex2dec: hex2dec,
+  nHexDigit: nHexDigit
 };

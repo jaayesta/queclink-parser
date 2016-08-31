@@ -2291,7 +2291,9 @@ const getAckCommand = raw => {
 const parseCommand = data => {
   let command = '';
   const password = data.password || '000000';
-  const serial = data.serial || '0000';
+  const serial = data.serial || 0;
+  const serialId = utils.nHexDigit(utils.dec2hex(serial),4);
+
   let state, digit, port, max_speed, interval, validity, mode, prevOutputs;
 
   //Digital Outputs
@@ -2307,11 +2309,11 @@ const parseCommand = data => {
     outputs[3] = !outputs[3] ? 0: outputs[3];
     digit = state === 'on' ? 1 : 0;
     outputs[port-1] = digit;
-    command = `AT+GTOUT=${password},${outputs[0]},0,0,${outputs[1]},0,0,${outputs[2]},0,0,${outputs[3]},0,0,0,1111,${serial}$`;
+    command = `AT+GTOUT=${password},${outputs[0]},0,0,${outputs[1]},0,0,${outputs[2]},0,0,${outputs[3]},0,0,0,1111,${serialId}$`;
   }
 
   else if (data.instruction === 'clear_mem') {
-    command = `AT+GTRTO=${password},4,BUF,,,,,${serial}$`;
+    command = `AT+GTRTO=${password},4,BUF,,,,,${serialId}$`;
   }
 
   else if (/^set_speed_(on|off)(E)?$/.test(data.instruction)) {
@@ -2320,7 +2322,7 @@ const parseCommand = data => {
     validity = data.times || 10;
     interval = data.interval || 300;
     mode = /on(E)?/.test(state) ? 4 : 0;
-    command = `AT+GTSPD=${password},${mode},0,${max_speed},${validity},${interval},1,1,0,0,,,,,,,,,,,,${serial}$`;
+    command = `AT+GTSPD=${password},${mode},0,${max_speed},${validity},${interval},1,1,0,0,,,,,,,,,,,,${serialId}$`;
   }
 
   else if(data.instruction === 'Custom'){
@@ -2328,7 +2330,7 @@ const parseCommand = data => {
   }
 
   else if (/^reboot$/.test(data.instruction)) {
-    command = `AT+GTRTO=${password},3,,,,,,${serial}$`;
+    command = `AT+GTRTO=${password},3,,,,,,${serialId}$`;
   }
   return command;
 };
