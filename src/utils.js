@@ -48,10 +48,10 @@ const hex2dec = num => {
 const nHexDigit = (num, n) => {
   let hex = num;
   while(hex.length < n){
-    hex = `0${hex}`
+    hex = `0${hex}`;
   }
   return hex;
-}
+};
 
 module.exports = {
   bin2dec: bin2dec,

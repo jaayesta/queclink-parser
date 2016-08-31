@@ -221,7 +221,7 @@ describe('queclink-parzer', () => {
     it('should return raw di on command', () => {
       const data = {
         password: '101010',
-        serial: '1010',
+        serial: 4112,
         instruction: '2_on',
         previousOutput: {
           '1': true,
@@ -237,7 +237,7 @@ describe('queclink-parzer', () => {
     it('should return raw di off command', () => {
       const data = {
         password: '101010',
-        serial: '1010',
+        serial: 4112,
         instruction: '2_off',
         previousOutput: {
           '1': true,
@@ -253,7 +253,7 @@ describe('queclink-parzer', () => {
     it('should return raw clear mem command', () => {
       const data = {
         password: '202020',
-        serial: '2020',
+        serial: 8224,
         instruction: 'clear_mem'
       };
       const raw = queclink.parseCommand(data);
@@ -263,7 +263,7 @@ describe('queclink-parzer', () => {
     it('should return raw set speed on command', () => {
       const data = {
         password: '303030',
-        serial: '3030',
+        serial: 12336,
         instruction: 'set_speed_on',
         speed: 150,
         times: 10,
@@ -276,7 +276,7 @@ describe('queclink-parzer', () => {
     it('should return raw set speed off command', () => {
       const data = {
         password: '303030',
-        serial: '3030',
+        serial: 12336,
         instruction: 'set_speed_off',
         speed: 150,
         times: 10,
@@ -298,7 +298,7 @@ describe('queclink-parzer', () => {
     it('should return raw custom command', () => {
       const data = {
         password: '404040',
-        serial: '4040',
+        serial: 16448,
         instruction: 'reboot'
       };
       const raw = queclink.parseCommand(data);
