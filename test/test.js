@@ -18,6 +18,7 @@ describe('queclink-parzer', () => {
       expect(data.device).to.eql('Queclink-COMMAND-OK');
       expect(data.type).to.eql('ok');
       expect(data.command).to.eql('SETOVERSPEEDALARM');
+      expect(data.serial).to.eql('0017');
     });
 
     it('should return command di ok data', () => {
@@ -26,6 +27,7 @@ describe('queclink-parzer', () => {
       expect(data.device).to.eql('Queclink-COMMAND-OK');
       expect(data.type).to.eql('ok');
       expect(data.command).to.eql('SETIOSWITCH');
+      expect(data.serial).to.eql('0017');
     });
 
     it('should return command clear mem ok data', () => {
@@ -34,6 +36,7 @@ describe('queclink-parzer', () => {
       expect(data.device).to.eql('Queclink-COMMAND-OK');
       expect(data.type).to.eql('ok');
       expect(data.command).to.eql('CLEARBUF');
+      expect(data.serial).to.eql('0017');
     });
 
     it('should return GV300 data', () => {

@@ -2269,7 +2269,7 @@ const getAckCommand = raw => {
   const parsedData = rawData.split(',');
   const command = parsedData[0].split(':');
 
-  let data = {device: 'Queclink-COMMAND-OK', type: 'ok'};
+  let data = {device: 'Queclink-COMMAND-OK', type: 'ok', 'serial': parsedData[parsedData.length -1]};
   if (command[1] === 'GTSPD'){
     data.command = 'SETOVERSPEEDALARM';
   }
