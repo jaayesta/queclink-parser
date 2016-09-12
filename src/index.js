@@ -265,7 +265,7 @@ const getAlarm = (command, report) => {
   else if(command === 'GTIDA'){
     const status = report.split(',')[1] != null ? parseInt(report.split(',')[1],10) : null;
     const driverID = report.split(',')[0] != null ? report.split(',')[0] : null;
-    return {type: 'Driver_Identificaion', status: status === 1 , driverID: driverID};
+    return {type: 'Driver_Identification', status: status === 1 , driverID: driverID};
   }
   else{
     return {type: command};
