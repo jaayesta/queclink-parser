@@ -1,3 +1,9 @@
+#### 0.2.7 (2016-9-12)
+
+##### Bug Fixes
+
+* **parse:** Only parse if queclink valid data. ([c3cc7915](https://github.com/jaayesta/queclink-parser/commit/c3cc7915faf1d468dc44b7e1f9217c3099dd4055))
+
 #### 0.2.6 (2016-9-5)
 
 #### 0.2.5 (2016-8-31)
