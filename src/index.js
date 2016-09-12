@@ -82,24 +82,26 @@ const getImei = raw => {
 */
 const parse = raw => {
   let result = {type: 'UNKNOWN', raw: raw.toString()};
-  const device = getDevice(raw.toString());
-  if (patterns.ack.test(raw.toString()) && !patterns.heartbeat.test(raw.toString())) {
-    result = getAckCommand(raw.toString());
-  }
-  else if (device === 'GV300W') {
-    result = getGV300W(raw.toString());
-  }
-  else if (device === 'GV300') {
-    result = getGV300(raw.toString());
-  }
-  else if (device === 'GV200'){
-    result = getGV200(raw.toString());
-  }
-  else if (device === 'GV55'){
-    result = getGV55(raw.toString());
-  }
-  else if (device === 'GMT100') {
-    result = getGMT100(raw.toString());
+  if (patterns.message.test(raw.toString()) || patterns.ack.test(raw.toString()) || patterns.buffer.test(raw.toString())) {
+    const device = getDevice(raw.toString());
+    if (patterns.ack.test(raw.toString()) && !patterns.heartbeat.test(raw.toString())) {
+      result = getAckCommand(raw.toString());
+    }
+    else if (device === 'GV300W') {
+      result = getGV300W(raw.toString());
+    }
+    else if (device === 'GV300') {
+      result = getGV300(raw.toString());
+    }
+    else if (device === 'GV200'){
+      result = getGV200(raw.toString());
+    }
+    else if (device === 'GV55'){
+      result = getGV55(raw.toString());
+    }
+    else if (device === 'GMT100') {
+      result = getGMT100(raw.toString());
+    }
   }
   return result;
 };
