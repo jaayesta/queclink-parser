@@ -18,6 +18,7 @@ describe('queclink-parzer', () => {
       expect(data.device).to.eql('Queclink-COMMAND-OK');
       expect(data.type).to.eql('ok');
       expect(data.command).to.eql('SETOVERSPEEDALARM');
+      expect(data.message).to.eql('Ajuste de la alarma de exceso de velocidad');
       expect(data.serial).to.eql('0017');
     });
 
@@ -27,6 +28,7 @@ describe('queclink-parzer', () => {
       expect(data.device).to.eql('Queclink-COMMAND-OK');
       expect(data.type).to.eql('ok');
       expect(data.command).to.eql('SETIOSWITCH');
+      expect(data.message).to.eql('Cambio de estado en las salidas digitales');
       expect(data.serial).to.eql('0017');
     });
 
@@ -36,6 +38,17 @@ describe('queclink-parzer', () => {
       expect(data.device).to.eql('Queclink-COMMAND-OK');
       expect(data.type).to.eql('ok');
       expect(data.command).to.eql('CLEARBUF');
+      expect(data.message).to.eql('Memoria interna vaciada');
+      expect(data.serial).to.eql('0017');
+    });
+
+    it('should return command clear mem ok data with lang', () => {
+      const raw = new Buffer('+ACK:GTRTO,350302,867844003012625,,0018,20040101000148,0017$');
+      const data = queclink.parse(raw, {lang: 'en'});
+      expect(data.device).to.eql('Queclink-COMMAND-OK');
+      expect(data.type).to.eql('ok');
+      expect(data.command).to.eql('CLEARBUF');
+      expect(data.message).to.eql('Clear internal buffer');
       expect(data.serial).to.eql('0017');
     });
 
