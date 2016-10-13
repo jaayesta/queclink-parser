@@ -1,3 +1,13 @@
+#### 0.2.9 (2016-10-13)
+
+##### Chores
+
+* **messages:** Add "en" and "es" messages ([95b8c869](https://github.com/jaayesta/queclink-parser/commit/95b8c86977154aedb667c2213c3737bcc80c3bb9))
+
+##### New Features
+
+* **parser:** Add message to ack commands ([23d87951](https://github.com/jaayesta/queclink-parser/commit/23d87951f8f64ec2fa7796bbb69d4ae1c9786b7d))
+
 #### 0.2.8 (2016-9-12)
 
 #### 0.2.7 (2016-9-12)
