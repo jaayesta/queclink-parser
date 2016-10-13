@@ -1267,7 +1267,7 @@ const getGV200 = raw => {
       hourmeter: null
     });
   }
-  else if(command[1] === 'GTMPN' || command[1] === 'GTMPF' || command === 'GTBTC' || command[1] === 'GTCRA' || command[1] === 'GTJDR') {
+  else if(command[1] === 'GTMPN' || command[1] === 'GTMPF' || command[1] === 'GTBTC' || command[1] === 'GTCRA' || command[1] === 'GTJDR') {
     extend(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[8]), parseFloat(parsedData[9])]},
@@ -1293,7 +1293,7 @@ const getGV200 = raw => {
       hourmeter: null
     });
   }
-  else if (command[1] === 'GTJDS' || command[1] === 'GTANT' || command[1] === 'GTRMD') {
+  else if (command[1] === 'GTJDS' || command[1] === 'GTANT' || command[1] === 'GTRMD' || command[1] === 'GTSTC') {
     extend(data, {
       alarm: getAlarm(command[1], parsedData[4]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
