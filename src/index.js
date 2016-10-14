@@ -3,7 +3,9 @@
 const moment = require('moment');
 const extend = require('lodash/extend');
 const utils = require('./utils.js');
-
+const langEs = require('./messages/es.json');
+const langEn = require('./messages/en.json');
+const langs = {es: langEs, en: langEn};
 
 const patterns = {
   message: /^\+RESP/,
@@ -80,12 +82,13 @@ const getImei = raw => {
 /*
   Parses the raw data
 */
-const parse = raw => {
+const parse = (raw, options) => {
   let result = {type: 'UNKNOWN', raw: raw.toString()};
+  options = options || {};
   if (patterns.message.test(raw.toString()) || patterns.ack.test(raw.toString()) || patterns.buffer.test(raw.toString())) {
     const device = getDevice(raw.toString());
     if (patterns.ack.test(raw.toString()) && !patterns.heartbeat.test(raw.toString())) {
-      result = getAckCommand(raw.toString());
+      result = getAckCommand(raw.toString(), options.lang);
     }
     else if (device === 'GV300W') {
       result = getGV300W(raw.toString());
@@ -1264,7 +1267,7 @@ const getGV200 = raw => {
       hourmeter: null
     });
   }
-  else if(command[1] === 'GTMPN' || command[1] === 'GTMPF' || command === 'GTBTC' || command[1] === 'GTCRA' || command[1] === 'GTJDR') {
+  else if(command[1] === 'GTMPN' || command[1] === 'GTMPF' || command[1] === 'GTBTC' || command[1] === 'GTCRA' || command[1] === 'GTJDR') {
     extend(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[8]), parseFloat(parsedData[9])]},
@@ -1290,7 +1293,7 @@ const getGV200 = raw => {
       hourmeter: null
     });
   }
-  else if (command[1] === 'GTJDS' || command[1] === 'GTANT' || command[1] === 'GTRMD') {
+  else if (command[1] === 'GTJDS' || command[1] === 'GTANT' || command[1] === 'GTRMD' || command[1] === 'GTSTC') {
     extend(data, {
       alarm: getAlarm(command[1], parsedData[4]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
@@ -2349,8 +2352,8 @@ const getGV55 = raw => {
 /*
   Returns the ack command
 */
-const getAckCommand = raw => {
-
+const getAckCommand = (raw, lang) => {
+  const messages = langs[lang] || langs['es'];
   const rawData = raw.substr(0, raw.length - 1);
   const parsedData = rawData.split(',');
   const command = parsedData[0].split(':');
@@ -2368,6 +2371,7 @@ const getAckCommand = raw => {
   else if (command[1] === 'GTRTO') {
     data.command = 'CLEARBUF';
   }
+  data.message = messages[data.command] || messages.default;
   return data;
 };
 

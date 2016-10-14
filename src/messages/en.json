@@ -1,0 +1,6 @@
+{
+  "SETOVERSPEEDALARM": "Set over speed alarm",
+  "SETIOSWITCH": "Set IO Switch",
+  "CLEARBUF": "Clear internal buffer",
+  "default": "Last action"
+}
