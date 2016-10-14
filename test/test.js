@@ -15,6 +15,7 @@ describe('queclink-parzer', () => {
     it('should return command speed ok data', () => {
       const raw = new Buffer('+ACK:GTSPD,350302,867844003012625,,0018,20040101000148,0017$');
       const data = queclink.parse(raw);
+      expect(data.manufacturer).to.eql('queclink');
       expect(data.device).to.eql('Queclink-COMMAND-OK');
       expect(data.type).to.eql('ok');
       expect(data.command).to.eql('SETOVERSPEEDALARM');
@@ -25,6 +26,7 @@ describe('queclink-parzer', () => {
     it('should return command di ok data', () => {
       const raw = new Buffer('+ACK:GTOUT,350302,867844003012625,,0018,20040101000148,0017$');
       const data = queclink.parse(raw);
+      expect(data.manufacturer).to.eql('queclink');
       expect(data.device).to.eql('Queclink-COMMAND-OK');
       expect(data.type).to.eql('ok');
       expect(data.command).to.eql('SETIOSWITCH');
@@ -35,6 +37,7 @@ describe('queclink-parzer', () => {
     it('should return command clear mem ok data', () => {
       const raw = new Buffer('+ACK:GTRTO,350302,867844003012625,,0018,20040101000148,0017$');
       const data = queclink.parse(raw);
+      expect(data.manufacturer).to.eql('queclink');
       expect(data.device).to.eql('Queclink-COMMAND-OK');
       expect(data.type).to.eql('ok');
       expect(data.command).to.eql('CLEARBUF');
@@ -45,6 +48,7 @@ describe('queclink-parzer', () => {
     it('should return command clear mem ok data with lang', () => {
       const raw = new Buffer('+ACK:GTRTO,350302,867844003012625,,0018,20040101000148,0017$');
       const data = queclink.parse(raw, {lang: 'en'});
+      expect(data.manufacturer).to.eql('queclink');
       expect(data.device).to.eql('Queclink-COMMAND-OK');
       expect(data.type).to.eql('ok');
       expect(data.command).to.eql('CLEARBUF');
@@ -56,6 +60,7 @@ describe('queclink-parzer', () => {
       const raw = new Buffer('+RESP:GTFRI,060100,135790246811220,,,00,1,1,4.3,92,70.0,121.354335,31.222073,20090214013254,0460,0000,18d8,6141,00,2000.0,12345:12:34,,,80,210100,,,,20090214093254,11F0$');
       const data = queclink.parse(raw);
       expect(data.raw).to.eql(raw.toString());
+      expect(data.manufacturer).to.eql('queclink');
       expect(data.device).to.eql('Queclink-GV300');
       expect(data.type).to.eql('data');
       expect(data.imei).to.eql('135790246811220');
@@ -102,6 +107,7 @@ describe('queclink-parzer', () => {
       const raw = new Buffer('+RESP:GTFRI,350302,867844003012625,,12401,10,1,0,0.0,0,816.1,-70.514613,-33.361280,20160811170821,0730,0002,7410,C789,00,0.0,00001:33:08,2788,702,137,08,00,,,20160811180025,07B8$');
       const data = queclink.parse(raw);
       expect(data.raw).to.eql(raw.toString());
+      expect(data.manufacturer).to.eql('queclink');
       expect(data.device).to.eql('Queclink-GV200');
       expect(data.type).to.eql('data');
       expect(data.imei).to.eql('867844003012625');
@@ -149,6 +155,7 @@ describe('queclink-parzer', () => {
       const raw = new Buffer('+RESP:GTFRI,080100,135790246811220,,,10,2,1,4.3,92,70.0,121.354335,31.222073,20090214013254,0460,0000,18d8,6141,00,0,4.3,92,70.0,121.354335,31.222073,20090101000000,0460,0000,18d8,6141,00,2000.0,12345:12:34,,80,,,,,,20090214093254,11F0$');
       const data = queclink.parse(raw);
       expect(data.raw).to.eql(raw.toString());
+      expect(data.manufacturer).to.eql('queclink');
       expect(data.device).to.eql('Queclink-GMT100');
       expect(data.type).to.eql('data');
       expect(data.imei).to.eql('135790246811220');
