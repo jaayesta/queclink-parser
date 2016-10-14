@@ -291,6 +291,7 @@ const getGV300W = raw => {
 
   const data = {
     raw: `${raw.toString()}$`,
+    manufacturer: 'queclink',
     device: 'Queclink-GV300W',
     type: 'data',
     imei: parsedData[2],
@@ -733,6 +734,7 @@ const getGV300 = raw => {
 
   const data = {
     raw: `${raw.toString()}$`,
+    manufacturer: 'queclink',
     device: 'Queclink-GV300',
     type: 'data',
     imei: parsedData[2],
@@ -1124,6 +1126,7 @@ const getGV200 = raw => {
 
   const data = {
     raw: `${raw.toString()}$`,
+    manufacturer: 'queclink',
     device: 'Queclink-GV200',
     type: 'data',
     imei: parsedData[2],
@@ -1676,6 +1679,7 @@ const getGMT100 = raw => {
 
   const data = {
     raw: `${raw.toString()}$`,
+    manufacturer: 'queclink',
     device: 'Queclink-GMT100',
     type: 'data',
     imei: parsedData[2],
@@ -2027,6 +2031,7 @@ const getGV55 = raw => {
 
   const data = {
     raw: `${raw.toString()}$`,
+    manufacturer: 'queclink',
     device: 'Queclink-GV55',
     type: 'data',
     imei: parsedData[2],
@@ -2358,7 +2363,12 @@ const getAckCommand = (raw, lang) => {
   const parsedData = rawData.split(',');
   const command = parsedData[0].split(':');
 
-  let data = {device: 'Queclink-COMMAND-OK', type: 'ok', 'serial': parsedData[parsedData.length -1]};
+  let data = {
+    manufacturer: 'queclink',
+    device: 'Queclink-COMMAND-OK',
+    type: 'ok',
+    serial: parsedData[parsedData.length -1]
+  };
   if (command[1] === 'GTSPD'){
     data.command = 'SETOVERSPEEDALARM';
   }
