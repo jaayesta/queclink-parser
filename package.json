@@ -25,6 +25,13 @@
     "parser"
   ],
   "author": "Jose Andres Ayestaran <ja.ayestaran@gmail.com>",
+  "contributors": [
+    {
+      "name" : "Leonardo Gatica",
+      "email" : "lgatica@protonmail.com",
+      "url" : "https://about.me/lgatica"
+    }
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jaayesta/queclink-parser/issues"
