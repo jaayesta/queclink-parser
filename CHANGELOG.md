@@ -1,3 +1,25 @@
+#### 0.2.11 (2016-10-18)
+
+##### Chores
+
+* **package:**
+  * Update yarn.lock ([6d1c2bfa](https://github.com/jaayesta/queclink-parser/commit/6d1c2bfadca2b1db3cbbb4b0898f729d3394fb3c))
+  * Update eslint ([49d7af96](https://github.com/jaayesta/queclink-parser/commit/49d7af967cc9d396fd06ef9027f9ae732d6f7008))
+  * Add contributors ([e5257002](https://github.com/jaayesta/queclink-parser/commit/e525700282cfb3f21b4d6e3c8aabd79a46cb694a))
+  * Update dependencies ([ee6ae837](https://github.com/jaayesta/queclink-parser/commit/ee6ae837a9ac0ab02c5f7784bd9c48af95211fa3))
+  * Update dependencies ([776e2e70](https://github.com/jaayesta/queclink-parser/commit/776e2e70ae69b30e37e4d187b1ff20c5470c05c7))
+  * Add support to yarnpkg ([1ccafcb9](https://github.com/jaayesta/queclink-parser/commit/1ccafcb95cceda79a806b0c51b3854be24787081))
+  * update mocha to version 3.1.2 ([5ac65abc](https://github.com/jaayesta/queclink-parser/commit/5ac65abc83e9838b8cee901a3561a5448fe15a61))
+  * update mocha to version 3.1.1 ([6f6cb6db](https://github.com/jaayesta/queclink-parser/commit/6f6cb6db85ac6c3bff6901985e38b876bf9607e4))
+  * update lodash to version 4.16.4 ([6cebd98a](https://github.com/jaayesta/queclink-parser/commit/6cebd98a3e88c2a6a6382250c17dace699f85feb))
+  * update eslint to version 3.7.1 ([5c7f034f](https://github.com/jaayesta/queclink-parser/commit/5c7f034ffc124785f844ae17bbaecbf9b0757f65))
+  * update lodash to version 4.16.3 ([2aec0db5](https://github.com/jaayesta/queclink-parser/commit/2aec0db5e64888cfbc0b62c85d336787b3d3dfd9))
+  * update eslint to version 3.7.0 ([13880b14](https://github.com/jaayesta/queclink-parser/commit/13880b14830c69f69e4104ee4824e1cff0768878))
+
+##### New Features
+
+* **parser:** Add manufacturer to data ([3f49062c](https://github.com/jaayesta/queclink-parser/commit/3f49062cb83375390a4cd71fe53a1cceae293a9a))
+
 #### 0.2.10 (2016-10-13)
 
 #### 0.2.9 (2016-10-13)
