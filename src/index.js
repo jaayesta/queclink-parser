@@ -29,6 +29,23 @@ const devices = {
   '27': 'GV300W'
 };
 
+const states = {
+  '16': 'Tow',
+  '1A': 'Fake Tow',
+  '11': 'Ignition Off Rest',
+  '12': 'Ignition Off Moving',
+  '21': 'Ingition On Rest',
+  '22': 'Ignition On Moving',
+  '41': 'Sensor Rest',
+  '42': 'Sesnor Motion'
+};
+
+const uartDeviceTypes = {
+  '0': 'No device',
+  '1': 'Digit Fuel Sensor',
+  '2': 'AC100 1 Wire Bus'
+};
+
 /*
   Checks if raw comes from a Queclink device
 */
@@ -147,6 +164,12 @@ const checkGps = (lng, lat) => {
 const getAlarm = (command, report) => {
   if(command === 'GTFRI' || command === 'GTERI'){
     return {type: 'Gps' };
+  }
+  else if(command === 'GTGSM'){
+    return {type: 'GSM_Report'};
+  }
+  else if(command === 'GTINF'){
+    return {type: 'General_Info_Report'};
   }
   else if(command === 'GTDIS'){
     const reportID = parseInt(report[0],10);
@@ -1180,10 +1203,241 @@ const getGV200 = raw => {
       hourmeter: parsedData[20]
     });
   }
+  // GPS with AC100 Devices Connected
+  else if (command[1] === 'GTERI') {
+    extend(data, {
+      alarm: getAlarm(command[1], null),
+      loc: { type: 'Point', coordinates: [ parseFloat(parsedData[12]), parseFloat(parsedData[13]) ] },
+      speed: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
+      gpsStatus: checkGps(parseFloat(parsedData[12]), parseFloat(parsedData[13])),
+      hdop: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
+      status: { //parsedData[24]
+        raw: parsedData[25]+parsedData[26],
+        sos: utils.hex2bin(parsedData[25][1])[1] === '1',
+        input: {
+          '4': utils.hex2bin(parsedData[25][1])[3] === '1',
+          '3': utils.hex2bin(parsedData[25][1])[2] === '1',
+          '2': utils.hex2bin(parsedData[25][1])[1] === '1',
+          '1': utils.hex2bin(parsedData[25][1])[0] === '1'
+        },
+        output: {
+          '4': utils.hex2bin(parsedData[26][1])[3] === '1',
+          '3': utils.hex2bin(parsedData[26][1])[2] === '1',
+          '2': utils.hex2bin(parsedData[26][1])[1] === '1',
+          '1': utils.hex2bin(parsedData[26][1])[0] === '1'
+        },
+        charge: parseFloat(parsedData[5]) > 5
+      },
+      azimuth: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
+      altitude: parsedData[11] != '' ? parseFloat(parsedData[11]) : null,
+      datetime: parsedData[14] != '' ? moment(`${parsedData[14]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      voltage: {
+        battery: null,//percentage
+        inputCharge: parsedData[5] != '' ? parseFloat(parsedData[4])/1000 : null,
+        ada: parsedData[22] != '' ? parseFloat(parsedData[22])/1000 : null,
+        adb: parsedData[23] != '' ? parseFloat(parsedData[23])/1000 : null,
+        adc: parsedData[24] != '' ? parseFloat(parsedData[24])/1000 : null
+      },
+      mcc: parsedData[15] != '' ? parseInt(parsedData[15],10) : null,
+      mnc: parsedData[16] != '' ? parseInt(parsedData[16],10) : null,
+      lac: parsedData[17] != '' ? parseInt(parsedData[17],16) : null,
+      cid: parsedData[18] != '' ? parseInt(parsedData[18],16) : null,
+      odometer: parsedData[20] != '' ? parseFloat(parsedData[20]) : null,
+      hourmeter: parsedData[21]
+    });
+
+    //External Data
+    const digitFuelSensor = utils.nHexDigit(utils.hex2bin(parsedData[4]),5)[4] === '1';
+    const AC100 = utils.nHexDigit(utils.hex2bin(parsedData[4]),5)[3] === '1';
+    const reserved = utils.nHexDigit(utils.hex2bin(parsedData[4]),5)[2] === '1';
+    const fuelLevelPercentage = utils.nHexDigit(utils.hex2bin(parsedData[4]),5)[1] === '1';
+    const fuelVolume = utils.nHexDigit(utils.hex2bin(parsedData[4]),5)[0] === '1';
+    const fuelSensorData = digitFuelSensor ? parsedData[28] : null;
+    const ac100DevicesConnected = (AC100 &&  digitFuelSensor) ? parseInt(parsedData[29],10) : ((AC100 &&  !digitFuelSensor) ? parseInt(parsedData[28],10) : 0);
+
+
+    const externalData = {
+      eriMask: {
+        raw: parsedData[4],
+        digitFuelSensor: digitFuelSensor,
+        AC100: AC100,
+        reserved: reserved,
+        fuelLevelPercentage: fuelLevelPercentage,
+        fuelVolume: fuelVolume
+      },
+      uartDeviceType: uartDeviceTypes[parsedData[27]]
+    };
+      
+    // Fuel Sensor  
+    if(parsedData[27] === '1'){
+      if(digitFuelSensor && !AC100){
+        extend(externalData, {
+          fuelSensorData: {
+            data: fuelSensorData,
+            sensorType: parsedData[29],
+            percentage: (fuelLevelPercentage && parsedData[30] != '') ? parseInt(parsedData[30],10) : null,
+            volume: ((fuelVolume && fuelLevelPercentage) && parsedData[31] != '') ? parseInt(parsedData[31],10) : ( ((fuelVolume && !fuelLevelPercentage) && parsedData[30] != '') ? parseInt(parsedData[30],10) : null)
+          },
+          AC100Devices: null
+        });
+      }
+      else if(!digitFuelSensor && AC100){
+        let ac100Devices = [];
+        let count = 29;
+        for(var i=0; i<ac100DevicesConnected; i++){
+          ac100Devices.push({
+            deviceNumber: parsedData[count],
+            deviceID: parsedData[count + 1],
+            deviceType: parsedData[count + 2],
+            deviceData: parsedData[count + 3]
+          });
+          count += 4;
+        }
+        extend(externalData, {
+          fuelSensorData: null,
+          AC100Devices: {
+            devicesCount: ac100DevicesConnected,
+            devices: ac100Devices
+          }
+        });
+      }
+      else if(digitFuelSensor && AC100){
+        let ac100Devices = [];
+        let count = (fuelVolume && fuelLevelPercentage) ? 33 : ((fuelVolume && !fuelLevelPercentage) ? 32 : 31);
+        for(var j=0; j<ac100DevicesConnected; j++){
+          ac100Devices.push({
+            deviceNumber: parsedData[count],
+            deviceID: parsedData[count + 1],
+            deviceType: parsedData[count + 2],
+            deviceData: parsedData[count + 3]
+          });
+          count += 4;
+        }
+        extend(externalData, {
+          fuelSensorData: {
+            data: fuelSensorData,
+            sensorType: parsedData[30],
+            percentage: (fuelLevelPercentage && parsedData[31] != '') ? parseInt(parsedData[31],10) : null,
+            volume: ((fuelVolume && fuelLevelPercentage) && parsedData[32] != '') ? parseInt(parsedData[32],10) : ( ((fuelVolume && !fuelLevelPercentage) && parsedData[31] != '') ? parseInt(parsedData[31],10) : null)
+          },
+          AC100Devices: {
+            devicesCount: ac100DevicesConnected,
+            devices: ac100Devices
+          }      
+        });
+      }
+    }
+    //AC100 1 Wire Bus
+    else if(parsedData[27] === '2'){
+      if(!digitFuelSensor && AC100){
+        let ac100Devices = [];
+        let count = 29;
+        for(var k=0; k<ac100DevicesConnected; k++){
+          ac100Devices.push({
+            deviceNumber: parsedData[count],
+            deviceID: parsedData[count + 1],
+            deviceType: parsedData[count + 2],
+            deviceData: parsedData[count + 3]
+          });
+          count += 4;
+        }
+        extend(externalData, {
+          fuelSensorData: null,
+          AC100Devices: {
+            devicesCount: ac100DevicesConnected,
+            devices: ac100Devices
+          }
+        });
+      }
+      else if(digitFuelSensor && !AC100){
+        extend(externalData, {
+          fuelSensorData: {
+            data: fuelSensorData,
+            sensorType: null,
+            percentage: null,
+            volume: null
+          },
+          AC100Devices: null
+        });
+      }
+      else if(digitFuelSensor && AC100){
+        let ac100Devices = [];
+        let count = 29;
+        for(var l=0; l<ac100DevicesConnected; l++){
+          ac100Devices.push({
+            deviceNumber: parsedData[count],
+            deviceID: parsedData[count + 1],
+            deviceType: parsedData[count + 2],
+            deviceData: parsedData[count + 3]
+          });
+          count += 4;
+        }
+        extend(externalData, {
+          fuelSensorData: {
+            data: fuelSensorData,
+            sensorType: null,
+            percentage: null,
+            volume: null
+          },
+          AC100Devices: {
+            devicesCount: ac100DevicesConnected,
+            devices: ac100Devices
+          }      
+        });
+      }
+    }
+    extend(data, {
+      externalData: externalData
+    });
+  } 
   //Heartbeat. It must response an ACK command
   else if (command[1] === 'GTHBD'){
     extend(data, {
       alarm: getAlarm(command[1], null)
+    });
+  }
+  // General Info Report
+  else if(command[1] === 'GTINF'){
+    extend(data, {
+      alarm: getAlarm(command[1], null),
+      state: states[parsedData[4]],
+      gsmInfo: {
+        SIM_ICC: parsedData[5],
+        RSSI_dBm: parsedData[6],
+        RSSI_quality: parsedData[7] != '' ? 100*(parseInt(parseFloat(parsedData[7])/7,10)) : null //Percentage
+      },
+      backupBattery: {
+        using: parsedData[10] === '1',
+        voltage: parsedData[11] != '' ? parseFloat(parsedData[11]) : null,
+        charging: parsedData[12] === '1'
+      },
+      externalGPSAntenna: parsedData[15] === '0',
+      status: {
+        raw: parsedData[18]+parsedData[19],
+        sos: utils.hex2bin(parsedData[18][1])[1] === '1',
+        input: {
+          '4': utils.hex2bin(parsedData[18][1])[3] === '1',
+          '3': utils.hex2bin(parsedData[18][1])[2] === '1',
+          '2': utils.hex2bin(parsedData[18][1])[1] === '1',
+          '1': utils.hex2bin(parsedData[18][1])[0] === '1'
+        },
+        output: {
+          '4': utils.hex2bin(parsedData[19][1])[3] === '1',
+          '3': utils.hex2bin(parsedData[19][1])[2] === '1',
+          '2': utils.hex2bin(parsedData[19][1])[1] === '1',
+          '1': utils.hex2bin(parsedData[19][1])[0] === '1'
+        },
+        charge: parsedData[8] === '1'
+      },
+      voltage: {
+        battery: parsedData[11] != '' ? parseInt(100*(parseFloat(parsedData[11])/5),10) : null,//percentage
+        inputCharge: parsedData[17] != '' ? parseFloat(parsedData[17])/1000 : null,
+        ada: null,
+        adb: null,
+        adc: null
+      },
+      lastFixUTCTime: parsedData[16] != '' ? moment(`${parsedData[16]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      timezoneOffset: parsedData[20]
     });
   }
   // Common Alarms
