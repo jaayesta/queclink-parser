@@ -1,6 +1,6 @@
 {
   "name": "queclink-parser",
-  "version": "0.2.10",
+  "version": "0.2.11",
   "description": "Parse raw data from Queclink devices",
   "main": "src",
   "scripts": {
@@ -27,9 +27,9 @@
   "author": "Jose Andres Ayestaran <ja.ayestaran@gmail.com>",
   "contributors": [
     {
-      "name" : "Leonardo Gatica",
-      "email" : "lgatica@protonmail.com",
-      "url" : "https://about.me/lgatica"
+      "name": "Leonardo Gatica",
+      "email": "lgatica@protonmail.com",
+      "url": "https://about.me/lgatica"
     }
   ],
   "license": "MIT",
