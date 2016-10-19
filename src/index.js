@@ -245,7 +245,7 @@ const getAlarm = (command, report) => {
   else if(command === 'GTEPS'){
     return {type: 'External_Low_battery'};
   }
-  else if(command === 'GTAIS'){
+  else if(command === 'GTAIS' || command === 'GTMAI'){
     const reportID = parseInt(report[0],10);
     const reportType = parseInt(report[1],10);
     return {type: 'AI', number: reportID , status: reportType === '0'};
@@ -1471,9 +1471,10 @@ const getGV200 = raw => {
     });
   }
   //Low voltage for analog input
-  else if(command[1] === 'GTAIS'){
+  else if(command[1] === 'GTAIS' || command[1] === 'GTMAI'){
+    const alarm = getAlarm(command[1], parsedData[5]);
     extend(data, {
-      alarm: getAlarm(command[1], parsedData[5]),
+      alarm: alarm,
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[11]), parseFloat(parsedData[12]) ] },
       speed: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
       gpsStatus: checkGps(parseFloat(parsedData[11]), parseFloat(parsedData[12])),
@@ -1484,17 +1485,17 @@ const getGV200 = raw => {
       datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
       voltage: {
         battery: null,//percentage
-        inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4]): null,
-        ada: parsedData[21] != '' ? parseFloat(parsedData[21])/1000 : null,
-        adb: parsedData[22] != '' ? parseFloat(parsedData[22])/1000 : null,
-        adc: parsedData[23] != '' ? parseFloat(parsedData[22])/1000 : null
+        inputCharge: (parsedData[4] != '' && command[1] === 'GTAIS') ? parseFloat(parsedData[4]): null,
+        ada: (alarm.number === 1 && parsedData[4] != '') ? parseFloat(parsedData[4])/1000 : null,
+        adb: (alarm.number === 2 && parsedData[4] != '') ? parseFloat(parsedData[4])/1000 : null,
+        adc: (alarm.number === 3 && parsedData[4] != '') ? parseFloat(parsedData[4])/1000 : null
       },
       mcc: parsedData[14] != '' ? parseInt(parsedData[14],10) : null,
       mnc: parsedData[15] != '' ? parseInt(parsedData[15],10) : null,
       lac: parsedData[16] != '' ? parseInt(parsedData[16],16) : null,
       cid: parsedData[17] != '' ? parseInt(parsedData[17],16) : null,
       odometer: parsedData[19] != '' ? parseFloat(parsedData[19]) : null,
-      hourmeter: parsedData[20]
+      hourmeter: null
     });
   }
   //Event report (It uses the last GPS data and MCC info)
