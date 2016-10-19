@@ -1,6 +1,6 @@
 {
   "name": "queclink-parser",
-  "version": "0.2.10",
+  "version": "0.2.11",
   "description": "Parse raw data from Queclink devices",
   "main": "src",
   "scripts": {
@@ -25,6 +25,13 @@
     "parser"
   ],
   "author": "Jose Andres Ayestaran <ja.ayestaran@gmail.com>",
+  "contributors": [
+    {
+      "name": "Leonardo Gatica",
+      "email": "lgatica@protonmail.com",
+      "url": "https://about.me/lgatica"
+    }
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jaayesta/queclink-parser/issues"
@@ -36,7 +43,7 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
-    "eslint": "3.7.1",
+    "eslint": "3.8.1",
     "generate-changelog": "^1.0.2",
     "istanbul": "^0.4.5",
     "mocha": "^3.1.2"
