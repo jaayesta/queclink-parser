@@ -1491,7 +1491,7 @@ const getGV200 = raw => {
         inputCharge: (parsedData[4] != '' && command[1] === 'GTAIS') ? parseFloat(parsedData[4]): null,
         ada: (alarm.number === 1 && parsedData[4] != '') ? parseFloat(parsedData[4])/1000 : null,
         adb: (alarm.number === 2 && parsedData[4] != '') ? parseFloat(parsedData[4])/1000 : null,
-        adc: (alarm.number === 3 && parsedData[4] != '') ? parseFloat(parsedData[4])/1000 : null
+        adc: (alarm.type === 'SOS_Button' && parsedData[4] != '') ? parseFloat(parsedData[4])/1000 : null
       },
       mcc: parsedData[14] != '' ? parseInt(parsedData[14],10) : null,
       mnc: parsedData[15] != '' ? parseInt(parsedData[15],10) : null,
