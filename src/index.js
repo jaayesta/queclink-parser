@@ -1173,18 +1173,18 @@ const getGV200 = raw => {
       hdop: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       status: { //parsedData[24]
         raw: parsedData[24]+parsedData[25],
-        sos: utils.hex2bin(parsedData[24][1])[1] === '1',
+        sos: false,
         input: {
-          '4': utils.hex2bin(parsedData[24][1])[3] === '1',
-          '3': utils.hex2bin(parsedData[24][1])[2] === '1',
-          '2': utils.hex2bin(parsedData[24][1])[1] === '1',
-          '1': utils.hex2bin(parsedData[24][1])[0] === '1'
+          '4': utils.nHexDigit(utils.hex2bin(parsedData[24][1]),4)[0] === '1',
+          '3': utils.nHexDigit(utils.hex2bin(parsedData[24][1]),4)[1] === '1',
+          '2': utils.nHexDigit(utils.hex2bin(parsedData[24][1]),4)[2] === '1',
+          '1': utils.nHexDigit(utils.hex2bin(parsedData[24][1]),4)[3] === '1'
         },
         output: {
-          '4': utils.hex2bin(parsedData[25][1])[3] === '1',
-          '3': utils.hex2bin(parsedData[25][1])[2] === '1',
-          '2': utils.hex2bin(parsedData[25][1])[1] === '1',
-          '1': utils.hex2bin(parsedData[25][1])[0] === '1'
+          '4': utils.nHexDigit(utils.hex2bin(parsedData[25][1]),4)[0] === '1',
+          '3': utils.nHexDigit(utils.hex2bin(parsedData[25][1]),4)[1] === '1',
+          '2': utils.nHexDigit(utils.hex2bin(parsedData[25][1]),4)[2] === '1',
+          '1': utils.nHexDigit(utils.hex2bin(parsedData[25][1]),4)[3] === '1'
         },
         charge: parseFloat(parsedData[4]) > 5
       },
@@ -1216,18 +1216,18 @@ const getGV200 = raw => {
       hdop: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
       status: { //parsedData[24]
         raw: parsedData[25]+parsedData[26],
-        sos: utils.hex2bin(parsedData[25][1])[1] === '1',
+        sos: false,
         input: {
-          '4': utils.hex2bin(parsedData[25][1])[3] === '1',
-          '3': utils.hex2bin(parsedData[25][1])[2] === '1',
-          '2': utils.hex2bin(parsedData[25][1])[1] === '1',
-          '1': utils.hex2bin(parsedData[25][1])[0] === '1'
+          '4': utils.nHexDigit(utils.hex2bin(parsedData[25][1]),4)[0] === '1',
+          '3': utils.nHexDigit(utils.hex2bin(parsedData[25][1]),4)[1] === '1',
+          '2': utils.nHexDigit(utils.hex2bin(parsedData[25][1]),4)[2] === '1',
+          '1': utils.nHexDigit(utils.hex2bin(parsedData[25][1]),4)[3] === '1'
         },
         output: {
-          '4': utils.hex2bin(parsedData[26][1])[3] === '1',
-          '3': utils.hex2bin(parsedData[26][1])[2] === '1',
-          '2': utils.hex2bin(parsedData[26][1])[1] === '1',
-          '1': utils.hex2bin(parsedData[26][1])[0] === '1'
+          '4': utils.nHexDigit(utils.hex2bin(parsedData[26][1]),4)[0] === '1',
+          '3': utils.nHexDigit(utils.hex2bin(parsedData[26][1]),4)[1] === '1',
+          '2': utils.nHexDigit(utils.hex2bin(parsedData[26][1]),4)[2] === '1',
+          '1': utils.nHexDigit(utils.hex2bin(parsedData[26][1]),4)[3] === '1'
         },
         charge: parseFloat(parsedData[5]) > 5
       },
@@ -1415,22 +1415,22 @@ const getGV200 = raw => {
         charging: parsedData[12] === '1'
       },
       externalGPSAntenna: parsedData[15] === '0',
-      status: {
+      status: { //parsedData[24]
         raw: parsedData[18]+parsedData[19],
-        sos: utils.hex2bin(parsedData[18][1])[1] === '1',
+        sos: false,
         input: {
-          '4': utils.hex2bin(parsedData[18][1])[3] === '1',
-          '3': utils.hex2bin(parsedData[18][1])[2] === '1',
-          '2': utils.hex2bin(parsedData[18][1])[1] === '1',
-          '1': utils.hex2bin(parsedData[18][1])[0] === '1'
+          '4': utils.nHexDigit(utils.hex2bin(parsedData[18][1]),4)[0] === '1',
+          '3': utils.nHexDigit(utils.hex2bin(parsedData[18][1]),4)[1] === '1',
+          '2': utils.nHexDigit(utils.hex2bin(parsedData[18][1]),4)[2] === '1',
+          '1': utils.nHexDigit(utils.hex2bin(parsedData[18][1]),4)[3] === '1'
         },
         output: {
-          '4': utils.hex2bin(parsedData[19][1])[3] === '1',
-          '3': utils.hex2bin(parsedData[19][1])[2] === '1',
-          '2': utils.hex2bin(parsedData[19][1])[1] === '1',
-          '1': utils.hex2bin(parsedData[19][1])[0] === '1'
+          '4': utils.nHexDigit(utils.hex2bin(parsedData[19][1]),4)[0] === '1',
+          '3': utils.nHexDigit(utils.hex2bin(parsedData[19][1]),4)[1] === '1',
+          '2': utils.nHexDigit(utils.hex2bin(parsedData[19][1]),4)[2] === '1',
+          '1': utils.nHexDigit(utils.hex2bin(parsedData[19][1]),4)[3] === '1'
         },
-        charge: parsedData[8] === '1'
+        charge: parseFloat(parsedData[8]) > 5
       },
       voltage: {
         battery: parsedData[11] != '' ? parseInt(100*(parseFloat(parsedData[11])/5),10) : null,//percentage
