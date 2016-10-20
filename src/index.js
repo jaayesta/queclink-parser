@@ -1430,7 +1430,7 @@ const getGV200 = raw => {
           '2': utils.nHexDigit(utils.hex2bin(parsedData[19][1]),4)[2] === '1',
           '1': utils.nHexDigit(utils.hex2bin(parsedData[19][1]),4)[3] === '1'
         },
-        charge: parseFloat(parsedData[8]) > 5
+        charge: parsedData[8] === '1'
       },
       voltage: {
         battery: parsedData[11] != '' ? parseInt(100*(parseFloat(parsedData[11])/5),10) : null,//percentage
