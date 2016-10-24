@@ -2667,7 +2667,10 @@ const parseCommand = data => {
     outputs[3] = !outputs[3] ? 0: outputs[3];
     digit = state === 'on' ? 1 : 0;
     outputs[port-1] = digit;
-    command = `AT+GTOUT=${password},${outputs[0]},0,0,${outputs[1]},0,0,${outputs[2]},0,0,${outputs[3]},0,0,0,0,,,${serialId}$`;
+    // Output 2 works with Wave Shape 2, 15 seconds once
+    const output2_duration = (port === 2 && digit === 1) ? 15 : 0;
+    const output2_toggle = (port === 2 && digit === 1) ? 1 : 0;
+    command = `AT+GTOUT=${password},${outputs[0]},0,0,${outputs[1]},${output2_duration},${output2_toggle},${outputs[2]},0,0,${outputs[3]},0,0,0,0,,,${serialId}$`;
   }
 
   else if (data.instruction === 'clear_mem') {
