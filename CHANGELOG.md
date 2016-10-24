@@ -1,3 +1,9 @@
+#### 0.2.19 (2016-10-24)
+
+##### Bug Fixes
+
+* **parser:** Fix parse coordinates ([7601677c](https://github.com/jaayesta/queclink-parser/commit/7601677c4050ebb4bc9cf8709bae7530f5a8f18a))
+
 #### 0.2.18 (2016-10-24)
 
 ##### Bug Fixes
