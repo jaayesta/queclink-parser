@@ -741,7 +741,7 @@ const getGV300W = raw => {
     });
   }
   //Check gps data
-  if (data.loc !== null) {
+  if (data.loc !== null && typeof data.loc !== 'undefined') {
     if(data.loc.coordinates[0] === 0 ||  isNaN(data.loc.coordinates[0]) || data.loc.coordinates[1] === 0 || isNaN(data.loc.coordinates[1])){
       data.loc = null;
     }
@@ -1140,7 +1140,7 @@ const getGV300 = raw => {
     });
   }
   //Check gps data
-  if (data.loc !== null) {
+  if (data.loc !== null && typeof data.loc !== 'undefined') {
     if(data.loc.coordinates[0] === 0 ||  isNaN(data.loc.coordinates[0]) || data.loc.coordinates[1] === 0 || isNaN(data.loc.coordinates[1])){
       data.loc = null;
     }
@@ -1931,7 +1931,7 @@ const getGV200 = raw => {
     });
   }
   //Check gps data
-  if (data.loc !== null) {
+  if (data.loc !== null && typeof data.loc !== 'undefined') {
     if(data.loc.coordinates[0] === 0 ||  isNaN(data.loc.coordinates[0]) || data.loc.coordinates[1] === 0 || isNaN(data.loc.coordinates[1])){
       data.loc = null;
     }
@@ -2289,7 +2289,7 @@ const getGMT100 = raw => {
     });
   }
   //Check gps data
-  if (data.loc !== null) {
+  if (data.loc !== null && typeof data.loc !== 'undefined') {
     if(data.loc.coordinates[0] === 0 ||  isNaN(data.loc.coordinates[0]) || data.loc.coordinates[1] === 0 || isNaN(data.loc.coordinates[1])){
       data.loc = null;
     }
@@ -2634,7 +2634,7 @@ const getGV55 = raw => {
     });
   }
   //Check gps data
-  if (data.loc !== null) {
+  if (data.loc !== null && typeof data.loc !== 'undefined') {
     if(data.loc.coordinates[0] === 0 ||  isNaN(data.loc.coordinates[0]) || data.loc.coordinates[1] === 0 || isNaN(data.loc.coordinates[1])){
       data.loc = null;
     }
