@@ -1927,8 +1927,10 @@ const getGV200 = raw => {
     });
   }
   //Check gps data
-  if(data.loc.coordinates[0] === 0 ||  isNaN(data.loc.coordinates[0]) || data.loc.coordinates[1] === 0 || isNaN(data.loc.coordinates[1])){
-    data.loc = null;
+  if (data.loc !== null) {
+    if(data.loc.coordinates[0] === 0 ||  isNaN(data.loc.coordinates[0]) || data.loc.coordinates[1] === 0 || isNaN(data.loc.coordinates[1])){
+      data.loc = null;
+    }
   }
   return data;
 };
