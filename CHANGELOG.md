@@ -1,3 +1,13 @@
+#### 0.2.17 (2016-10-24)
+
+##### Chores
+
+* **package:** Update moment ([081568e5](https://github.com/jaayesta/queclink-parser/commit/081568e51610ad16f4fe57cd06eb7f2ad4f8f63f))
+
+##### Bug Fixes
+
+* **parser:** Acept duration and toggle in parseCommand. Fix serial and counter in parse ack ([205257ee](https://github.com/jaayesta/queclink-parser/commit/205257ee55948b8e47d0092fcf614b0cbbcd7eea))
+
 #### 0.2.16 (2016-10-24)
 
 #### 0.2.15 (2016-10-24)
