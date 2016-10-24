@@ -126,10 +126,10 @@ describe('queclink-parzer', () => {
       expect(data.hdop).to.eql(0);
       expect(data.status.raw).to.eql('0800');
       expect(data.status.sos).to.be.false;
-      expect(data.status.input[1]).to.be.true;
+      expect(data.status.input[1]).to.be.false;
       expect(data.status.input[2]).to.be.false;
       expect(data.status.input[3]).to.be.false;
-      expect(data.status.input[4]).to.be.false;
+      expect(data.status.input[4]).to.be.true;
       expect(data.status.output[1]).to.be.false;
       expect(data.status.output[2]).to.be.false;
       expect(data.status.output[3]).to.be.false;
