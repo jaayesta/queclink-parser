@@ -1,3 +1,9 @@
+#### 0.2.15 (2016-10-24)
+
+##### Bug Fixes
+
+* **test:** Fix input status test ([1e37125b](https://github.com/jaayesta/queclink-parser/commit/1e37125b04a40603050cdfa15bbc118f88a660e1))
+
 #### 0.2.14 (2016-10-20)
 
 #### 0.2.13 (2016-10-20)
