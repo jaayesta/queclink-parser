@@ -1278,8 +1278,8 @@ const getGV200 = raw => {
       },
       uartDeviceType: uartDeviceTypes[parsedData[27]]
     };
-      
-    // Fuel Sensor  
+
+    // Fuel Sensor
     if(parsedData[27] === '1'){
       if(digitFuelSensor && !AC100){
         extend(externalData, {
@@ -1334,7 +1334,7 @@ const getGV200 = raw => {
           AC100Devices: {
             devicesCount: ac100DevicesConnected,
             devices: ac100Devices
-          }      
+          }
         });
       }
     }
@@ -1393,14 +1393,14 @@ const getGV200 = raw => {
           AC100Devices: {
             devicesCount: ac100DevicesConnected,
             devices: ac100Devices
-          }      
+          }
         });
       }
     }
     extend(data, {
       externalData: externalData
     });
-  } 
+  }
   //Heartbeat. It must response an ACK command
   else if (command[1] === 'GTHBD'){
     extend(data, {
@@ -2645,7 +2645,8 @@ const getAckCommand = (raw, lang) => {
     manufacturer: 'queclink',
     device: 'Queclink-COMMAND-OK',
     type: 'ok',
-    serial: parsedData[parsedData.length -1]
+    serial: parseInt(utils.hex2dec(parsedData[4]), 10),
+    counter: parseInt(utils.hex2dec(parsedData[parsedData.length -1]), 10)
   };
   if (command[1] === 'GTSPD'){
     data.command = 'SETOVERSPEEDALARM';
@@ -2672,7 +2673,7 @@ const parseCommand = data => {
   const serial = data.serial || 0;
   const serialId = utils.nHexDigit(utils.dec2hex(serial),4);
 
-  let state, digit, port, max_speed, interval, validity, mode, prevOutputs;
+  let state, digit, port, max_speed, interval, validity, mode, prevOutputs, prevDurations, prevToggles;
 
   //Digital Outputs
   if (/^[1-4]{1}_(on|off)$/.test(data.instruction)) {
@@ -2680,6 +2681,8 @@ const parseCommand = data => {
     port = parseInt(_data[0],10);
     state = _data[1];
     prevOutputs = data.previousOutput || {'1': false, '2': false, '3': false, '4': false};
+    prevDurations = data.previousDuration || {'1': 0, '2': 0, '3': 0, '4': 0};
+    prevToggles = data.previousToggle || {'1': 0, '2': 0, '3': 0, '4': 0};
     const outputs = Object.keys(prevOutputs).map(key => prevOutputs[key] === true ? 1 : 0);
     outputs[0] = !outputs[0] ? 0: outputs[0];
     outputs[1] = !outputs[1] ? 0: outputs[1];
@@ -2687,10 +2690,13 @@ const parseCommand = data => {
     outputs[3] = !outputs[3] ? 0: outputs[3];
     digit = state === 'on' ? 1 : 0;
     outputs[port-1] = digit;
-    // Output 2 works with Wave Shape 2, 15 seconds once
-    const output2_duration = (port === 2 && digit === 1) ? 15 : 0;
-    const output2_toggle = (port === 2 && digit === 1) ? 1 : 0;
-    command = `AT+GTOUT=${password},${outputs[0]},0,0,${outputs[1]},${output2_duration},${output2_toggle},${outputs[2]},0,0,${outputs[3]},0,0,0,0,,,${serialId}$`;
+    const do1 = `${outputs[0]},${prevDurations['1']},${prevToggles['1']}`;
+    const do2 = `${outputs[1]},${prevDurations['2']},${prevToggles['2']}`;
+    const do3 = `${outputs[2]},${prevDurations['3']},${prevToggles['3']}`;
+    const do4 = `${outputs[3]},${prevDurations['4']},${prevToggles['4']}`;
+    const longOperation = (data.longOperation || false) ? '1' : '0';
+    const dosReport = (data.dosReport || false) ? '1' : '0';
+    command = `AT+GTOUT=${password},${do1},${do2},${do3},${do4},${longOperation},${dosReport},,,${serialId}$`;
   }
 
   else if (data.instruction === 'clear_mem') {
