@@ -152,7 +152,7 @@ const getProtocolVersion = protocol => {
 */
 const checkGps = (lng, lat) => {
   //loc: { type: 'Point', coordinates: [ parseFloat(parsedData[11]), parseFloat(parsedData[12]) ] },
-  if(lng != 0 && lat != 0){
+  if(lng != 0 && lat != 0 && !isNaN(lng) && !isNaN(lat)){
     return true;
   }
   return false;
@@ -740,6 +740,10 @@ const getGV300W = raw => {
       alarm: getAlarm(command[1], null)
     });
   }
+  //Check gps data
+  if(data.loc.coordinates[0] === 0 ||  isNaN(data.loc.coordinates[0]) || data.loc.coordinates[1] === 0 || isNaN(data.loc.coordinates[1])){
+    data.loc = null;
+  }
   return data;
 };
 
@@ -1132,6 +1136,10 @@ const getGV300 = raw => {
     extend(data, {
       alarm: getAlarm(command[1], null)
     });
+  }
+  //Check gps data
+  if(data.loc.coordinates[0] === 0 ||  isNaN(data.loc.coordinates[0]) || data.loc.coordinates[1] === 0 || isNaN(data.loc.coordinates[1])){
+    data.loc = null;
   }
   return data;
 };
@@ -1918,6 +1926,10 @@ const getGV200 = raw => {
       alarm: getAlarm(command[1], null)
     });
   }
+  //Check gps data
+  if(data.loc.coordinates[0] === 0 ||  isNaN(data.loc.coordinates[0]) || data.loc.coordinates[1] === 0 || isNaN(data.loc.coordinates[1])){
+    data.loc = null;
+  }
   return data;
 };
 
@@ -2270,6 +2282,10 @@ const getGMT100 = raw => {
       alarm: getAlarm(command[1], null)
     });
   }
+  //Check gps data
+  if(data.loc.coordinates[0] === 0 ||  isNaN(data.loc.coordinates[0]) || data.loc.coordinates[1] === 0 || isNaN(data.loc.coordinates[1])){
+    data.loc = null;
+  }
   return data;
 };
 
@@ -2608,6 +2624,10 @@ const getGV55 = raw => {
     extend(data, {
       alarm: getAlarm(command[1], null)
     });
+  }
+  //Check gps data
+  if(data.loc.coordinates[0] === 0 ||  isNaN(data.loc.coordinates[0]) || data.loc.coordinates[1] === 0 || isNaN(data.loc.coordinates[1])){
+    data.loc = null;
   }
   return data;
 };
