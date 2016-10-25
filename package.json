@@ -1,6 +1,6 @@
 {
   "name": "queclink-parser",
-  "version": "0.2.16",
+  "version": "0.2.20",
   "description": "Parse raw data from Queclink devices",
   "main": "src",
   "scripts": {
@@ -39,7 +39,7 @@
   "homepage": "https://github.com/jaayesta/queclink-parser#readme",
   "dependencies": {
     "lodash": "^4.16.4",
-    "moment": "^2.15.1"
+    "moment": "^2.15.2"
   },
   "devDependencies": {
     "chai": "^3.5.0",

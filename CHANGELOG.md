@@ -1,3 +1,31 @@
+#### 0.2.20 (2016-10-24)
+
+##### Bug Fixes
+
+* **parser:** Fix parse coordinates ([28c94cae](https://github.com/jaayesta/queclink-parser/commit/28c94cae4f773c50464da012763ee417950aff88))
+
+#### 0.2.19 (2016-10-24)
+
+##### Bug Fixes
+
+* **parser:** Fix parse coordinates ([7601677c](https://github.com/jaayesta/queclink-parser/commit/7601677c4050ebb4bc9cf8709bae7530f5a8f18a))
+
+#### 0.2.18 (2016-10-24)
+
+##### Bug Fixes
+
+* **parser:** Fix parse coordinates ([0e493ed6](https://github.com/jaayesta/queclink-parser/commit/0e493ed601d88e352093abf2f01acc04a1328c5b))
+
+#### 0.2.17 (2016-10-24)
+
+##### Chores
+
+* **package:** Update moment ([081568e5](https://github.com/jaayesta/queclink-parser/commit/081568e51610ad16f4fe57cd06eb7f2ad4f8f63f))
+
+##### Bug Fixes
+
+* **parser:** Acept duration and toggle in parseCommand. Fix serial and counter in parse ack ([205257ee](https://github.com/jaayesta/queclink-parser/commit/205257ee55948b8e47d0092fcf614b0cbbcd7eea))
+
 #### 0.2.16 (2016-10-24)
 
 #### 0.2.15 (2016-10-24)

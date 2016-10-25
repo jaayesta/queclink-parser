@@ -20,7 +20,8 @@ describe('queclink-parzer', () => {
       expect(data.type).to.eql('ok');
       expect(data.command).to.eql('SETOVERSPEEDALARM');
       expect(data.message).to.eql('Ajuste de la alarma de exceso de velocidad');
-      expect(data.serial).to.eql('0017');
+      expect(data.serial).to.eql(24);
+      expect(data.counter).to.eql(23);
     });
 
     it('should return command di ok data', () => {
@@ -31,7 +32,8 @@ describe('queclink-parzer', () => {
       expect(data.type).to.eql('ok');
       expect(data.command).to.eql('SETIOSWITCH');
       expect(data.message).to.eql('Cambio de estado en las salidas digitales');
-      expect(data.serial).to.eql('0017');
+      expect(data.serial).to.eql(24);
+      expect(data.counter).to.eql(23);
     });
 
     it('should return command clear mem ok data', () => {
@@ -42,7 +44,8 @@ describe('queclink-parzer', () => {
       expect(data.type).to.eql('ok');
       expect(data.command).to.eql('CLEARBUF');
       expect(data.message).to.eql('Memoria interna vaciada');
-      expect(data.serial).to.eql('0017');
+      expect(data.serial).to.eql(24);
+      expect(data.counter).to.eql(23);
     });
 
     it('should return command clear mem ok data with lang', () => {
@@ -53,7 +56,8 @@ describe('queclink-parzer', () => {
       expect(data.type).to.eql('ok');
       expect(data.command).to.eql('CLEARBUF');
       expect(data.message).to.eql('Clear internal buffer');
-      expect(data.serial).to.eql('0017');
+      expect(data.serial).to.eql(24);
+      expect(data.counter).to.eql(23);
     });
 
     it('should return GV300 data', () => {
@@ -271,6 +275,34 @@ describe('queclink-parzer', () => {
       };
       const raw = queclink.parseCommand(data);
       expect(raw).to.eql('AT+GTOUT=101010,1,0,0,0,0,0,0,0,0,1,0,0,0,0,,,1010$');
+    });
+
+    it('should return raw di on with duration command', () => {
+      const data = {
+        password: '101010',
+        serial: 4112,
+        instruction: '2_on',
+        previousOutput: {
+          '1': false,
+          '2': true,
+          '3': false,
+          '4': false
+        },
+        previousDuration: {
+          '1': 0,
+          '2': 15,
+          '3': 0,
+          '4': 0
+        },
+        previousToggle: {
+          '1': 0,
+          '2': 1,
+          '3': 0,
+          '4': 0
+        }
+      };
+      const raw = queclink.parseCommand(data);
+      expect(raw).to.eql('AT+GTOUT=101010,0,0,0,1,15,1,0,0,0,0,0,0,0,0,,,1010$');
     });
 
     it('should return raw clear mem command', () => {
