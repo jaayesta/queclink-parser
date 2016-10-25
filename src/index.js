@@ -741,8 +741,10 @@ const getGV300W = raw => {
     });
   }
   //Check gps data
-  if(data.loc.coordinates[0] === 0 ||  isNaN(data.loc.coordinates[0]) || data.loc.coordinates[1] === 0 || isNaN(data.loc.coordinates[1])){
-    data.loc = null;
+  if(data.loc){
+    if(data.loc.coordinates[0] === 0 ||  isNaN(data.loc.coordinates[0]) || data.loc.coordinates[1] === 0 || isNaN(data.loc.coordinates[1])){
+      data.loc = null;
+    }
   }
   return data;
 };
@@ -1138,8 +1140,10 @@ const getGV300 = raw => {
     });
   }
   //Check gps data
-  if(data.loc.coordinates[0] === 0 ||  isNaN(data.loc.coordinates[0]) || data.loc.coordinates[1] === 0 || isNaN(data.loc.coordinates[1])){
-    data.loc = null;
+  if(data.loc){
+    if(data.loc.coordinates[0] === 0 ||  isNaN(data.loc.coordinates[0]) || data.loc.coordinates[1] === 0 || isNaN(data.loc.coordinates[1])){
+      data.loc = null;
+    }
   }
   return data;
 };
@@ -1927,7 +1931,12 @@ const getGV200 = raw => {
     });
   }
   //Check gps data
-  if(data.loc.coordinates[0] === 0 ||  isNaN(data.loc.coordinates[0]) || data.loc.coordinates[1] === 0 || isNaN(data.loc.coordinates[1])){
+  if(data.loc){
+    if(data.loc.coordinates[0] === 0 ||  isNaN(data.loc.coordinates[0]) || data.loc.coordinates[1] === 0 || isNaN(data.loc.coordinates[1])){
+      data.loc = null;
+    }
+  }
+  else{
     data.loc = null;
   }
   return data;
@@ -2283,8 +2292,10 @@ const getGMT100 = raw => {
     });
   }
   //Check gps data
-  if(data.loc.coordinates[0] === 0 ||  isNaN(data.loc.coordinates[0]) || data.loc.coordinates[1] === 0 || isNaN(data.loc.coordinates[1])){
-    data.loc = null;
+  if(data.loc){
+    if(data.loc.coordinates[0] === 0 ||  isNaN(data.loc.coordinates[0]) || data.loc.coordinates[1] === 0 || isNaN(data.loc.coordinates[1])){
+      data.loc = null;
+    }
   }
   return data;
 };
@@ -2626,8 +2637,10 @@ const getGV55 = raw => {
     });
   }
   //Check gps data
-  if(data.loc.coordinates[0] === 0 ||  isNaN(data.loc.coordinates[0]) || data.loc.coordinates[1] === 0 || isNaN(data.loc.coordinates[1])){
-    data.loc = null;
+  if(data.loc){
+    if(data.loc.coordinates[0] === 0 ||  isNaN(data.loc.coordinates[0]) || data.loc.coordinates[1] === 0 || isNaN(data.loc.coordinates[1])){
+      data.loc = null;
+    }
   }
   return data;
 };
