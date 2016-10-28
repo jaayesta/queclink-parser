@@ -217,7 +217,13 @@ const getAlarm = (command, report) => {
   }
   else if (command === 'GTIGF'){
     const duration = report != '' ? parseInt(report,10): null;
-    return {type: 'DI', number: 1, status: false, duration: duration};
+    return {
+      type: 'DI',
+      number: 1,
+      status: false,
+      duration: duration,
+      message: messages[command]
+    };
   }
   else if(command === 'GTPNA'){
     return {type: 'Power', status: true, message: messages[command]};
@@ -306,13 +312,13 @@ const getAlarm = (command, report) => {
     return {
       type:'Vehicle_Start_Status',
       status: false,
-      message: messages[command]['0']
+      message: messages[command]
     };
   }
   else if(command === 'GTRMD'){
     return {
       type: 'Roaming',
-      status: !report === '1',
+      status: report === '1',
       message: messages[command][report]
     };
   }
@@ -329,7 +335,7 @@ const getAlarm = (command, report) => {
     return {
       type: 'Gps_Status',
       status: report === '1',
-      message: messages[command][report]
+      message: messages[command][typeof report !== 'undefined' ? '1': '0']
     };
   }
   else if(command === 'GTCAN'){
