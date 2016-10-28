@@ -2729,6 +2729,9 @@ const parseCommand = data => {
   else if (/^reboot$/.test(data.instruction)) {
     command = `AT+GTRTO=${password},3,,,,,,${serialId}$`;
   }
+  else if(data.instruction === 'set_driver'){
+    command = `AT+GTIDA=${password},1,1,1,#{data.driverID},30,3,,,,,1,0,0,0,,,,,${serialId}$`;
+  }
   return command;
 };
 
