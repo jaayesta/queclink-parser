@@ -289,7 +289,7 @@ const getAlarm = (command, report) => {
   else if(command === 'GTAIS' || command === 'GTMAI'){
     const reportID = parseInt(report[0],10);
     const reportType = parseInt(report[1],10);
-    if(reportID === 3){
+    if(reportID === 2){
       return {type: 'SOS_Button', message: messages[command][reportID]};
     }
     return {type: 'AI', number: reportID , status: reportType === '0'};
@@ -378,7 +378,12 @@ const getAlarm = (command, report) => {
   else if(command === 'GTDOS'){
     const output_id = report.split(',')[0] != null ? parseInt(report.split(',')[0],10) : null;
     const output_status = report.split(',')[0] != null ? report.split(',')[1] : null;
-    return {type: 'D0', number: output_id, status: output_status === '1'};
+    return {
+      type: 'D0',
+      number: output_id,
+      status: output_status === '1',
+      message: messages[command][output_status].replace('port', output_id)
+    };
   }
   else{
     return {type: command};

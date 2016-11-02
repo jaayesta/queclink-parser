@@ -32,10 +32,10 @@
     "1": "Antena GPS desconectada"
   },
   "GTAIS": {
-    "3": "Botón SOS presionado"
+    "2": "Botón SOS presionado"
   },
   "GTMAI": {
-    "3": "Botón SOS presionado"
+    "2": "Botón SOS presionado"
   },
   "GTEPS": "Batería de Fuente de Poder Baja",
   "GTJDR": "Vehículo Jammeado",
@@ -71,5 +71,9 @@
   "GTDIS": {
     "1": "Entrada digital port activada",
     "0": "Entrada digital port desactivada"
+  },
+  "GTDOS": {
+    "1": "Salida digital port activada",
+    "0": "Salida digital port desactivada"
   }
 }
