@@ -1,3 +1,22 @@
+### 0.3.0 (2016-11-2)
+
+##### Chores
+
+* **package:**
+  * Update yarn ([0dc6ea87](https://github.com/jaayesta/queclink-parser/commit/0dc6ea8701d2e2e289535de8a2f72cb226d80dbe))
+  * Update eslint ([0ab45caa](https://github.com/jaayesta/queclink-parser/commit/0ab45caac1a5ac6155807dc448a4dcb2d8679bd7))
+* **test:** Add alarm tests ([f0357dd0](https://github.com/jaayesta/queclink-parser/commit/f0357dd0d332edaa95a387f68308412ea45c993f))
+
+##### New Features
+
+* **messages:**
+  * Add message to alarm ([38a19655](https://github.com/jaayesta/queclink-parser/commit/38a19655bde2bd0fd6769e7ad80095f208596fe7))
+  * Add new spanish messages ([33103a42](https://github.com/jaayesta/queclink-parser/commit/33103a4261f2a6110840d7caa5602669a6391643))
+
+##### Bug Fixes
+
+* **parser:** Fix parse alarms ([2de4dc46](https://github.com/jaayesta/queclink-parser/commit/2de4dc4625a9a916a815c41edc4ef2413aa58589))
+
 #### 0.2.24 (2016-10-28)
 
 #### 0.2.23 (2016-10-28)

@@ -1,6 +1,6 @@
 {
   "name": "queclink-parser",
-  "version": "0.2.24",
+  "version": "0.3.0",
   "description": "Parse raw data from Queclink devices",
   "main": "src",
   "scripts": {
@@ -43,7 +43,7 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
-    "eslint": "3.8.1",
+    "eslint": "3.9.0",
     "generate-changelog": "^1.0.2",
     "istanbul": "^0.4.5",
     "mocha": "^3.1.2"

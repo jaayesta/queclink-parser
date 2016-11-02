@@ -162,6 +162,7 @@ const checkGps = (lng, lat) => {
   Gets the alarm type
 */
 const getAlarm = (command, report) => {
+  const messages = langs['es'];
   if(command === 'GTFRI' || command === 'GTERI'){
     return {type: 'Gps' };
   }
@@ -174,42 +175,68 @@ const getAlarm = (command, report) => {
   else if(command === 'GTDIS'){
     const reportID = parseInt(report[0],10);
     const reportType = parseInt(report[1],10);
-    return {type: 'DI', number: reportID, status: reportType === 1};
+    return {
+      type: 'DI',
+      number: reportID,
+      status: reportType === 1,
+      message: messages[command][reportType].replace('port', reportID)
+    };
   }
   else if(command === 'GTTOW'){
-    return {type: 'Towing'};
+    return {type: 'Towing', message: messages[command]};
   }
   else if(command === 'GTSOS'){
-    return {type: 'SOS_Button'};
+    return {type: 'SOS_Button', message: messages[command]};
   }
   else if(command === 'GTSPD'){
     const reportType = parseInt(report[1],10);
-    return {type: 'Over_Speed', status: reportType === 0};
+    return {
+      type: 'Over_Speed',
+      status: reportType === 0,
+      message: messages[command][reportType]
+    };
   }
   else if (command === 'GTIGL'){
     const reportType = parseInt(report[1],16);
-    return {type: 'DI', number: 1, status: reportType === 0};
+    return {
+      type: 'DI',
+      number: 1,
+      status: reportType === 0,
+      message: messages[command][reportType === 0 ? '1': '0']
+    };
   }
   else if (command === 'GTIGN'){
     const duration = report != '' ? parseInt(report,10): null;
-    return {type: 'DI', number: 1, status: true, duration: duration};
+    return {
+      type: 'DI',
+      number: 1,
+      status: true,
+      duration: duration,
+      message: messages[command]
+    };
   }
   else if (command === 'GTIGF'){
     const duration = report != '' ? parseInt(report,10): null;
-    return {type: 'DI', number: 1, status: false, duration: duration};
+    return {
+      type: 'DI',
+      number: 1,
+      status: false,
+      duration: duration,
+      message: messages[command]
+    };
   }
   else if(command === 'GTPNA'){
-    return {type: 'Power', status: true};
+    return {type: 'Power', status: true, message: messages[command]};
   }
   else if(command === 'GTPFA'){
-    return {type: 'Power', status: false};
+    return {type: 'Power', status: false, message: messages[command]};
   }
   //Change for connected to power supply
   else if(command === 'GTMPN'){
-    return {type: 'Charge', status: true};
+    return {type: 'Charge', status: true, message: messages[command]};
   }
   else if(command === 'GTMPF'){
-    return {type: 'Charge', status: false};
+    return {type: 'Charge', status: false, message: messages[command]};
   }
   // else if(command === 'GTMPN'){
   //   return {type: 'Power_Supply', status: true};
@@ -218,83 +245,135 @@ const getAlarm = (command, report) => {
   //   return {type: 'Power_Supply', status: false};
   // }
   else if(command === 'GTBTC'){
-    return {type: 'Charging', status: true};
+    return {type: 'Charging', status: true, message: messages[command]};
   }
   else if(command === 'GTSTC'){
-    return {type: 'Charging', status: false};
+    return {type: 'Charging', status: false, message: messages[command]};
   }
   else if(command === 'GTBPL'){
-    return {type: 'Low_Battery'};
+    return {type: 'Low_Battery', message: messages[command]};
   }
   else if(command === 'GTIDN'){
-    return {type: 'Idling', status: true};
+    return {type: 'Idling', status: true, message: messages[command]};
   }
   else if(command === 'GTIDF'){
     const duration = report != '' ? parseInt(report,10): null;
-    return {type: 'Idling', status: false, duration: duration };
+    return {
+      type: 'Idling',
+      status: false,
+      duration: duration,
+      message: messages[command]
+    };
   }
   else if(command === 'GTJDR'){
-    return {type: 'Jamming', status: true};
+    return {type: 'Jamming', status: true, message: messages[command]};
   }
   else if(command === 'GTJDS'){
-    return {type: 'Jamming', status: report === '2'};
+    return {
+      type: 'Jamming',
+      status: report === '2',
+      message: messages[command][report]
+    };
   }
   else if(command === 'GTGPJ'){
-    return {type: 'Jamming', status: report === '3', extra: 'GPS_Jamming'};
+    return {
+      type: 'Jamming',
+      status: report === '3',
+      extra: 'GPS_Jamming',
+      message: messages[command][report]
+    };
   }
   else if(command === 'GTEPS'){
-    return {type: 'External_Low_battery'};
+    return {type: 'External_Low_battery', message: messages[command]};
   }
   else if(command === 'GTAIS' || command === 'GTMAI'){
     const reportID = parseInt(report[0],10);
     const reportType = parseInt(report[1],10);
     if(reportID === 3){
-      return {type: 'SOS_Button'};
+      return {type: 'SOS_Button', message: messages[command][reportID]};
     }
     return {type: 'AI', number: reportID , status: reportType === '0'};
   }
   else if(command === 'GTANT'){
-    return {type: 'GPS_Antena', status: report === '0'};
+    return {
+      type: 'GPS_Antena',
+      status: report === '0',
+      message: messages[command][report]
+    };
   }
   else if(command === 'GTSTR'){
-    return {type:'Vehicle_Start_Status', status: true };
+    return {
+      type:'Vehicle_Start_Status',
+      status: true,
+      message: messages[command]
+    };
   }
-  else if(command === 'GTSTP' || command === 'GTLSP'){
-    return {type:'Vehicle_Start_Status', status: false };
+  else if(command === 'GTSTP' || command === 'GTLSP') {
+    return {
+      type:'Vehicle_Start_Status',
+      status: false,
+      message: messages[command]
+    };
   }
   else if(command === 'GTRMD'){
-    return {type: 'Roaming', status: !report === '1'};
+    return {
+      type: 'Roaming',
+      status: report === '1',
+      message: messages[command][report]
+    };
   }
   else if(command === 'GTHBD'){
-    return {type: 'Heartbeat'};
+    return {type: 'Heartbeat', message: messages[command]};
   }
   else if(command === 'GTSTT'){
-    return {type: 'Motion_State_Changed'};
+    return {type: 'Motion_State_Changed', message: messages[command]};
   }
   else if(command === 'GTPDP'){
-    return {type: 'GPRS_Connection_Established'};
+    return {type: 'GPRS_Connection_Established', message: messages[command]};
   }
   else if(command === 'GTGSS'){
-    return {type: 'Gps_Status', status: report === '1'};
+    return {
+      type: 'Gps_Status',
+      status: report === '1',
+      message: messages[command][typeof report !== 'undefined' ? '1': '0']
+    };
   }
   else if(command === 'GTCAN'){
     const reportType = parseInt(report,10);
-    return {type: 'CAN_Bus', report: reportType};
+    return {
+      type: 'CAN_Bus',
+      report: reportType,
+      message: messages[command].replace('data', reportType)
+    };
   }
   else if(command === 'GTTMP'){
     const number = parseInt(report[0],10);
-    return {type: 'Outside_Temperature', number: number, status: report[1] === '0'}; //0 means outside the range, 1 means inside
+    return {
+      type: 'Outside_Temperature',
+      number: number,
+      status: report[1] === '0', //0 means outside the range, 1 means inside
+      message: messages[command][report[1]]
+    };
   }
   else if(command === 'GTFLA'){
     const before = report.split(',')[0] != null ? parseInt(report.split(',')[0],10) : 0;
     const now = report.split(',')[1] != null ? parseInt(report.split(',')[1],10) : 0;
     const consumption = before-now;
-    return {type: 'Unusual_Fuel_Consumption', status: consumption};
+    return {
+      type: 'Unusual_Fuel_Consumption',
+      status: consumption,
+      message: messages[command].replace('consumption', consumption)
+    };
   }
   else if(command === 'GTIDA'){
     const status = report.split(',')[1] != null ? parseInt(report.split(',')[1],10) : null;
     const driverID = report.split(',')[0] != null ? report.split(',')[0] : null;
-    return {type: 'Driver_Identification', status: status === 1 , driverID: driverID};
+    return {
+      type: 'Driver_Identification',
+      status: status === 1,
+      driverID: driverID,
+      message: messages[command][status]
+    };
   }
   else if(command === 'GTDOS'){
     const output_id = report.split(',')[0] != null ? parseInt(report.split(',')[0],10) : null;

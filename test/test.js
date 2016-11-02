@@ -375,4 +375,216 @@ describe('queclink-parzer', () => {
       expect(imei).to.eq('867844003012625');
     });
   });
+
+  describe('alarms', () => {
+    it('should return GTDIS alarm', () => {
+      const raw = new Buffer('+RESP:GTDIS,060100,135790246811220,,,20,1,1,4.3,92,70.0,121.354335,31.222073,20090214013254,0460,0000,18d8,6141,00,2000.0,20090214093254,11F0$');
+      const data = queclink.parse(raw);
+      expect(data.alarm.type).to.eq('DI');
+      expect(data.alarm.number).to.eq(2);
+      expect(data.alarm.status).to.be.false;
+      expect(data.alarm.message).to.eq('Entrada digital 2 desactivada');
+    });
+    it('should return GTTOW alarm', () => {
+      const raw = new Buffer('+RESP:GTTOW,060100,135790246811220,,,10,1,1,4.3,92,70.0,121.354335,31.222073,20090214013254,0460,0000,18d8,6141,00,2000.0,20090214093254,11F0$');
+      const data = queclink.parse(raw);
+      expect(data.alarm.type).to.eq('Towing');
+      expect(data.alarm.message).to.eq('Vehículo remolcado');
+    });
+    it('should return GTSOS alarm', () => {
+      const raw = new Buffer('+RESP:GTSOS,060100,135790246811220,,,00,1,1,4.3,92,70.0,121.354335,31.222073,20090214013254,0460,0000,18d8,6141,00,2000.0,20090214093254,11F0$');
+      const data = queclink.parse(raw);
+      expect(data.alarm.type).to.eq('SOS_Button');
+      expect(data.alarm.message).to.eq('Botón SOS presionado');
+    });
+    it('should return GTSPD alarm', () => {
+      const raw = new Buffer('+RESP:GTSPD,060100,135790246811220,,,00,1,1,4.3,92,70.0,121.354335,31.222073,20090214013254,0460,0000,18d8,6141,00,2000.0,20090214093254,11F0$');
+      const data = queclink.parse(raw);
+      expect(data.alarm.type).to.eq('Over_Speed');
+      expect(data.alarm.status).to.be.true;
+      expect(data.alarm.message).to.eq('Exceso de Velocidad');
+    });
+    it('should return GTIGL alarm', () => {
+      const raw = new Buffer('+RESP:GTIGL,060100,135790246811220,,,00,1,1,4.3,92,70.0,121.354335,31.222073,20090214013254,0460,0000,18d8,6141,00,2000.0,20090214093254,11F0$');
+      const data = queclink.parse(raw);
+      expect(data.alarm.type).to.eq('DI');
+      expect(data.alarm.number).to.eq(1);
+      expect(data.alarm.status).to.be.true;
+      expect(data.alarm.message).to.eq('Entrada digital 1 activada');
+    });
+    it('should return GTIGF alarm', () => {
+      const raw = new Buffer('+RESP:GTIGF,060100,135790246811220,,1200,0,4.3,92,70.0,121.354335,31.222073,20090214013254,0460,0000,18d8,6141,00,12345:12:34,2000.0,20090214093254,11F0$');
+      const data = queclink.parse(raw);
+      expect(data.alarm.type).to.eq('DI');
+      expect(data.alarm.number).to.eq(1);
+      expect(data.alarm.status).to.be.false;
+      expect(data.alarm.message).to.eq('Entrada digital 1 desactivada');
+    });
+    it('should return GTPNA alarm', () => {
+      const raw = new Buffer('+RESP:GTPNA,060100,135790246811220,,20090214093254,11F0$');
+      const data = queclink.parse(raw);
+      expect(data.alarm.type).to.eq('Power');
+      expect(data.alarm.status).to.be.true;
+      expect(data.alarm.message).to.eq('Dispositivo Encendido');
+    });
+    it('should return GTPFA alarm', () => {
+      const raw = new Buffer('+RESP:GTPFA,060100,135790246811220,,20090214093254,11F0$');
+      const data = queclink.parse(raw);
+      expect(data.alarm.type).to.eq('Power');
+      expect(data.alarm.status).to.be.false;
+      expect(data.alarm.message).to.eq('Dispositivo Apagado');
+    });
+    it('should return GTMPN alarm', () => {
+      const raw = new Buffer('+RESP:GTMPN,060100,135790246811220,,0,4.3,92,70.0,121.354335,31.222073,20090214013254,0460,0000,18d8,6141,00,20090214093254,11F0$');
+      const data = queclink.parse(raw);
+      expect(data.alarm.type).to.eq('Charge');
+      expect(data.alarm.status).to.be.true;
+      expect(data.alarm.message).to.eq('Conectado a la fuente de poder');
+    });
+    it('should return GTMPF alarm', () => {
+      const raw = new Buffer('+RESP:GTMPF,060100,135790246811220,,0,4.3,92,70.0,121.354335,31.222073,20090214013254,0460,0000,18d8,6141,00,20090214093254,11F0$');
+      const data = queclink.parse(raw);
+      expect(data.alarm.type).to.eq('Charge');
+      expect(data.alarm.status).to.be.false;
+      expect(data.alarm.message).to.eq('Desconectado de la fuente de poder');
+    });
+    it('should return GTSTC alarm', () => {
+      const raw = new Buffer('+RESP:GTSTC,060100,135790246811220,,,0,4.3,92,70.0,121.354335,31.222073,20090214013254,0460,0000,18d8,6141,00,20090214093254,11F0$');
+      const data = queclink.parse(raw);
+      expect(data.alarm.type).to.eq('Charging');
+      expect(data.alarm.status).to.be.false;
+      expect(data.alarm.message).to.eq('Se dejo de cargar batería');
+    });
+    it('should return GTBPL alarm', () => {
+      const raw = new Buffer('+RESP:GTBPL,060100,135790246811220,,3.53,0,4.3,92,70.0,121.354335,31.222073,20090214013254,0460,0000,18d8,6141,00,20090214093254,11F0$');
+      const data = queclink.parse(raw);
+      expect(data.alarm.type).to.eq('Low_Battery');
+      expect(data.alarm.message).to.eq('Batería baja');
+    });
+    it('should return GTIDN alarm', () => {
+      const raw = new Buffer('+RESP:GTIDN,060100,135790246811220,,,,0,4.3,92,70.0,121.354335,31.222073,20090214013254,0460,0000,18d8,6141,00,2000.0,20090214093254,11F0$');
+      const data = queclink.parse(raw);
+      expect(data.alarm.type).to.eq('Idling');
+      expect(data.alarm.status).to.be.true;
+      expect(data.alarm.message).to.eq('Vehículo en Ralenti');
+    });
+    it('should return GTIDF alarm', () => {
+      const raw = new Buffer('+RESP:GTIDF,060100,135790246811220,,22,300,0,4.3,92,70.0,121.354335,31.222073,20090214013254,0460,0000,18d8,6141,00,2000.0,20090214093254,11F0$');
+      const data = queclink.parse(raw);
+      expect(data.alarm.type).to.eq('Idling');
+      expect(data.alarm.status).to.be.false;
+      expect(data.alarm.message).to.eq('Vehículo fuera de Ralenti');
+    });
+    it('should return GTJDS alarm', () => {
+      const raw = new Buffer('+RESP:GTJDS,040408,135790246811220,,2,0,4.3,92,70.0,121.354335,31.222073,20090214013254,0460,0000,18d8,6141,00,20090214093254,11F0$');
+      const data = queclink.parse(raw);
+      expect(data.alarm.type).to.eq('Jamming');
+      expect(data.alarm.status).to.be.true;
+      expect(data.alarm.message).to.eq('Vehículo Jammeado');
+    });
+    it('should return GTJDR alarm', () => {
+      const raw = new Buffer('+RESP:GTJDR,040408,135790246811220,,0,4.3,92,70.0,121.354335,31.222073,20090214013254,0460,0000,18d8,6141,00,20090214093254,11F0$');
+      const data = queclink.parse(raw);
+      expect(data.alarm.type).to.eq('Jamming');
+      expect(data.alarm.status).to.be.true;
+      expect(data.alarm.message).to.eq('Vehículo Jammeado');
+    });
+    it('should return GTEPS alarm', () => {
+      const raw = new Buffer('+RESP:GTEPS,060100,135790246811220,,13500,00,1,1,4.3,92,70.0,121.354335,31.222073,20090214013254,0460,0000,18d8,6141,00,2000.0,20090214093254,11F0$');
+      const data = queclink.parse(raw);
+      expect(data.alarm.type).to.eq('External_Low_battery');
+      expect(data.alarm.message).to.eq('Batería de Fuente de Poder Baja');
+    });
+    it('should return GTMAI alarm', () => {
+      const raw = new Buffer('+RESP:GTMAI,040100,135790246811220,,1980,11,1,1,4.3,92,70.0,121.354335,31.222073,20090214013254,0460,0000,18d8,6141,00,2000.0,20090214093254,11F0$');
+      const data = queclink.parse(raw);
+      expect(data.alarm.type).to.eq('AI');
+      expect(data.alarm.number).to.eq(1);
+      expect(data.alarm.status).to.be.false;
+    });
+    it('should return GTAIS alarm', () => {
+      const raw = new Buffer('+RESP:GTAIS,040100,135790246811220,,13500,00,1,1,4.3,92,70.0,121.354335,31.222073,20090214013254,0460,0000,18d8,6141,00,2000.0,20090214093254,11F0$');
+      const data = queclink.parse(raw);
+      expect(data.alarm.type).to.eq('AI');
+      expect(data.alarm.number).to.eq(0);
+      expect(data.alarm.status).to.be.false;
+    });
+    it('should return GTANT alarm', () => {
+      const raw = new Buffer('+RESP:GTANT,040100,135790246811220,,0,0,4.3,92,70.0,121.354335,31.222073,20090214013254,0460,0000,18d8,6141,00,20090214093254,11F0$');
+      const data = queclink.parse(raw);
+      expect(data.alarm.type).to.eq('GPS_Antena');
+      expect(data.alarm.status).to.be.true;
+      expect(data.alarm.message).to.eq('Antena GPS conectada');
+    });
+    it('should return GTSTR alarm', () => {
+      const raw = new Buffer('+RESP:GTSTR,060100,135790246811220,,,,0,4.3,92,70.0,121.354335,31.222073,20090214013254,0460,0000,18d8,6141,00,2000.0,20090214093254,11F0$');
+      const data = queclink.parse(raw);
+      expect(data.alarm.type).to.eq('Vehicle_Start_Status');
+      expect(data.alarm.status).to.be.true;
+      expect(data.alarm.message).to.eq('Partida de vehículo inicia');
+    });
+    it('should return GTLSP alarm', () => {
+      const raw = new Buffer('+RESP:GTLSP,060100,135790246811220,,,,0,4.3,92,70.0,121.354335,31.222073,20090214013254,0460,0000,18d8,6141,00,2000.0,20090214093254,11F0$');
+      const data = queclink.parse(raw);
+      expect(data.alarm.type).to.eq('Vehicle_Start_Status');
+      expect(data.alarm.status).to.be.false;
+      expect(data.alarm.message).to.eq('Partida de vehículo finalizada');
+    });
+    it('should return GTSTP alarm', () => {
+      const raw = new Buffer('+RESP:GTSTP,060100,135790246811220,,,,0,4.3,92,70.0,121.354335,31.222073,20090214013254,0460,0000,18d8,6141,00,2000.0,20090214093254,11F0$');
+      const data = queclink.parse(raw);
+      expect(data.alarm.type).to.eq('Vehicle_Start_Status');
+      expect(data.alarm.status).to.be.false;
+      expect(data.alarm.message).to.eq('Partida de vehículo finalizada');
+    });
+    it('should return GTRMD alarm', () => {
+      const raw = new Buffer('+RESP:GTRMD,060228,862170011507322,,1,0,0.0,0,83.9,117.201281,31.833017,20130917071326,0460,0000,5678,2079,00,20130917071330,00A4$');
+      const data = queclink.parse(raw);
+      expect(data.alarm.type).to.eq('Roaming');
+      expect(data.alarm.status).to.be.true;
+      expect(data.alarm.message).to.eq('Roaming activado');
+    });
+    it('should return GTSTT alarm', () => {
+      const raw = new Buffer('+RESP:GTSTT,060100,135790246811220,,16,0,4.3,92,70.0,121.354335,31.222073,20090214013254,0460,0000,18d8,6141,00,20090214093254,11F0$');
+      const data = queclink.parse(raw);
+      expect(data.alarm.type).to.eq('Motion_State_Changed');
+      expect(data.alarm.message).to.eq('Movimiento de dispositivo detectado');
+    });
+    it('should return GTPDP alarm', () => {
+      const raw = new Buffer('+RESP:GTPDP,060100,135790246811220,,20090214093254,11F0$');
+      const data = queclink.parse(raw);
+      expect(data.alarm.type).to.eq('GPRS_Connection_Established');
+      expect(data.alarm.message).to.eq('Conexión GPRS establecida');
+    });
+    it('should return GTGSS alarm', () => {
+      const raw = new Buffer('+RESP:GTGSS,060100,135790246811220,,1,9,11,,0,4.3,92,70.0,121.354335,31.222073,20090214013254,0460,0000,18d8,6141,00,20090214093254,11F0$');
+      const data = queclink.parse(raw);
+      expect(data.alarm.type).to.eq('Gps_Status');
+      expect(data.alarm.status).to.be.false;
+      expect(data.alarm.message).to.eq('Desconectado de GPS');
+    });
+    it('should return GTTMP alarm', () => {
+      const raw = new Buffer('+RESP:GTTMP,04040B,862170013467608,NMX_Beta,,0,31,1,0,0.4,0,2.2,121.390957,31.164567,20130115083120,0460,0000,1877,0873,00,0.0,00000:00:00,2791,2639,2691,09,09,,,,28967B41040000F1,,25,20130115163122,01AA$');
+      const data = queclink.parse(raw);
+      expect(data.alarm.type).to.eq('Outside_Temperature');
+      expect(data.alarm.number).to.eq(3);
+      expect(data.alarm.status).to.be.false;
+      expect(data.alarm.message).to.eq('Regreso a temperatura dentro de rango');
+    });
+    it('should return GTFLA alarm', () => {
+      const raw = new Buffer('+RESP:GTFLA,040408,135790246811220,,2,92,70,0,4.3,92,70.0,121.354335,31.222073,20090214013254,0460,0000,18d8,6141,00,20090214093254,11F0$');
+      const data = queclink.parse(raw);
+      expect(data.alarm.type).to.eq('Unusual_Fuel_Consumption');
+      expect(data.alarm.status).to.eq(22);
+      expect(data.alarm.message).to.eq('Combustible reducido en 22%');
+    });
+    it('should return GTIDA alarm', () => {
+      const raw = new Buffer('+RESP:GTIDA,06020A,862170013895931,,,D2C4FBC5,1,1,1,0.8,0,22.2,117.198630,31.845229,20120802121626,0460,0000,5663,2BB9,00,0.0,,,,,20120802121627,008E$');
+      const data = queclink.parse(raw);
+      expect(data.alarm.type).to.eq('Driver_Identification');
+      expect(data.alarm.driverID).to.eq('D2C4FBC5');
+      expect(data.alarm.status).to.be.true;
+      expect(data.alarm.message).to.eq('Conductor identificado autorizado');
+    });
+  });
 });

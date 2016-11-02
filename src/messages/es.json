@@ -2,5 +2,74 @@
   "SETOVERSPEEDALARM": "Ajuste de la alarma de exceso de velocidad",
   "SETIOSWITCH": "Cambio de estado en las salidas digitales",
   "CLEARBUF": "Memoria interna vaciada",
-  "default": "Última acción"
+  "default": "Última acción",
+  "GTIDA": {
+    "1": "Conductor identificado autorizado",
+    "0": "Conductor identificado no autorizado"
+  },
+  "GTFLA": "Combustible reducido en consumption%",
+  "GTTMP": {
+    "0": "Temperatura fuera de rango",
+    "1": "Regreso a temperatura dentro de rango"
+  },
+  "GTCAN": "Reporte CAN BUS: data",
+  "GTGSS": {
+    "1": "Conectado a GPS",
+    "0": "Desconectado de GPS"
+  },
+  "GTPDP": "Conexión GPRS establecida",
+  "GTSTT": "Movimiento de dispositivo detectado",
+  "GTHBD": "Conexión viva",
+  "GTRMD": {
+    "1": "Roaming activado",
+    "0": "Roaming desactivado"
+  },
+  "GTSTP": "Partida de vehículo finalizada",
+  "GTLSP": "Partida de vehículo finalizada",
+  "GTSTR": "Partida de vehículo inicia",
+  "GTANT": {
+    "0": "Antena GPS conectada",
+    "1": "Antena GPS desconectada"
+  },
+  "GTAIS": {
+    "3": "Botón SOS presionado"
+  },
+  "GTMAI": {
+    "3": "Botón SOS presionado"
+  },
+  "GTEPS": "Batería de Fuente de Poder Baja",
+  "GTJDR": "Vehículo Jammeado",
+  "GTJDS": {
+    "1": "Cese de jammer",
+    "2": "Vehículo Jammeado"
+  },
+  "GTGPJ": {
+    "1": "Cese de jammer",
+    "2": "Vehículo Jammeado",
+    "3": "Vehículo Jammeado (GPS)"
+  },
+  "GTIDF": "Vehículo fuera de Ralenti",
+  "GTIDN": "Vehículo en Ralenti",
+  "GTBPL": "Batería baja",
+  "GTSTC": "Se dejo de cargar batería",
+  "GTBTC": "Cargando batería",
+  "GTMPF": "Desconectado de la fuente de poder",
+  "GTMPN": "Conectado a la fuente de poder",
+  "GTPFA": "Dispositivo Apagado",
+  "GTPNA": "Dispositivo Encendido",
+  "GTIGF": "Entrada digital 1 desactivada",
+  "GTIGL": {
+    "1": "Entrada digital 1 activada",
+    "0": "Entrada digital 1 desactivada"
+  },
+  "GTSPD": {
+    "0": "Exceso de Velocidad",
+    "1": "Retorno a velocidad permitida"
+  },
+  "GTSOS": "Botón SOS presionado",
+  "GTTOW": "Vehículo remolcado",
+  "GTDIS": {
+    "1": "Entrada digital port activada",
+    "0": "Entrada digital port desactivada"
+  }
 }
