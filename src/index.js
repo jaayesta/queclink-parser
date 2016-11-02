@@ -296,6 +296,11 @@ const getAlarm = (command, report) => {
     const driverID = report.split(',')[0] != null ? report.split(',')[0] : null;
     return {type: 'Driver_Identification', status: status === 1 , driverID: driverID};
   }
+  else if(command === 'GTDOS'){
+    const output_id = report.split(',')[0] != null ? parseInt(report.split(',')[0],10) : null;
+    const output_status = report.split(',')[0] != null ? report.split(',')[1] : null;
+    return {type: 'D0', number: output_id, status: output_status === '1'};
+  }
   else{
     return {type: command};
   }
@@ -1911,6 +1916,32 @@ const getGV200 = raw => {
         overSpeedTime: parsedData[27],
         overSpeedEngineTime: parsedData[28]
       }
+    });
+  }
+  else if(command[1] === 'GTDOS'){
+    extend(data,{
+      alarm: getAlarm(command[1], `${parsedData[4]},${parsedData[5]}`),
+      loc: { type: 'Point', coordinates: [ parseFloat(parsedData[10]), parseFloat(parsedData[11])]},
+      speed: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
+      gpsStatus: checkGps(parseFloat(parsedData[10]), parseFloat(parsedData[11])),
+      hdop: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
+      status: null,
+      azimuth: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
+      altitude: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
+      datetime: parsedData[12] != '' ? moment(`${parsedData[12]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      voltage: {
+        battery: null,
+        inputCharge: null,
+        ada: null,
+        adb: null,
+        adc: null
+      },
+      mcc: parsedData[13] != '' ? parseInt(parsedData[13],10) : null,
+      mnc: parsedData[14] != '' ? parseInt(parsedData[14],10) : null,
+      lac: parsedData[15] != '' ? parseInt(parsedData[15],16) : null,
+      cid: parsedData[16] != '' ? parseInt(parsedData[16],16) : null,
+      odometer: null,
+      hourmeter: null
     });
   }
   else{
