@@ -379,7 +379,7 @@ const getAlarm = (command, report) => {
     const output_id = report.split(',')[0] != null ? parseInt(report.split(',')[0],10) : null;
     const output_status = report.split(',')[0] != null ? report.split(',')[1] : null;
     return {
-      type: 'D0',
+      type: 'DO',
       number: output_id,
       status: output_status === '1',
       message: messages[command][output_status].replace('port', output_id)
