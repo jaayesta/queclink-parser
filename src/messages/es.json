@@ -2,6 +2,7 @@
   "SETOVERSPEEDALARM": "Ajuste de la alarma de exceso de velocidad",
   "SETIOSWITCH": "Cambio de estado en las salidas digitales",
   "CLEARBUF": "Memoria interna vaciada",
+  "REBOOT": "Dispositivo Reiniciado",
   "default": "Última acción",
   "GTIDA": {
     "1": "Conductor identificado autorizado",

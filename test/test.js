@@ -37,27 +37,27 @@ describe('queclink-parzer', () => {
     });
 
     it('should return command clear mem ok data', () => {
-      const raw = new Buffer('+ACK:GTRTO,350302,867844003012625,,0018,20040101000148,0017$');
+      const raw = new Buffer('+ACK:GTRTO,350401,867844003101634,,RESET,005f,20161102204524,028C$');
       const data = queclink.parse(raw);
       expect(data.manufacturer).to.eql('queclink');
       expect(data.device).to.eql('Queclink-COMMAND-OK');
       expect(data.type).to.eql('ok');
       expect(data.command).to.eql('CLEARBUF');
       expect(data.message).to.eql('Memoria interna vaciada');
-      expect(data.serial).to.eql(24);
-      expect(data.counter).to.eql(23);
+      expect(data.serial).to.eql(95);
+      expect(data.counter).to.eql(652);
     });
 
-    it('should return command clear mem ok data with lang', () => {
-      const raw = new Buffer('+ACK:GTRTO,350302,867844003012625,,0018,20040101000148,0017$');
-      const data = queclink.parse(raw, {lang: 'en'});
+    it('should return command reboot ok data', () => {
+      const raw = new Buffer('+ACK:GTRTO,350401,867844003101634,,REBOOT,0060,20161102204545,028F$');
+      const data = queclink.parse(raw);
       expect(data.manufacturer).to.eql('queclink');
       expect(data.device).to.eql('Queclink-COMMAND-OK');
       expect(data.type).to.eql('ok');
-      expect(data.command).to.eql('CLEARBUF');
-      expect(data.message).to.eql('Clear internal buffer');
-      expect(data.serial).to.eql(24);
-      expect(data.counter).to.eql(23);
+      expect(data.command).to.eql('REBOOT');
+      expect(data.message).to.eql('Dispositivo Reiniciado');
+      expect(data.serial).to.eql(96);
+      expect(data.counter).to.eql(655);
     });
 
     it('should return GV300 data', () => {
