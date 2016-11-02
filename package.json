@@ -1,6 +1,6 @@
 {
   "name": "queclink-parser",
-  "version": "0.2.22",
+  "version": "0.2.24",
   "description": "Parse raw data from Queclink devices",
   "main": "src",
   "scripts": {

@@ -1382,17 +1382,14 @@ const getGV200 = raw => {
           ac100Devices.push({
             deviceNumber: parsedData[count],
             deviceID: parsedData[count + 1],
-            deviceType: parsedData[count + 2],
-            deviceData: parsedData[count + 3]
+            // deviceType: parsedData[count + 2],
+            deviceData: parsedData[count + 2]
           });
           count += 4;
         }
         extend(externalData, {
           fuelSensorData: null,
-          AC100Devices: {
-            devicesCount: ac100DevicesConnected,
-            devices: ac100Devices
-          }
+          AC100Devices: ac100Devices
         });
       }
       else if(digitFuelSensor && AC100){
@@ -1402,8 +1399,8 @@ const getGV200 = raw => {
           ac100Devices.push({
             deviceNumber: parsedData[count],
             deviceID: parsedData[count + 1],
-            deviceType: parsedData[count + 2],
-            deviceData: parsedData[count + 3]
+            // deviceType: parsedData[count + 2],
+            deviceData: parsedData[count + 2]
           });
           count += 4;
         }
@@ -1414,10 +1411,7 @@ const getGV200 = raw => {
             percentage: (fuelLevelPercentage && parsedData[31] != '') ? parseInt(parsedData[31],10) : null,
             volume: ((fuelVolume && fuelLevelPercentage) && parsedData[32] != '') ? parseInt(parsedData[32],10) : ( ((fuelVolume && !fuelLevelPercentage) && parsedData[31] != '') ? parseInt(parsedData[31],10) : null)
           },
-          AC100Devices: {
-            devicesCount: ac100DevicesConnected,
-            devices: ac100Devices
-          }
+          AC100Devices: ac100Devices
         });
       }
     }
@@ -1430,17 +1424,14 @@ const getGV200 = raw => {
           ac100Devices.push({
             deviceNumber: parsedData[count],
             deviceID: parsedData[count + 1],
-            deviceType: parsedData[count + 2],
-            deviceData: parsedData[count + 3]
+            // deviceType: parsedData[count + 2],
+            deviceData: parsedData[count + 2] ? parseFloat(utils.hex2dec(parsedData[count + 2]))*0.0625 : null
           });
           count += 4;
         }
         extend(externalData, {
           fuelSensorData: null,
-          AC100Devices: {
-            devicesCount: ac100DevicesConnected,
-            devices: ac100Devices
-          }
+          AC100Devices: ac100Devices
         });
       }
       else if(digitFuelSensor && !AC100){
@@ -1461,8 +1452,8 @@ const getGV200 = raw => {
           ac100Devices.push({
             deviceNumber: parsedData[count],
             deviceID: parsedData[count + 1],
-            deviceType: parsedData[count + 2],
-            deviceData: parsedData[count + 3]
+            // deviceType: parsedData[count + 2],
+            deviceData: parsedData[count + 2] ? parseFloat(utils.hex2dec(parsedData[count + 2]))*0.0625 : null
           });
           count += 4;
         }
@@ -1473,10 +1464,7 @@ const getGV200 = raw => {
             percentage: null,
             volume: null
           },
-          AC100Devices: {
-            devicesCount: ac100DevicesConnected,
-            devices: ac100Devices
-          }
+          AC100Devices: ac100Devices
         });
       }
     }
