@@ -26,7 +26,8 @@ const devices = {
   '1F': 'GV500',
   '25': 'GV300', // New Version
   '35': 'GV200', // New Version
-  '27': 'GV300W'
+  '27': 'GV300W',
+  '2F': 'GV55'// New Version
 };
 
 const states = {
@@ -2437,15 +2438,15 @@ const getGV55 = raw => {
       hdop: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       status: {
         raw: parsedData[24],
-        sos: utils.hex2bin(parsedData[24].substring(2,4))[1] === '1',
-        tow: utils.hex2bin(parsedData[24].substring(0,1)) === '16',
+        sos: utils.nHexDigit(utils.hex2bin(parsedData[24].substring(2,4)),2)[0] === '1',
+        state: states[parsedData[24].substring(0,1)],
         input: {
-          '1': utils.hex2bin(parsedData[24].substring(2,4))[0] === '1',
-          '2': utils.hex2bin(parsedData[24].substring(2,4))[1] === '1'
+          '1': utils.nHexDigit(utils.hex2bin(parsedData[24].substring(2,4)),2)[1] === '1',
+          '2': utils.nHexDigit(utils.hex2bin(parsedData[24].substring(2,4)),2)[0] === '1'
         },
         output: {
-          '1': utils.hex2bin(parsedData[24].substring(4,6))[0] === '1',
-          '2': utils.hex2bin(parsedData[24].substring(4,6))[1] === '1'
+          '1': utils.nHexDigit(utils.hex2bin(parsedData[24].substring(4,6)),2)[1] === '1',
+          '2': utils.nHexDigit(utils.hex2bin(parsedData[24].substring(4,6)),2)[0] === '1'
         },
         charge: parseFloat(parsedData[4]) > 5
       },
@@ -2468,6 +2469,43 @@ const getGV55 = raw => {
   else if (command[1] === 'GTHBD'){
     extend(data, {
       alarm: getAlarm(command[1], null)
+    });
+  }
+  // General Info Report
+  else if(command[1] === 'GTINF'){
+    extend(data, {
+      alarm: getAlarm(command[1], null),
+      state: states[parsedData[4]],
+      gsmInfo: {
+        SIM_ICC: parsedData[5],
+        RSSI_dBm: parsedData[6],
+        RSSI_quality: parsedData[7] != '' ? 100*(parseInt(parseFloat(parsedData[7])/7,10)) : null //Percentage
+      },
+      backupBattery: {
+        using: parsedData[10] === '1',
+        voltage: parsedData[11] != '' ? parseFloat(parsedData[11]) : null,
+        charging: parsedData[12] === '1'
+      },
+      externalGPSAntenna: parsedData[15] === '0',
+      status: { //parsedData[24]
+        raw: parsedData[18]+parsedData[19],
+        sos: false,
+        input: {
+          '1': utils.nHexDigit(utils.hex2bin(parsedData[20]),2)[1] === '1',
+          '2': utils.nHexDigit(utils.hex2bin(parsedData[20]),2)[0] === '1'
+        },
+        output: {
+          '1': utils.nHexDigit(utils.hex2bin(parsedData[21]),2)[1] === '1',
+          '2': utils.nHexDigit(utils.hex2bin(parsedData[21]),2)[0] === '1'
+        },
+        charge: parsedData[8] === '1'
+      },
+      voltage: {
+        battery: parsedData[11] != '' ? parseInt(100*(parseFloat(parsedData[11])/5),10) : null,//percentage
+        inputCharge: parsedData[9] != '' ? parseFloat(parsedData[9])/1000 : null
+      },
+      lastFixUTCTime: parsedData[16] != '' ? moment(`${parsedData[16]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      timezoneOffset: parsedData[22]
     });
   }
   // Common Alarms
