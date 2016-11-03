@@ -2084,12 +2084,12 @@ const getGMT100 = raw => {
         raw: parsedData[24]+parsedData[25],
         sos: false,
         input: {
-          '2': utils.hex2bin(parsedData[24][1])[1] === '1',
-          '1': utils.hex2bin(parsedData[24][1])[0] === '1'
+          '1': utils.nHexDigit(utils.hex2bin(parsedData[24]),2)[1] === '1',
+          '2': utils.nHexDigit(utils.hex2bin(parsedData[24]),2)[0] === '1'
         },
         output: {
-          '2': utils.hex2bin(parsedData[25][1])[1] === '1',
-          '1': utils.hex2bin(parsedData[25][1])[0] === '1'
+          '1': utils.nHexDigit(utils.hex2bin(parsedData[25]),2)[1] === '1',
+          '2': utils.nHexDigit(utils.hex2bin(parsedData[25]),2)[0] === '1'
         },
         charge: parseFloat(parsedData[4]) > 5
       },
@@ -2098,9 +2098,8 @@ const getGMT100 = raw => {
       datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
       voltage: {
         battery: parsedData[23] != '' ? parseFloat(parsedData[23]): null,//percentage
-        inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4]): null,
-        ada: parsedData[21] != '' ? parseFloat(parsedData[21]): null,
-        adb: null
+        inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4])/1000: null,
+        ada: parsedData[21] != '' ? parseFloat(parsedData[21])/1000: null
       },
       mcc: parsedData[14] != '' ? parseInt(parsedData[14],10): null,
       mnc: parsedData[15] != '' ? parseInt(parsedData[15],10): null,
@@ -2113,6 +2112,44 @@ const getGMT100 = raw => {
   else if (command[1] === 'GTHBD'){
     extend(data, {
       alarm: getAlarm(command[1], null)
+    });
+  }
+  // General Info Report
+  else if(command[1] === 'GTINF'){
+    extend(data, {
+      alarm: getAlarm(command[1], null),
+      state: states[parsedData[4]],
+      gsmInfo: {
+        SIM_ICC: parsedData[5],
+        RSSI_dBm: parsedData[6],
+        RSSI_quality: parsedData[7] != '' ? 100*(parseInt(parseFloat(parsedData[7])/7,10)) : null //Percentage
+      },
+      backupBattery: {
+        using: parsedData[10] === '1',
+        voltage: parsedData[11] != '' ? parseFloat(parsedData[11]) : null,
+        charging: parsedData[12] === '1'
+      },
+      externalGPSAntenna: parsedData[15] === '0',
+      status: { //parsedData[24]
+        raw: parsedData[18]+parsedData[19],
+        sos: false,
+        input: {
+          '1': utils.nHexDigit(utils.hex2bin(parsedData[20]),2)[1] === '1',
+          '2': utils.nHexDigit(utils.hex2bin(parsedData[20]),2)[0] === '1'
+        },
+        output: {
+          '1': utils.nHexDigit(utils.hex2bin(parsedData[21]),2)[1] === '1',
+          '2': utils.nHexDigit(utils.hex2bin(parsedData[21]),2)[0] === '1'
+        },
+        charge: parsedData[8] === '1'
+      },
+      voltage: {
+        battery: parsedData[11] != '' ? parseInt(100*(parseFloat(parsedData[11])/4.5),10) : null,//percentage
+        inputCharge: parsedData[9] != '' ? parseFloat(parsedData[9])/1000 : null,
+        ada: parsedData[18] != '' ? parseFloat(parsedData[18])/1000: null
+      },
+      lastFixUTCTime: parsedData[16] != '' ? moment(`${parsedData[16]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      timezoneOffset: parsedData[22]
     });
   }
   // Common Alarms
@@ -2133,8 +2170,7 @@ const getGMT100 = raw => {
       voltage: {
         battery: null,
         inputCharge: null,
-        ada: null,
-        adb: null
+        ada: null
       },
       mcc: parsedData[14] != '' ? parseInt(parsedData[14],10): null,
       mnc: parsedData[15] != '' ? parseInt(parsedData[15],10): null,
@@ -2157,9 +2193,8 @@ const getGMT100 = raw => {
       datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
       voltage: {
         battery: parsedData[23] != '' ? parseFloat(parsedData[23]): null,//percentage
-        inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4]): null,
-        ada: parsedData[21] != '' ? parseFloat(parsedData[21]): null,
-        adb: null
+        inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4])/1000: null,
+        ada: parsedData[21] != '' ? parseFloat(parsedData[21])/1000: null
       },
       mcc: parsedData[14] != '' ? parseInt(parsedData[14],10): null,
       mnc: parsedData[15] != '' ? parseInt(parsedData[15],10): null,
@@ -2182,9 +2217,8 @@ const getGMT100 = raw => {
       datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
       voltage: {
         battery: parsedData[23] != '' ? parseFloat(parsedData[23]): null,//percentage
-        inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4]): null,
-        ada: parsedData[21] != '' ? parseFloat(parsedData[21]): null,
-        adb: null
+        inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4])/1000: null,
+        ada: parsedData[21] != '' ? parseFloat(parsedData[21])/1000: null
       },
       mcc: parsedData[14] != '' ? parseInt(parsedData[14],10): null,
       mnc: parsedData[15] != '' ? parseInt(parsedData[15],10): null,
@@ -2208,8 +2242,7 @@ const getGMT100 = raw => {
       voltage: {
         battery: null,
         inputCharge: null,
-        ada: null,
-        adb: null,
+        ada: null
       },
       mcc: null,
       mnc: null,
@@ -2232,8 +2265,7 @@ const getGMT100 = raw => {
       voltage: {
         battery: null,
         inputCharge: null,
-        ada: null,
-        adb: null
+        ada: null
       },
       mcc: parsedData[11] != '' ? parseInt(parsedData[11],10): null,
       mnc: parsedData[12] != '' ? parseInt(parsedData[12],10): null,
@@ -2256,8 +2288,7 @@ const getGMT100 = raw => {
       voltage: {
         battery: null,
         inputCharge: null,
-        ada: null,
-        adb: null
+        ada: null
       },
       mcc: parsedData[12] != '' ? parseInt(parsedData[12],10): null,
       mnc: parsedData[13] != '' ? parseInt(parsedData[13],10): null,
@@ -2280,8 +2311,7 @@ const getGMT100 = raw => {
       voltage: {
         battery: parsedData[4] != '' ? parseFloat(parsedData[4]) : null,
         inputCharge: null,
-        ada: null,
-        adb: null
+        ada: null
       },
       mcc: parsedData[12] != '' ? parseInt(parsedData[12],10): null,
       mnc: parsedData[13] != '' ? parseInt(parsedData[13],10): null,
@@ -2304,8 +2334,7 @@ const getGMT100 = raw => {
       voltage: {
         battery: null,
         inputCharge: null,
-        ada: null,
-        adb: null
+        ada: null
       },
       mcc: parsedData[12] != '' ? parseInt(parsedData[12],10): null,
       mnc: parsedData[13] != '' ? parseInt(parsedData[13],10): null,
@@ -2328,8 +2357,7 @@ const getGMT100 = raw => {
       voltage: {
         battery: null,
         inputCharge: null,
-        ada: null,
-        adb: null
+        ada: null
       },
       mcc: parsedData[13] != '' ? parseInt(parsedData[13],10): null,
       mnc: parsedData[14] != '' ? parseInt(parsedData[14],10): null,
@@ -2352,8 +2380,7 @@ const getGMT100 = raw => {
       voltage: {
         battery: null,
         inputCharge: null,
-        ada: null,
-        adb: null
+        ada: null
       },
       mcc: parsedData[13] != '' ? parseInt(parsedData[13],10): null,
       mnc: parsedData[14] != '' ? parseInt(parsedData[14],10): null,
@@ -2377,8 +2404,7 @@ const getGMT100 = raw => {
       voltage: {
         battery: null,
         inputCharge: null,
-        ada: null,
-        adb: null
+        ada: null
       },
       mcc: parsedData[12] != '' ? parseInt(parsedData[12],10) : null,
       mnc: parsedData[13] != '' ? parseInt(parsedData[13],10) : null,
