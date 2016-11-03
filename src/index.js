@@ -38,7 +38,8 @@ const states = {
   '21': 'Ingition On Rest',
   '22': 'Ignition On Moving',
   '41': 'Sensor Rest',
-  '42': 'Sesnor Motion'
+  '42': 'Sesnor Motion',
+  '': 'Unknown'
 };
 
 const uartDeviceTypes = {
@@ -2439,7 +2440,7 @@ const getGV55 = raw => {
       status: {
         raw: parsedData[24],
         sos: utils.nHexDigit(utils.hex2bin(parsedData[24].substring(2,4)),2)[0] === '1',
-        state: states[parsedData[24].substring(0,1)],
+        state: states[parsedData[24].substring(0,2)],
         input: {
           '1': utils.nHexDigit(utils.hex2bin(parsedData[24].substring(2,4)),2)[1] === '1',
           '2': utils.nHexDigit(utils.hex2bin(parsedData[24].substring(2,4)),2)[0] === '1'
