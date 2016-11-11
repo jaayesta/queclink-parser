@@ -268,20 +268,22 @@ const getAlarm = (command, report) => {
     };
   }
   else if(command === 'GTJDR'){
-    return {type: 'Jamming', status: true, message: messages[command]};
+    return {type: 'Jamming', status: true, gps: false, message: messages[command]};
   }
   else if(command === 'GTJDS'){
     return {
       type: 'Jamming',
       status: report === '2',
+      gps: false,
       message: messages[command][report]
     };
   }
+  // GPS Jamming
   else if(command === 'GTGPJ'){
     return {
       type: 'Jamming',
       status: report === '3',
-      extra: 'GPS_Jamming',
+      gps: true,
       message: messages[command][report]
     };
   }
@@ -2824,7 +2826,7 @@ const getAckCommand = (raw, lang) => {
     device: 'Queclink-COMMAND-OK',
     type: 'ok',
     serial: parsedData[parsedData.length -3] != '' ? parseInt(utils.hex2dec(parsedData[parsedData.length -3]), 10): null,
-    counter: parseInt(utils.hex2dec(parsedData[parsedData.length -1]), 10)    
+    counter: parseInt(utils.hex2dec(parsedData[parsedData.length -1]), 10)
   };
   if (command[1] === 'GTSPD'){
     data.command = 'SETOVERSPEEDALARM';

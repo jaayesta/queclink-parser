@@ -41,12 +41,13 @@
   "GTEPS": "Batería de Fuente de Poder Baja",
   "GTJDR": "Vehículo Jammeado",
   "GTJDS": {
-    "1": "Cese de jammer",
+    "1": "Cese de Jammer",
     "2": "Vehículo Jammeado"
   },
   "GTGPJ": {
-    "1": "Cese de jammer",
-    "2": "Vehículo Jammeado",
+    "0": "GPS Jammer Desconocido",
+    "1": "GPS Jammer insignificante",
+    "2": "Advertencia de Jammer GPS",
     "3": "Vehículo Jammeado (GPS)"
   },
   "GTIDF": "Vehículo fuera de Ralenti",
