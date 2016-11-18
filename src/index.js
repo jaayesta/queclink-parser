@@ -2880,11 +2880,9 @@ const parseCommand = data => {
     const dosReport = (data.dosReport || false) ? '1' : '0';
     command = `AT+GTOUT=${password},${do1},${do2},${do3},${do4},${longOperation},${dosReport},,,${serialId}$`;
   }
-
   else if (data.instruction === 'clear_mem') {
     command = `AT+GTRTO=${password},4,BUF,,,,,${serialId}$`;
   }
-
   else if (/^set_speed_(on|off)(E)?$/.test(data.instruction)) {
     max_speed = data.speed || 100;
     state = data.instruction.split('_')[2];
@@ -2893,16 +2891,28 @@ const parseCommand = data => {
     mode = /on(E)?/.test(state) ? 4 : 0;
     command = `AT+GTSPD=${password},${mode},0,${max_speed},${validity},${interval},1,1,0,0,,,,,,,,,,,,${serialId}$`;
   }
-
   else if(data.instruction === 'Custom'){
     command = data.command;
   }
-
   else if (/^reboot$/.test(data.instruction)) {
     command = `AT+GTRTO=${password},3,,,,,,${serialId}$`;
   }
   else if(data.instruction === 'set_driver'){
     command = `AT+GTIDA=${password},1,1,1,${data.driverID},30,3,,,,,1,0,0,0,,,,,${serialId}$`;
+  }
+  //Jammer configuration
+  else if(data.instruction === 'jamming_detection_configuration'){
+    mode = data.mode || '2'; //Modes: 1:JDS, 2:JDR, 0:Disabled
+    command = `AT+GTJDC=${password},${mode},25,,5,10,10,,0,0,0,0,,${serialId}$`;
+  }
+  else if(data.instruction === 'jamming_behavior_settings'){
+    mode = data.mode || '1';//Modes: 0:Disable, 1:Enable
+    max_speed = data.speed || '30';
+    command = `AT+GTJBS=${password},${mode},,10,10,60,30,3600,1,${max_speed},120,,,,${serialId}$`;
+  }
+  else if(data.instruction === 'jamming_gps_configuration'){
+    mode = data.mode || '1';//Modes: 0:Disable, 1:Enable
+    command = `AT+GTGPJ=${password},${mode},15,3,,,,,0,0,0,0,,${serialId}$`;
   }
   return command;
 };
