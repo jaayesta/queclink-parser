@@ -2842,6 +2842,9 @@ const getAckCommand = (raw, lang) => {
       data.command = 'REBOOT';
     }
   }
+  else if(command[1] === 'GTJBS'){
+    data.command = 'ANTIJAMMER';
+  }
   data.message = messages[data.command] || messages.default;
   return data;
 };
