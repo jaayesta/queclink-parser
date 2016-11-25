@@ -2892,7 +2892,7 @@ const parseCommand = data => {
     validity = data.times || 10;
     interval = data.interval || 300;
     mode = /on(E)?/.test(state) ? 4 : 0;
-    command = `AT+GTSPD=${password},${mode},0,${max_speed},${validity},${interval},1,1,0,0,,,,,,,,,,,,${serialId}$`;
+    command = `AT+GTSPD=${password},${mode},0,${max_speed},${validity},${interval},0,0,0,0,,,,,,,,,,,,${serialId}$`;
   }
   else if(data.instruction === 'Custom'){
     command = data.command;
