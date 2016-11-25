@@ -324,7 +324,7 @@ describe('queclink-parzer', () => {
         interval: 300
       };
       const raw = queclink.parseCommand(data);
-      expect(raw).to.eql('AT+GTSPD=303030,4,0,150,10,300,1,1,0,0,,,,,,,,,,,,3030$');
+      expect(raw).to.eql('AT+GTSPD=303030,4,0,150,10,300,0,0,0,0,,,,,,,,,,,,3030$');
     });
 
     it('should return raw set speed off command', () => {
@@ -337,7 +337,7 @@ describe('queclink-parzer', () => {
         interval: 300
       };
       const raw = queclink.parseCommand(data);
-      expect(raw).to.eql('AT+GTSPD=303030,0,0,150,10,300,1,1,0,0,,,,,,,,,,,,3030$');
+      expect(raw).to.eql('AT+GTSPD=303030,0,0,150,10,300,0,0,0,0,,,,,,,,,,,,3030$');
     });
 
     it('should return raw custom command', () => {
