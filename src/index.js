@@ -2881,10 +2881,26 @@ const parseCommand = data => {
     const do4 = `${outputs[3]},${prevDurations['4']},${prevToggles['4']}`;
     const longOperation = (data.longOperation || false) ? '1' : '0';
     const dosReport = (data.dosReport || false) ? '1' : '0';
-    command = `AT+GTOUT=${password},${do1},${do2},${do3},${do4},${longOperation},${dosReport},,,${serialId}$`;
+    if (data.device_serie === 'GV'){
+      command = `AT+GTOUT=${password},${do1},${do2},${do3},${do4},${longOperation},${dosReport},,,${serialId}$`;
+    }
+    else if(data.device_serie === 'GMT'){
+      command = `AT+GTOUT=${password},${do1},0,0,0,,,,,,,,${serialId}$`;
+    }
+    else{
+      command = `AT+GTOUT=${password},${do1},${do2},${do3},${do4},${longOperation},${dosReport},,,${serialId}$`;
+    }
   }
   else if (data.instruction === 'clear_mem') {
-    command = `AT+GTRTO=${password},4,BUF,,,,,${serialId}$`;
+    if (data.device_serie === 'GV'){
+      command = `AT+GTRTO=${password},4,BUF,,,,,${serialId}$`;
+    }
+    else if(data.device_serie === 'GMT'){
+      command = `AT+GTRTO=${password},D,,,,,,${serialId}$`;
+    }
+    else{
+      command = `AT+GTRTO=${password},4,BUF,,,,,${serialId}$`;
+    }
   }
   else if (/^set_speed_(on|off)(E)?$/.test(data.instruction)) {
     max_speed = data.speed || 100;
@@ -2892,6 +2908,9 @@ const parseCommand = data => {
     validity = data.times || 10;
     interval = data.interval || 300;
     mode = /on(E)?/.test(state) ? 4 : 0;
+    if (data.device_serie === 'GMT'){
+      mode = /on(E)?/.test(state) ? 3 : 0;
+    }
     command = `AT+GTSPD=${password},${mode},0,${max_speed},${validity},${interval},0,0,0,0,,,,,,,,,,,,${serialId}$`;
   }
   else if(data.instruction === 'Custom'){

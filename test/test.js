@@ -244,11 +244,12 @@ describe('queclink-parzer', () => {
   });
 
   describe('parseCommand', () => {
-    it('should return raw di on command', () => {
+    it('should return raw di on command GV serie', () => {
       const data = {
         password: '101010',
         serial: 4112,
         instruction: '2_on',
+        device_serie: 'GV',
         previousOutput: {
           '1': true,
           '2': false,
@@ -259,12 +260,29 @@ describe('queclink-parzer', () => {
       const raw = queclink.parseCommand(data);
       expect(raw).to.eql('AT+GTOUT=101010,1,0,0,1,0,0,0,0,0,1,0,0,0,0,,,1010$');
     });
+    it('should return raw di on command GMT serie', () => {
+      const data = {
+        password: '101010',
+        serial: 4112,
+        instruction: '2_on',
+        device_serie: 'GMT',
+        previousOutput: {
+          '1': true,
+          '2': false,
+          '3': false,
+          '4': true
+        }
+      };
+      const raw = queclink.parseCommand(data);
+      expect(raw).to.eql('AT+GTOUT=101010,1,0,0,0,0,0,,,,,,,,1010$');
+    });
 
-    it('should return raw di off command', () => {
+    it('should return raw di off command GV serie', () => {
       const data = {
         password: '101010',
         serial: 4112,
         instruction: '2_off',
+        device_serie: 'GV',
         previousOutput: {
           '1': true,
           '2': false,
@@ -274,6 +292,22 @@ describe('queclink-parzer', () => {
       };
       const raw = queclink.parseCommand(data);
       expect(raw).to.eql('AT+GTOUT=101010,1,0,0,0,0,0,0,0,0,1,0,0,0,0,,,1010$');
+    });
+    it('should return raw di off command GMT serie', () => {
+      const data = {
+        password: '101010',
+        serial: 4112,
+        instruction: '1_off',
+        device_serie: 'GMT',
+        previousOutput: {
+          '1': true,
+          '2': false,
+          '3': false,
+          '4': true
+        }
+      };
+      const raw = queclink.parseCommand(data);
+      expect(raw).to.eql('AT+GTOUT=101010,0,0,0,0,0,0,,,,,,,,1010$');
     });
 
     it('should return raw di on with duration command', () => {
@@ -304,37 +338,76 @@ describe('queclink-parzer', () => {
       expect(raw).to.eql('AT+GTOUT=101010,0,0,0,1,15,1,0,0,0,0,0,0,0,0,,,1010$');
     });
 
-    it('should return raw clear mem command', () => {
+    it('should return raw clear mem command GV serie', () => {
       const data = {
         password: '202020',
         serial: 8224,
-        instruction: 'clear_mem'
+        instruction: 'clear_mem',
+        device_serie: 'GV'
       };
       const raw = queclink.parseCommand(data);
       expect(raw).to.eql('AT+GTRTO=202020,4,BUF,,,,,2020$');
     });
+    it('should return raw clear mem command GMT serie', () => {
+      const data = {
+        password: '202020',
+        serial: 8224,
+        instruction: 'clear_mem',
+        device_serie: 'GMT'
+      };
+      const raw = queclink.parseCommand(data);
+      expect(raw).to.eql('AT+GTRTO=202020,D,,,,,,2020$');
+    });
 
-    it('should return raw set speed on command', () => {
+    it('should return raw set speed on command GV serie', () => {
       const data = {
         password: '303030',
         serial: 12336,
         instruction: 'set_speed_on',
         speed: 150,
         times: 10,
-        interval: 300
+        interval: 300,
+        device_serie: 'GV'
       };
       const raw = queclink.parseCommand(data);
       expect(raw).to.eql('AT+GTSPD=303030,4,0,150,10,300,0,0,0,0,,,,,,,,,,,,3030$');
     });
+    it('should return raw set speed on command GMT serie', () => {
+      const data = {
+        password: '303030',
+        serial: 12336,
+        instruction: 'set_speed_on',
+        speed: 150,
+        times: 10,
+        interval: 300,
+        device_serie: 'GMT'
+      };
+      const raw = queclink.parseCommand(data);
+      expect(raw).to.eql('AT+GTSPD=303030,3,0,150,10,300,0,0,0,0,,,,,,,,,,,,3030$');
+    });
 
-    it('should return raw set speed off command', () => {
+    it('should return raw set speed off command GV serie', () => {
       const data = {
         password: '303030',
         serial: 12336,
         instruction: 'set_speed_off',
         speed: 150,
         times: 10,
-        interval: 300
+        interval: 300,
+        device_serie: 'GV'
+      };
+      const raw = queclink.parseCommand(data);
+      expect(raw).to.eql('AT+GTSPD=303030,0,0,150,10,300,0,0,0,0,,,,,,,,,,,,3030$');
+    });
+    it('should return raw set speed off command GMT serie', () => {
+      const data = {
+        password: '303030',
+        serial: 12336,
+        instruction: 'set_speed_off',
+        speed: 150,
+        times: 10,
+        interval: 300,
+        device_serie: 'GMT'
       };
       const raw = queclink.parseCommand(data);
       expect(raw).to.eql('AT+GTSPD=303030,0,0,150,10,300,0,0,0,0,,,,,,,,,,,,3030$');
