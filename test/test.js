@@ -658,5 +658,12 @@ describe('queclink-parzer', () => {
       expect(data.alarm.status).to.be.true;
       expect(data.alarm.message).to.eq('Conductor identificado autorizado');
     });
+
+    it('should return UNKNOWN if strange GV200 data', () => {
+      const raw = new Buffer('+RESP:GTFRI,350302,867844003012625,,12401,10,1,0,0.0,0,816.1,-70.514613,-33.361280,20160811170821,0730,0002,7410,C789,00,0.0,00001:33:08,2788,702,137B8$');
+      const data = queclink.parse(raw);
+      expect(data.raw).to.eql(raw.toString());
+      expect(data.type).to.eql('UNKNOWN');
+    });
   });
 });
