@@ -163,7 +163,7 @@ const checkGps = (lng, lat) => {
 /*
   Gets the alarm type
 */
-const getAlarm = (command, report) => {
+const getAlarm = (command, report, gv55=false) => {
   const messages = langs['es'];
   if(command === 'GTFRI' || command === 'GTERI'){
     return {type: 'Gps' };
@@ -175,8 +175,11 @@ const getAlarm = (command, report) => {
     return {type: 'General_Info_Report'};
   }
   else if(command === 'GTDIS'){
-    const reportID = parseInt(report[0],10);
+    let reportID = parseInt(report[0],10);
     const reportType = parseInt(report[1],10);
+    if(gv55 == true && reportID == 1){
+      reportID = 2;
+    }
     return {
       type: 'DI',
       number: reportID,
@@ -2543,7 +2546,7 @@ const getGV55 = raw => {
       command[1] === 'GTDOG' || command[1] === 'GTIGL' || command[1] === 'GTHBM') {
 
     extend(data, {
-      alarm: getAlarm(command[1], parsedData[5]),
+      alarm: getAlarm(command[1], parsedData[5], true),
       loc: { type: 'Point', coordinates: [parseFloat(parsedData[11]), parseFloat(parsedData[12])] },
       speed: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
       gpsStatus: checkGps(parseFloat(parsedData[11]), parseFloat(parsedData[12])),
