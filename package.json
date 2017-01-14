@@ -1,6 +1,6 @@
 {
   "name": "queclink-parser",
-  "version": "0.3.12",
+  "version": "0.3.13",
   "description": "Parse raw data from Queclink devices",
   "main": "src",
   "scripts": {
@@ -38,15 +38,15 @@
   },
   "homepage": "https://github.com/jaayesta/queclink-parser#readme",
   "dependencies": {
-    "lodash": "^4.16.4",
-    "moment": "^2.15.2"
+    "lodash": "^4.17.2",
+    "moment": "^2.17.1"
   },
   "devDependencies": {
     "chai": "^3.5.0",
-    "eslint": "3.9.0",
+    "eslint": "^3.11.1",
     "generate-changelog": "^1.0.2",
     "istanbul": "^0.4.5",
-    "mocha": "^3.1.2"
+    "mocha": "^3.2.0"
   },
   "eslintConfig": {
     "env": {

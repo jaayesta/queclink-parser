@@ -1,3 +1,13 @@
+#### 0.3.13 (2016-12-7)
+
+##### Chores
+
+* **package:** Update dependencies ([e80c849e](https://github.com/jaayesta/queclink-parser/commit/e80c849ee245a1f3e7e6b7b65a110376bd974f3e))
+
+##### Bug Fixes
+
+* **parser:** Return UNKNOWN if GV200 strange data ([57a401fb](https://github.com/jaayesta/queclink-parser/commit/57a401fbe4c6146df8e875f5860797cac277468a))
+
 #### 0.3.12 (2016-11-29)
 
 #### 0.3.11 (2016-11-25)

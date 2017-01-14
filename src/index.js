@@ -1273,46 +1273,50 @@ const getGV200 = raw => {
 
   // GPS
   if (command[1] === 'GTFRI') {
-    extend(data, {
-      alarm: getAlarm(command[1], null),
-      loc: { type: 'Point', coordinates: [ parseFloat(parsedData[11]), parseFloat(parsedData[12]) ] },
-      speed: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
-      gpsStatus: checkGps(parseFloat(parsedData[11]), parseFloat(parsedData[12])),
-      hdop: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
-      status: { //parsedData[24]
-        raw: parsedData[24]+parsedData[25],
-        sos: false,
-        input: {
-          '4': utils.nHexDigit(utils.hex2bin(parsedData[24][1]),4)[0] === '1',
-          '3': utils.nHexDigit(utils.hex2bin(parsedData[24][1]),4)[1] === '1',
-          '2': utils.nHexDigit(utils.hex2bin(parsedData[24][1]),4)[2] === '1',
-          '1': utils.nHexDigit(utils.hex2bin(parsedData[24][1]),4)[3] === '1'
+    try {
+      extend(data, {
+        alarm: getAlarm(command[1], null),
+        loc: { type: 'Point', coordinates: [ parseFloat(parsedData[11]), parseFloat(parsedData[12]) ] },
+        speed: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
+        gpsStatus: checkGps(parseFloat(parsedData[11]), parseFloat(parsedData[12])),
+        hdop: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
+        status: { //parsedData[24]
+          raw: parsedData[24]+parsedData[25],
+          sos: false,
+          input: {
+            '4': utils.nHexDigit(utils.hex2bin(parsedData[24][1]),4)[0] === '1',
+            '3': utils.nHexDigit(utils.hex2bin(parsedData[24][1]),4)[1] === '1',
+            '2': utils.nHexDigit(utils.hex2bin(parsedData[24][1]),4)[2] === '1',
+            '1': utils.nHexDigit(utils.hex2bin(parsedData[24][1]),4)[3] === '1'
+          },
+          output: {
+            '4': utils.nHexDigit(utils.hex2bin(parsedData[25][1]),4)[0] === '1',
+            '3': utils.nHexDigit(utils.hex2bin(parsedData[25][1]),4)[1] === '1',
+            '2': utils.nHexDigit(utils.hex2bin(parsedData[25][1]),4)[2] === '1',
+            '1': utils.nHexDigit(utils.hex2bin(parsedData[25][1]),4)[3] === '1'
+          },
+          charge: parseFloat(parsedData[4]) > 5
         },
-        output: {
-          '4': utils.nHexDigit(utils.hex2bin(parsedData[25][1]),4)[0] === '1',
-          '3': utils.nHexDigit(utils.hex2bin(parsedData[25][1]),4)[1] === '1',
-          '2': utils.nHexDigit(utils.hex2bin(parsedData[25][1]),4)[2] === '1',
-          '1': utils.nHexDigit(utils.hex2bin(parsedData[25][1]),4)[3] === '1'
+        azimuth: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
+        altitude: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
+        datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+        voltage: {
+          battery: null,//percentage
+          inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4])/1000 : null,
+          ada: parsedData[21] != '' ? parseFloat(parsedData[21])/1000 : null,
+          adb: parsedData[22] != '' ? parseFloat(parsedData[22])/1000 : null,
+          adc: parsedData[23] != '' ? parseFloat(parsedData[23])/1000 : null
         },
-        charge: parseFloat(parsedData[4]) > 5
-      },
-      azimuth: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
-      altitude: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
-      datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
-      voltage: {
-        battery: null,//percentage
-        inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4])/1000 : null,
-        ada: parsedData[21] != '' ? parseFloat(parsedData[21])/1000 : null,
-        adb: parsedData[22] != '' ? parseFloat(parsedData[22])/1000 : null,
-        adc: parsedData[23] != '' ? parseFloat(parsedData[23])/1000 : null
-      },
-      mcc: parsedData[14] != '' ? parseInt(parsedData[14],10) : null,
-      mnc: parsedData[15] != '' ? parseInt(parsedData[15],10) : null,
-      lac: parsedData[16] != '' ? parseInt(parsedData[16],16) : null,
-      cid: parsedData[17] != '' ? parseInt(parsedData[17],16) : null,
-      odometer: parsedData[19] != '' ? parseFloat(parsedData[19]) : null,
-      hourmeter: parsedData[20]
-    });
+        mcc: parsedData[14] != '' ? parseInt(parsedData[14],10) : null,
+        mnc: parsedData[15] != '' ? parseInt(parsedData[15],10) : null,
+        lac: parsedData[16] != '' ? parseInt(parsedData[16],16) : null,
+        cid: parsedData[17] != '' ? parseInt(parsedData[17],16) : null,
+        odometer: parsedData[19] != '' ? parseFloat(parsedData[19]) : null,
+        hourmeter: parsedData[20]
+      });
+    } catch(err) {
+      return {type: 'UNKNOWN', raw: data.raw.toString()};
+    }
   }
   // GPS with AC100 Devices Connected
   else if (command[1] === 'GTERI') {
