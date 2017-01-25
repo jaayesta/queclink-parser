@@ -1,3 +1,14 @@
+#### 0.3.15 (2017-1-14)
+
+##### Chores
+
+* **travis:**
+  * Add cache yarn ([fc970039](https://github.com/jaayesta/queclink-parser/commit/fc9700396c40c2f5269b0d03bf56fc3a85339dd9))
+  * Update node versions ([2a8027f1](https://github.com/jaayesta/queclink-parser/commit/2a8027f1e19037366f77fda260905c0ad5cd6d22))
+* **package:**
+  * Upgrade min node version to v6 ([365a40ff](https://github.com/jaayesta/queclink-parser/commit/365a40ff82467c42f9e8a5a31621dc29cb2f5233))
+  * Update dependencies ([398ec2b8](https://github.com/jaayesta/queclink-parser/commit/398ec2b849b9174b63469ae9fc84a5e52c6aa620))
+
 #### 0.3.14 (2017-1-13)
 
 #### 0.3.13 (2016-12-7)

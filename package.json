@@ -1,6 +1,6 @@
 {
   "name": "queclink-parser",
-  "version": "0.3.14",
+  "version": "0.3.15",
   "description": "Parse raw data from Queclink devices",
   "main": "src",
   "scripts": {
@@ -11,7 +11,7 @@
     "release:patch": "changelog -p && git add CHANGELOG.md && git commit -m 'updated CHANGELOG.md' && npm version patch && git push origin && git push origin --tags && npm publish"
   },
   "engines": {
-    "node": ">=4"
+    "node": ">=6"
   },
   "repository": {
     "type": "git",
@@ -38,13 +38,13 @@
   },
   "homepage": "https://github.com/jaayesta/queclink-parser#readme",
   "dependencies": {
-    "lodash": "^4.17.2",
+    "lodash": "^4.17.4",
     "moment": "^2.17.1"
   },
   "devDependencies": {
     "chai": "^3.5.0",
-    "eslint": "^3.11.1",
-    "generate-changelog": "^1.0.2",
+    "eslint": "^3.13.1",
+    "generate-changelog": "^1.1.0",
     "istanbul": "^0.4.5",
     "mocha": "^3.2.0"
   },
