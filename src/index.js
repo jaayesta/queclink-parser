@@ -168,6 +168,15 @@ const getAlarm = (command, report, gv55=false) => {
   if(command === 'GTFRI' || command === 'GTERI'){
     return {type: 'Gps' };
   }
+  else if(command === 'GTCAN'){
+    const reportType = parseInt(report,10);
+    return {
+      type: 'Gps',
+      status: 'CAN_Bus',
+      report: reportType
+      //message: messages[command].replace('data', reportType)
+    };
+  }
   else if(command === 'GTGSM'){
     return {type: 'GSM_Report'};
   }
@@ -343,14 +352,6 @@ const getAlarm = (command, report, gv55=false) => {
       type: 'Gps_Status',
       status: report === '1',
       message: messages[command][typeof report !== 'undefined' ? '1': '0']
-    };
-  }
-  else if(command === 'GTCAN'){
-    const reportType = parseInt(report,10);
-    return {
-      type: 'CAN_Bus',
-      report: reportType,
-      message: messages[command].replace('data', reportType)
     };
   }
   else if(command === 'GTTMP'){
@@ -1964,15 +1965,15 @@ const getGV200 = raw => {
   }
   else if(command[1] === 'GTCAN'){
     extend(data, {
-      alarm: getAlarm(command[1], command[4]),
-      loc: { type: 'Point', coordinates: [ parseFloat(parsedData[35]), parseFloat(parsedData[36])]},
-      speed: parsedData[32] != '' ? parseFloat(parsedData[32]) : null,
-      gpsStatus: checkGps(parseFloat(parsedData[35]), parseFloat(parsedData[36])),
-      hdop: parsedData[31] != '' ? parseFloat(parsedData[31]) : null,
+      alarm: getAlarm(command[1], parsedData[4]),
+      loc: { type: 'Point', coordinates: [ parseFloat(parsedData[59]), parseFloat(parsedData[60])]},
+      speed: parsedData[56] != '' ? parseFloat(parsedData[56]) : null,
+      gpsStatus: checkGps(parseFloat(parsedData[59]), parseFloat(parsedData[60])),
+      hdop: parsedData[55] != '' ? parseFloat(parsedData[55]) : null,
       status: null,
-      azimuth: parsedData[33] != '' ? parseFloat(parsedData[33]) : null,
-      altitude: parsedData[34] != '' ? parseFloat(parsedData[34]) : null,
-      datetime: parsedData[37] != '' ? moment(`${parsedData[37]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      azimuth: parsedData[57] != '' ? parseFloat(parsedData[57]) : null,
+      altitude: parsedData[58] != '' ? parseFloat(parsedData[58]) : null,
+      datetime: parsedData[61] != '' ? moment(`${parsedData[61]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -1980,34 +1981,88 @@ const getGV200 = raw => {
         adb: null,
         adc: null
       },
-      mcc: parsedData[38] != '' ? parseInt(parsedData[38],10) : null,
-      mnc: parsedData[39] != '' ? parseInt(parsedData[39],10) : null,
-      lac: parsedData[40] != '' ? parseInt(parsedData[40],16) : null,
-      cid: parsedData[41] != '' ? parseInt(parsedData[41],16) : null,
+      mcc: parsedData[62] != '' ? parseInt(parsedData[62],10) : null,
+      mnc: parsedData[63] != '' ? parseInt(parsedData[63],10) : null,
+      lac: parsedData[64] != '' ? parseInt(parsedData[64],16) : null,
+      cid: parsedData[65] != '' ? parseInt(parsedData[65],16) : null,
       odometer: null,
       hourmeter: null,
       can: {
         comunicationOk: parsedData[5] === '1',
         vin: parsedData[7] != '' ? parsedData[7] : null,
-        ignitionKey: parsedData[8] != '' ? parseInt(parsedData[8],10) : null,
-        distance: parsedData[9],
-        fuelUsed: parsedData[10], //float
-        rpm: parsedData[11], //int
+        ignitionKey: parsedData[8] != '' ? parseInt(parsedData[8],10) === '2' : null, //0: Ignition off, 1: Ignition on, 2: Engine on
+        odometer: parsedData[9] != '' ? (parseInt(parsedData[9],10)/100)/1000 : null, //hectometers: 100 metros. Lo paso a kilometros.
+        fuelUsed: parsedData[10] != '' ? parseFloat(parsedData[10]) : null, //float. Litros
+        rpm: parsedData[11] != '' ? parseInt(parsedData[11],10) : null, //int
         speed: parsedData[12] != '' ? parseFloat(parsedData[12]) : null,
         coolantTemp: parsedData[13] != '' ? parseInt(parsedData[13],10) : null,
         fuelConsumption: parsedData[14],
         fuelLevel: parsedData[15],
-        range: parsedData[16],
-        acceleratorPressure: parsedData[17],
-        engineHours: parsedData[18],
-        drivingTime: parsedData[19],
-        idleTime: parsedData[20],
-        idleFuelUsed: parsedData[21],
-        axleWight: parsedData[22],
-        tachograph: parsedData[23],
-        detailedInfo: parsedData[24],
-        lights: parsedData[25],
-        doors: parsedData[26],
+        range: parsedData[16] != '' ? (parseInt(parsedData[16],10)/100)/1000 : null,
+        acceleratorPressure: parsedData[17] != '' ? parseInt(parsedData[17],10) : null,
+        engineHours: parsedData[18] != '' ? parseFloat(parsedData[18]) : null,
+        drivingTime: parsedData[19] != '' ? parseFloat(parsedData[19]) : null,
+        idleTime: parsedData[20] != '' ? parseFloat(parsedData[20]) : null,
+        idleFuelUsed: parsedData[21] != '' ? parseFloat(parsedData[21]) : null,
+        axleWight: parsedData[22] != '' ? parsedData[22] : null,
+        tachograph: parsedData[23] != '' ? parsedData[23] : null,
+        detailedInfo: {
+          raw: parsedData[24],//Contains detailed information of vehicle
+          lowFuelOn: utils.nHexDigit(utils.hex2bin(parsedData[24]),16)[0] === '1',
+          seatBeltOn: utils.nHexDigit(utils.hex2bin(parsedData[24]),16)[1] === '1',
+          airConditioningOn: utils.nHexDigit(utils.hex2bin(parsedData[24]),16)[2] === '1',
+          cruiseControlOn: utils.nHexDigit(utils.hex2bin(parsedData[24]),16)[3] === '1',
+          brakePedalOn: utils.nHexDigit(utils.hex2bin(parsedData[24]),16)[4] === '1',
+          clutchPedalOn: utils.nHexDigit(utils.hex2bin(parsedData[24]),16)[5] === '1',
+          handBrakeON: utils.nHexDigit(utils.hex2bin(parsedData[24]),16)[6] === '1',
+          centralLockOn: utils.nHexDigit(utils.hex2bin(parsedData[24]),16)[7] === '1',
+          reverseGearOn: utils.nHexDigit(utils.hex2bin(parsedData[24]),16)[8] === '1',
+          runningLightsOn: utils.nHexDigit(utils.hex2bin(parsedData[24]),16)[9] === '1',
+          lowBeamsOn: utils.nHexDigit(utils.hex2bin(parsedData[24]),16)[10] === '1',
+          highBeamsOn: utils.nHexDigit(utils.hex2bin(parsedData[24]),16)[11] === '1',
+          rearFogLightsOn: utils.nHexDigit(utils.hex2bin(parsedData[24]),16)[12] === '1',
+          frontFogLightsOn: utils.nHexDigit(utils.hex2bin(parsedData[24]),16)[13] === '1',
+          doorsOpened: utils.nHexDigit(utils.hex2bin(parsedData[24]),16)[14] === '1', //any door
+          trunkOpened: utils.nHexDigit(utils.hex2bin(parsedData[24]),16)[15] === '1'
+        },
+        lights: {
+          raw: parsedData[25],
+          runningLightsOn: utils.nHexDigit(utils.hex2bin(parsedData[25]),8)[0] === '1',
+          lowBeamsOn: utils.nHexDigit(utils.hex2bin(parsedData[25]),8)[1] === '1',
+          highBeamsOn: utils.nHexDigit(utils.hex2bin(parsedData[25]),8)[2] === '1',
+          frontFogOn: utils.nHexDigit(utils.hex2bin(parsedData[25]),8)[3] === '1',
+          rearFogOn: utils.nHexDigit(utils.hex2bin(parsedData[25]),8)[4] === '1',
+          hazardLightsOn: utils.nHexDigit(utils.hex2bin(parsedData[25]),8)[5] === '1',
+          reserved1: utils.nHexDigit(utils.hex2bin(parsedData[25]),8)[6] === '1',
+          reserved2: utils.nHexDigit(utils.hex2bin(parsedData[25]),8)[7] === '1'
+        },
+        doors: {
+          raw: parsedData[26],
+          driverDoorOpened: utils.nHexDigit(utils.hex2bin(parsedData[26]),8)[0] === '1',
+          passengerDoorOpened: utils.nHexDigit(utils.hex2bin(parsedData[26]),8)[1] === '1',
+          rearLeftDoorOpened: utils.nHexDigit(utils.hex2bin(parsedData[26]),8)[2] === '1',
+          rearRightDoorOpened: utils.nHexDigit(utils.hex2bin(parsedData[26]),8)[3] === '1',
+          trunkDoorOpened: utils.nHexDigit(utils.hex2bin(parsedData[26]),8)[4] === '1',
+          bootDoorOpened: utils.nHexDigit(utils.hex2bin(parsedData[26]),8)[5] === '1',
+          reserved1: utils.nHexDigit(utils.hex2bin(parsedData[26]),8)[6] === '1',
+          reserved2: utils.nHexDigit(utils.hex2bin(parsedData[26]),8)[7] === '1'
+        },
+        //26
+        indicators: {
+          raw: parsedData[51],
+          webastoOn: utils.nHexDigit(utils.hex2bin(parsedData[51]),16)[0] === '1',
+          brakeFluidLow: utils.nHexDigit(utils.hex2bin(parsedData[51]),16)[1] === '1',
+          coolantLow: utils.nHexDigit(utils.hex2bin(parsedData[51]),16)[2] === '1',
+          batteryIndicatorOn: utils.nHexDigit(utils.hex2bin(parsedData[51]),16)[3] === '1',
+          brakeSystemFailure: utils.nHexDigit(utils.hex2bin(parsedData[51]),16)[4] === '1',
+          oilPressureOn: utils.nHexDigit(utils.hex2bin(parsedData[51]),16)[5] === '1',
+          engineHot: utils.nHexDigit(utils.hex2bin(parsedData[51]),16)[6] === '1',
+          ABSFailure: utils.nHexDigit(utils.hex2bin(parsedData[51]),16)[7] === '1',
+          checkEngineOn: utils.nHexDigit(utils.hex2bin(parsedData[51]),16)[9] === '1',
+          airbagIndicatorOn: utils.nHexDigit(utils.hex2bin(parsedData[51]),16)[10] === '1',
+          serviceCallIndicatorOn: utils.nHexDigit(utils.hex2bin(parsedData[51]),16)[11] === '1',
+          oilLow: utils.nHexDigit(utils.hex2bin(parsedData[51]),16)[12] === '1'
+        },
         overSpeedTime: parsedData[27],
         overSpeedEngineTime: parsedData[28]
       }
