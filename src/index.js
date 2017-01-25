@@ -1407,7 +1407,7 @@ const getGV200 = raw => {
             // deviceType: parsedData[count + 2],
             deviceData: parsedData[count + 2]
           });
-          count += 4;
+          count += 3;
         }
         extend(externalData, {
           fuelSensorData: null,
@@ -1424,7 +1424,7 @@ const getGV200 = raw => {
             // deviceType: parsedData[count + 2],
             deviceData: parsedData[count + 2]
           });
-          count += 4;
+          count += 3;
         }
         extend(externalData, {
           fuelSensorData: {
@@ -1449,7 +1449,7 @@ const getGV200 = raw => {
             // deviceType: parsedData[count + 2],
             deviceData: parsedData[count + 2] ? parseFloat(utils.hex2dec(parsedData[count + 2]))*0.0625 : null
           });
-          count += 4;
+          count += 3;
         }
         extend(externalData, {
           fuelSensorData: null,
@@ -1477,7 +1477,7 @@ const getGV200 = raw => {
             // deviceType: parsedData[count + 2],
             deviceData: parsedData[count + 2] ? parseFloat(utils.hex2dec(parsedData[count + 2]))*0.0625 : null
           });
-          count += 4;
+          count += 3;
         }
         extend(externalData, {
           fuelSensorData: {
