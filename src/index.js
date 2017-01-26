@@ -163,7 +163,7 @@ const checkGps = (lng, lat) => {
 /*
   Gets the alarm type
 */
-const getAlarm = (command, report, gv55=false) => {
+const getAlarm = (command, report, extra=false) => {
   const messages = langs['es'];
   if(command === 'GTFRI' || command === 'GTERI'){
     return {type: 'Gps' };
@@ -186,7 +186,7 @@ const getAlarm = (command, report, gv55=false) => {
   else if(command === 'GTDIS'){
     let reportID = parseInt(report[0],10);
     const reportType = parseInt(report[1],10);
-    if(gv55 == true && reportID == 1){
+    if(extra == true && reportID == 1){
       reportID = 2;
     }
     return {
@@ -359,6 +359,7 @@ const getAlarm = (command, report, gv55=false) => {
     return {
       type: 'Outside_Temperature',
       number: number,
+      deviceID: extra,
       status: report[1] === '0', //0 means outside the range, 1 means inside
       message: messages[command][report[1]]
     };
@@ -1868,7 +1869,7 @@ const getGV200 = raw => {
   //Temperature Alarm
   else if(command[1] === 'GTTMP'){
     extend(data, {
-      alarm: getAlarm(command[1], parsedData[6]),
+      alarm: getAlarm(command[1], parsedData[6], parsedData[30]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[12]), parseFloat(parsedData[13]) ] },
       speed: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
       gpsStatus: checkGps(parseFloat(parsedData[12]), parseFloat(parsedData[13])),
