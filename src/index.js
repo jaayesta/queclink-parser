@@ -159,6 +159,18 @@ const checkGps = (lng, lat) => {
   }
   return false;
 };
+/*
+  Gets the temperature from AC100 device in celcious degrees
+*/
+
+const getTempInCelciousDegrees = (hexTemp) =>{
+  const binTemp = utils.nHexDigit(utils.hex2bin(hexTemp),16)
+  if (binTemp.substring(0,5) == '11111'){
+    //Negative value
+    return (parseInt('FFFF',16) - parseInt(hexTemp,16) + 1)*-0.0625
+  }
+  return parseFloat(utils.hex2dec(hexTemp))*0.0625
+}
 
 /*
   Gets the alarm type
@@ -1406,7 +1418,7 @@ const getGV200 = raw => {
             deviceNumber: parsedData[count],
             deviceID: parsedData[count + 1],
             // deviceType: parsedData[count + 2],
-            deviceData: parsedData[count + 2]
+            deviceData: parsedData[count + 2] ? getTempInCelciousDegrees(parsedData[count + 2]) : null
           });
           count += 3;
         }
@@ -1423,7 +1435,7 @@ const getGV200 = raw => {
             deviceNumber: parsedData[count],
             deviceID: parsedData[count + 1],
             // deviceType: parsedData[count + 2],
-            deviceData: parsedData[count + 2]
+            deviceData: parsedData[count + 2] ? getTempInCelciousDegrees(parsedData[count + 2]) : null
           });
           count += 3;
         }
@@ -1448,7 +1460,7 @@ const getGV200 = raw => {
             deviceNumber: parsedData[count],
             deviceID: parsedData[count + 1],
             // deviceType: parsedData[count + 2],
-            deviceData: parsedData[count + 2] ? parseFloat(utils.hex2dec(parsedData[count + 2]))*0.0625 : null
+            deviceData: parsedData[count + 2] ? getTempInCelciousDegrees(parsedData[count + 2]) : null
           });
           count += 3;
         }
@@ -1476,7 +1488,7 @@ const getGV200 = raw => {
             deviceNumber: parsedData[count],
             deviceID: parsedData[count + 1],
             // deviceType: parsedData[count + 2],
-            deviceData: parsedData[count + 2] ? parseFloat(utils.hex2dec(parsedData[count + 2]))*0.0625 : null
+            deviceData: parsedData[count + 2] ? getTempInCelciousDegrees(parsedData[count + 2]) : null
           });
           count += 3;
         }
