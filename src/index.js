@@ -2999,6 +2999,17 @@ const parseCommand = data => {
     mode = data.mode || '1';//Modes: 0:Disable, 1:Enable
     command = `AT+GTGPJ=${password},${mode},15,3,,,,,0,0,0,0,,${serialId}$`;
   }
+  //Temperature Alarm
+  else if (/^temp_alarm_(on|off)(E)?$/.test(data.instruction)) {
+    let _data = data.instruction.split('_');
+    state = _data[2];
+    mode = /on(E)?/.test(state) ? 3 : 0;
+    const alarmId = data.alarmId || 0;
+    const sensorId = data.sensorId || '0000000000000000';
+    const minTemp = data.minTemp || 0;
+    const maxTemp = data.maxTemp || 0;
+    command = `AT+GTTMP=${password},${alarmId},${mode},${sensorId},,,${minTemp},${maxTemp},,,2,10,,,0,0,0,0,,,,,${serialId}$`;
+  }
   return command;
 };
 
