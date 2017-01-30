@@ -399,6 +399,32 @@ describe('queclink-parzer', () => {
       const raw = queclink.parseCommand(data);
       expect(raw).to.eql('AT+GTSPD=303030,0,0,150,10,300,0,0,0,0,,,,,,,,,,,,3030$');
     });
+    it('should return raw set temp alarm on command', () => {
+      const data = {
+        password: '303030',
+        serial: 12336,
+        instruction: 'temp_alarm_on',
+        sensorId: '28FF96B5A2150187',
+        alarmId: 0,
+        minTemp: -30,
+        maxTemp: -20
+      };
+      const raw = queclink.parseCommand(data);
+      expect(raw).to.eql('AT+GTTMP=303030,0,3,28FF96B5A2150187,,,-30,-20,,,2,10,,,0,0,0,0,,,,,3030$');
+    });
+    it('should return raw set temp alarm off command', () => {
+      const data = {
+        password: '303030',
+        serial: 12336,
+        instruction: 'temp_alarm_off',
+        sensorId: '28FF96B5A2150187',
+        alarmId: 0,
+        minTemp: -30,
+        maxTemp: -20
+      };
+      const raw = queclink.parseCommand(data);
+      expect(raw).to.eql('AT+GTTMP=303030,0,0,28FF96B5A2150187,,,-30,-20,,,2,10,,,0,0,0,0,,,,,3030$');
+    });
     it('should return raw set speed off command GMT serie', () => {
       const data = {
         password: '303030',
