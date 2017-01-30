@@ -164,13 +164,13 @@ const checkGps = (lng, lat) => {
 */
 
 const getTempInCelciousDegrees = (hexTemp) =>{
-  const binTemp = utils.nHexDigit(utils.hex2bin(hexTemp),16)
+  const binTemp = utils.nHexDigit(utils.hex2bin(hexTemp),16);
   if (binTemp.substring(0,5) == '11111'){
     //Negative value
-    return (parseInt('FFFF',16) - parseInt(hexTemp,16) + 1)*-0.0625
+    return (parseInt('FFFF',16) - parseInt(hexTemp,16) + 1)*-0.0625;
   }
-  return parseFloat(utils.hex2dec(hexTemp))*0.0625
-}
+  return parseFloat(utils.hex2dec(hexTemp))*0.0625;
+};
 
 /*
   Gets the alarm type
