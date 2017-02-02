@@ -368,11 +368,13 @@ const getAlarm = (command, report, extra=false) => {
   }
   else if(command === 'GTTMP'){
     const number = parseInt(report[0],10);
+    const temperature = extra[1] != '' ? parseFloat(extra[1]) : null;
     return {
       type: 'Outside_Temperature',
       number: number,
-      deviceID: extra,
+      deviceID: extra[0],
       status: report[1] === '0', //0 means outside the range, 1 means inside
+      temperature: temperature,
       message: messages[command][report[1]]
     };
   }
@@ -1881,7 +1883,7 @@ const getGV200 = raw => {
   //Temperature Alarm
   else if(command[1] === 'GTTMP'){
     extend(data, {
-      alarm: getAlarm(command[1], parsedData[6], parsedData[30]),
+      alarm: getAlarm(command[1], parsedData[6], [parsedData[30],parsedData[32]]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[12]), parseFloat(parsedData[13]) ] },
       speed: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
       gpsStatus: checkGps(parseFloat(parsedData[12]), parseFloat(parsedData[13])),
@@ -1918,8 +1920,7 @@ const getGV200 = raw => {
       lac: parsedData[17] != '' ? parseInt(parsedData[17],16) : null,
       cid: parsedData[18] != '' ? parseInt(parsedData[18],16) : null,
       odometer: parsedData[20] != '' ? parseFloat(parsedData[20]) : null,
-      hourmeter: parsedData[21],
-      extTemperature: parsedData[32] != '' ? parseInt(parsedData[32],10) : null //C
+      hourmeter: parsedData[21]
     });
   }
   // Unusual fuel consumption
