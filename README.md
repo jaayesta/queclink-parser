@@ -5,7 +5,7 @@
 [![dependency Status](https://img.shields.io/david/jaayesta/queclink-parser.svg?style=flat-square)](https://david-dm.org/jaayesta/queclink-parser#info=dependencies)
 [![devDependency Status](https://img.shields.io/david/dev/jaayesta/queclink-parser.svg?style=flat-square)](https://david-dm.org/jaayesta/queclink-parser#info=devDependencies)
 
-> Parses raw data from Queclink devices (TCP). Devices suported: GV300, GV300W, GV200, GV55, GMT100
+> Parses raw data from Queclink devices (TCP). Devices suported: GV300, GV300W, GV200, GV55, GMT100, GL300
 
 ## Installation
 
