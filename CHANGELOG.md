@@ -1,3 +1,14 @@
+#### 0.3.21 (2017-2-17)
+
+##### Chores
+
+* **package:** Upgrade eslint to v3.15.0 ([a03250e6](https://github.com/jaayesta/queclink-parser/commit/a03250e60da179bb7a081327934841b132fc5d93))
+* **nvm:** Update to node v7 ([7c333936](https://github.com/jaayesta/queclink-parser/commit/7c333936e8afc76e0815991cde72b043249aea34))
+
+##### Bug Fixes
+
+* **parser:** Se agrego validacion del dato parsedData[24]. Fix #9 ([9404427a](https://github.com/jaayesta/queclink-parser/commit/9404427a2caadec022253bb9378c3f70424f6bc9))
+
 #### 0.3.20 (2017-2-2)
 
 #### 0.3.19 (2017-1-30)
