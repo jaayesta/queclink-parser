@@ -2943,14 +2943,14 @@ const getGL300 = raw => {
       altitude: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
       datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
       voltage: {
-        battery: parsedData[19] != '' ? parseFloat(parsedData[19]): null,//percentage
-        inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4])/1000 : null
+        battery: parsedData[parsedData.length - 3] != '' ? parseFloat(parsedData[parsedData.length - 3]): null,//percentage
+        inputCharge: null
       },
-      mcc: parsedData[14] != '' ? parseInt(parsedData[14],10) : null,
-      mnc: parsedData[15] != '' ? parseInt(parsedData[15],10) : null,
-      lac: parsedData[16] != '' ? parseInt(parsedData[16],16) : null,
-      cid: parsedData[17] != '' ? parseInt(parsedData[17],16) : null,
-      odometer: parsedData[18] != '' ? parseFloat(parsedData[18]) : null
+      mcc: parsedData[parsedData.length - 8] != '' ? parseInt(parsedData[parsedData.length - 8],10) : null,
+      mnc: parsedData[parsedData.length - 7] != '' ? parseInt(parsedData[parsedData.length - 7],10) : null,
+      lac: parsedData[parsedData.length - 6] != '' ? parseInt(parsedData[parsedData.length - 6],16) : null,
+      cid: parsedData[parsedData.length - 5] != '' ? parseInt(parsedData[parsedData.length - 5],16) : null,
+      odometer: parsedData[parsedData.length - 4] != '' ? parseFloat(parsedData[parsedData.length - 4]) : null
     });
   }
   //Heartbeat. It must response an ACK command
