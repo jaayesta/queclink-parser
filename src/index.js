@@ -193,6 +193,9 @@ const getAlarm = (command, report, extra=false) => {
       //message: messages[command].replace('data', reportType)
     };
   }
+  else if(command === 'GTRTL'){
+    return {type: 'Gps', status: 'Requested'};
+  }
   else if(command === 'GTGSM'){
     return {type: 'GSM_Report'};
   }
