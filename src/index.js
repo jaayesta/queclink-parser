@@ -3322,6 +3322,10 @@ const parseCommand = data => {
     const maxTemp = data.maxTemp || 0;
     command = `AT+GTTMP=${password},${alarmId},${mode},${sensorId},,,${minTemp},${maxTemp},,,2,10,,,0,0,0,0,,,,,${serialId}$`;
   }
+  //Request current position
+  else if(data.instruction === 'get_current_position'){
+    command = `AT+GTRTO=${password},1,,,,,,${serialId}$`;
+  }
   return command;
 };
 
