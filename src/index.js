@@ -215,6 +215,10 @@ const getAlarm = (command, report, extra=false) => {
       message: messages[command][reportType].replace('port', reportID)
     };
   }
+  else if(command === 'GTNMR'){
+    const reportType = report[1];
+    return {type: 'Movement', status: reportType === '1', message: messages[command][reportType]};
+  }
   else if(command === 'GTTOW'){
     return {type: 'Towing', message: messages[command]};
   }
@@ -2998,7 +3002,7 @@ const getGL300 = raw => {
       command[1] === 'GTDIS' || command[1] === 'GTDOG' || command[1] === 'GTIGL') {
 
     extend(data, {
-      alarm: getAlarm(command[1], parsedData[4]),
+      alarm: getAlarm(command[1], `${parsedData[4]}${parsedData[5]}`),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[11]), parseFloat(parsedData[12]) ] },
       speed: parsedData[8] != '' ? parseFloat(parsedData[8]): null,
       gpsStatus: checkGps(parseFloat(parsedData[11]), parseFloat(parsedData[12])),
