@@ -4,6 +4,7 @@
   "CLEARBUF": "Memoria interna vaciada",
   "REBOOT": "Dispositivo Reiniciado",
   "ANTIJAMMER": "Anti-Jammer configurado",
+  "REQUESTCURRENTPOSITION": "Solicitud de posición actual",
   "default": "Última acción",
   "GTIDA": {
     "1": "Conductor identificado autorizado",

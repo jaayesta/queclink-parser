@@ -3219,6 +3219,9 @@ const getAckCommand = (raw, lang) => {
     else if(parsedData[4] === 'REBOOT'){
       data.command = 'REBOOT';
     }
+    else if(parsedData[4] === 'RTL'){
+      data.command = 'REQUESTCURRENTPOSITION';
+    }
   }
   else if(command[1] === 'GTJBS'){
     data.command = 'ANTIJAMMER';
