@@ -2539,40 +2539,42 @@ const getGV55 = raw => {
 
   // GPS
   if (command[1] === 'GTFRI') {
-    extend(data, {
-      alarm: getAlarm(command[1], null),
-      loc: { type: 'Point', coordinates: [ parseFloat(parsedData[11]), parseFloat(parsedData[12]) ] },
-      speed: parsedData[8] != '' ? parseFloat(parsedData[8]): null,
-      gpsStatus: checkGps(parseFloat(parsedData[11]), parseFloat(parsedData[12])),
-      hdop: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
-      status: {
-        raw: parsedData[24],
-        sos: utils.nHexDigit(utils.hex2bin(parsedData[24].substring(2,4)),2)[0] === '1',
-        state: states[parsedData[24].substring(0,2)],
-        input: {
-          '1': utils.nHexDigit(utils.hex2bin(parsedData[24].substring(2,4)),2)[1] === '1',
-          '2': utils.nHexDigit(utils.hex2bin(parsedData[24].substring(2,4)),2)[0] === '1'
+    if (typeof parsedData[24] !== 'undefined' && parsedData[24] !== null) {
+      extend(data, {
+        alarm: getAlarm(command[1], null),
+        loc: { type: 'Point', coordinates: [ parseFloat(parsedData[11]), parseFloat(parsedData[12]) ] },
+        speed: parsedData[8] != '' ? parseFloat(parsedData[8]): null,
+        gpsStatus: checkGps(parseFloat(parsedData[11]), parseFloat(parsedData[12])),
+        hdop: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
+        status: {
+          raw: parsedData[24],
+          sos: utils.nHexDigit(utils.hex2bin(parsedData[24].substring(2,4)),2)[0] === '1',
+          state: states[parsedData[24].substring(0,2)],
+          input: {
+            '1': utils.nHexDigit(utils.hex2bin(parsedData[24].substring(2,4)),2)[1] === '1',
+            '2': utils.nHexDigit(utils.hex2bin(parsedData[24].substring(2,4)),2)[0] === '1'
+          },
+          output: {
+            '1': utils.nHexDigit(utils.hex2bin(parsedData[24].substring(4,6)),2)[1] === '1',
+            '2': utils.nHexDigit(utils.hex2bin(parsedData[24].substring(4,6)),2)[0] === '1'
+          },
+          charge: parseFloat(parsedData[4]) > 5
         },
-        output: {
-          '1': utils.nHexDigit(utils.hex2bin(parsedData[24].substring(4,6)),2)[1] === '1',
-          '2': utils.nHexDigit(utils.hex2bin(parsedData[24].substring(4,6)),2)[0] === '1'
+        azimuth: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
+        altitude: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
+        datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+        voltage: {
+          battery: parsedData[23] != '' ? parseFloat(parsedData[23]): null,//percentage
+          inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4])/1000 : null
         },
-        charge: parseFloat(parsedData[4]) > 5
-      },
-      azimuth: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
-      altitude: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
-      datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
-      voltage: {
-        battery: parsedData[23] != '' ? parseFloat(parsedData[23]): null,//percentage
-        inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4])/1000 : null
-      },
-      mcc: parsedData[14] != '' ? parseInt(parsedData[14],10) : null,
-      mnc: parsedData[15] != '' ? parseInt(parsedData[15],10) : null,
-      lac: parsedData[16] != '' ? parseInt(parsedData[16],16) : null,
-      cid: parsedData[17] != '' ? parseInt(parsedData[17],16) : null,
-      odometer: parsedData[19] != '' ? parseFloat(parsedData[19]) : null,
-      hourmeter: parsedData[20]
-    });
+        mcc: parsedData[14] != '' ? parseInt(parsedData[14],10) : null,
+        mnc: parsedData[15] != '' ? parseInt(parsedData[15],10) : null,
+        lac: parsedData[16] != '' ? parseInt(parsedData[16],16) : null,
+        cid: parsedData[17] != '' ? parseInt(parsedData[17],16) : null,
+        odometer: parsedData[19] != '' ? parseFloat(parsedData[19]) : null,
+        hourmeter: parsedData[20]
+      });
+    }
   }
   //Heartbeat. It must response an ACK command
   else if (command[1] === 'GTHBD'){
