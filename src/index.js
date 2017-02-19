@@ -181,7 +181,7 @@ const getTempInCelciousDegrees = (hexTemp) =>{
 */
 const getAlarm = (command, report, extra=false) => {
   const messages = langs['es'];
-  if(command === 'GTFRI' || command === 'GTERI'){
+  if(command === 'GTFRI' || command === 'GTERI' || command === 'GTPNL' || command === 'GTPFL'){
     return {type: 'Gps' };
   }
   else if(command === 'GTCAN'){
@@ -2999,7 +2999,7 @@ const getGL300 = raw => {
 
   // Common Alarms
   else if (command[1] === 'GTGEO' || command[1] === 'GTSPD' || command[1] === 'GTSOS' || command[1] === 'GTRTL' || command[1] === 'GTNMR' ||
-      command[1] === 'GTDIS' || command[1] === 'GTDOG' || command[1] === 'GTIGL') {
+      command[1] === 'GTDIS' || command[1] === 'GTDOG' || command[1] === 'GTIGL' || command[1] === 'GTPNL' || command[1] === 'GTPFL') {
 
     extend(data, {
       alarm: getAlarm(command[1], `${parsedData[4]}${parsedData[5]}`),
