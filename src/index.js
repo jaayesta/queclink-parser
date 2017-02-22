@@ -214,6 +214,9 @@ const getAlarm = (command, report, extra=false) => {
   else if(command === 'GTOBD'){
     return {type: 'Gps', status: 'OBDII' };
   }
+  else if(command === 'GTJES'){
+    return {type: 'OBDII_Summary', message: messages[command]};
+  }
   else if(command === 'GTOPN'){
     return {type: 'OBDII_Connected', status: true, message: messages[command]};
   }
@@ -3271,8 +3274,8 @@ const getGV500 = raw => {
       hourmeter: parsedData[parsedData.length - 10] != '' ? parsedData[parsedData.length - 10] : null,
       canbus: {
         vin: parsedData[3] != '' ? parsedData[3] : null,
-        fuel_level: parsedData[parsedData.length -3] != '' ?  parseInt(parsedData[parsedData.length -3],10) : null,  //-3 percentage
-        fuel_consumption: parsedData[parsedData.length -4] != '' ? getFuelConsumption(parsedData[parsedData.length -4]) : null,
+        fuelLevel: parsedData[parsedData.length -3] != '' ?  parseInt(parsedData[parsedData.length -3],10) : null,  //-3 percentage
+        fuelConsumption: parsedData[parsedData.length -4] != '' ? getFuelConsumption(parsedData[parsedData.length -4]) : null,
         rpm: parsedData[parsedData.length -5] != '' ? parseInt(parsedData[parsedData.length -5],10): null,
         state: parsedData[parsedData.length -6] != '' ? states[parsedData[parsedData.length -6].substring(0,2)] : null,
       }
@@ -3567,6 +3570,82 @@ const getGV500 = raw => {
       odometer: null,
       hourmeter: null,
       canbus: null
+    });
+  }
+  else if(command[1] === 'GTOBD'){
+    extend(data, {
+      alarm: getAlarm(command[1], null),
+      loc: { type: 'Point', coordinates: [ parseFloat(parsedData[29]), parseFloat(parsedData[30])]},
+      speed: parsedData[26] != '' ? parseFloat(parsedData[26]) : null,
+      gpsStatus: checkGps(parseFloat(parsedData[29]), parseFloat(parsedData[30])),
+      hdop: parsedData[25] != '' ? parseFloat(parsedData[25]) : null,
+      status: null,
+      azimuth: parsedData[27] != '' ? parseFloat(parsedData[27]) : null,
+      altitude: parsedData[28] != '' ? parseFloat(parsedData[28]) : null,
+      datetime: parsedData[31] != '' ? moment(`${parsedData[31]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      voltage: {
+        battery: null,
+        inputCharge: parsedData[9] != '' ? parseFloat(parsedData[9])/1000 : null,
+      },
+      mcc: parsedData[32] != '' ? parseInt(parsedData[32],10) : null,
+      mnc: parsedData[33] != '' ? parseInt(parsedData[33],10) : null,
+      lac: parsedData[34] != '' ? parseInt(parsedData[34],16) : null,
+      cid: parsedData[35] != '' ? parseInt(parsedData[35],16) : null,
+      odometer: parsedData[37] != '' ? parseFloat(parsedData[37]) : null,
+      hourmeter: null,
+      canbus: null,
+      obd: {
+        vin: parsedData[3] != '' ? parsedData[3] : null,
+        obdConnected: parsedData[8] === '1',
+        rpm: parsedData[11] != '' ? parseInt(parsedData[11],10) : null,
+        speed: parsedData[12] != '' ? parseInt(parsedData[12],10) : null,
+        coolantTemp: parsedData[13] != '' ? parseInt(parsedData[13],10) : null,
+        fuelConsumption: parsedData[14] != '' ? getFuelConsumption(parsedData[14]): null,
+        DTCclearedDistance: parsedData[15] != '' ? parseFloat(parsedData[15]): null,
+        MILactivatedDistance: parsedData[16] != '' ? parseFloat(parsedData[16]): null,
+        MILstatusOn: parsedData[17] === '1',
+        DTCsNumber: parsedData[18] != '' ? parseInt(parsedData[18],10) : null,
+        troubleCodes: parsedData[19] != '' ? parsedData[19] : null,
+        throttlePosition: parsedData[20] != '' ? parseInt(parsedData[20],10): null, //percentage
+        engineLoad: parsedData[21] != '' ? parseInt(parsedData[21],10): null, //percentage
+        fuelLevel: parsedData[22] != '' ? parseInt(parsedData[22],10): null, //percentage
+        obdProtocol: parsedData[23] != '' ? parsedData[23] : null,
+        odometer: parsedData[24] != '' ? parseInt(parsedData[24],10) : null
+      }
+    });
+  }
+  else if(command[1] === 'GTJES'){
+    extend(data, {
+      alarm: getAlarm(command[1], null),
+      loc: { type: 'Point', coordinates: [ parseFloat(parsedData[17]), parseFloat(parsedData[18])]},
+      speed: parsedData[14] != '' ? parseFloat(parsedData[14]) : null,
+      gpsStatus: checkGps(parseFloat(parsedData[17]), parseFloat(parsedData[18])),
+      hdop: parsedData[13] != '' ? parseFloat(parsedData[13]) : null,
+      status: null,
+      azimuth: parsedData[15] != '' ? parseFloat(parsedData[15]) : null,
+      altitude: parsedData[16] != '' ? parseFloat(parsedData[16]) : null,
+      datetime: parsedData[19] != '' ? moment(`${parsedData[19]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      voltage: {
+        battery: null,
+        inputCharge: null,
+      },
+      mcc: parsedData[20] != '' ? parseInt(parsedData[20],10) : null,
+      mnc: parsedData[21] != '' ? parseInt(parsedData[21],10) : null,
+      lac: parsedData[22] != '' ? parseInt(parsedData[22],16) : null,
+      cid: parsedData[23] != '' ? parseInt(parsedData[23],16) : null,
+      odometer: parsedData[25] != '' ? parseFloat(parsedData[25]) : null,
+      hourmeter: null,
+      canbus: null,
+      obdSummary: {
+        vin: parsedData[3] != '' ? parsedData[3] : null,
+        fuelConsumption: parsedData[6] != '' ? getFuelConsumption(parsedData[6]): null,
+        maxRpm: parsedData[7] != '' ? parseInt(parsedData[7],10) : null,
+        averageRpm: parsedData[8] != '' ? parseInt(parsedData[8],10) : null,
+        maxThrottle: parsedData[9] != '' ? parseInt(parsedData[9],10) : null,
+        averageThrottle: parsedData[10] != '' ? parseInt(parsedData[10],10) : null,
+        maxEngineLoad: parsedData[11] != '' ? parseInt(parsedData[11],10) : null,
+        averageEngineLoad: parsedData[12] != '' ? parseInt(parsedData[12],10) : null
+      }
     });
   }
 

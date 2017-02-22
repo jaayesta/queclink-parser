@@ -16,6 +16,7 @@
     "1": "Regreso a temperatura dentro de rango"
   },
   "GTCAN": "Reporte CAN BUS: data",
+  "GTJES": "Resumen de datos OBDII",
   "GTOPN": "OBDII Conectado",
   "GTOPF": "OBDII Desconectado",
   "GTGSS": {
