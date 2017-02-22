@@ -182,7 +182,7 @@ const getTempInCelciousDegrees = (hexTemp) =>{
 
 const getFuelConsumption = (fuelString) => {
   try{
-    if(fuelString.indexOf('NaN') === -1 || fuelString.indexOf('Inf') === -1){
+    if(fuelString.indexOf('NaN') === -1 && fuelString.indexOf('Inf') === -1 && fuelString.indexOf('inf') === -1){
       return parseFloat(fuelString);
     }
     else{
@@ -212,7 +212,13 @@ const getAlarm = (command, report, extra=false) => {
     };
   }
   else if(command === 'GTOBD'){
-    return {type: 'OBDII' };
+    return {type: 'Gps', status: 'OBDII' };
+  }
+  else if(command === 'GTOPN'){
+    return {type: 'OBDII_Connected', status: true, message: messages[command]};
+  }
+  else if(command === 'GTOPF'){
+    return {type: 'OBDII_Connected', status: false, message: messages[command]};
   }
   else if(command === 'GTRTL'){
     return {type: 'Gps', status: 'Requested'};
@@ -3268,7 +3274,7 @@ const getGV500 = raw => {
         fuel_level: parsedData[parsedData.length -3] != '' ?  parseInt(parsedData[parsedData.length -3],10) : null,  //-3 percentage
         fuel_consumption: parsedData[parsedData.length -4] != '' ? getFuelConsumption(parsedData[parsedData.length -4]) : null,
         rpm: parsedData[parsedData.length -5] != '' ? parseInt(parsedData[parsedData.length -5],10): null,
-        state: parsedData[parsedData.length -6] != '' ? states[parsedData[parsedData.length -6]] : null,
+        state: parsedData[parsedData.length -6] != '' ? states[parsedData[parsedData.length -6].substring(0,2)] : null,
       }
     });
   }
@@ -3534,6 +3540,30 @@ const getGV500 = raw => {
       mnc: parsedData[17] != '' ? parseInt(parsedData[17],10) : null,
       lac: parsedData[18] != '' ? parseInt(parsedData[18],16) : null,
       cid: parsedData[19] != '' ? parseInt(parsedData[19],16) : null,
+      odometer: null,
+      hourmeter: null,
+      canbus: null
+    });
+  }
+  else if(command[1] === 'GTOPN' || command[1] === 'GTOPF'){
+    extend(data, {
+      alarm: getAlarm(command[1], null),
+      loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
+      speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
+      gpsStatus: checkGps(parseFloat(parsedData[9]), parseFloat(parsedData[10])),
+      hdop: parsedData[5] != '' ? parseFloat(parsedData[5]) : null,
+      status: null,
+      azimuth: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
+      altitude: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
+      datetime: parsedData[11] != '' ? moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      voltage: {
+        battery: null,
+        inputCharge: null
+      },
+      mcc: parsedData[12] != '' ? parseInt(parsedData[12],10) : null,
+      mnc: parsedData[13] != '' ? parseInt(parsedData[13],10) : null,
+      lac: parsedData[14] != '' ? parseInt(parsedData[14],16) : null,
+      cid: parsedData[15] != '' ? parseInt(parsedData[15],16) : null,
       odometer: null,
       hourmeter: null,
       canbus: null

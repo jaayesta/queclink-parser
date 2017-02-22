@@ -16,6 +16,8 @@
     "1": "Regreso a temperatura dentro de rango"
   },
   "GTCAN": "Reporte CAN BUS: data",
+  "GTOPN": "OBDII Conectado",
+  "GTOPF": "OBDII Desconectado",
   "GTGSS": {
     "1": "Conectado a GPS",
     "0": "Desconectado de GPS"
@@ -67,6 +69,7 @@
   "GTEMP": "Conectado a la fuente de poder",
   "GTPFA": "Dispositivo Apagado",
   "GTPNA": "Dispositivo Encendido",
+  "GTIGN": "Entrada digital 1 activada",
   "GTIGF": "Entrada digital 1 desactivada",
   "GTIGL": {
     "1": "Entrada digital 1 activada",
