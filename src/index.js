@@ -40,8 +40,22 @@ const states = {
   '21': 'Ingition On Rest',
   '22': 'Ignition On Moving',
   '41': 'Sensor Rest',
-  '42': 'Sesnor Motion',
+  '42': 'Sensor Motion',
   '': 'Unknown'
+};
+
+const OBDIIProtocols = {
+  '0': 'Unknown',
+  '1': 'J1850 PWM',
+  '2': 'J1850 VPW',
+  '3': 'ISO 9141-2',
+  '4': 'ISO 14230',
+  '5': 'ISO 14230',
+  '6': 'ISO 15765',
+  '7': 'ISO 15765',
+  '8': 'ISO 15765',
+  '9': 'ISO 15765',
+  'A': 'J1939'
 };
 
 const uartDeviceTypes = {
@@ -216,6 +230,11 @@ const getAlarm = (command, report, extra=false) => {
   }
   else if(command === 'GTJES'){
     return {type: 'OBDII_Summary', message: messages[command]};
+  }
+  else if(command === 'GTOSM'){
+    const reportID = report[0];
+    const reportType = report[1];
+    return {type: 'OBDII_Monitor', status: reportType === '0' ? 'Inside' : 'Outside', message: messages[command][reportID][reportType]};
   }
   else if(command === 'GTOPN'){
     return {type: 'OBDII_Connected', status: true, message: messages[command]};
@@ -3609,8 +3628,50 @@ const getGV500 = raw => {
         throttlePosition: parsedData[20] != '' ? parseInt(parsedData[20],10): null, //percentage
         engineLoad: parsedData[21] != '' ? parseInt(parsedData[21],10): null, //percentage
         fuelLevel: parsedData[22] != '' ? parseInt(parsedData[22],10): null, //percentage
-        obdProtocol: parsedData[23] != '' ? parsedData[23] : null,
+        obdProtocol: parsedData[23] != '' ? OBDIIProtocols[parsedData[23]] : null,
         odometer: parsedData[24] != '' ? parseInt(parsedData[24],10) : null
+      }
+    });
+  }
+  else if(command[1] === 'GTOSM'){
+    extend(data, {
+      alarm: getAlarm(command[1], `${parsedData[5]}${parsedData[6]}`),
+      loc: { type: 'Point', coordinates: [ parseFloat(parsedData[30]), parseFloat(parsedData[31])]},
+      speed: parsedData[27] != '' ? parseFloat(parsedData[27]) : null,
+      gpsStatus: checkGps(parseFloat(parsedData[30]), parseFloat(parsedData[31])),
+      hdop: parsedData[26] != '' ? parseFloat(parsedData[26]) : null,
+      status: null,
+      azimuth: parsedData[28] != '' ? parseFloat(parsedData[28]) : null,
+      altitude: parsedData[29] != '' ? parseFloat(parsedData[29]) : null,
+      datetime: parsedData[32] != '' ? moment(`${parsedData[32]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      voltage: {
+        battery: null,
+        inputCharge: parsedData[10] != '' ? parseFloat(parsedData[10])/1000 : null,
+      },
+      mcc: parsedData[33] != '' ? parseInt(parsedData[33],10) : null,
+      mnc: parsedData[34] != '' ? parseInt(parsedData[34],10) : null,
+      lac: parsedData[35] != '' ? parseInt(parsedData[35],16) : null,
+      cid: parsedData[36] != '' ? parseInt(parsedData[36],16) : null,
+      odometer: parsedData[38] != '' ? parseFloat(parsedData[38]) : null,
+      hourmeter: null,
+      canbus: null,
+      obd: {
+        vin: parsedData[3] != '' ? parsedData[3] : null,
+        obdConnected: parsedData[9] === '1',
+        rpm: parsedData[12] != '' ? parseInt(parsedData[12],10) : null,
+        speed: parsedData[13] != '' ? parseInt(parsedData[13],10) : null,
+        coolantTemp: parsedData[14] != '' ? parseInt(parsedData[14],10) : null,
+        fuelConsumption: parsedData[15] != '' ? getFuelConsumption(parsedData[15]): null,
+        DTCclearedDistance: parsedData[16] != '' ? parseFloat(parsedData[16]): null,
+        MILactivatedDistance: parsedData[17] != '' ? parseFloat(parsedData[17]): null,
+        MILstatusOn: parsedData[18] === '1',
+        DTCsNumber: parsedData[19] != '' ? parseInt(parsedData[19],10) : null,
+        troubleCodes: parsedData[20] != '' ? parsedData[20] : null,
+        throttlePosition: parsedData[21] != '' ? parseInt(parsedData[21],10): null, //percentage
+        engineLoad: parsedData[22] != '' ? parseInt(parsedData[22],10): null, //percentage
+        fuelLevel: parsedData[23] != '' ? parseInt(parsedData[23],10): null, //percentage
+        obdProtocol: parsedData[24] != '' ? parsedData[24] : null,
+        odometer: parsedData[25] != '' ? parseInt(parsedData[25],10) : null
       }
     });
   }

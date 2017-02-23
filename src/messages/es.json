@@ -17,6 +17,44 @@
   },
   "GTCAN": "Reporte CAN BUS: data",
   "GTJES": "Resumen de datos OBDII",
+  "GTOSM": {
+    "0": {
+      "0": "RPM dentro del rango permitido",
+      "1": "RPM fuera del rango permitido"
+    },
+    "1": {
+      "0": "Velocidad dentro del rango permitido",
+      "1": "Velocidad fuera del rango permitido"
+    },
+    "2": {
+      "0": "Temperatura del coolant dentro del rango permitido",
+      "1": "Temperatura del coolant fuera del rango permitido"
+    },
+    "3": {
+      "0": "Consumo de combustible dentro del rango permitido",
+      "1": "Consumo de combustible fuera del rango permitido"
+    },
+    "4": {
+      "0": "Consumo de combustible dentro del rango permitido",
+      "1": "Consumo de combustible fuera del rango permitido"
+    },
+    "5": {
+      "0": "MIL dentro del rango permitido",
+      "1": "MIL fuera del rango permitido"
+    },
+    "6": {
+      "0": "Acelerador dentro del rango permitido",
+      "1": "Acelerador fuera del rango permitido"
+    },
+    "7": {
+      "0": "Carga del motor dentro del rango permitido",
+      "1": "Carga del motor fuera del rango permitido"
+    },
+    "8": {
+      "0": "Nivel de combustible dentro del rango permitido",
+      "1": "Nive de combustible bajo"
+    }
+  },
   "GTOPN": "OBDII Conectado",
   "GTOPF": "OBDII Desconectado",
   "GTGSS": {
