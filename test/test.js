@@ -619,7 +619,7 @@ describe('queclink-parzer', () => {
       const data = queclink.parse(raw);
       expect(data.alarm.type).to.eq('Vehicle_Start_Status');
       expect(data.alarm.status).to.be.true;
-      expect(data.alarm.message).to.eq('Partida de vehículo inicia');
+      expect(data.alarm.message).to.eq('Partida de vehículo iniciada');
     });
     it('should return GTLSP alarm', () => {
       const raw = new Buffer('+RESP:GTLSP,060100,135790246811220,,,,0,4.3,92,70.0,121.354335,31.222073,20090214013254,0460,0000,18d8,6141,00,2000.0,20090214093254,11F0$');
@@ -659,7 +659,7 @@ describe('queclink-parzer', () => {
       const data = queclink.parse(raw);
       expect(data.alarm.type).to.eq('Gps_Status');
       expect(data.alarm.status).to.be.false;
-      expect(data.alarm.message).to.eq('Desconectado de GPS');
+      expect(data.alarm.message).to.eq('Sin señal GPS');
     });
     it('should return GTTMP alarm', () => {
       const raw = new Buffer('+RESP:GTTMP,04040B,862170013467608,NMX_Beta,,0,31,1,0,0.4,0,2.2,121.390957,31.164567,20130115083120,0460,0000,1877,0873,00,0.0,00000:00:00,2791,2639,2691,09,09,,,,28967B41040000F1,,25,20130115163122,01AA$');

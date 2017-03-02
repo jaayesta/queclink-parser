@@ -8,7 +8,8 @@
   "default": "Última acción",
   "GTIDA": {
     "1": "Conductor identificado autorizado",
-    "0": "Conductor identificado no autorizado"
+    "0": "Conductor identificado no autorizado",
+    "2": "Término de sesión de conductor identificado."
   },
   "GTFLA": "Combustible reducido en consumption%",
   "GTTMP": {
@@ -58,8 +59,8 @@
   "GTOPN": "OBDII Conectado",
   "GTOPF": "OBDII Desconectado",
   "GTGSS": {
-    "1": "Conectado a GPS",
-    "0": "Desconectado de GPS"
+    "1": "Conectado a señal GPS",
+    "0": "Sin señal GPS"
   },
   "GTPDP": "Conexión GPRS establecida",
   "GTSTT": "Movimiento de dispositivo detectado",
@@ -74,7 +75,7 @@
   },
   "GTSTP": "Partida de vehículo finalizada",
   "GTLSP": "Partida de vehículo finalizada",
-  "GTSTR": "Partida de vehículo inicia",
+  "GTSTR": "Partida de vehículo iniciada",
   "GTANT": {
     "0": "Antena GPS conectada",
     "1": "Antena GPS desconectada"
