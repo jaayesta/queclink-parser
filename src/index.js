@@ -30,6 +30,7 @@ const devices = {
   '2F': 'GV55',// New Version
   '30': 'GL300', //New Version
   '36': 'GV500', //New Version
+  '2C': 'GL300W', //New version
 };
 
 const states = {
@@ -143,7 +144,7 @@ const parse = (raw, options) => {
     else if (device === 'GMT100') {
       result = getGMT100(raw.toString());
     }
-    else if (device === 'GL300'){
+    else if (device === 'GL300' || device === 'GL300W'){
       result = getGL300(raw.toString());
     }
   }
