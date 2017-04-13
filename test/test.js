@@ -91,7 +91,6 @@ describe('queclink-parzer', () => {
       expect(data.status.output[2]).to.be.false;
       expect(data.status.output[3]).to.be.false;
       expect(data.status.charge).to.be.false;
-      expect(data.status.tow).to.be.false;
       expect(data.azimuth).to.eql(92);
       expect(data.altitude).to.eql(70);
       expect(data.datetime).to.eql(new Date('2009-02-14T01:32:54.000Z'));
