@@ -1648,7 +1648,7 @@ const getGV200 = raw => {
       datetime: parsedData[14] != '' ? moment(`${parsedData[14]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
       voltage: {
         battery: null,//percentage
-        inputCharge: parsedData[5] != '' ? parseFloat(parsedData[4])/1000 : null,
+        inputCharge: parsedData[5] != '' ? parseFloat(parsedData[5])/1000 : null,
         ada: parsedData[22] != '' ? parseFloat(parsedData[22])/1000 : null,
         adb: parsedData[23] != '' ? parseFloat(parsedData[23])/1000 : null,
         adc: parsedData[24] != '' ? parseFloat(parsedData[24])/1000 : null
