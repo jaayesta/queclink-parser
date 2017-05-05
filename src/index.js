@@ -187,6 +187,9 @@ const checkGps = (lng, lat) => {
 */
 
 const getTempInCelciousDegrees = (hexTemp) =>{
+  if(hexTemp.substring(0,4) === 'FFFF'){
+    hexTemp = hexTemp.substring(4);
+  }
   const binTemp = utils.nHexDigit(utils.hex2bin(hexTemp),16);
   if (binTemp.substring(0,5) == '11111'){
     //Negative value
@@ -1173,6 +1176,49 @@ const getGV300 = raw => {
   else if (command[1] === 'GTHBD'){
     extend(data, {
       alarm: getAlarm(command[1], null)
+    });
+  }
+  // General Info Report
+  else if(command[1] === 'GTINF'){
+    extend(data, {
+      alarm: getAlarm(command[1], null),
+      state: states[parsedData[4]],
+      gsmInfo: {
+        SIM_ICC: parsedData[5],
+        RSSI_dBm: parsedData[6],
+        RSSI_quality: parsedData[7] != '' ? 100*(parseInt(parseFloat(parsedData[7])/7,10)) : null //Percentage
+      },
+      backupBattery: {
+        using: parsedData[10] === '1',
+        voltage: parsedData[11] != '' ? parseFloat(parsedData[11]) : null,
+        charging: parsedData[12] === '1'
+      },
+      externalGPSAntenna: parsedData[15] === '0',
+      status: { //parsedData[24]
+        raw: parsedData[18]+parsedData[19],
+        sos: false,
+        input: {
+          '4': utils.nHexDigit(utils.hex2bin(parsedData[20][1]),4)[0] === '1',
+          '3': utils.nHexDigit(utils.hex2bin(parsedData[20][1]),4)[1] === '1',
+          '2': utils.nHexDigit(utils.hex2bin(parsedData[20][1]),4)[2] === '1',
+          '1': utils.nHexDigit(utils.hex2bin(parsedData[20][1]),4)[3] === '1'
+        },
+        output: {
+          '4': utils.nHexDigit(utils.hex2bin(parsedData[19][1]),4)[0] === '1',
+          '3': utils.nHexDigit(utils.hex2bin(parsedData[19][1]),4)[1] === '1',
+          '2': utils.nHexDigit(utils.hex2bin(parsedData[19][1]),4)[2] === '1',
+          '1': utils.nHexDigit(utils.hex2bin(parsedData[19][1]),4)[3] === '1'
+        },
+        charge: parsedData[8] === '1'
+      },
+      voltage: {
+        battery: parsedData[11] != '' ? parseInt(100*(parseFloat(parsedData[11])/5),10) : null,//percentage
+        inputCharge: parsedData[17] != '' ? parseFloat(parsedData[17])/1000 : null,
+        ada: parsedData[18] != '' ? parseFloat(parsedData[18])/1000 : null,
+        adb: parsedData[19] != '' ? parseFloat(parsedData[19])/1000 : null
+      },
+      lastFixUTCTime: parsedData[16] != '' ? moment(`${parsedData[16]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      timezoneOffset: parsedData[20]
     });
   }
   // Common Alarms
