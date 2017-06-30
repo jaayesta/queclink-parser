@@ -59,7 +59,7 @@
   "GTOPN": "OBDII Conectado",
   "GTOPF": "OBDII Desconectado",
   "GTGSS": {
-    "1": "Conectado a señal GPS",
+    "1": "Señal GPS recuperada",
     "0": "Sin señal GPS"
   },
   "GTPDP": "Conexión GPRS establecida",

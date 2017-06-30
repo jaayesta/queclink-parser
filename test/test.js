@@ -657,6 +657,13 @@ describe('queclink-parzer', () => {
       const raw = new Buffer('+RESP:GTGSS,060100,135790246811220,,1,9,11,,0,4.3,92,70.0,121.354335,31.222073,20090214013254,0460,0000,18d8,6141,00,20090214093254,11F0$');
       const data = queclink.parse(raw);
       expect(data.alarm.type).to.eq('Gps_Status');
+      expect(data.alarm.status).to.be.true;
+      expect(data.alarm.message).to.eq('Señal GPS recuperada');
+    });
+    it('should return GTGSS alarm', () => {
+      const raw = new Buffer('+RESP:GTGSS,060100,135790246811220,,0,9,11,,0,4.3,92,70.0,121.354335,31.222073,20090214013254,0460,0000,18d8,6141,00,20090214093254,11F0$');
+      const data = queclink.parse(raw);
+      expect(data.alarm.type).to.eq('Gps_Status');
       expect(data.alarm.status).to.be.false;
       expect(data.alarm.message).to.eq('Sin señal GPS');
     });

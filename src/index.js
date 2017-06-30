@@ -427,7 +427,7 @@ const getAlarm = (command, report, extra=false) => {
     return {
       type: 'Gps_Status',
       status: report === '1',
-      message: messages[command][typeof report !== 'undefined' ? '1': '0']
+      message: messages[command][typeof report !== 'undefined' ? report : '0']
     };
   }
   else if(command === 'GTTMP'){
@@ -812,7 +812,7 @@ const getGV300W = raw => {
   //GPS Status
   else if(command[1] === 'GTGSS'){
     extend(data, {
-      alarm: getAlarm(command[1], command[4]),
+      alarm: getAlarm(command[1], parsedData[4]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[12]), parseFloat(parsedData[13])]},
       speed: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
       gpsStatus: checkGps(parseFloat(parsedData[12]), parseFloat(parsedData[13])),
@@ -863,7 +863,7 @@ const getGV300W = raw => {
   }
   else if(command[1] === 'GTCAN'){
     extend(data, {
-      alarm: getAlarm(command[1], command[4]),
+      alarm: getAlarm(command[1], parsedData[4]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[35]), parseFloat(parsedData[36])]},
       speed: parsedData[32] != '' ? parseFloat(parsedData[32]) : null,
       gpsStatus: checkGps(parseFloat(parsedData[35]), parseFloat(parsedData[36])),
@@ -1481,7 +1481,7 @@ const getGV300 = raw => {
   //GPS Status
   else if(command[1] === 'GTGSS'){
     extend(data, {
-      alarm: getAlarm(command[1], command[4]),
+      alarm: getAlarm(command[1], parsedData[4]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[12]), parseFloat(parsedData[13])]},
       speed: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
       gpsStatus: checkGps(parseFloat(parsedData[12]), parseFloat(parsedData[13])),
@@ -2114,7 +2114,7 @@ const getGV200 = raw => {
   //GPS Status
   else if(command[1] === 'GTGSS'){
     extend(data, {
-      alarm: getAlarm(command[1], command[4]),
+      alarm: getAlarm(command[1], parsedData[4]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[12]), parseFloat(parsedData[13])]},
       speed: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
       gpsStatus: checkGps(parseFloat(parsedData[12]), parseFloat(parsedData[13])),
@@ -2140,7 +2140,7 @@ const getGV200 = raw => {
   }
   else if(command[1] === 'GTGPJ'){
     extend(data,{
-      alarm: getAlarm(command[1], command[5]),
+      alarm: getAlarm(command[1], parsedData[5]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[10]), parseFloat(parsedData[11])]},
       speed: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       gpsStatus: checkGps(parseFloat(parsedData[10]), parseFloat(parsedData[11])),
@@ -3139,7 +3139,7 @@ const getGV55 = raw => {
   //GPS Status
   else if(command[1] === 'GTGSS'){
     extend(data, {
-      alarm: getAlarm(command[1], command[4]),
+      alarm: getAlarm(command[1], parsedData[4]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[12]), parseFloat(parsedData[13])]},
       speed: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
       gpsStatus: checkGps(parseFloat(parsedData[12]), parseFloat(parsedData[13])),
@@ -3769,7 +3769,7 @@ const getGV500 = raw => {
   //GPS Status
   else if(command[1] === 'GTGSS'){
     extend(data, {
-      alarm: getAlarm(command[1], command[5]),
+      alarm: getAlarm(command[1], parsedData[5]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[13]), parseFloat(parsedData[14])]},
       speed: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
       gpsStatus: checkGps(parseFloat(parsedData[13]), parseFloat(parsedData[14])),
