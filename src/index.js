@@ -4048,7 +4048,7 @@ const parseCommand = data => {
     validity = data.times || 10;
     interval = data.interval || 300;
     mode = /on(E)?/.test(state) ? 4 : 0;
-    if (data.device_serie === 'GMT'){
+    if (data.device_serie === 'GMT' || password === 'gv55'){
       mode = /on(E)?/.test(state) ? 3 : 0;
     }
     command = `AT+GTSPD=${password},${mode},0,${max_speed},${validity},${interval},0,0,0,0,,,,,,,,,,,,${serialId}$`;

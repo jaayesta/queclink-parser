@@ -384,6 +384,19 @@ describe('queclink-parzer', () => {
       const raw = queclink.parseCommand(data);
       expect(raw).to.eql('AT+GTSPD=303030,3,0,150,10,300,0,0,0,0,,,,,,,,,,,,3030$');
     });
+    it('should return raw set speed on command gv55', () => {
+      const data = {
+        password: 'gv55',
+        serial: 12336,
+        instruction: 'set_speed_on',
+        speed: 150,
+        times: 10,
+        interval: 300,
+        device_serie: 'GV'
+      };
+      const raw = queclink.parseCommand(data);
+      expect(raw).to.eql('AT+GTSPD=gv55,3,0,150,10,300,0,0,0,0,,,,,,,,,,,,3030$');
+    });
 
     it('should return raw set speed off command GV serie', () => {
       const data = {
