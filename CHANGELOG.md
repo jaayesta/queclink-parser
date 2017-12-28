@@ -1,3 +1,19 @@
+## 1.0.0 (2017-12-28)
+
+##### Chores
+
+* **package:**  update dependencies ([b785d952](https://github.com/jaayesta/queclink-parser/commit/b785d95241ce4603d5a0dcf45081726142dd5510))
+
+##### New Features
+
+* **package:**
+  *  update min node version to v8 ([d3ab7fc9](https://github.com/jaayesta/queclink-parser/commit/d3ab7fc931edb45032462a1c1e253db4f3a85388))
+  *  remove lodash and moment ([b4c2a655](https://github.com/jaayesta/queclink-parser/commit/b4c2a65528ad0f5a3602f09326fc1b5e5b939264))
+
+##### Code Style Changes
+
+* **js:**  migrate to standardjs ([27c9edcb](https://github.com/jaayesta/queclink-parser/commit/27c9edcb8f4a486925e82aa409e98f2c78aae6a3))
+
 #### 0.3.34 (2017-8-23)
 
 #### 0.3.33 (2017-6-30)
