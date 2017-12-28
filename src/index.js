@@ -1,7 +1,5 @@
 'use strict';
 
-const moment = require('moment');
-const extend = require('lodash/extend');
 const utils = require('./utils.js');
 const langEs = require('./messages/es.json');
 const langEn = require('./messages/en.json');
@@ -491,7 +489,7 @@ const getGV300W = raw => {
     history = true;
   }
 
-  const data = {
+  let data = {
     raw: `${raw.toString()}$`,
     manufacturer: 'queclink',
     device: 'Queclink-GV300W',
@@ -500,13 +498,13 @@ const getGV300W = raw => {
     protocolVersion: getProtocolVersion(parsedData[1]),
     temperature: null,
     history: history,
-    sentTime: moment(`${parsedData[parsedData.length - 2]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
+    sentTime: utils.parseDate(parsedData[parsedData.length - 2]),
     serialId: parseInt(parsedData[parsedData.length - 1],16)
   };
 
   // GPS
   if (command[1] === 'GTFRI') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[11]), parseFloat(parsedData[12]) ] },
       speed: parsedData[8] != '' ? parseFloat(parsedData[8]): null,
@@ -531,7 +529,7 @@ const getGV300W = raw => {
       },
       azimuth: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
       altitude: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
-      datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[13] != '' ? utils.parseDate(parsedData[13]) : null,
       voltage: {
         battery: parsedData[23] != '' ? parseFloat(parsedData[23]): null,//percentage
         inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4])/1000 : null,
@@ -548,7 +546,7 @@ const getGV300W = raw => {
   }
   //Heartbeat. It must response an ACK command
   else if (command[1] === 'GTHBD'){
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null)
     });
   }
@@ -557,7 +555,7 @@ const getGV300W = raw => {
       command[1] === 'GTSPD' || command[1] === 'GTSOS' || command[1] === 'GTRTL' ||
       command[1] === 'GTDOG' || command[1] === 'GTIGL' || command[1] === 'GTHBM') {
 
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], parsedData[5]),
       loc: { type: 'Point', coordinates: [parseFloat(parsedData[11]), parseFloat(parsedData[12])] },
       speed: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
@@ -566,7 +564,7 @@ const getGV300W = raw => {
       status: null,
       azimuth: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
       altitude: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
-      datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[13] != '' ? utils.parseDate(parsedData[13]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -583,7 +581,7 @@ const getGV300W = raw => {
   }
   //External low battery and Low voltage for analog input
   else if (command[1] === 'GTEPS' || command[1] === 'GTAIS') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], parsedData[5]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[11]), parseFloat(parsedData[12]) ] },
       speed: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
@@ -592,7 +590,7 @@ const getGV300W = raw => {
       status: null,
       azimuth: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
       altitude: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
-      datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[13] != '' ? utils.parseDate(parsedData[13]) : null,
       voltage: {
         battery: parsedData[23] != '' ? parseFloat(parsedData[23]): null,//percentage
         inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4])/1000 : null,
@@ -609,7 +607,7 @@ const getGV300W = raw => {
   }
   //Event report (It uses the last GPS data and MCC info)
   else if(command[1] === 'GTPNA' || command[1] === 'GTPFA' || command[1] === 'GTPDP') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       loc: null,
       speed: null,
@@ -618,7 +616,7 @@ const getGV300W = raw => {
       status: null,
       azimuth: null,
       altitude: null,
-      datetime: parsedData[4] != '' ? moment(`${parsedData[4]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[4] != '' ? utils.parseDate(parsedData[4]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -634,7 +632,7 @@ const getGV300W = raw => {
     });
   }
   else if(command[1] === 'GTMPN' || command[1] === 'GTMPF' || command[1] === 'GTCRA' || command[1] === 'GTJDR') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[8]), parseFloat(parsedData[9])]},
       speed: parsedData[5] != '' ? parseFloat(parsedData[5]) : null,
@@ -643,7 +641,7 @@ const getGV300W = raw => {
       status: null,
       azimuth: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
       altitude: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
-      datetime: parsedData[10] != '' ? moment(`${parsedData[10]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[10] != '' ? utils.parseDate(parsedData[10]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -659,7 +657,7 @@ const getGV300W = raw => {
     });
   }
   else if (command[1] === 'GTJDS' || command[1] === 'GTANT' || command[1] === 'GTRMD') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], parsedData[4]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
       speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
@@ -668,7 +666,7 @@ const getGV300W = raw => {
       status: null,
       azimuth: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       altitude: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
-      datetime: parsedData[11] != '' ? moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[11] != '' ? utils.parseDate(parsedData[11]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -684,7 +682,7 @@ const getGV300W = raw => {
     });
   }
   else if (command[1] === 'GTBPL') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
       speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
@@ -693,7 +691,7 @@ const getGV300W = raw => {
       status: null,
       azimuth: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       altitude: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
-      datetime: parsedData[11] != '' ? moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[11] != '' ? utils.parseDate(parsedData[11]) : null,
       voltage: {
         battery: parsedData[4] != '' ? parseFloat(parsedData[4]): null,
         inputCharge: null,
@@ -709,7 +707,7 @@ const getGV300W = raw => {
     });
   }
   else if (command[1] === 'GTIGN' || command[1] === 'GTIGF') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], parsedData[4]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
       speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
@@ -718,7 +716,7 @@ const getGV300W = raw => {
       status: null,
       azimuth: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       altitude: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
-      datetime: parsedData[11] != '' ? moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[11] != '' ? utils.parseDate(parsedData[11]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -734,7 +732,7 @@ const getGV300W = raw => {
     });
   }
   else if (command[1] === 'GTIDN' || command[1] === 'GTIDF') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], parsedData[5]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[10]), parseFloat(parsedData[11])]},
       speed: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
@@ -743,7 +741,7 @@ const getGV300W = raw => {
       status: null,
       azimuth: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
       altitude: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
-      datetime: parsedData[12] != '' ? moment(`${parsedData[12]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[12] != '' ? utils.parseDate(parsedData[12]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -759,7 +757,7 @@ const getGV300W = raw => {
     });
   }
   else if (command[1] === 'GTSTR' || command[1] === 'GTSTP' || command[1] === 'GTLSP') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[10]), parseFloat(parsedData[11])]},
       speed: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
@@ -768,7 +766,7 @@ const getGV300W = raw => {
       status: null,
       azimuth: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
       altitude: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
-      datetime: parsedData[12] != '' ? moment(`${parsedData[12]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[12] != '' ? utils.parseDate(parsedData[12]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -785,7 +783,7 @@ const getGV300W = raw => {
   }
   // Motion State Changed
   else if(command[1] === 'GTSTT'){
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
       speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
@@ -794,7 +792,7 @@ const getGV300W = raw => {
       status: null,
       azimuth: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       altitude: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
-      datetime: parsedData[11] != '' ? moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[11] != '' ? utils.parseDate(parsedData[11]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -811,7 +809,7 @@ const getGV300W = raw => {
   }
   //GPS Status
   else if(command[1] === 'GTGSS'){
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], parsedData[4]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[12]), parseFloat(parsedData[13])]},
       speed: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
@@ -820,7 +818,7 @@ const getGV300W = raw => {
       status: null,
       azimuth: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
       altitude: parsedData[11] != '' ? parseFloat(parsedData[11]) : null,
-      datetime: parsedData[14] != '' ? moment(`${parsedData[14]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[14] != '' ? utils.parseDate(parsedData[14]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -837,7 +835,7 @@ const getGV300W = raw => {
   }
   //iButton
   else if(command[1] === 'GTIDA'){
-    extend(data,{
+    data = Object.assign(data,{
       alarm: getAlarm(command[1], `${parsedData[5]},${parsedData[6]}`),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[12]), parseFloat(parsedData[13])]},
       speed: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
@@ -846,7 +844,7 @@ const getGV300W = raw => {
       status: null,
       azimuth: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
       altitude: parsedData[11] != '' ? parseFloat(parsedData[11]) : null,
-      datetime: parsedData[14] != '' ? moment(`${parsedData[14]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[14] != '' ? utils.parseDate(parsedData[14]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -862,7 +860,7 @@ const getGV300W = raw => {
     });
   }
   else if(command[1] === 'GTCAN'){
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], parsedData[4]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[35]), parseFloat(parsedData[36])]},
       speed: parsedData[32] != '' ? parseFloat(parsedData[32]) : null,
@@ -871,7 +869,7 @@ const getGV300W = raw => {
       status: null,
       azimuth: parsedData[33] != '' ? parseFloat(parsedData[33]) : null,
       altitude: parsedData[34] != '' ? parseFloat(parsedData[34]) : null,
-      datetime: parsedData[37] != '' ? moment(`${parsedData[37]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[37] != '' ? utils.parseDate(parsedData[37]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -912,7 +910,7 @@ const getGV300W = raw => {
     });
   }
   else{
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null)
     });
   }
@@ -940,7 +938,7 @@ const getGV300 = raw => {
     history = true;
   }
 
-  const data = {
+  let data = {
     raw: `${raw.toString()}$`,
     manufacturer: 'queclink',
     device: 'Queclink-GV300',
@@ -949,13 +947,13 @@ const getGV300 = raw => {
     protocolVersion: getProtocolVersion(parsedData[1]),
     temperature: null,
     history: history,
-    sentTime: moment(`${parsedData[parsedData.length - 2]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
+    sentTime: utils.parseDate(parsedData[parsedData.length - 2]),
     serialId: parseInt(parsedData[parsedData.length - 1],16)
   };
   //Gps
   if (command[1] === 'GTFRI') {
     try {
-      extend(data, {
+      data = Object.assign(data, {
         alarm: getAlarm(command[1], null),
         loc: { type: 'Point', coordinates: [ parseFloat(parsedData[11]), parseFloat(parsedData[12]) ] },
         speed: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
@@ -980,7 +978,7 @@ const getGV300 = raw => {
         },
         azimuth: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
         altitude: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
-        datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+        datetime: parsedData[13] != '' ? utils.parseDate(parsedData[13]) : null,
         voltage: {
           battery: parsedData[23] != '' ? parseFloat(parsedData[23]): null,//percentage
           inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4])/1000 : null,
@@ -1000,7 +998,7 @@ const getGV300 = raw => {
   }
   // GPS with AC100 Devices Connected
   else if (command[1] === 'GTERI') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[12]), parseFloat(parsedData[13]) ] },
       speed: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
@@ -1025,7 +1023,7 @@ const getGV300 = raw => {
       },
       azimuth: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
       altitude: parsedData[11] != '' ? parseFloat(parsedData[11]) : null,
-      datetime: parsedData[14] != '' ? moment(`${parsedData[14]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[14] != '' ? utils.parseDate(parsedData[14]) : null,
       voltage: {
         battery: parsedData[24] != '' ? parseFloat(parsedData[24]): null,//percentage
         inputCharge: parsedData[5] != '' ? parseFloat(parsedData[5])/1000 : null,
@@ -1050,7 +1048,7 @@ const getGV300 = raw => {
     const ac100DevicesConnected = (AC100 &&  digitFuelSensor) ? parseInt(parsedData[29],10) : ((AC100 &&  !digitFuelSensor) ? parseInt(parsedData[28],10) : 0);
 
 
-    const externalData = {
+    let externalData = {
       eriMask: {
         raw: parsedData[4],
         digitFuelSensor: digitFuelSensor,
@@ -1065,7 +1063,7 @@ const getGV300 = raw => {
     // Fuel Sensor
     if(parsedData[26] === '1'){
       if(digitFuelSensor && !AC100){
-        extend(externalData, {
+        externalData = Object.assign(externalData, {
           fuelSensorData: {
             data: fuelSensorData,
             sensorType: parsedData[29],
@@ -1087,7 +1085,7 @@ const getGV300 = raw => {
           });
           count += 3;
         }
-        extend(externalData, {
+        externalData = Object.assign(externalData, {
           fuelSensorData: null,
           AC100Devices: ac100Devices
         });
@@ -1104,7 +1102,7 @@ const getGV300 = raw => {
           });
           count += 3;
         }
-        extend(externalData, {
+        externalData = Object.assign(externalData, {
           fuelSensorData: {
             data: fuelSensorData,
             sensorType: parsedData[30],
@@ -1129,13 +1127,13 @@ const getGV300 = raw => {
           });
           count += 3;
         }
-        extend(externalData, {
+        externalData = Object.assign(externalData, {
           fuelSensorData: null,
           AC100Devices: ac100Devices
         });
       }
       else if(digitFuelSensor && !AC100){
-        extend(externalData, {
+        externalData = Object.assign(externalData, {
           fuelSensorData: {
             data: fuelSensorData,
             sensorType: null,
@@ -1157,7 +1155,7 @@ const getGV300 = raw => {
           });
           count += 3;
         }
-        extend(externalData, {
+        externalData = Object.assign(externalData, {
           fuelSensorData: {
             data: fuelSensorData,
             sensorType: null,
@@ -1168,19 +1166,19 @@ const getGV300 = raw => {
         });
       }
     }
-    extend(data, {
+    data = Object.assign(data, {
       externalData: externalData
     });
   }
   //Heartbeat. It must response an ACK command
   else if (command[1] === 'GTHBD'){
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null)
     });
   }
   // General Info Report
   else if(command[1] === 'GTINF'){
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       state: states[parsedData[4]],
       gsmInfo: {
@@ -1217,7 +1215,7 @@ const getGV300 = raw => {
         ada: parsedData[18] != '' ? parseFloat(parsedData[18])/1000 : null,
         adb: parsedData[19] != '' ? parseFloat(parsedData[19])/1000 : null
       },
-      lastFixUTCTime: parsedData[16] != '' ? moment(`${parsedData[16]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      lastFixUTCTime: parsedData[16] != '' ? utils.parseDate(parsedData[16]) : null,
       timezoneOffset: parsedData[20]
     });
   }
@@ -1226,7 +1224,7 @@ const getGV300 = raw => {
       command[1] === 'GTSPD' || command[1] === 'GTSOS' || command[1] === 'GTRTL' ||
       command[1] === 'GTDOG' || command[1] === 'GTIGL' || command[1] === 'GTHBM') {
 
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], parsedData[5]),
       loc: { type: 'Point', coordinates: [parseFloat(parsedData[11]), parseFloat(parsedData[12])] },
       speed: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
@@ -1235,7 +1233,7 @@ const getGV300 = raw => {
       status: null,
       azimuth: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
       altitude: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
-      datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[13] != '' ? utils.parseDate(parsedData[13]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -1252,7 +1250,7 @@ const getGV300 = raw => {
   }
   //External low battery and Low voltage for analog input
   else if (command[1] === 'GTEPS' || command[1] === 'GTAIS') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], parsedData[5]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[11]), parseFloat(parsedData[12]) ] },
       speed: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
@@ -1261,7 +1259,7 @@ const getGV300 = raw => {
       status: null,
       azimuth: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
       altitude: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
-      datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[13] != '' ? utils.parseDate(parsedData[13]) : null,
       voltage: {
         battery: parsedData[23] != '' ? parseFloat(parsedData[23]): null,//percentage
         inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4])/1000: null,
@@ -1278,7 +1276,7 @@ const getGV300 = raw => {
   }
   //Event report (It uses the last GPS data and MCC info)
   else if(command[1] === 'GTPNA' || command[1] === 'GTPFA' || command[1] === 'GTPDP') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       loc: null,
       speed: null,
@@ -1287,7 +1285,7 @@ const getGV300 = raw => {
       status: null,
       azimuth: null,
       altitude: null,
-      datetime: parsedData[4] != '' ? moment(`${parsedData[4]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[4] != '' ? utils.parseDate(parsedData[4]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -1303,7 +1301,7 @@ const getGV300 = raw => {
     });
   }
   else if(command[1] === 'GTMPN' || command[1] === 'GTMPF' || command[1] === 'GTCRA' || command[1] === 'GTJDR') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[8]), parseFloat(parsedData[9])]},
       speed: parsedData[5] != '' ? parseFloat(parsedData[5]) : null,
@@ -1312,7 +1310,7 @@ const getGV300 = raw => {
       status: null,
       azimuth: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
       altitude: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
-      datetime: parsedData[10] != '' ? moment(`${parsedData[10]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[10] != '' ? utils.parseDate(parsedData[10]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -1328,7 +1326,7 @@ const getGV300 = raw => {
     });
   }
   else if (command[1] === 'GTJDS' || command[1] === 'GTANT' || command[1] === 'GTRMD') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], parsedData[4]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
       speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
@@ -1337,7 +1335,7 @@ const getGV300 = raw => {
       status: null,
       azimuth: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       altitude: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
-      datetime: parsedData[11] != '' ? moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[11] != '' ? utils.parseDate(parsedData[11]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -1353,7 +1351,7 @@ const getGV300 = raw => {
     });
   }
   else if (command[1] === 'GTBPL') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
       speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
@@ -1362,7 +1360,7 @@ const getGV300 = raw => {
       status: null,
       azimuth: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       altitude: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
-      datetime: parsedData[11] != '' ? moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[11] != '' ? utils.parseDate(parsedData[11]) : null,
       voltage: {
         battery: parsedData[4] != '' ? parseFloat(parsedData[4]): null,
         inputCharge: null,
@@ -1378,7 +1376,7 @@ const getGV300 = raw => {
     });
   }
   else if (command[1] === 'GTIGN' || command[1] === 'GTIGF') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], parsedData[4]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
       speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
@@ -1387,7 +1385,7 @@ const getGV300 = raw => {
       status: null,
       azimuth: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       altitude: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
-      datetime: parsedData[11] != '' ? moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[11] != '' ? utils.parseDate(parsedData[11]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -1403,7 +1401,7 @@ const getGV300 = raw => {
     });
   }
   else if (command[1] === 'GTIDN' || command[1] === 'GTIDF') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], parsedData[5]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[10]), parseFloat(parsedData[11])]},
       speed: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
@@ -1412,7 +1410,7 @@ const getGV300 = raw => {
       status: null,
       azimuth: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
       altitude: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
-      datetime: parsedData[12] != '' ? moment(`${parsedData[12]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[12] != '' ? utils.parseDate(parsedData[12]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -1428,7 +1426,7 @@ const getGV300 = raw => {
     });
   }
   else if (command[1] === 'GTSTR' || command[1] === 'GTSTP' || command[1] === 'GTLSP') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[10]), parseFloat(parsedData[11])]},
       speed: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
@@ -1437,7 +1435,7 @@ const getGV300 = raw => {
       status: null,
       azimuth: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
       altitude: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
-      datetime: parsedData[12] != '' ? moment(`${parsedData[12]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[12] != '' ? utils.parseDate(parsedData[12]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -1454,7 +1452,7 @@ const getGV300 = raw => {
   }
   // Motion State Changed
   else if(command[1] === 'GTSTT'){
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
       speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
@@ -1463,7 +1461,7 @@ const getGV300 = raw => {
       status: null,
       azimuth: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       altitude: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
-      datetime: parsedData[11] != '' ? moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[11] != '' ? utils.parseDate(parsedData[11]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -1480,7 +1478,7 @@ const getGV300 = raw => {
   }
   //GPS Status
   else if(command[1] === 'GTGSS'){
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], parsedData[4]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[12]), parseFloat(parsedData[13])]},
       speed: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
@@ -1489,7 +1487,7 @@ const getGV300 = raw => {
       status: null,
       azimuth: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
       altitude: parsedData[11] != '' ? parseFloat(parsedData[11]) : null,
-      datetime: parsedData[14] != '' ? moment(`${parsedData[14]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[14] != '' ? utils.parseDate(parsedData[14]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -1506,7 +1504,7 @@ const getGV300 = raw => {
   }
   //iButton
   else if(command[1] === 'GTIDA'){
-    extend(data,{
+    data = Object.assign(data,{
       alarm: getAlarm(command[1], `${parsedData[5]},${parsedData[6]}`),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[12]), parseFloat(parsedData[13])]},
       speed: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
@@ -1515,7 +1513,7 @@ const getGV300 = raw => {
       status: null,
       azimuth: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
       altitude: parsedData[11] != '' ? parseFloat(parsedData[11]) : null,
-      datetime: parsedData[14] != '' ? moment(`${parsedData[14]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[14] != '' ? utils.parseDate(parsedData[14]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -1531,7 +1529,7 @@ const getGV300 = raw => {
     });
   }
   else{
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null)
     });
   }
@@ -1558,7 +1556,7 @@ const getGV200 = raw => {
     history = true;
   }
 
-  const data = {
+  let data = {
     raw: `${raw.toString()}$`,
     manufacturer: 'queclink',
     device: 'Queclink-GV200',
@@ -1567,14 +1565,14 @@ const getGV200 = raw => {
     protocolVersion: getProtocolVersion(parsedData[1]),
     temperature: null,
     history: history,
-    sentTime: moment(`${parsedData[parsedData.length - 2]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
+    sentTime: utils.parseDate(parsedData[parsedData.length - 2]),
     serialId: parseInt(parsedData[parsedData.length - 1],16)
   };
 
   // GPS
   if (command[1] === 'GTFRI') {
     try {
-      extend(data, {
+      data = Object.assign(data, {
         alarm: getAlarm(command[1], null),
         loc: { type: 'Point', coordinates: [ parseFloat(parsedData[11]), parseFloat(parsedData[12]) ] },
         speed: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
@@ -1599,7 +1597,7 @@ const getGV200 = raw => {
         },
         azimuth: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
         altitude: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
-        datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+        datetime: parsedData[13] != '' ? utils.parseDate(parsedData[13]) : null,
         voltage: {
           battery: null,//percentage
           inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4])/1000 : null,
@@ -1620,7 +1618,7 @@ const getGV200 = raw => {
   }
   // GPS with AC100 Devices Connected
   else if (command[1] === 'GTERI') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[12]), parseFloat(parsedData[13]) ] },
       speed: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
@@ -1645,7 +1643,7 @@ const getGV200 = raw => {
       },
       azimuth: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
       altitude: parsedData[11] != '' ? parseFloat(parsedData[11]) : null,
-      datetime: parsedData[14] != '' ? moment(`${parsedData[14]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[14] != '' ? utils.parseDate(parsedData[14]) : null,
       voltage: {
         battery: null,//percentage
         inputCharge: parsedData[5] != '' ? parseFloat(parsedData[5])/1000 : null,
@@ -1671,7 +1669,7 @@ const getGV200 = raw => {
     const ac100DevicesConnected = (AC100 &&  digitFuelSensor) ? parseInt(parsedData[29],10) : ((AC100 &&  !digitFuelSensor) ? parseInt(parsedData[28],10) : 0);
 
 
-    const externalData = {
+    let externalData = {
       eriMask: {
         raw: parsedData[4],
         digitFuelSensor: digitFuelSensor,
@@ -1686,7 +1684,7 @@ const getGV200 = raw => {
     // Fuel Sensor
     if(parsedData[27] === '1'){
       if(digitFuelSensor && !AC100){
-        extend(externalData, {
+        externalData = Object.assign(externalData, {
           fuelSensorData: {
             data: fuelSensorData,
             sensorType: parsedData[29],
@@ -1708,7 +1706,7 @@ const getGV200 = raw => {
           });
           count += 3;
         }
-        extend(externalData, {
+        externalData = Object.assign(externalData, {
           fuelSensorData: null,
           AC100Devices: ac100Devices
         });
@@ -1725,7 +1723,7 @@ const getGV200 = raw => {
           });
           count += 3;
         }
-        extend(externalData, {
+        externalData = Object.assign(externalData, {
           fuelSensorData: {
             data: fuelSensorData,
             sensorType: parsedData[30],
@@ -1750,13 +1748,13 @@ const getGV200 = raw => {
           });
           count += 3;
         }
-        extend(externalData, {
+        externalData = Object.assign(externalData, {
           fuelSensorData: null,
           AC100Devices: ac100Devices
         });
       }
       else if(digitFuelSensor && !AC100){
-        extend(externalData, {
+        externalData = Object.assign(externalData, {
           fuelSensorData: {
             data: fuelSensorData,
             sensorType: null,
@@ -1778,7 +1776,7 @@ const getGV200 = raw => {
           });
           count += 3;
         }
-        extend(externalData, {
+        externalData = Object.assign(externalData, {
           fuelSensorData: {
             data: fuelSensorData,
             sensorType: null,
@@ -1789,19 +1787,19 @@ const getGV200 = raw => {
         });
       }
     }
-    extend(data, {
+    data = Object.assign(data, {
       externalData: externalData
     });
   }
   //Heartbeat. It must response an ACK command
   else if (command[1] === 'GTHBD'){
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null)
     });
   }
   // General Info Report
   else if(command[1] === 'GTINF'){
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       state: states[parsedData[4]],
       gsmInfo: {
@@ -1839,7 +1837,7 @@ const getGV200 = raw => {
         adb: null,
         adc: null
       },
-      lastFixUTCTime: parsedData[16] != '' ? moment(`${parsedData[16]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      lastFixUTCTime: parsedData[16] != '' ? utils.parseDate(parsedData[16]) : null,
       timezoneOffset: parsedData[20]
     });
   }
@@ -1848,7 +1846,7 @@ const getGV200 = raw => {
       command[1] === 'GTSPD' || command[1] === 'GTSOS' || command[1] === 'GTRTL' ||
       command[1] === 'GTDOG' || command[1] === 'GTIGL' || command[1] === 'GTHBM') {
 
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], parsedData[5]),
       loc: { type: 'Point', coordinates: [parseFloat(parsedData[11]), parseFloat(parsedData[12])] },
       speed: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
@@ -1857,7 +1855,7 @@ const getGV200 = raw => {
       status: null,
       azimuth: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
       altitude: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
-      datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[13] != '' ? utils.parseDate(parsedData[13]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -1876,7 +1874,7 @@ const getGV200 = raw => {
   //Low voltage for analog input
   else if(command[1] === 'GTAIS' || command[1] === 'GTMAI'){
     const alarm = getAlarm(command[1], parsedData[5]);
-    extend(data, {
+    data = Object.assign(data, {
       alarm: alarm,
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[11]), parseFloat(parsedData[12]) ] },
       speed: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
@@ -1885,7 +1883,7 @@ const getGV200 = raw => {
       status: null,
       azimuth: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
       altitude: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
-      datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[13] != '' ? utils.parseDate(parsedData[13]) : null,
       voltage: {
         battery: null,//percentage
         inputCharge: (parsedData[4] != '' && command[1] === 'GTAIS') ? parseFloat(parsedData[4]): null,
@@ -1903,7 +1901,7 @@ const getGV200 = raw => {
   }
   //Event report (It uses the last GPS data and MCC info)
   else if(command[1] === 'GTPNA' || command[1] === 'GTPFA' || command[1] === 'GTPDP') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       loc: null,
       speed: null,
@@ -1912,7 +1910,7 @@ const getGV200 = raw => {
       status: null,
       azimuth: null,
       altitude: null,
-      datetime: parsedData[4] != '' ? moment(`${parsedData[4]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[4] != '' ? utils.parseDate(parsedData[4]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -1929,7 +1927,7 @@ const getGV200 = raw => {
     });
   }
   else if(command[1] === 'GTMPN' || command[1] === 'GTMPF' || command[1] === 'GTBTC' || command[1] === 'GTCRA' || command[1] === 'GTJDR') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[8]), parseFloat(parsedData[9])]},
       speed: parsedData[5] != '' ? parseFloat(parsedData[5]) : null,
@@ -1938,7 +1936,7 @@ const getGV200 = raw => {
       status: null,
       azimuth: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
       altitude: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
-      datetime: parsedData[10] != '' ? moment(`${parsedData[10]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[10] != '' ? utils.parseDate(parsedData[10]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -1955,7 +1953,7 @@ const getGV200 = raw => {
     });
   }
   else if (command[1] === 'GTJDS' || command[1] === 'GTANT' || command[1] === 'GTRMD' || command[1] === 'GTSTC') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], parsedData[4]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
       speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
@@ -1964,7 +1962,7 @@ const getGV200 = raw => {
       status: null,
       azimuth: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       altitude: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
-      datetime: parsedData[11] != '' ? moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[11] != '' ? utils.parseDate(parsedData[11]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -1981,7 +1979,7 @@ const getGV200 = raw => {
     });
   }
   else if (command[1] === 'GTBPL') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
       speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
@@ -1990,7 +1988,7 @@ const getGV200 = raw => {
       status: null,
       azimuth: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       altitude: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
-      datetime: parsedData[11] != '' ? moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[11] != '' ? utils.parseDate(parsedData[11]) : null,
       voltage: {
         battery: parsedData[4] != '' ? parseFloat(parsedData[4]): null,
         inputCharge: null,
@@ -2007,7 +2005,7 @@ const getGV200 = raw => {
     });
   }
   else if (command[1] === 'GTIGN' || command[1] === 'GTIGF') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], parsedData[4]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
       speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
@@ -2016,7 +2014,7 @@ const getGV200 = raw => {
       status: null,
       azimuth: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       altitude: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
-      datetime: parsedData[11] != '' ? moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[11] != '' ? utils.parseDate(parsedData[11]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -2033,7 +2031,7 @@ const getGV200 = raw => {
     });
   }
   else if (command[1] === 'GTIDN' || command[1] === 'GTIDF') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], parsedData[5]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[10]), parseFloat(parsedData[11])]},
       speed: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
@@ -2042,7 +2040,7 @@ const getGV200 = raw => {
       status: null,
       azimuth: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
       altitude: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
-      datetime: parsedData[12] != '' ? moment(`${parsedData[12]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[12] != '' ? utils.parseDate(parsedData[12]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -2059,7 +2057,7 @@ const getGV200 = raw => {
     });
   }
   else if (command[1] === 'GTSTR' || command[1] === 'GTSTP' || command[1] === 'GTLSP') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[10]), parseFloat(parsedData[11])]},
       speed: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
@@ -2068,7 +2066,7 @@ const getGV200 = raw => {
       status: null,
       azimuth: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
       altitude: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
-      datetime: parsedData[12] != '' ? moment(`${parsedData[12]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[12] != '' ? utils.parseDate(parsedData[12]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -2086,7 +2084,7 @@ const getGV200 = raw => {
   }
   // Motion State Changed
   else if(command[1] === 'GTSTT'){
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
       speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
@@ -2095,7 +2093,7 @@ const getGV200 = raw => {
       status: null,
       azimuth: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       altitude: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
-      datetime: parsedData[11] != '' ? moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[11] != '' ? utils.parseDate(parsedData[11]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -2113,7 +2111,7 @@ const getGV200 = raw => {
   }
   //GPS Status
   else if(command[1] === 'GTGSS'){
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], parsedData[4]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[12]), parseFloat(parsedData[13])]},
       speed: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
@@ -2122,7 +2120,7 @@ const getGV200 = raw => {
       status: null,
       azimuth: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
       altitude: parsedData[11] != '' ? parseFloat(parsedData[11]) : null,
-      datetime: parsedData[14] != '' ? moment(`${parsedData[14]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[14] != '' ? utils.parseDate(parsedData[14]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -2139,7 +2137,7 @@ const getGV200 = raw => {
     });
   }
   else if(command[1] === 'GTGPJ'){
-    extend(data,{
+    data = Object.assign(data,{
       alarm: getAlarm(command[1], parsedData[5]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[10]), parseFloat(parsedData[11])]},
       speed: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
@@ -2148,7 +2146,7 @@ const getGV200 = raw => {
       status: null,
       azimuth: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
       altitude: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
-      datetime: parsedData[12] != '' ? moment(`${parsedData[12]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[12] != '' ? utils.parseDate(parsedData[12]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -2166,7 +2164,7 @@ const getGV200 = raw => {
   }
   //Temperature Alarm
   else if(command[1] === 'GTTMP'){
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], parsedData[6], [parsedData[30],parsedData[32]]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[12]), parseFloat(parsedData[13]) ] },
       speed: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
@@ -2191,7 +2189,7 @@ const getGV200 = raw => {
       },
       azimuth: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
       altitude: parsedData[11] != '' ? parseFloat(parsedData[11]) : null,
-      datetime: parsedData[14] != '' ? moment(`${parsedData[14]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[14] != '' ? utils.parseDate(parsedData[14]) : null,
       voltage: {
         battery: null,//percentage
         inputCharge: parsedData[5] != '' ? parseFloat(parsedData[4])/1000 : null,
@@ -2209,7 +2207,7 @@ const getGV200 = raw => {
   }
   // Unusual fuel consumption
   else if(command[1] === 'GTFLA'){
-    extend(data,{
+    data = Object.assign(data,{
       alarm: getAlarm(command[1], `${parsedData[5]},${parsedData[6]}`),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[11]), parseFloat(parsedData[12])]},
       speed: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
@@ -2218,7 +2216,7 @@ const getGV200 = raw => {
       status: null,
       azimuth: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
       altitude: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
-      datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[13] != '' ? utils.parseDate(parsedData[13]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -2236,7 +2234,7 @@ const getGV200 = raw => {
   }
   //iButton
   else if(command[1] === 'GTIDA'){
-    extend(data,{
+    data = Object.assign(data,{
       alarm: getAlarm(command[1], `${parsedData[5]},${parsedData[6]}`),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[12]), parseFloat(parsedData[13])]},
       speed: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
@@ -2245,7 +2243,7 @@ const getGV200 = raw => {
       status: null,
       azimuth: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
       altitude: parsedData[11] != '' ? parseFloat(parsedData[11]) : null,
-      datetime: parsedData[14] != '' ? moment(`${parsedData[14]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[14] != '' ? utils.parseDate(parsedData[14]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -2262,7 +2260,7 @@ const getGV200 = raw => {
     });
   }
   else if(command[1] === 'GTCAN'){
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], parsedData[4]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[59]), parseFloat(parsedData[60])]},
       speed: parsedData[56] != '' ? parseFloat(parsedData[56]) : null,
@@ -2271,7 +2269,7 @@ const getGV200 = raw => {
       status: null,
       azimuth: parsedData[57] != '' ? parseFloat(parsedData[57]) : null,
       altitude: parsedData[58] != '' ? parseFloat(parsedData[58]) : null,
-      datetime: parsedData[61] != '' ? moment(`${parsedData[61]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[61] != '' ? utils.parseDate(parsedData[61]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -2367,7 +2365,7 @@ const getGV200 = raw => {
     });
   }
   else if(command[1] === 'GTDOS'){
-    extend(data,{
+    data = Object.assign(data,{
       alarm: getAlarm(command[1], `${parsedData[4]},${parsedData[5]}`),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[10]), parseFloat(parsedData[11])]},
       speed: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
@@ -2376,7 +2374,7 @@ const getGV200 = raw => {
       status: null,
       azimuth: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
       altitude: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
-      datetime: parsedData[12] != '' ? moment(`${parsedData[12]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[12] != '' ? utils.parseDate(parsedData[12]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -2393,7 +2391,7 @@ const getGV200 = raw => {
     });
   }
   else{
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null)
     });
   }
@@ -2420,7 +2418,7 @@ const getGMT100 = raw => {
     history = true;
   }
 
-  const data = {
+  let data = {
     raw: `${raw.toString()}$`,
     manufacturer: 'queclink',
     device: 'Queclink-GMT100',
@@ -2429,14 +2427,14 @@ const getGMT100 = raw => {
     protocolVersion: getProtocolVersion(parsedData[1]),
     temperature: null,
     history: history,
-    sentTime: moment(`${parsedData[parsedData.length - 2]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
+    sentTime: utils.parseDate(parsedData[parsedData.length - 2]),
     serialId: parseInt(parsedData[parsedData.length - 1],16),
     hourmeter: null
   };
 
   // GPS
   if (command[1] === 'GTFRI') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[11]), parseFloat(parsedData[12]) ] },
       speed: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
@@ -2457,7 +2455,7 @@ const getGMT100 = raw => {
       },
       azimuth: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
       altitude: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
-      datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[13] != '' ? utils.parseDate(parsedData[13]) : null,
       voltage: {
         battery: parsedData[23] != '' ? parseFloat(parsedData[23]): null,//percentage
         inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4])/1000: null,
@@ -2472,13 +2470,13 @@ const getGMT100 = raw => {
   }
   //Heartbeat. It must response an ACK command
   else if (command[1] === 'GTHBD'){
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null)
     });
   }
   // General Info Report
   else if(command[1] === 'GTINF'){
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       state: states[parsedData[4]],
       gsmInfo: {
@@ -2510,7 +2508,7 @@ const getGMT100 = raw => {
         inputCharge: parsedData[9] != '' ? parseFloat(parsedData[9])/1000 : null,
         ada: parsedData[18] != '' ? parseFloat(parsedData[18])/1000: null
       },
-      lastFixUTCTime: parsedData[16] != '' ? moment(`${parsedData[16]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      lastFixUTCTime: parsedData[16] != '' ? utils.parseDate(parsedData[16]) : null,
       timezoneOffset: parsedData[22]
     });
   }
@@ -2519,7 +2517,7 @@ const getGMT100 = raw => {
       command[1] === 'GTSPD' || command[1] === 'GTSOS' || command[1] === 'GTRTL' ||
       command[1] === 'GTDOG' || command[1] === 'GTIGL' || command[1] === 'GTHBM') {
 
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], parsedData[5]),
       loc: { type: 'Point', coordinates: [parseFloat(parsedData[11]), parseFloat(parsedData[12])] },
       speed: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
@@ -2528,7 +2526,7 @@ const getGMT100 = raw => {
       status: null,
       azimuth: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
       altitude: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
-      datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[13] != '' ? utils.parseDate(parsedData[13]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -2543,7 +2541,7 @@ const getGMT100 = raw => {
   }
   //External low battery
   else if (command[1] === 'GTEPS') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], parsedData[5]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[11]), parseFloat(parsedData[12]) ] },
       speed: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
@@ -2552,7 +2550,7 @@ const getGMT100 = raw => {
       status: null,
       azimuth: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
       altitude: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
-      datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[13] != '' ? utils.parseDate(parsedData[13]) : null,
       voltage: {
         battery: parsedData[23] != '' ? parseFloat(parsedData[23]): null,//percentage
         inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4])/1000: null,
@@ -2567,7 +2565,7 @@ const getGMT100 = raw => {
   }
   //Low voltage from analog input
   else if (command[1] === 'GTAIS'){
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], parsedData[5]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[11]), parseFloat(parsedData[12]) ] },
       speed: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
@@ -2576,7 +2574,7 @@ const getGMT100 = raw => {
       status: null,
       azimuth: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
       altitude: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
-      datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[13] != '' ? utils.parseDate(parsedData[13]) : null,
       voltage: {
         battery: parsedData[23] != '' ? parseFloat(parsedData[23]): null,//percentage
         inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4])/1000: null,
@@ -2591,7 +2589,7 @@ const getGMT100 = raw => {
   }
   //Event report (It uses the last GPS data and MCC info)
   else if(command[1] === 'GTPNA' || command[1] === 'GTPFA' || command[1] === 'GTPDP') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       loc: null,
       speed: null,
@@ -2600,7 +2598,7 @@ const getGMT100 = raw => {
       status: null,
       azimuth: null,
       altitude: null,
-      datetime: parsedData[4] != '' ? moment(`${parsedData[4]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[4] != '' ? utils.parseDate(parsedData[4]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -2614,7 +2612,7 @@ const getGMT100 = raw => {
     });
   }
   else if(command[1] === 'GTMPN' || command[1] === 'GTMPF' || command[1] === 'GTCRA' || command[1] === 'GTJDR') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[8]), parseFloat(parsedData[9])]},
       speed: parsedData[5] != '' ? parseFloat(parsedData[5]) : null,
@@ -2623,7 +2621,7 @@ const getGMT100 = raw => {
       status: null,
       azimuth: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
       altitude: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
-      datetime: parsedData[10] != '' ? moment(`${parsedData[10]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[10] != '' ? utils.parseDate(parsedData[10]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -2637,7 +2635,7 @@ const getGMT100 = raw => {
     });
   }
   else if (command[1] === 'GTJDS' || command[1] === 'GTANT' || command[1] === 'GTRMD') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], parsedData[4]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
       speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
@@ -2646,7 +2644,7 @@ const getGMT100 = raw => {
       status: null,
       azimuth: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       altitude: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
-      datetime: parsedData[11] != '' ? moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[11] != '' ? utils.parseDate(parsedData[11]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -2660,7 +2658,7 @@ const getGMT100 = raw => {
     });
   }
   else if (command[1] === 'GTBPL') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
       speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
@@ -2669,7 +2667,7 @@ const getGMT100 = raw => {
       status: null,
       azimuth: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       altitude: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
-      datetime: parsedData[11] != '' ? moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[11] != '' ? utils.parseDate(parsedData[11]) : null,
       voltage: {
         battery: parsedData[4] != '' ? parseFloat(parsedData[4]) : null,
         inputCharge: null,
@@ -2683,7 +2681,7 @@ const getGMT100 = raw => {
     });
   }
   else if (command[1] === 'GTIGN' || command[1] === 'GTIGF') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], parsedData[4]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
       speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
@@ -2692,7 +2690,7 @@ const getGMT100 = raw => {
       status: null,
       azimuth: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       altitude: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
-      datetime: parsedData[11] != '' ? moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[11] != '' ? utils.parseDate(parsedData[11]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -2706,7 +2704,7 @@ const getGMT100 = raw => {
     });
   }
   else if (command[1] === 'GTIDN' || command[1] === 'GTIDF') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], parsedData[5]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[10]), parseFloat(parsedData[11])]},
       speed: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
@@ -2715,7 +2713,7 @@ const getGMT100 = raw => {
       status: null,
       azimuth: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
       altitude: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
-      datetime: parsedData[12] != '' ? moment(`${parsedData[12]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[12] != '' ? utils.parseDate(parsedData[12]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -2729,7 +2727,7 @@ const getGMT100 = raw => {
     });
   }
   else if (command[1] === 'GTSTR' || command[1] === 'GTSTP' || command[1] === 'GTLSP') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[10]), parseFloat(parsedData[11])]},
       speed: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
@@ -2738,7 +2736,7 @@ const getGMT100 = raw => {
       status: null,
       azimuth: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
       altitude: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
-      datetime: parsedData[12] != '' ? moment(`${parsedData[12]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[12] != '' ? utils.parseDate(parsedData[12]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -2753,7 +2751,7 @@ const getGMT100 = raw => {
   }
   // Motion State Changed
   else if(command[1] === 'GTSTT'){
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
       speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
@@ -2762,7 +2760,7 @@ const getGMT100 = raw => {
       status: null,
       azimuth: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       altitude: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
-      datetime: parsedData[11] != '' ? moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[11] != '' ? utils.parseDate(parsedData[11]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -2777,7 +2775,7 @@ const getGMT100 = raw => {
     });
   }
   else{
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null)
     });
   }
@@ -2804,7 +2802,7 @@ const getGV55 = raw => {
     history = true;
   }
 
-  const data = {
+  let data = {
     raw: `${raw.toString()}$`,
     manufacturer: 'queclink',
     device: 'Queclink-GV55',
@@ -2813,14 +2811,14 @@ const getGV55 = raw => {
     protocolVersion: getProtocolVersion(parsedData[1]),
     temperature: null,
     history: history,
-    sentTime: moment(`${parsedData[parsedData.length - 2]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
+    sentTime: utils.parseDate(parsedData[parsedData.length - 2]),
     serialId: parseInt(parsedData[parsedData.length - 1],16)
   };
 
   // GPS
   if (command[1] === 'GTFRI') {
     if (typeof parsedData[24] !== 'undefined' && parsedData[24] !== null) {
-      extend(data, {
+      data = Object.assign(data, {
         alarm: getAlarm(command[1], null),
         loc: { type: 'Point', coordinates: [ parseFloat(parsedData[11]), parseFloat(parsedData[12]) ] },
         speed: parsedData[8] != '' ? parseFloat(parsedData[8]): null,
@@ -2842,7 +2840,7 @@ const getGV55 = raw => {
         },
         azimuth: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
         altitude: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
-        datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+        datetime: parsedData[13] != '' ? utils.parseDate(parsedData[13]) : null,
         voltage: {
           battery: parsedData[23] != '' ? parseFloat(parsedData[23]): null,//percentage
           inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4])/1000 : null
@@ -2858,13 +2856,13 @@ const getGV55 = raw => {
   }
   //Heartbeat. It must response an ACK command
   else if (command[1] === 'GTHBD'){
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null)
     });
   }
   // General Info Report
   else if(command[1] === 'GTINF'){
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       state: states[parsedData[4]],
       gsmInfo: {
@@ -2895,7 +2893,7 @@ const getGV55 = raw => {
         battery: parsedData[11] != '' ? parseInt(100*(parseFloat(parsedData[11])/5),10) : null,//percentage
         inputCharge: parsedData[9] != '' ? parseFloat(parsedData[9])/1000 : null
       },
-      lastFixUTCTime: parsedData[16] != '' ? moment(`${parsedData[16]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      lastFixUTCTime: parsedData[16] != '' ? utils.parseDate(parsedData[16]) : null,
       timezoneOffset: parsedData[22]
     });
   }
@@ -2904,7 +2902,7 @@ const getGV55 = raw => {
       command[1] === 'GTSPD' || command[1] === 'GTSOS' || command[1] === 'GTRTL' ||
       command[1] === 'GTDOG' || command[1] === 'GTIGL' || command[1] === 'GTHBM') {
 
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], parsedData[5], true),
       loc: { type: 'Point', coordinates: [parseFloat(parsedData[11]), parseFloat(parsedData[12])] },
       speed: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
@@ -2913,7 +2911,7 @@ const getGV55 = raw => {
       status: null,
       azimuth: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
       altitude: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
-      datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[13] != '' ? utils.parseDate(parsedData[13]) : null,
       voltage: {
         battery: null,
         inputCharge: null
@@ -2928,7 +2926,7 @@ const getGV55 = raw => {
   }
   //External low battery and Low voltage for analog input
   else if (command[1] === 'GTEPS' || command[1] === 'GTAIS') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], parsedData[5]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[11]), parseFloat(parsedData[12]) ] },
       speed: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
@@ -2937,7 +2935,7 @@ const getGV55 = raw => {
       status: null,
       azimuth: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
       altitude: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
-      datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[13] != '' ? utils.parseDate(parsedData[13]) : null,
       voltage: {
         battery: parsedData[23] != '' ? parseFloat(parsedData[23]): null,//percentage
         inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4])/1000 : null
@@ -2952,7 +2950,7 @@ const getGV55 = raw => {
   }
   //Event report (It uses the last GPS data and MCC info)
   else if(command[1] === 'GTPNA' || command[1] === 'GTPFA' || command[1] === 'GTPDP') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       loc: null,
       speed: null,
@@ -2961,7 +2959,7 @@ const getGV55 = raw => {
       status: null,
       azimuth: null,
       altitude: null,
-      datetime: parsedData[4] != '' ? moment(`${parsedData[4]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[4] != '' ? utils.parseDate(parsedData[4]) : null,
       voltage: {
         battery: null,
         inputCharge: null
@@ -2975,7 +2973,7 @@ const getGV55 = raw => {
     });
   }
   else if(command[1] === 'GTMPN' || command[1] === 'GTMPF' || command[1] === 'GTCRA' || command[1] === 'GTJDR') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[8]), parseFloat(parsedData[9])]},
       speed: parsedData[5] != '' ? parseFloat(parsedData[5]) : null,
@@ -2984,7 +2982,7 @@ const getGV55 = raw => {
       status: null,
       azimuth: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
       altitude: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
-      datetime: parsedData[10] != '' ? moment(`${parsedData[10]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[10] != '' ? utils.parseDate(parsedData[10]) : null,
       voltage: {
         battery: null,
         inputCharge: null
@@ -2998,7 +2996,7 @@ const getGV55 = raw => {
     });
   }
   else if (command[1] === 'GTJDS' || command[1] === 'GTANT' || command[1] === 'GTRMD') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], parsedData[4]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
       speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
@@ -3007,7 +3005,7 @@ const getGV55 = raw => {
       status: null,
       azimuth: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       altitude: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
-      datetime: parsedData[11] != '' ? moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[11] != '' ? utils.parseDate(parsedData[11]) : null,
       voltage: {
         battery: null,
         inputCharge: null
@@ -3021,7 +3019,7 @@ const getGV55 = raw => {
     });
   }
   else if (command[1] === 'GTBPL') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
       speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
@@ -3030,7 +3028,7 @@ const getGV55 = raw => {
       status: null,
       azimuth: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       altitude: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
-      datetime: parsedData[11] != '' ? moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[11] != '' ? utils.parseDate(parsedData[11]) : null,
       voltage: {
         battery: parsedData[4] != '' ? parseFloat(parsedData[4]): null,
         inputCharge: null
@@ -3044,7 +3042,7 @@ const getGV55 = raw => {
     });
   }
   else if (command[1] === 'GTIGN' || command[1] === 'GTIGF') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], parsedData[4]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
       speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
@@ -3053,7 +3051,7 @@ const getGV55 = raw => {
       status: null,
       azimuth: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       altitude: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
-      datetime: parsedData[11] != '' ? moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[11] != '' ? utils.parseDate(parsedData[11]) : null,
       voltage: {
         battery: null,
         inputCharge: null
@@ -3067,7 +3065,7 @@ const getGV55 = raw => {
     });
   }
   else if (command[1] === 'GTIDN' || command[1] === 'GTIDF') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], parsedData[5]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[10]), parseFloat(parsedData[11])]},
       speed: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
@@ -3076,7 +3074,7 @@ const getGV55 = raw => {
       status: null,
       azimuth: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
       altitude: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
-      datetime: parsedData[12] != '' ? moment(`${parsedData[12]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[12] != '' ? utils.parseDate(parsedData[12]) : null,
       voltage: {
         battery: null,
         inputCharge: null
@@ -3090,7 +3088,7 @@ const getGV55 = raw => {
     });
   }
   else if (command[1] === 'GTSTR' || command[1] === 'GTSTP' || command[1] === 'GTLSP') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[10]), parseFloat(parsedData[11])]},
       speed: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
@@ -3099,7 +3097,7 @@ const getGV55 = raw => {
       status: null,
       azimuth: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
       altitude: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
-      datetime: parsedData[12] != '' ? moment(`${parsedData[12]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[12] != '' ? utils.parseDate(parsedData[12]) : null,
       voltage: {
         battery: null,
         inputCharge: null
@@ -3114,7 +3112,7 @@ const getGV55 = raw => {
   }
   // Motion State Changed
   else if(command[1] === 'GTSTT'){
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
       speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
@@ -3123,7 +3121,7 @@ const getGV55 = raw => {
       status: null,
       azimuth: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       altitude: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
-      datetime: parsedData[11] != '' ? moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[11] != '' ? utils.parseDate(parsedData[11]) : null,
       voltage: {
         battery: null,
         inputCharge: null
@@ -3138,7 +3136,7 @@ const getGV55 = raw => {
   }
   //GPS Status
   else if(command[1] === 'GTGSS'){
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], parsedData[4]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[12]), parseFloat(parsedData[13])]},
       speed: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
@@ -3147,7 +3145,7 @@ const getGV55 = raw => {
       status: null,
       azimuth: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
       altitude: parsedData[11] != '' ? parseFloat(parsedData[11]) : null,
-      datetime: parsedData[14] != '' ? moment(`${parsedData[14]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[14] != '' ? utils.parseDate(parsedData[14]) : null,
       voltage: {
         battery: null,
         inputCharge: null
@@ -3161,7 +3159,7 @@ const getGV55 = raw => {
     });
   }
   else{
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null)
     });
   }
@@ -3189,7 +3187,7 @@ const getGL300 = raw =>  {
     history = true;
   }
 
-  const data = {
+  let data = {
     raw: `${raw.toString()}$`,
     manufacturer: 'queclink',
     device: 'Queclink-GL300',
@@ -3198,14 +3196,14 @@ const getGL300 = raw =>  {
     protocolVersion: getProtocolVersion(parsedData[1]),
     temperature: null,
     history: history,
-    sentTime: moment(`${parsedData[parsedData.length - 2]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
+    sentTime: utils.parseDate(parsedData[parsedData.length - 2]),
     serialId: parseInt(parsedData[parsedData.length - 1],16),
     hourmeter: null
   };
 
   // GPS
   if (command[1] === 'GTFRI') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[11]), parseFloat(parsedData[12]) ] },
       speed: parsedData[8] != '' ? parseFloat(parsedData[8]): null,
@@ -3214,7 +3212,7 @@ const getGL300 = raw =>  {
       status: null,
       azimuth: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
       altitude: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
-      datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[13] != '' ? utils.parseDate(parsedData[13]) : null,
       voltage: {
         battery: parsedData[parsedData.length - 3] != '' ? parseFloat(parsedData[parsedData.length - 3]): null,//percentage
         inputCharge: null
@@ -3228,13 +3226,13 @@ const getGL300 = raw =>  {
   }
   //Heartbeat. It must response an ACK command
   else if (command[1] === 'GTHBD'){
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null)
     });
   }
   // General Info Report
   else if(command[1] === 'GTINF'){
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       state: states[parsedData[4]],
       gsmInfo: {
@@ -3265,7 +3263,7 @@ const getGL300 = raw =>  {
         battery: parsedData[18] != '' ? parseInt(parsedData[18],10) : null,//percentage
         inputCharge: null
       },
-      lastFixUTCTime: parsedData[17] != '' ? moment(`${parsedData[16]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      lastFixUTCTime: parsedData[17] != '' ? utils.parseDate(parsedData[16]) : null,
       timezoneOffset: parsedData[22]
     });
   }
@@ -3274,7 +3272,7 @@ const getGL300 = raw =>  {
   else if (command[1] === 'GTGEO' || command[1] === 'GTSPD' || command[1] === 'GTSOS' || command[1] === 'GTRTL' || command[1] === 'GTNMR' ||
       command[1] === 'GTDIS' || command[1] === 'GTDOG' || command[1] === 'GTIGL' || command[1] === 'GTPNL' || command[1] === 'GTPFL') {
 
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], `${parsedData[4]}${parsedData[5]}`),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[11]), parseFloat(parsedData[12]) ] },
       speed: parsedData[8] != '' ? parseFloat(parsedData[8]): null,
@@ -3283,7 +3281,7 @@ const getGL300 = raw =>  {
       status: null,
       azimuth: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
       altitude: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
-      datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[13] != '' ? utils.parseDate(parsedData[13]) : null,
       voltage: {
         battery: parsedData[19] != '' ? parseFloat(parsedData[19]): null,//percentage
         inputCharge: parsedData[4] != '' ? parseFloat(parsedData[4])/1000 : null
@@ -3298,7 +3296,7 @@ const getGL300 = raw =>  {
 
   //Event report (It uses the last GPS data and MCC info)
   else if(command[1] === 'GTPNA' || command[1] === 'GTPFA' || command[1] === 'GTPDP') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       loc: null,
       speed: null,
@@ -3307,7 +3305,7 @@ const getGL300 = raw =>  {
       status: null,
       azimuth: null,
       altitude: null,
-      datetime: parsedData[4] != '' ? moment(`${parsedData[4]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[4] != '' ? utils.parseDate(parsedData[4]) : null,
       voltage: {
         battery: null,
         inputCharge: null
@@ -3320,7 +3318,7 @@ const getGL300 = raw =>  {
     });
   }
   else if(command[1] === 'GTEPN' || command[1] === 'GTEPF' || command[1] === 'GTBTC') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[8]), parseFloat(parsedData[9])]},
       speed: parsedData[5] != '' ? parseFloat(parsedData[5]) : null,
@@ -3329,7 +3327,7 @@ const getGL300 = raw =>  {
       status: null,
       azimuth: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
       altitude: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
-      datetime: parsedData[10] != '' ? moment(`${parsedData[10]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[10] != '' ? utils.parseDate(parsedData[10]) : null,
       voltage: {
         battery: null,
         inputCharge: null
@@ -3342,7 +3340,7 @@ const getGL300 = raw =>  {
     });
   }
   else if (command[1] === 'GTBPL' || command[1] === 'GTSTC') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
       speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
@@ -3351,7 +3349,7 @@ const getGL300 = raw =>  {
       status: null,
       azimuth: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       altitude: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
-      datetime: parsedData[11] != '' ? moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[11] != '' ? utils.parseDate(parsedData[11]) : null,
       voltage: {
         battery: parsedData[4] != '' ? parseFloat(parsedData[4]): null,
         inputCharge: null
@@ -3365,7 +3363,7 @@ const getGL300 = raw =>  {
   }
   // Motion State Changed
   else if(command[1] === 'GTSTT'){
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], parsedData[4]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
       speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
@@ -3374,7 +3372,7 @@ const getGL300 = raw =>  {
       status: null,
       azimuth: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       altitude: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
-      datetime: parsedData[11] != '' ? moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[11] != '' ? utils.parseDate(parsedData[11]) : null,
       voltage: {
         battery: null,
         inputCharge: null
@@ -3387,7 +3385,7 @@ const getGL300 = raw =>  {
     });
   }
   else if (command[1] === 'GTIGN' || command[1] === 'GTIGF') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], parsedData[4]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
       speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
@@ -3396,7 +3394,7 @@ const getGL300 = raw =>  {
       status: null,
       azimuth: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       altitude: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
-      datetime: parsedData[11] != '' ? moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[11] != '' ? utils.parseDate(parsedData[11]) : null,
       voltage: {
         battery: null,
         inputCharge: null
@@ -3409,7 +3407,7 @@ const getGL300 = raw =>  {
     });
   }
   else if(command[1] === 'GTJDR') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[8]), parseFloat(parsedData[9])]},
       speed: parsedData[5] != '' ? parseFloat(parsedData[5]) : null,
@@ -3418,7 +3416,7 @@ const getGL300 = raw =>  {
       status: null,
       azimuth: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
       altitude: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
-      datetime: parsedData[10] != '' ? moment(`${parsedData[10]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[10] != '' ? utils.parseDate(parsedData[10]) : null,
       voltage: {
         battery: null,
         inputCharge: null
@@ -3431,7 +3429,7 @@ const getGL300 = raw =>  {
     });
   }
   else if (command[1] === 'GTJDS') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], parsedData[4]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
       speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
@@ -3440,7 +3438,7 @@ const getGL300 = raw =>  {
       status: null,
       azimuth: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       altitude: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
-      datetime: parsedData[11] != '' ? moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[11] != '' ? utils.parseDate(parsedData[11]) : null,
       voltage: {
         battery: null,
         inputCharge: null
@@ -3453,7 +3451,7 @@ const getGL300 = raw =>  {
     });
   }
   else{
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null)
     });
   }
@@ -3480,7 +3478,7 @@ const getGV500 = raw => {
     history = true;
   }
 
-  const data = {
+  let data = {
     raw: `${raw.toString()}$`,
     manufacturer: 'queclink',
     device: 'Queclink-GV500',
@@ -3489,13 +3487,13 @@ const getGV500 = raw => {
     protocolVersion: getProtocolVersion(parsedData[1]),
     temperature: null,
     history: history,
-    sentTime: moment(`${parsedData[parsedData.length - 2]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate(),
+    sentTime: utils.parseDate(parsedData[parsedData.length - 2]),
     serialId: parseInt(parsedData[parsedData.length - 1],16)
   };
 
   // GPS
   if (command[1] === 'GTFRI') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[12]), parseFloat(parsedData[13]) ] },
       speed: parsedData[9] != '' ? parseFloat(parsedData[9]): null,
@@ -3504,7 +3502,7 @@ const getGV500 = raw => {
       status: null,
       azimuth: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
       altitude: parsedData[11] != '' ? parseFloat(parsedData[11]) : null,
-      datetime: parsedData[14] != '' ? moment(`${parsedData[14]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[14] != '' ? utils.parseDate(parsedData[14]) : null,
       voltage: {
         battery: parsedData[parsedData.length - 7] != '' ? parseFloat(parsedData[parsedData.length - 7]): null,//percentage
         inputCharge: parsedData[5] != '' ? parseFloat(parsedData[5])/1000 : null,
@@ -3526,13 +3524,13 @@ const getGV500 = raw => {
   }
   //Heartbeat. It must response an ACK command
   else if (command[1] === 'GTHBD'){
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null)
     });
   }
   // // General Info Report
   // else if(command[1] === 'GTINF'){
-  //   extend(data, {
+  //   data = Object.assign(data, {
   //     alarm: getAlarm(command[1], null),
   //     state: states[parsedData[4]],
   //     gsmInfo: {
@@ -3563,7 +3561,7 @@ const getGV500 = raw => {
   //       battery: parsedData[18] != '' ? parseInt(parsedData[18],10) : null,//percentage
   //       inputCharge: null
   //     },
-  //     lastFixUTCTime: parsedData[17] != '' ? moment(`${parsedData[16]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+  //     lastFixUTCTime: parsedData[17] != '' ? utils.parseDate(parsedData[16]) : null,
   //     timezoneOffset: parsedData[22]
   //   });
   // }
@@ -3572,7 +3570,7 @@ const getGV500 = raw => {
   else if (command[1] === 'GTGEO' || command[1] === 'GTSPD' || command[1] === 'GTTOW' || command[1] === 'GTRTL' ||
       command[1] === 'GTDOG' || command[1] === 'GTIGL' || command[1] === 'GTHBM') {
 
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], parsedData[6]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[12]), parseFloat(parsedData[13]) ] },
       speed: parsedData[9] != '' ? parseFloat(parsedData[9]): null,
@@ -3581,7 +3579,7 @@ const getGV500 = raw => {
       status: null,
       azimuth: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
       altitude: parsedData[11] != '' ? parseFloat(parsedData[11]) : null,
-      datetime: parsedData[14] != '' ? moment(`${parsedData[14]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[14] != '' ? utils.parseDate(parsedData[14]) : null,
       voltage: {
         battery: null,//percentage
         inputCharge: null
@@ -3598,7 +3596,7 @@ const getGV500 = raw => {
 
   //Event report (It uses the last GPS data and MCC info)
   else if(command[1] === 'GTPNA' || command[1] === 'GTPFA' || command[1] === 'GTPDP') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       loc: null,
       speed: null,
@@ -3607,7 +3605,7 @@ const getGV500 = raw => {
       status: null,
       azimuth: null,
       altitude: null,
-      datetime: parsedData[4] != '' ? moment(`${parsedData[4]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[4] != '' ? utils.parseDate(parsedData[4]) : null,
       voltage: {
         battery: null,
         inputCharge: null
@@ -3622,7 +3620,7 @@ const getGV500 = raw => {
     });
   }
   else if(command[1] === 'GTMPN' || command[1] === 'GTMPF' || command[1] === 'GTBTC' | command[1] === 'GTCRA' || command[1] === 'GTJDR') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
       speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
@@ -3631,7 +3629,7 @@ const getGV500 = raw => {
       status: null,
       azimuth: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       altitude: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
-      datetime: parsedData[11] != '' ? moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[11] != '' ? utils.parseDate(parsedData[11]) : null,
       voltage: {
         battery: null,
         inputCharge: null
@@ -3646,7 +3644,7 @@ const getGV500 = raw => {
     });
   }
   else if (command[1] === 'GTJDS') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], parsedData[5]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[10]), parseFloat(parsedData[11])]},
       speed: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
@@ -3655,7 +3653,7 @@ const getGV500 = raw => {
       status: null,
       azimuth: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
       altitude: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
-      datetime: parsedData[12] != '' ? moment(`${parsedData[12]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[12] != '' ? utils.parseDate(parsedData[12]) : null,
       voltage: {
         battery: null,
         inputCharge: null
@@ -3670,7 +3668,7 @@ const getGV500 = raw => {
     });
   }
   else if (command[1] === 'GTBPL' || command[1] === 'GTSTC') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[10]), parseFloat(parsedData[11])]},
       speed: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
@@ -3679,7 +3677,7 @@ const getGV500 = raw => {
       status: null,
       azimuth: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
       altitude: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
-      datetime: parsedData[12] != '' ? moment(`${parsedData[12]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[12] != '' ? utils.parseDate(parsedData[12]) : null,
       voltage: {
         battery: parsedData[5] != '' ? parseFloat(parsedData[5]): null,
         inputCharge: null
@@ -3695,7 +3693,7 @@ const getGV500 = raw => {
   }
   // Motion State Changed
   else if(command[1] === 'GTSTT'){
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], parsedData[5]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[10]), parseFloat(parsedData[11])]},
       speed: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
@@ -3704,7 +3702,7 @@ const getGV500 = raw => {
       status: null,
       azimuth: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
       altitude: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
-      datetime: parsedData[12] != '' ? moment(`${parsedData[12]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[12] != '' ? utils.parseDate(parsedData[12]) : null,
       voltage: {
         battery: null,
         inputCharge: null
@@ -3719,7 +3717,7 @@ const getGV500 = raw => {
     });
   }
   else if (command[1] === 'GTIGN' || command[1] === 'GTIGF') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], parsedData[5]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[10]), parseFloat(parsedData[11])]},
       speed: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
@@ -3728,7 +3726,7 @@ const getGV500 = raw => {
       status: null,
       azimuth: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
       altitude: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
-      datetime: parsedData[12] != '' ? moment(`${parsedData[12]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[12] != '' ? utils.parseDate(parsedData[12]) : null,
       voltage: {
         battery: null,
         inputCharge: null
@@ -3743,7 +3741,7 @@ const getGV500 = raw => {
     });
   }
   else if (command[1] === 'GTIDN' || command[1] === 'GTSTR' || command[1] === 'GTSTP' || command[1] === 'GTLSP' || command[1] === 'GTIDF') {
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], parsedData[6]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[11]), parseFloat(parsedData[12])]},
       speed: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
@@ -3752,7 +3750,7 @@ const getGV500 = raw => {
       status: null,
       azimuth: parsedData[9] != '' ? parseFloat(parsedData[9]) : null,
       altitude: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
-      datetime: parsedData[13] != '' ? moment(`${parsedData[13]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[13] != '' ? utils.parseDate(parsedData[13]) : null,
       voltage: {
         battery: null,
         inputCharge: null
@@ -3768,7 +3766,7 @@ const getGV500 = raw => {
   }
   //GPS Status
   else if(command[1] === 'GTGSS'){
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], parsedData[5]),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[13]), parseFloat(parsedData[14])]},
       speed: parsedData[10] != '' ? parseFloat(parsedData[10]) : null,
@@ -3777,7 +3775,7 @@ const getGV500 = raw => {
       status: null,
       azimuth: parsedData[11] != '' ? parseFloat(parsedData[11]) : null,
       altitude: parsedData[12] != '' ? parseFloat(parsedData[12]) : null,
-      datetime: parsedData[15] != '' ? moment(`${parsedData[15]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[15] != '' ? utils.parseDate(parsedData[15]) : null,
       voltage: {
         battery: null,
         inputCharge: null
@@ -3792,7 +3790,7 @@ const getGV500 = raw => {
     });
   }
   else if(command[1] === 'GTOPN' || command[1] === 'GTOPF'){
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[9]), parseFloat(parsedData[10])]},
       speed: parsedData[6] != '' ? parseFloat(parsedData[6]) : null,
@@ -3801,7 +3799,7 @@ const getGV500 = raw => {
       status: null,
       azimuth: parsedData[7] != '' ? parseFloat(parsedData[7]) : null,
       altitude: parsedData[8] != '' ? parseFloat(parsedData[8]) : null,
-      datetime: parsedData[11] != '' ? moment(`${parsedData[11]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[11] != '' ? utils.parseDate(parsedData[11]) : null,
       voltage: {
         battery: null,
         inputCharge: null
@@ -3816,7 +3814,7 @@ const getGV500 = raw => {
     });
   }
   else if(command[1] === 'GTOBD'){
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[29]), parseFloat(parsedData[30])]},
       speed: parsedData[26] != '' ? parseFloat(parsedData[26]) : null,
@@ -3825,7 +3823,7 @@ const getGV500 = raw => {
       status: null,
       azimuth: parsedData[27] != '' ? parseFloat(parsedData[27]) : null,
       altitude: parsedData[28] != '' ? parseFloat(parsedData[28]) : null,
-      datetime: parsedData[31] != '' ? moment(`${parsedData[31]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[31] != '' ? utils.parseDate(parsedData[31]) : null,
       voltage: {
         battery: null,
         inputCharge: parsedData[9] != '' ? parseFloat(parsedData[9])/1000 : null,
@@ -3858,7 +3856,7 @@ const getGV500 = raw => {
     });
   }
   else if(command[1] === 'GTOSM'){
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], `${parsedData[5]}${parsedData[6]}`),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[30]), parseFloat(parsedData[31])]},
       speed: parsedData[27] != '' ? parseFloat(parsedData[27]) : null,
@@ -3867,7 +3865,7 @@ const getGV500 = raw => {
       status: null,
       azimuth: parsedData[28] != '' ? parseFloat(parsedData[28]) : null,
       altitude: parsedData[29] != '' ? parseFloat(parsedData[29]) : null,
-      datetime: parsedData[32] != '' ? moment(`${parsedData[32]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[32] != '' ? utils.parseDate(parsedData[32]) : null,
       voltage: {
         battery: null,
         inputCharge: parsedData[10] != '' ? parseFloat(parsedData[10])/1000 : null,
@@ -3900,7 +3898,7 @@ const getGV500 = raw => {
     });
   }
   else if(command[1] === 'GTJES'){
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       loc: { type: 'Point', coordinates: [ parseFloat(parsedData[17]), parseFloat(parsedData[18])]},
       speed: parsedData[14] != '' ? parseFloat(parsedData[14]) : null,
@@ -3909,7 +3907,7 @@ const getGV500 = raw => {
       status: null,
       azimuth: parsedData[15] != '' ? parseFloat(parsedData[15]) : null,
       altitude: parsedData[16] != '' ? parseFloat(parsedData[16]) : null,
-      datetime: parsedData[19] != '' ? moment(`${parsedData[19]}+00:00`, 'YYYYMMDDHHmmssZZ').toDate() : null,
+      datetime: parsedData[19] != '' ? utils.parseDate(parsedData[19]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -3935,7 +3933,7 @@ const getGV500 = raw => {
   }
 
   else{
-    extend(data, {
+    data = Object.assign(data, {
       alarm: getAlarm(command[1], null)
     });
   }

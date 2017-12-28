@@ -53,6 +53,10 @@ const nHexDigit = (num, n) => {
   return hex;
 };
 
+const parseDate = date => {
+  return new Date(`${date.replace(/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/, '$1-$2-$3T$4:$5:$6')}+00:00`);
+};
+
 module.exports = {
   bin2dec: bin2dec,
   bin2hex: bin2hex,
@@ -60,5 +64,6 @@ module.exports = {
   dec2hex: dec2hex,
   hex2bin: hex2bin,
   hex2dec: hex2dec,
-  nHexDigit: nHexDigit
+  nHexDigit: nHexDigit,
+  parseDate: parseDate
 };

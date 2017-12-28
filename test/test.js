@@ -1,6 +1,7 @@
 'use strict';
 
 const queclink = require('../src');
+const utils = require('../src/utils');
 const expect = require('chai').expect;
 
 describe('queclink-parzer', () => {
@@ -709,6 +710,11 @@ describe('queclink-parzer', () => {
       const data = queclink.parse(raw);
       expect(data.raw).to.eql(raw.toString());
       expect(data.type).to.eql('UNKNOWN');
+    });
+
+    it('should return a date', () => {
+      const date = utils.parseDate('20160811170821');
+      expect(date).to.eql(new Date('2016-08-11T17:08:21+00:00'));
     });
   });
 });
