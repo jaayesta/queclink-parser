@@ -1,61 +1,76 @@
-'use strict';
-
+'use strict'
 
 const ConvertBase = num => {
   return {
-    from : function (baseFrom) {
+    from: function (baseFrom) {
       return {
-        to : function (baseTo) {
-          return parseInt(num, baseFrom).toString(baseTo);
+        to: function (baseTo) {
+          return parseInt(num, baseFrom).toString(baseTo)
         }
-      };
+      }
     }
-  };
-};
-
+  }
+}
 
 // binary to decimal
 const bin2dec = num => {
-  return ConvertBase(num).from(2).to(10);
-};
+  return ConvertBase(num)
+    .from(2)
+    .to(10)
+}
 
 // binary to hexadecimal
 const bin2hex = num => {
-  return ConvertBase(num).from(2).to(16);
-};
+  return ConvertBase(num)
+    .from(2)
+    .to(16)
+}
 
 // decimal to binary
 const dec2bin = num => {
-  return ConvertBase(num).from(10).to(2);
-};
+  return ConvertBase(num)
+    .from(10)
+    .to(2)
+}
 
 // decimal to hexadecimal
 const dec2hex = num => {
-  return ConvertBase(num).from(10).to(16);
-};
+  return ConvertBase(num)
+    .from(10)
+    .to(16)
+}
 
 // hexadecimal to binary
 const hex2bin = num => {
-  return ConvertBase(num).from(16).to(2);
-};
+  return ConvertBase(num)
+    .from(16)
+    .to(2)
+}
 
 // hexadecimal to decimal
 const hex2dec = num => {
-  return ConvertBase(num).from(16).to(10);
-};
+  return ConvertBase(num)
+    .from(16)
+    .to(10)
+}
 
 // hexadecimal num with n digits
 const nHexDigit = (num, n) => {
-  let hex = num;
-  while(hex.length < n){
-    hex = `0${hex}`;
+  let hex = num
+  while (hex.length < n) {
+    hex = `0${hex}`
   }
-  return hex;
-};
+  return hex
+}
 
 const parseDate = date => {
-  return new Date(`${date.replace(/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/, '$1-$2-$3T$4:$5:$6')}+00:00`);
-};
+  return new Date(
+    `${date.replace(
+      /(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/,
+      '$1-$2-$3T$4:$5:$6'
+    )}+00:00`
+  )
+}
 
 module.exports = {
   bin2dec: bin2dec,
@@ -66,4 +81,4 @@ module.exports = {
   hex2dec: hex2dec,
   nHexDigit: nHexDigit,
   parseDate: parseDate
-};
+}

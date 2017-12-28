@@ -4,7 +4,10 @@
   "description": "Parse raw data from Queclink devices",
   "main": "src",
   "scripts": {
-    "pretest": "eslint .",
+    "lint": "eslint . --fix",
+    "format": "prettier-standard 'src/**/*.js' 'test/**/*.js'",
+    "precommit": "lint-staged",
+    "pretest": "npm run lint -s && npm run format -s",
     "test": "istanbul cover _mocha",
     "release:major": "changelog -M && git add CHANGELOG.md && git commit -m 'updated CHANGELOG.md' && npm version major && git push origin && git push origin --tags && npm publish",
     "release:minor": "changelog -m && git add CHANGELOG.md && git commit -m 'updated CHANGELOG.md' && npm version minor && git push origin && git push origin --tags && npm publish",
@@ -41,39 +44,49 @@
   "devDependencies": {
     "chai": "4.1.2",
     "eslint": "4.14.0",
+    "eslint-config-standard": "11.0.0-beta.0",
+    "eslint-plugin-import": "2.8.0",
+    "eslint-plugin-node": "5.2.1",
+    "eslint-plugin-promise": "3.6.0",
+    "eslint-plugin-standard": "3.0.1",
     "generate-changelog": "1.7.0",
+    "husky": "0.14.3",
     "istanbul": "0.4.5",
-    "mocha": "4.0.1"
+    "lint-staged": "6.0.0",
+    "mocha": "4.0.1",
+    "prettier-standard": "8.0.0"
   },
   "eslintConfig": {
-    "env": {
-      "es6": true,
-      "node": true,
-      "mocha": true
-    },
-    "extends": "eslint:recommended",
+    "extends": "standard",
     "rules": {
-      "indent": [
-        2,
-        2
-      ],
-      "linebreak-style": [
-        2,
-        "unix"
-      ],
-      "quotes": [
-        2,
-        "single"
-      ],
-      "semi": [
-        2,
-        "always"
-      ],
-      "radix": [
-        "error",
-        "always"
+      "no-console": [
+        "error"
       ]
     }
   },
-  "tonicExampleFilename": "example.js"
+  "eslintIgnore": [
+    "coverage",
+    "example.js"
+  ],
+  "lint-staged": {
+    "linters": {
+      "src/**/*.js": [
+        "eslint --fix",
+        "prettier-standard",
+        "git add"
+      ],
+      "test/**/*.js": [
+        "eslint --fix",
+        "prettier-standard",
+        "git add"
+      ]
+    }
+  },
+  "tonicExampleFilename": "example.js",
+  "renovate": {
+    "automerge": "minor",
+    "extends": [
+      ":library"
+    ]
+  }
 }
