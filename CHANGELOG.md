@@ -1,3 +1,13 @@
+#### 1.0.1 (2017-12-31)
+
+##### Chores
+
+* **package:**  update mocha to v4.1.0 ([44212cae](https://github.com/jaayesta/queclink-parser/commit/44212cae52ffd11458fb566771f19a5644a06d1b))
+
+##### Bug Fixes
+
+* **parser:**  fix parser GTINF with invalid data ([517daf67](https://github.com/jaayesta/queclink-parser/commit/517daf674d7be7a31a38d1a167b57acfa2aea55b))
+
 ## 1.0.0 (2017-12-28)
 
 ##### Chores
