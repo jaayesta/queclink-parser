@@ -2148,6 +2148,29 @@ const getGV200 = raw => {
     })
   } else if (command[1] === 'GTINF') {
     // General Info Report
+    let status = null
+    try {
+      status = {
+        // parsedData[24]
+        raw: parsedData[18] + parsedData[19],
+        sos: false,
+        input: {
+          '4': utils.nHexDigit(utils.hex2bin(parsedData[18][1]), 4)[0] === '1',
+          '3': utils.nHexDigit(utils.hex2bin(parsedData[18][1]), 4)[1] === '1',
+          '2': utils.nHexDigit(utils.hex2bin(parsedData[18][1]), 4)[2] === '1',
+          '1': utils.nHexDigit(utils.hex2bin(parsedData[18][1]), 4)[3] === '1'
+        },
+        output: {
+          '4': utils.nHexDigit(utils.hex2bin(parsedData[19][1]), 4)[0] === '1',
+          '3': utils.nHexDigit(utils.hex2bin(parsedData[19][1]), 4)[1] === '1',
+          '2': utils.nHexDigit(utils.hex2bin(parsedData[19][1]), 4)[2] === '1',
+          '1': utils.nHexDigit(utils.hex2bin(parsedData[19][1]), 4)[3] === '1'
+        },
+        charge: parsedData[8] === '1'
+      }
+    } catch (err) {
+      data.sentTime = utils.parseDate(parsedData[parsedData.length - 3])
+    }
     data = Object.assign(data, {
       alarm: getAlarm(command[1], null),
       state: states[parsedData[4]],
@@ -2165,24 +2188,7 @@ const getGV200 = raw => {
         charging: parsedData[12] === '1'
       },
       externalGPSAntenna: parsedData[15] === '0',
-      status: {
-        // parsedData[24]
-        raw: parsedData[18] + parsedData[19],
-        sos: false,
-        input: {
-          '4': utils.nHexDigit(utils.hex2bin(parsedData[18][1]), 4)[0] === '1',
-          '3': utils.nHexDigit(utils.hex2bin(parsedData[18][1]), 4)[1] === '1',
-          '2': utils.nHexDigit(utils.hex2bin(parsedData[18][1]), 4)[2] === '1',
-          '1': utils.nHexDigit(utils.hex2bin(parsedData[18][1]), 4)[3] === '1'
-        },
-        output: {
-          '4': utils.nHexDigit(utils.hex2bin(parsedData[19][1]), 4)[0] === '1',
-          '3': utils.nHexDigit(utils.hex2bin(parsedData[19][1]), 4)[1] === '1',
-          '2': utils.nHexDigit(utils.hex2bin(parsedData[19][1]), 4)[2] === '1',
-          '1': utils.nHexDigit(utils.hex2bin(parsedData[19][1]), 4)[3] === '1'
-        },
-        charge: parsedData[8] === '1'
-      },
+      status: status,
       voltage: {
         battery:
           parsedData[11] !== ''
