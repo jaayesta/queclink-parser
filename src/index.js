@@ -900,7 +900,7 @@ const getGV300W = raw => {
             ? parseInt(100 * (parseFloat(parsedData[11]) / 5), 10)
             : null, // percentage
         inputCharge:
-          parsedData[17] !== '' ? parseFloat(parsedData[17]) / 1000 : null,
+          parsedData[9] !== '' ? parseFloat(parsedData[9]) / 1000 : null,
         ada: parsedData[18] !== '' ? parseFloat(parsedData[18]) / 1000 : null,
         adb: parsedData[19] !== '' ? parseFloat(parsedData[19]) / 1000 : null
       },
