@@ -1326,27 +1326,28 @@ const getGV300W = raw => {
         comunicationOk: parsedData[5] === '1',
         vin: parsedData[7] !== '' ? parsedData[7] : null,
         ignitionKey: parsedData[8] !== '' ? parseInt(parsedData[8], 10) : null,
-        distance: parsedData[9],
-        fuelUsed: parsedData[10], // float
-        rpm: parsedData[11], // int
+        distance: parsedData[9] !== '' ? parsedData[9] : null,
+        fuelUsed: parsedData[10] !== '' ? parseFloat(parsedData[10]) : null, // float
+        rpm: parsedData[11] !== '' ? parseInt(parsedData[11], 10) : null, // int
         speed: parsedData[12] !== '' ? parseFloat(parsedData[12]) : null,
         coolantTemp:
           parsedData[13] !== '' ? parseInt(parsedData[13], 10) : null,
-        fuelConsumption: parsedData[14],
-        fuelLevel: parsedData[15],
-        range: parsedData[16],
-        acceleratorPressure: parsedData[17],
-        engineHours: parsedData[18],
-        drivingTime: parsedData[19],
-        idleTime: parsedData[20],
-        idleFuelUsed: parsedData[21],
-        axleWight: parsedData[22],
-        tachograph: parsedData[23],
-        detailedInfo: parsedData[24],
-        lights: parsedData[25],
-        doors: parsedData[26],
-        overSpeedTime: parsedData[27],
-        overSpeedEngineTime: parsedData[28]
+        fuelConsumption: parsedData[14] !== '' ? parsedData[14] : null,
+        fuelLevel: parsedData[15] !== '' ? parsedData[15] : null,
+        range: parsedData[16] !== '' ? parsedData[16] : null,
+        acceleratorPressure:
+          parsedData[17] !== '' ? parseFloat(parsedData[17]) : null, // %
+        engineHours: parsedData[18] !== '' ? parsedData[18] : null,
+        drivingTime: parsedData[19] !== '' ? parsedData[19] : null,
+        idleTime: parsedData[20] !== '' ? parsedData[20] : null,
+        idleFuelUsed: parsedData[21] !== '' ? parsedData[21] : null,
+        axleWight: parsedData[22] !== '' ? parsedData[22] : null,
+        tachograph: parsedData[23] !== '' ? parsedData[23] : null,
+        detailedInfo: parsedData[24] !== '' ? parsedData[24] : null,
+        lights: parsedData[25] !== '' ? parsedData[25] : null,
+        doors: parsedData[26] !== '' ? parsedData[26] : null,
+        overSpeedTime: parsedData[27] !== '' ? parsedData[27] : null,
+        overSpeedEngineTime: parsedData[28] !== '' ? parsedData[28] : null
       }
     })
   } else if (command[1] === 'GTDAT') {
