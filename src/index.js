@@ -1351,9 +1351,7 @@ const getGV300W = raw => {
       }
     })
   } else if (command[1] === 'GTDAT') {
-    // GPS Status
     data = Object.assign(data, {
-      alarm: getAlarm(command[1], null),
       loc: {
         type: 'Point',
         coordinates: [parseFloat(parsedData[12]), parseFloat(parsedData[13])]
@@ -1382,6 +1380,52 @@ const getGV300W = raw => {
       hourmeter: null,
       serialData: parsedData[7] !== '' ? parsedData[7] : null
     })
+
+    // Checks if its a temperature GTDAT -> DT
+    if (/^>DT/.test(parsedData[7])) {
+      const parsedSerialData =
+        parsedData[7] !== '' ? parsedData[7].split('|') : ''
+      let externalData = {
+        eriMask: {
+          raw: '00000000',
+          digitFuelSensor: false,
+          AC100: false,
+          reserved: false,
+          fuelLevelPercentage: false,
+          fuelVolume: false
+        },
+        uartDeviceType: 'Camaleon',
+        fuelSensorData: null
+      }
+      let AC100Devices = [
+        {
+          deviceNumber: parsedData[2] + '|1',
+          deviceID: '1',
+          deviceData:
+            parsedSerialData[3] !== '' ? parseFloat(parsedSerialData[3]) : null
+        }
+      ]
+      if (parsedSerialData[4] !== '') {
+        AC100Devices.push({
+          deviceNumber: parsedData[2] + '|2',
+          deviceID: '1',
+          deviceData:
+            parsedSerialData[4] !== '' ? parseFloat(parsedSerialData[4]) : null
+        })
+      }
+      externalData = Object.assign(externalData, {
+        AC100Devices: AC100Devices
+      })
+      data = Object.assign(data, {
+        alarm: getAlarm('GTERI', null),
+        externalData: externalData
+      })
+    } else {
+      // Normal GTDAT
+      data = Object.assign(data, {
+        alarm: getAlarm(command[1], null)
+      })
+    }
   } else {
     data = Object.assign(data, {
       alarm: getAlarm(command[1], null)
