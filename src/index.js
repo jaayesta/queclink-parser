@@ -224,6 +224,18 @@ const getFuelConsumption = fuelString => {
   }
 }
 
+const getHoursForHourmeter = hourmeter => {
+  //  hourmeter HHHHH:MM:SS
+  try {
+    const hours = parseInt(hourmeter.split(':')[0], 10)
+    const minutes = parseInt(hourmeter.split(':')[1], 10)
+    const seconds = parseInt(hourmeter.split(':')[2], 10)
+    return hours + (minutes + seconds / 60) / 60
+  } catch (e) {
+    return null
+  }
+}
+
 /*
   Gets the alarm type
 */
@@ -594,7 +606,8 @@ const getGV300W = raw => {
         lac: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
         cid: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
         odometer: parsedData[19] !== '' ? parseFloat(parsedData[19]) : null,
-        hourmeter: parsedData[20]
+        hourmeter:
+          parsedData[20] !== '' ? getHoursForHourmeter(parsedData[20]) : null
       })
     } catch (err) {
       return { type: 'UNKNOWN', raw: data.raw.toString() }
@@ -691,7 +704,8 @@ const getGV300W = raw => {
       lac: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
       cid: parsedData[18] !== '' ? parseInt(parsedData[18], 16) : null,
       odometer: parsedData[20] !== '' ? parseFloat(parsedData[20]) : null,
-      hourmeter: parsedData[21]
+      hourmeter:
+        parsedData[21] !== '' ? getHoursForHourmeter(parsedData[21]) : null
     })
 
     // External Data
@@ -979,7 +993,8 @@ const getGV300W = raw => {
       lac: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
       cid: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
       odometer: parsedData[19] !== '' ? parseFloat(parsedData[19]) : null,
-      hourmeter: parsedData[20]
+      hourmeter:
+        parsedData[20] !== '' ? getHoursForHourmeter(parsedData[20]) : null
     })
   } else if (
     command[1] === 'GTPNA' ||
@@ -1134,7 +1149,8 @@ const getGV300W = raw => {
       lac: parsedData[14] !== '' ? parseInt(parsedData[14], 16) : null,
       cid: parsedData[15] !== '' ? parseInt(parsedData[15], 16) : null,
       odometer: parsedData[18] !== '' ? parseFloat(parsedData[18]) : null,
-      hourmeter: parsedData[17]
+      hourmeter:
+        parsedData[17] !== '' ? getHoursForHourmeter(parsedData[17]) : null
     })
   } else if (command[1] === 'GTIDN' || command[1] === 'GTIDF') {
     data = Object.assign(data, {
@@ -1521,7 +1537,8 @@ const getGV300 = raw => {
         lac: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
         cid: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
         odometer: parsedData[19] !== '' ? parseFloat(parsedData[19]) : null,
-        hourmeter: parsedData[20]
+        hourmeter:
+          parsedData[20] !== '' ? getHoursForHourmeter(parsedData[20]) : null
       })
     } catch (err) {
       return { type: 'UNKNOWN', raw: data.raw.toString() }
@@ -1618,7 +1635,8 @@ const getGV300 = raw => {
       lac: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
       cid: parsedData[18] !== '' ? parseInt(parsedData[18], 16) : null,
       odometer: parsedData[20] !== '' ? parseFloat(parsedData[20]) : null,
-      hourmeter: parsedData[21]
+      hourmeter:
+        parsedData[21] !== '' ? getHoursForHourmeter(parsedData[21]) : null
     })
 
     // External Data
@@ -1906,7 +1924,8 @@ const getGV300 = raw => {
       lac: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
       cid: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
       odometer: parsedData[19] !== '' ? parseFloat(parsedData[19]) : null,
-      hourmeter: parsedData[20]
+      hourmeter:
+        parsedData[20] !== '' ? getHoursForHourmeter(parsedData[20]) : null
     })
   } else if (
     command[1] === 'GTPNA' ||
@@ -2061,7 +2080,8 @@ const getGV300 = raw => {
       lac: parsedData[14] !== '' ? parseInt(parsedData[14], 16) : null,
       cid: parsedData[15] !== '' ? parseInt(parsedData[15], 16) : null,
       odometer: parsedData[18] !== '' ? parseFloat(parsedData[18]) : null,
-      hourmeter: parsedData[17]
+      hourmeter:
+        parsedData[17] !== '' ? getHoursForHourmeter(parsedData[17]) : null
     })
   } else if (command[1] === 'GTIDN' || command[1] === 'GTIDF') {
     data = Object.assign(data, {
@@ -2322,7 +2342,8 @@ const getGV200 = raw => {
         lac: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
         cid: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
         odometer: parsedData[19] !== '' ? parseFloat(parsedData[19]) : null,
-        hourmeter: parsedData[20]
+        hourmeter:
+          parsedData[20] !== '' ? getHoursForHourmeter(parsedData[20]) : null
       })
     } catch (err) {
       return { type: 'UNKNOWN', raw: data.raw.toString() }
@@ -2375,7 +2396,8 @@ const getGV200 = raw => {
       lac: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
       cid: parsedData[18] !== '' ? parseInt(parsedData[18], 16) : null,
       odometer: parsedData[20] !== '' ? parseFloat(parsedData[20]) : null,
-      hourmeter: parsedData[21]
+      hourmeter:
+        parsedData[21] !== '' ? getHoursForHourmeter(parsedData[21]) : null
     })
 
     // External Data
@@ -2846,7 +2868,8 @@ const getGV200 = raw => {
       lac: parsedData[14] !== '' ? parseInt(parsedData[14], 16) : null,
       cid: parsedData[15] !== '' ? parseInt(parsedData[15], 16) : null,
       odometer: parsedData[18] !== '' ? parseFloat(parsedData[18]) : null,
-      hourmeter: parsedData[17]
+      hourmeter:
+        parsedData[17] !== '' ? getHoursForHourmeter(parsedData[17]) : null
     })
   } else if (command[1] === 'GTIDN' || command[1] === 'GTIDF') {
     data = Object.assign(data, {
@@ -3060,7 +3083,8 @@ const getGV200 = raw => {
       lac: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
       cid: parsedData[18] !== '' ? parseInt(parsedData[18], 16) : null,
       odometer: parsedData[20] !== '' ? parseFloat(parsedData[20]) : null,
-      hourmeter: parsedData[21]
+      hourmeter:
+        parsedData[21] !== '' ? getHoursForHourmeter(parsedData[21]) : null
     })
   } else if (command[1] === 'GTFLA') {
     // Unusual fuel consumption
@@ -3903,7 +3927,8 @@ const getGV55 = raw => {
         lac: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
         cid: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
         odometer: parsedData[19] !== '' ? parseFloat(parsedData[19]) : null,
-        hourmeter: parsedData[20]
+        hourmeter:
+          parsedData[20] !== '' ? getHoursForHourmeter(parsedData[20]) : null
       })
     }
   } else if (command[1] === 'GTHBD') {
@@ -4023,7 +4048,8 @@ const getGV55 = raw => {
       lac: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
       cid: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
       odometer: parsedData[19] !== '' ? parseFloat(parsedData[19]) : null,
-      hourmeter: parsedData[20]
+      hourmeter:
+        parsedData[20] !== '' ? getHoursForHourmeter(parsedData[20]) : null
     })
   } else if (
     command[1] === 'GTPNA' ||
@@ -4168,7 +4194,8 @@ const getGV55 = raw => {
       lac: parsedData[14] !== '' ? parseInt(parsedData[14], 16) : null,
       cid: parsedData[15] !== '' ? parseInt(parsedData[15], 16) : null,
       odometer: parsedData[18] !== '' ? parseFloat(parsedData[18]) : null,
-      hourmeter: parsedData[17]
+      hourmeter:
+        parsedData[17] !== '' ? getHoursForHourmeter(parsedData[17]) : null
     })
   } else if (command[1] === 'GTIDN' || command[1] === 'GTIDF') {
     data = Object.assign(data, {
@@ -4736,7 +4763,7 @@ const getGV500 = raw => {
           : null,
       hourmeter:
         parsedData[parsedData.length - 10] !== ''
-          ? parsedData[parsedData.length - 10]
+          ? getHoursForHourmeter(parsedData[parsedData.length - 10])
           : null,
       canbus: {
         vin: parsedData[3] !== '' ? parsedData[3] : null,
@@ -4980,7 +5007,8 @@ const getGV500 = raw => {
       lac: parsedData[15] !== '' ? parseInt(parsedData[15], 16) : null,
       cid: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
       odometer: parsedData[19] !== '' ? parseFloat(parsedData[19]) : null,
-      hourmeter: parsedData[18] !== '' ? parsedData[18] : null,
+      hourmeter:
+        parsedData[18] !== '' ? getHoursForHourmeter(parsedData[20]) : null,
       canbus: null
     })
   } else if (

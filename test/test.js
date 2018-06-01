@@ -117,7 +117,7 @@ describe('queclink-parzer', () => {
       expect(data.lac).to.eql(6360)
       expect(data.cid).to.eql(24897)
       expect(data.odometer).to.eql(2000)
-      expect(data.hourmeter).to.eql('12345:12:34')
+      expect(data.hourmeter).to.eql(12345.209444444445)
     })
 
     it('should return GV200 data', () => {
@@ -167,7 +167,7 @@ describe('queclink-parzer', () => {
       expect(data.lac).to.eql(29712)
       expect(data.cid).to.eql(51081)
       expect(data.odometer).to.eql(0)
-      expect(data.hourmeter).to.eql('00001:33:08')
+      expect(data.hourmeter).to.eql(1.5522222222222222)
     })
 
     it('should return GMT100 data', () => {
