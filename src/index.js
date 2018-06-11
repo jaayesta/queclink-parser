@@ -5390,9 +5390,10 @@ const parseCommand = data => {
   } else if (/^reboot$/.test(data.instruction)) {
     command = `AT+GTRTO=${password},3,,,,,,${serialId}$`
   } else if (data.instruction === 'set_driver') {
-    command = `AT+GTIDA=${password},1,1,1,${
-      data.driverID
-    },30,3,,,,,1,0,0,0,,,,,${serialId}$`
+    const mode = data.mode || 1
+    const count = data.count || 1
+    const ids = data.driverID
+    command = `AT+GTIDA=${password},${mode},1,${count},${ids},30,3,,,,,1,0,0,0,,,,,${serialId}$`
   } else if (data.instruction === 'jamming_detection_configuration') {
     // Jammer configuration
     mode = data.mode || '2' // Modes: 1:JDS, 2:JDR, 0:Disabled
