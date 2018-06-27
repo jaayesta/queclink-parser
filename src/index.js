@@ -1367,9 +1367,7 @@ const getGV300W = raw => {
       }
     })
   } else if (command[1] === 'GTDAT') {
-    // GPS Status
     data = Object.assign(data, {
-      alarm: getAlarm(command[1], null),
       loc: {
         type: 'Point',
         coordinates: [parseFloat(parsedData[12]), parseFloat(parsedData[13])]
@@ -1398,6 +1396,65 @@ const getGV300W = raw => {
       hourmeter: null,
       serialData: parsedData[7] !== '' ? parsedData[7] : null
     })
+
+    // Checks if its a temperature GTDAT -> DT
+    if (/^>DT/.test(parsedData[7])) {
+      const parsedSerialData =
+        parsedData[7] !== '' ? parsedData[7].split('|') : ''
+      let externalData = {
+        eriMask: {
+          raw: '00000000',
+          digitFuelSensor: false,
+          AC100: false,
+          reserved: false,
+          fuelLevelPercentage: false,
+          fuelVolume: false
+        },
+        uartDeviceType: 'Camaleon',
+        fuelSensorData: null
+      }
+      let AC100Devices = [
+        {
+          deviceNumber: `${parsedData[2]}|1`,
+          deviceID: '1',
+          deviceData:
+            parsedSerialData[3] !== '' ? parseFloat(parsedSerialData[3]) : null
+        }
+      ]
+      if (parsedSerialData[4] !== '') {
+        AC100Devices.push({
+          deviceNumber: `${parsedData[2]}|2`,
+          deviceID: '1',
+          deviceData:
+            parsedSerialData[4] !== '' ? parseFloat(parsedSerialData[4]) : null
+        })
+      }
+      externalData = Object.assign(externalData, {
+        AC100Devices: AC100Devices
+      })
+      data = Object.assign(data, {
+        alarm: getAlarm('GTERI', null),
+        externalData: externalData
+      })
+    } else if (/^>ET/.test(parsedData[7])) {
+      // Temp Alarms
+      // GTTMP
+      const parsedSerialData =
+        parsedData[7] !== '' ? parsedData[7].split('|') : ''
+      const alarm = getAlarm('GTTMP', `${parsedSerialData[2]}0`, [
+        `${parsedData[2]}|${parsedSerialData[2]}`,
+        parsedSerialData[4]
+      ])
+      data = Object.assign(data, {
+        alarm: alarm
+      })
+      // } else if (/^>ID/.test(parsedData[7])) { // Checks if its a iButton GTDAT -> DT
+    } else {
+      // Normal GTDAT
+      data = Object.assign(data, {
+        alarm: getAlarm(command[1], null)
+      })
+    }
   } else {
     data = Object.assign(data, {
       alarm: getAlarm(command[1], null)
@@ -5415,6 +5472,15 @@ const parseCommand = data => {
     const minTemp = data.minTemp || 0
     const maxTemp = data.maxTemp || 0
     command = `AT+GTTMP=${password},${alarmId},${mode},${sensorId},,,${minTemp},${maxTemp},,,2,10,,,0,0,0,0,,,,,${serialId}$`
+  } else if (/^copiloto_temp_alarm_(on|off)(E)?$/.test(data.instruction)) {
+    // AT+GTDAT=gv300w,2,,>CMD3005,60,18,0,5,-3<,0,,,,FFFF$
+    // Temperature Alarm
+    const interval = data.interval || 0
+    const minTemp1 = data.minTemp1 || 0
+    const maxTemp1 = data.maxTemp1 || 0
+    const minTemp2 = data.minTemp2 || 0
+    const maxTemp2 = data.maxTemp2 || 0
+    command = `AT+GTDAT=${password},2,,>CMD3005,${interval},${maxTemp1},${minTemp1},${maxTemp2},${minTemp2}<,0,,,,${serialId}$`
   } else if (data.instruction === 'get_current_position') {
     // Request current position
     command = `AT+GTRTO=${password},1,,,,,,${serialId}$`
