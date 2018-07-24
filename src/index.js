@@ -481,6 +481,11 @@ const getAlarm = (command, report, extra = false) => {
       type: 'Serial_Data',
       message: messages[command]
     }
+  } else if (command === 'GTSOA') {
+    return {
+      type: 'Shell_Open',
+      message: messages[command]
+    }
   } else {
     return { type: command }
   }
@@ -3672,7 +3677,8 @@ const getGMT100 = raw => {
     command[1] === 'GTMPN' ||
     command[1] === 'GTMPF' ||
     command[1] === 'GTCRA' ||
-    command[1] === 'GTJDR'
+    command[1] === 'GTJDR' ||
+    command[1] === 'GTSOA'
   ) {
     data = Object.assign(data, {
       alarm: getAlarm(command[1], null),

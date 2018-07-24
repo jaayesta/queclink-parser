@@ -129,5 +129,6 @@
     "1": "Salida digital port activada",
     "0": "Salida digital port desactivada"
   },
-  "GTDAT": "Datos del puerto serial recibidos"
+  "GTDAT": "Datos del puerto serial recibidos",
+  "GTSOA": "Compartimento tarjeta SIM abierto"
 }
