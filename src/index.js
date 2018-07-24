@@ -28,7 +28,8 @@ const devices = {
   '2F': 'GV55', // New Version
   '30': 'GL300', // New Version
   '36': 'GV500', // New Version
-  '2C': 'GL300W' // New version
+  '2C': 'GL300W', // New version
+  '3F': 'GMT100' // New version
 }
 
 const states = {
@@ -5420,7 +5421,7 @@ const parseCommand = data => {
     if (data.device_serie === 'GV') {
       command = `AT+GTOUT=${password},${do1},${do2},${do3},${do4},${longOperation},${dosReport},,,${serialId}$`
     } else if (data.device_serie === 'GMT') {
-      command = `AT+GTOUT=${password},${do1},0,0,0,,,,,,,,${serialId}$`
+      command = `AT+GTOUT=${password},${do1},${do2},,,,,,,,${serialId}$`
     } else {
       command = `AT+GTOUT=${password},${do1},${do2},${do3},${do4},${longOperation},${dosReport},,,${serialId}$`
     }
