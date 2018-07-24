@@ -170,7 +170,7 @@ describe('queclink-parzer', () => {
       expect(data.hourmeter).to.eql(1.5522222222222222)
     })
 
-    it('should return GMT100 data', () => {
+    it('should return GMT100 old device data', () => {
       const raw = Buffer.from(
         '+RESP:GTFRI,080100,135790246811220,,,10,2,1,4.3,92,70.0,121.354335,31.222073,20090214013254,0460,0000,18d8,6141,00,0,4.3,92,70.0,121.354335,31.222073,20090101000000,0460,0000,18d8,6141,00,2000.0,12345:12:34,,80,,,,,,20090214093254,11F0$'
       )
@@ -212,8 +212,50 @@ describe('queclink-parzer', () => {
       expect(data.cid).to.eql(24897)
       expect(data.odometer).to.eql(0)
     })
-  })
 
+    it('should return GMT100 new device data', () => {
+      const raw = Buffer.from(
+        '+RESP:GTFRI,3F0202,135790246811220,,,10,2,1,4.3,92,70.0,121.354335,31.222073,20090214013254,0460,0000,18d8,6141,00,0,4.3,92,70.0,121.354335,31.222073,20090101000000,0460,0000,18d8,6141,00,2000.0,12345:12:34,,80,,,,,,20090214093254,11F0$'
+      )
+      const data = queclink.parse(raw)
+      expect(data.raw).to.eql(raw.toString())
+      expect(data.manufacturer).to.eql('queclink')
+      expect(data.device).to.eql('Queclink-GMT100')
+      expect(data.type).to.eql('data')
+      expect(data.imei).to.eql('135790246811220')
+      expect(data.protocolVersion.raw).to.eql('3F0202')
+      expect(data.protocolVersion.deviceType).to.eql('GMT100')
+      expect(data.protocolVersion.version).to.eql('2.2')
+      expect(data.temperature).to.be.a('null')
+      expect(data.history).to.equal(false)
+      expect(data.sentTime).to.eql(new Date('2009-02-14T09:32:54.000Z'))
+      expect(data.serialId).to.eql(4592)
+      expect(data.alarm.type).to.eql('Gps')
+      expect(data.loc.type).to.eql('Point')
+      expect(data.loc.coordinates).to.eql([121.354335, 31.222073])
+      expect(data.speed).to.eql(4.3)
+      expect(data.gpsStatus).to.equal(true)
+      expect(data.hdop).to.eql(1)
+      expect(data.status.raw).to.eql('31.22207320090101000000')
+      expect(data.status.sos).to.equal(false)
+      expect(data.status.input[1]).to.equal(true)
+      expect(data.status.input[2]).to.equal(true)
+      expect(data.status.output[1]).to.equal(false)
+      expect(data.status.output[2]).to.equal(true)
+      expect(data.status.charge).to.equal(false)
+      expect(data.azimuth).to.eql(92)
+      expect(data.altitude).to.eql(70)
+      expect(data.datetime).to.eql(new Date('2009-02-14T01:32:54.000Z'))
+      expect(data.voltage.battery).to.eql(121.354335)
+      expect(data.voltage.inputCharge).to.be.a('null')
+      expect(data.voltage.ada).to.eql(0.092)
+      expect(data.mcc).to.eql(460)
+      expect(data.mnc).to.eql(0)
+      expect(data.lac).to.eql(6360)
+      expect(data.cid).to.eql(24897)
+      expect(data.odometer).to.eql(0)
+    })
+  })
   describe('isQueclink', () => {
     it('should return true', () => {
       const raw = Buffer.from(
@@ -285,7 +327,39 @@ describe('queclink-parzer', () => {
       const raw = queclink.parseCommand(data)
       expect(raw).to.eql('AT+GTOUT=101010,1,0,0,1,0,0,0,0,0,1,0,0,0,0,,,1010$')
     })
-    it('should return raw di on command GMT serie', () => {
+    it('should return raw di 1 on command GMT serie', () => {
+      const data = {
+        password: '101010',
+        serial: 4112,
+        instruction: '1_on',
+        device_serie: 'GMT',
+        previousOutput: {
+          '1': false,
+          '2': false,
+          '3': false,
+          '4': false
+        }
+      }
+      const raw = queclink.parseCommand(data)
+      expect(raw).to.eql('AT+GTOUT=101010,1,0,0,0,0,0,,,,,,,,1010$')
+    })
+    it('should return raw di 2 on command GMT serie', () => {
+      const data = {
+        password: '101010',
+        serial: 4112,
+        instruction: '2_on',
+        device_serie: 'GMT',
+        previousOutput: {
+          '1': false,
+          '2': false,
+          '3': false,
+          '4': false
+        }
+      }
+      const raw = queclink.parseCommand(data)
+      expect(raw).to.eql('AT+GTOUT=101010,0,0,0,1,0,0,,,,,,,,1010$')
+    })
+    it('should return raw di 2 on command GMT serie with di1 previos on', () => {
       const data = {
         password: '101010',
         serial: 4112,
@@ -295,11 +369,11 @@ describe('queclink-parzer', () => {
           '1': true,
           '2': false,
           '3': false,
-          '4': true
+          '4': false
         }
       }
       const raw = queclink.parseCommand(data)
-      expect(raw).to.eql('AT+GTOUT=101010,1,0,0,0,0,0,,,,,,,,1010$')
+      expect(raw).to.eql('AT+GTOUT=101010,1,0,0,1,0,0,,,,,,,,1010$')
     })
 
     it('should return raw di off command GV serie', () => {
