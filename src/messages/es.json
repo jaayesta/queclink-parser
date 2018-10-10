@@ -129,6 +129,10 @@
     "1": "Salida digital port activada",
     "0": "Salida digital port desactivada"
   },
+  "GTNMD": {
+    "0": "Vehículo en movimiento",
+    "1": "Vehículo detenido"
+  },
   "GTDAT": "Datos del puerto serial recibidos",
   "GTSOA": "Compartimento tarjeta SIM abierto"
 }

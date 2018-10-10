@@ -486,6 +486,12 @@ const getAlarm = (command, report, extra = false) => {
       type: 'Shell_Open',
       message: messages[command]
     }
+  } else if (command === 'GTNMD') {
+    return {
+      type: 'Movement',
+      status: report === '0',
+      message: messages[command][report]
+    }
   } else {
     return { type: command }
   }
@@ -3707,7 +3713,8 @@ const getGMT100 = raw => {
   } else if (
     command[1] === 'GTJDS' ||
     command[1] === 'GTANT' ||
-    command[1] === 'GTRMD'
+    command[1] === 'GTRMD' ||
+    command[1] === 'GTNMD'
   ) {
     data = Object.assign(data, {
       alarm: getAlarm(command[1], parsedData[4]),
