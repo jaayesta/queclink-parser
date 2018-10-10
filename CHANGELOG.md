@@ -1,3 +1,9 @@
+#### 1.1.1 (2018-10-10)
+
+##### Bug Fixes
+
+* **gmt100:**  Correct GIS port alarms for gmt100. ([374af391](https://github.com/jaayesta/queclink-parser/commit/374af39106c29d9b4d4e7041cf7dd04b955d3c3c))
+
 ### 1.1.0 (2018-10-10)
 
 ##### New Features
