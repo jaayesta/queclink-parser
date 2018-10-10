@@ -1,3 +1,9 @@
+### 1.1.0 (2018-10-10)
+
+##### New Features
+
+* **GMT100:**  support for NMD alarms added to GMT100 devices. ([d025e5e3](https://github.com/jaayesta/queclink-parser/commit/d025e5e3e2919997b38dac997959605e5ba87d19))
+
 #### 1.0.10 (2018-07-24)
 
 #### 1.0.9 (2018-07-24)
