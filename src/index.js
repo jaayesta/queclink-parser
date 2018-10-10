@@ -288,7 +288,7 @@ const getAlarm = (command, report, extra = false) => {
     const reportType = parseInt(report[1], 10)
     if (extra === true && reportID === 1) {
       reportID = 2
-    } else if (extra === 'gv300w') {
+    } else if (extra === 'gv300w' || extra === 'GMT100') {
       reportID += 1
     }
     return {
@@ -3566,7 +3566,7 @@ const getGMT100 = raw => {
   ) {
     // Common Alarms
     data = Object.assign(data, {
-      alarm: getAlarm(command[1], parsedData[5]),
+      alarm: getAlarm(command[1], parsedData[5], 'GMT100'),
       loc: {
         type: 'Point',
         coordinates: [parseFloat(parsedData[11]), parseFloat(parsedData[12])]
