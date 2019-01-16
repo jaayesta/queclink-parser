@@ -1460,7 +1460,15 @@ const getGV300W = raw => {
       data = Object.assign(data, {
         alarm: alarm
       })
-      // } else if (/^>ID/.test(parsedData[7])) { // Checks if its a iButton GTDAT -> DT
+    } else if (/^>ID/.test(parsedData[7])) {
+      // Checks if its a iButton GTDAT -> DT
+      const parsedSerialData =
+        parsedData[7] !== '' ? parsedData[7].split('|') : ''
+      const driverID = parsedSerialData[2] ? parsedSerialData[2] : ''
+      const alarm = getAlarm('GTIDA', `${driverID},1`)
+      data = Object.assign(data, {
+        alarm: alarm
+      })
     } else {
       // Normal GTDAT
       data = Object.assign(data, {
