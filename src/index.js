@@ -466,10 +466,10 @@ const getAlarm = (command, report, extra = false) => {
       message: messages[command][status]
     }
   } else if (command === 'GTDOS') {
-    const outputId =
-      report.split(',')[0] !== null ? parseInt(report.split(',')[0], 10) : null
-    const outputStatus =
-      report.split(',')[0] !== null ? report.split(',')[1] : null
+    const outputId = report.split(',')[0]
+      ? parseInt(report.split(',')[0], 10)
+      : null
+    const outputStatus = report.split(',')[0] ? report.split(',')[1] : null
     return {
       type: 'DO',
       number: outputId,
@@ -1475,6 +1475,37 @@ const getGV300W = raw => {
         alarm: getAlarm(command[1], null)
       })
     }
+  } else if (command[1] === 'GTDOS') {
+    data = Object.assign(data, {
+      alarm: getAlarm(command[1], `${parsedData[4]},${parsedData[5]}`),
+      loc: {
+        type: 'Point',
+        coordinates: [parseFloat(parsedData[10]), parseFloat(parsedData[11])]
+      },
+      speed: parsedData[7] !== '' ? parseFloat(parsedData[7]) : null,
+      gpsStatus: checkGps(
+        parseFloat(parsedData[10]),
+        parseFloat(parsedData[11])
+      ),
+      hdop: parsedData[6] !== '' ? parseFloat(parsedData[6]) : null,
+      status: null,
+      azimuth: parsedData[8] !== '' ? parseFloat(parsedData[8]) : null,
+      altitude: parsedData[9] !== '' ? parseFloat(parsedData[9]) : null,
+      datetime: parsedData[12] !== '' ? utils.parseDate(parsedData[12]) : null,
+      voltage: {
+        battery: null,
+        inputCharge: null,
+        ada: null,
+        adb: null,
+        adc: null
+      },
+      mcc: parsedData[13] !== '' ? parseInt(parsedData[13], 10) : null,
+      mnc: parsedData[14] !== '' ? parseInt(parsedData[14], 10) : null,
+      lac: parsedData[15] !== '' ? parseInt(parsedData[15], 16) : null,
+      cid: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
+      odometer: null,
+      hourmeter: null
+    })
   } else {
     data = Object.assign(data, {
       alarm: getAlarm(command[1], null)
@@ -5472,7 +5503,8 @@ const parseCommand = data => {
     const mode = data.mode || 1
     const count = data.count || 1
     const ids = data.driverID
-    command = `AT+GTIDA=${password},${mode},1,${count},${ids},30,3,,,,,1,0,0,0,,,,,${serialId}$`
+    const reportMode = data.reportMode || 1
+    command = `AT+GTIDA=${password},${mode},1,${count},${ids},30,${reportMode},,,,,1,0,0,0,,,,,${serialId}$`
   } else if (data.instruction === 'jamming_detection_configuration') {
     // Jammer configuration
     mode = data.mode || '2' // Modes: 1:JDS, 2:JDR, 0:Disabled
