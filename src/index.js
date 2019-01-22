@@ -719,7 +719,6 @@ const getGV300W = raw => {
       hourmeter:
         parsedData[21] !== '' ? getHoursForHourmeter(parsedData[21]) : null
     })
-
     // External Data
     const digitFuelSensor =
       utils.nHexDigit(utils.hex2bin(parsedData[4]), 5)[4] === '1'
@@ -732,8 +731,8 @@ const getGV300W = raw => {
     const fuelSensorData = digitFuelSensor ? parsedData[28] : null
     const ac100DevicesConnected =
       AC100 && digitFuelSensor
-        ? parseInt(parsedData[29], 10)
-        : AC100 && !digitFuelSensor ? parseInt(parsedData[28], 10) : 0
+        ? parseInt(parsedData[28], 10)
+        : AC100 && !digitFuelSensor ? parseInt(parsedData[27], 10) : 0
 
     let externalData = {
       eriMask: {
@@ -746,7 +745,6 @@ const getGV300W = raw => {
       },
       uartDeviceType: uartDeviceTypes[parsedData[26]]
     }
-
     // Fuel Sensor
     if (parsedData[26] === '1') {
       if (digitFuelSensor && !AC100) {
@@ -824,12 +822,11 @@ const getGV300W = raw => {
       // AC100 1 Wire Bus
       if (!digitFuelSensor && AC100) {
         let ac100Devices = []
-        let count = 29
+        let count = AC100 && digitFuelSensor ? 29 : 28
         for (var k = 0; k < ac100DevicesConnected; k++) {
           ac100Devices.push({
             deviceNumber: parsedData[count],
-            deviceID: parsedData[count + 1],
-            // deviceType: parsedData[count + 2],
+            deviceType: parsedData[count + 1],
             deviceData: parsedData[count + 2]
               ? getTempInCelciousDegrees(parsedData[count + 2])
               : null
