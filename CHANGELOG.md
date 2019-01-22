@@ -1,3 +1,10 @@
+#### 1.1.4 (2019-01-22)
+
+##### Bug Fixes
+
+* **reportType:**  Report Type parser fixed for GTERI commands. ([2576ec71](https://github.com/jaayesta/queclink-parser/commit/2576ec716feb8b5b198ce8d3d577fdcc42e29183))
+* **GV300W:**  GTERI report parser for GV300W with AC100 devices fixed ([fe1d02b0](https://github.com/jaayesta/queclink-parser/commit/fe1d02b085067e52fbeb05b0d2870edb2fe82d56))
+
 #### 1.1.3 (2019-01-16)
 
 #### 1.1.2 (2019-01-16)
