@@ -771,8 +771,7 @@ const getGV300W = raw => {
         for (var i = 0; i < ac100DevicesConnected; i++) {
           ac100Devices.push({
             deviceNumber: parsedData[count],
-            deviceID: parsedData[count + 1],
-            // deviceType: parsedData[count + 2],
+            deviceType: parsedData[count + 1],
             deviceData: parsedData[count + 2]
               ? getTempInCelciousDegrees(parsedData[count + 2])
               : null
@@ -792,8 +791,7 @@ const getGV300W = raw => {
         for (var j = 0; j < ac100DevicesConnected; j++) {
           ac100Devices.push({
             deviceNumber: parsedData[count],
-            deviceID: parsedData[count + 1],
-            // deviceType: parsedData[count + 2],
+            deviceType: parsedData[count + 1],
             deviceData: parsedData[count + 2]
               ? getTempInCelciousDegrees(parsedData[count + 2])
               : null
@@ -822,7 +820,7 @@ const getGV300W = raw => {
       // AC100 1 Wire Bus
       if (!digitFuelSensor && AC100) {
         let ac100Devices = []
-        let count = AC100 && digitFuelSensor ? 29 : 28
+        let count = 28
         for (var k = 0; k < ac100DevicesConnected; k++) {
           ac100Devices.push({
             deviceNumber: parsedData[count],
@@ -853,8 +851,7 @@ const getGV300W = raw => {
         for (var l = 0; l < ac100DevicesConnected; l++) {
           ac100Devices.push({
             deviceNumber: parsedData[count],
-            deviceID: parsedData[count + 1],
-            // deviceType: parsedData[count + 2],
+            deviceType: parsedData[count + 1],
             deviceData: parsedData[count + 2]
               ? getTempInCelciousDegrees(parsedData[count + 2])
               : null
@@ -1425,7 +1422,7 @@ const getGV300W = raw => {
       let AC100Devices = [
         {
           deviceNumber: `${parsedData[2]}|1`,
-          deviceID: '1',
+          deviceType: '1',
           deviceData:
             parsedSerialData[3] !== '' ? parseFloat(parsedSerialData[3]) : null
         }
@@ -1433,7 +1430,7 @@ const getGV300W = raw => {
       if (parsedSerialData[4] !== '') {
         AC100Devices.push({
           deviceNumber: `${parsedData[2]}|2`,
-          deviceID: '1',
+          deviceType: '1',
           deviceData:
             parsedSerialData[4] !== '' ? parseFloat(parsedSerialData[4]) : null
         })
@@ -1797,8 +1794,7 @@ const getGV300 = raw => {
         for (var i = 0; i < ac100DevicesConnected; i++) {
           ac100Devices.push({
             deviceNumber: parsedData[count],
-            deviceID: parsedData[count + 1],
-            // deviceType: parsedData[count + 2],
+            deviceType: parsedData[count + 1],
             deviceData: parsedData[count + 2]
               ? getTempInCelciousDegrees(parsedData[count + 2])
               : null
@@ -1818,8 +1814,7 @@ const getGV300 = raw => {
         for (var j = 0; j < ac100DevicesConnected; j++) {
           ac100Devices.push({
             deviceNumber: parsedData[count],
-            deviceID: parsedData[count + 1],
-            // deviceType: parsedData[count + 2],
+            deviceType: parsedData[count + 1],
             deviceData: parsedData[count + 2]
               ? getTempInCelciousDegrees(parsedData[count + 2])
               : null
@@ -1852,8 +1847,7 @@ const getGV300 = raw => {
         for (var k = 0; k < ac100DevicesConnected; k++) {
           ac100Devices.push({
             deviceNumber: parsedData[count],
-            deviceID: parsedData[count + 1],
-            // deviceType: parsedData[count + 2],
+            deviceType: parsedData[count + 1],
             deviceData: parsedData[count + 2]
               ? getTempInCelciousDegrees(parsedData[count + 2])
               : null
@@ -1880,8 +1874,7 @@ const getGV300 = raw => {
         for (var l = 0; l < ac100DevicesConnected; l++) {
           ac100Devices.push({
             deviceNumber: parsedData[count],
-            deviceID: parsedData[count + 1],
-            // deviceType: parsedData[count + 2],
+            deviceType: parsedData[count + 1],
             deviceData: parsedData[count + 2]
               ? getTempInCelciousDegrees(parsedData[count + 2])
               : null
@@ -2558,8 +2551,7 @@ const getGV200 = raw => {
         for (var i = 0; i < ac100DevicesConnected; i++) {
           ac100Devices.push({
             deviceNumber: parsedData[count],
-            deviceID: parsedData[count + 1],
-            // deviceType: parsedData[count + 2],
+            deviceType: parsedData[count + 1],
             deviceData: parsedData[count + 2]
               ? getTempInCelciousDegrees(parsedData[count + 2])
               : null
@@ -2579,8 +2571,7 @@ const getGV200 = raw => {
         for (var j = 0; j < ac100DevicesConnected; j++) {
           ac100Devices.push({
             deviceNumber: parsedData[count],
-            deviceID: parsedData[count + 1],
-            // deviceType: parsedData[count + 2],
+            deviceType: parsedData[count + 1],
             deviceData: parsedData[count + 2]
               ? getTempInCelciousDegrees(parsedData[count + 2])
               : null
@@ -2613,8 +2604,7 @@ const getGV200 = raw => {
         for (var k = 0; k < ac100DevicesConnected; k++) {
           ac100Devices.push({
             deviceNumber: parsedData[count],
-            deviceID: parsedData[count + 1],
-            // deviceType: parsedData[count + 2],
+            deviceType: parsedData[count + 1],
             deviceData: parsedData[count + 2]
               ? getTempInCelciousDegrees(parsedData[count + 2])
               : null
@@ -2641,8 +2631,7 @@ const getGV200 = raw => {
         for (var l = 0; l < ac100DevicesConnected; l++) {
           ac100Devices.push({
             deviceNumber: parsedData[count],
-            deviceID: parsedData[count + 1],
-            // deviceType: parsedData[count + 2],
+            deviceType: parsedData[count + 1],
             deviceData: parsedData[count + 2]
               ? getTempInCelciousDegrees(parsedData[count + 2])
               : null
