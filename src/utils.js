@@ -18,6 +18,8 @@ const patterns = {
   Homologued devices
 */
 const devices = {
+  '52': 'GL50',
+  '55': 'GL50B',
   '02': 'GL200',
   '04': 'GV200',
   '06': 'GV300',
@@ -39,7 +41,7 @@ const devices = {
 }
 
 /*
-  Possible device's moptions states
+  Possible device's motions states
 */
 const states = {
   '16': 'Tow',
@@ -174,7 +176,9 @@ const getAlarm = (command, report, extra = false) => {
     command === 'GTFRI' ||
     command === 'GTERI' ||
     command === 'GTPNL' ||
-    command === 'GTPFL'
+    command === 'GTPFL' ||
+    command === 'GTSTR' ||
+    command === 'GTCTN'
   ) {
     return { type: 'Gps' }
   } else if (command === 'GTCAN') {
@@ -331,12 +335,12 @@ const getAlarm = (command, report, extra = false) => {
       status: report === '0',
       message: messages[command][report]
     }
-  } else if (command === 'GTSTR') {
-    return {
-      type: 'Vehicle_Start_Status',
-      status: true,
-      message: messages[command]
-    }
+    // } else if (command === 'GTSTR') {
+    //   return {
+    //     type: 'Vehicle_Start_Status',
+    //     status: true,
+    //     message: messages[command]
+    //   }
   } else if (command === 'GTSTP' || command === 'GTLSP') {
     return {
       type: 'Vehicle_Start_Status',

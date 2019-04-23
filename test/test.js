@@ -785,15 +785,15 @@ describe('queclink-parzer', () => {
       expect(data.alarm.status).to.equal(true)
       expect(data.alarm.message).to.eq('Antena GPS conectada')
     })
-    it('should return GTSTR alarm', () => {
-      const raw = Buffer.from(
-        '+RESP:GTSTR,060100,135790246811220,,,,0,4.3,92,70.0,121.354335,31.222073,20090214013254,0460,0000,18d8,6141,00,2000.0,20090214093254,11F0$'
-      )
-      const data = queclink.parse(raw)
-      expect(data.alarm.type).to.eq('Vehicle_Start_Status')
-      expect(data.alarm.status).to.equal(true)
-      expect(data.alarm.message).to.eq('Partida de vehículo iniciada')
-    })
+    // it('should return GTSTR alarm', () => {
+    //   const raw = Buffer.from(
+    //     '+RESP:GTSTR,060100,135790246811220,,,,0,4.3,92,70.0,121.354335,31.222073,20090214013254,0460,0000,18d8,6141,00,2000.0,20090214093254,11F0$'
+    //   )
+    //   const data = queclink.parse(raw)
+    //   expect(data.alarm.type).to.eq('Vehicle_Start_Status')
+    //   expect(data.alarm.status).to.equal(true)
+    //   expect(data.alarm.message).to.eq('Partida de vehículo iniciada')
+    // })
     it('should return GTLSP alarm', () => {
       const raw = Buffer.from(
         '+RESP:GTLSP,060100,135790246811220,,,,0,4.3,92,70.0,121.354335,31.222073,20090214013254,0460,0000,18d8,6141,00,2000.0,20090214093254,11F0$'
