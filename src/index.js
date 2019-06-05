@@ -168,6 +168,10 @@ const parseCommand = data => {
 
   // Digital Outputs
   if (/^[1-4]{1}_(on|off)$/.test(data.instruction)) {
+    /*
+      AT+GTOUT=gv800w,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,F,0,0,0,0,0,FFFF$
+      AT+GTOUT=gv800w,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,0426$
+    */
     let _data = data.instruction.split('_')
     port = parseInt(_data[0], 10)
     state = _data[1]
@@ -175,10 +179,23 @@ const parseCommand = data => {
       '1': false,
       '2': false,
       '3': false,
-      '4': false
+      '4': false,
+      '5': false
     }
-    prevDurations = data.previousDuration || { '1': 0, '2': 0, '3': 0, '4': 0 }
-    prevToggles = data.previousToggle || { '1': 0, '2': 0, '3': 0, '4': 0 }
+    prevDurations = data.previousDuration || {
+      '1': 0,
+      '2': 0,
+      '3': 0,
+      '4': 0,
+      '5': 0
+    }
+    prevToggles = data.previousToggle || {
+      '1': 0,
+      '2': 0,
+      '3': 0,
+      '4': 0,
+      '5': 0
+    }
     const outputs = Object.keys(prevOutputs).map(
       key => (prevOutputs[key] === true ? 1 : 0)
     )
@@ -186,18 +203,22 @@ const parseCommand = data => {
     outputs[1] = !outputs[1] ? 0 : outputs[1]
     outputs[2] = !outputs[2] ? 0 : outputs[2]
     outputs[3] = !outputs[3] ? 0 : outputs[3]
+    outputs[4] = !outputs[4] ? 0 : outputs[4]
     digit = state === 'on' ? 1 : 0
     outputs[port - 1] = digit
     const do1 = `${outputs[0]},${prevDurations['1']},${prevToggles['1']}`
     const do2 = `${outputs[1]},${prevDurations['2']},${prevToggles['2']}`
     const do3 = `${outputs[2]},${prevDurations['3']},${prevToggles['3']}`
     const do4 = `${outputs[3]},${prevDurations['4']},${prevToggles['4']}`
+    const do5 = `${outputs[4]},${prevDurations['5']},${prevToggles['5']}`
     const longOperation = data.longOperation || false ? '1' : '0'
     const dosReport = data.dosReport || false ? '1' : '0'
     if (data.device_serie === 'GV') {
       command = `AT+GTOUT=${password},${do1},${do2},${do3},${do4},${longOperation},${dosReport},,,${serialId}$`
     } else if (data.device_serie === 'GMT') {
       command = `AT+GTOUT=${password},${do1},${do2},,,,,,,,${serialId}$`
+    } else if (data.device_serie === 'GV800') {
+      command = `AT+GTOUT=${password},${do1},${do2},${do3},${do4},${do5},${longOperation},${dosReport},0,0,0,0,${serialId}$`
     } else {
       command = `AT+GTOUT=${password},${do1},${do2},${do3},${do4},${longOperation},${dosReport},,,${serialId}$`
     }
