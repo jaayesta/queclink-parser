@@ -220,7 +220,7 @@ const getAlarm = (command, report, extra = false) => {
     const reportType = parseInt(report[1], 10)
     if (extra === true && reportID === 1) {
       reportID = 2
-    } else if (extra === 'gv300w' || extra === 'GMT100') {
+    } else if (['gv800w', 'gv300w', 'GMT100'].includes(extra)) {
       reportID += 1
     }
     return {
