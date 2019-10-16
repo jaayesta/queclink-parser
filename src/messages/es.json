@@ -134,5 +134,13 @@
     "1": "Vehículo detenido"
   },
   "GTDAT": "Datos del puerto serial recibidos",
-  "GTSOA": "Compartimento tarjeta SIM abierto"
+  "GTSOA": "Compartimento tarjeta SIM abierto",
+  "GTHBM": {
+    "0": "Frenada Brusca",
+    "1": "Aceleración Brusca",
+    "2": "Giro Brusco",
+    "3": "Frenada Brusca Girando",
+    "4": "Aceleración Brusca Girando",
+    "5": "Comportamiento Brusco Desconocido"
+  }
 }

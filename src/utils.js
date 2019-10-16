@@ -424,6 +424,23 @@ const getAlarm = (command, report, extra = false) => {
       status: report === '0',
       message: messages[command][report]
     }
+  } else if (command === 'GTHBM') {
+    /*
+      status:
+        0: braking
+        1: acceleration
+        2: turning
+        3: braking turning
+        4: acceleration turning
+        5: unknown harsh behavior
+      */
+    // const reportID = parseInt(report[0], 10)
+    const reportType = report[1]
+    return {
+      type: 'Harsh_Behavior',
+      status: parseInt(reportType, 10),
+      message: messages[command][reportType]
+    }
   } else {
     return { type: command }
   }
