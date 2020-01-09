@@ -833,6 +833,18 @@ const parse = raw => {
       hourmeter: null
     })
   } else if (command[1] === 'GTCAN') {
+    let inicatorsBin =
+      parsedData[24] !== ''
+        ? utils.nHexDigit(utils.hex2bin(parsedData[24]), 16)
+        : null
+    let lights =
+      parsedData[25] !== ''
+        ? utils.nHexDigit(utils.hex2bin(parsedData[25]), 8)
+        : null
+    let doors =
+      parsedData[26] !== ''
+        ? utils.nHexDigit(utils.hex2bin(parsedData[26]), 8)
+        : null
     data = Object.assign(data, {
       alarm: utils.getAlarm(command[1], parsedData[4]),
       loc: {
@@ -882,11 +894,45 @@ const parse = raw => {
         idleFuelUsed: parsedData[21] !== '' ? parsedData[21] : null,
         axleWight: parsedData[22] !== '' ? parsedData[22] : null,
         tachograph: parsedData[23] !== '' ? parsedData[23] : null,
-        detailedInfo: parsedData[24] !== '' ? parsedData[24] : null,
-        lights: parsedData[25] !== '' ? parsedData[25] : null,
-        doors: parsedData[26] !== '' ? parsedData[26] : null,
+        indicators: {
+          raw: parsedData[24] !== '' ? parsedData[24] : null,
+          lowFuel: inicatorsBin ? inicatorsBin[0] === '1' : null,
+          driverSeatbelt: inicatorsBin ? inicatorsBin[1] === '1' : null,
+          airConditioning: inicatorsBin ? inicatorsBin[2] === '1' : null,
+          cruiseControl: inicatorsBin ? inicatorsBin[3] === '1' : null,
+          brakePedal: inicatorsBin ? inicatorsBin[4] === '1' : null,
+          clutchPedal: inicatorsBin ? inicatorsBin[5] === '1' : null,
+          handbrake: inicatorsBin ? inicatorsBin[6] === '1' : null,
+          centralLock: inicatorsBin ? inicatorsBin[7] === '1' : null,
+          reverseGear: inicatorsBin ? inicatorsBin[8] === '1' : null,
+          runningLights: inicatorsBin ? inicatorsBin[9] === '1' : null,
+          lowBeams: inicatorsBin ? inicatorsBin[10] === '1' : null,
+          highBeams: inicatorsBin ? inicatorsBin[11] === '1' : null,
+          rearFogLights: inicatorsBin ? inicatorsBin[12] === '1' : null,
+          frontFogLights: inicatorsBin ? inicatorsBin[13] === '1' : null,
+          doors: inicatorsBin ? inicatorsBin[14] === '1' : null,
+          trunk: inicatorsBin ? inicatorsBin[15] === '1' : null
+        },
+        lights: {
+          raw: parsedData[25] !== '' ? parsedData[25] : null,
+          running: lights ? lights[0] === '1' : null,
+          lowBeams: lights ? lights[1] === '1' : null,
+          frontFog: lights ? lights[2] === '1' : null,
+          rearFog: lights ? lights[3] === '1' : null,
+          hazard: lights ? lights[4] === '1' : null
+        },
+        doors: {
+          raw: parsedData[26] !== '' ? parsedData[26] : null,
+          driver: doors ? doors[0] === '1' : null,
+          passenger: doors ? doors[1] === '1' : null,
+          rearLeft: doors ? doors[2] === '1' : null,
+          rearRight: doors ? doors[3] === '1' : null,
+          trunk: doors ? doors[4] === '1' : null,
+          hood: doors ? doors[5] === '1' : null
+        },
         overSpeedTime: parsedData[27] !== '' ? parsedData[27] : null,
-        overSpeedEngineTime: parsedData[28] !== '' ? parsedData[28] : null
+        overSpeedEngineTime: parsedData[28] !== '' ? parsedData[28] : null,
+        adblueLevel: parsedData[30] !== '' ? parsedData[30] : null
       }
     })
   } else if (command[1] === 'GTDAT') {
