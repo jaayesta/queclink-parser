@@ -31,6 +31,9 @@ const parse = raw => {
   // Gps
   if (command[1] === 'GTFRI') {
     try {
+      let number = parsedData[6] !== '' ? parseInt(parsedData[6], 10) : 1
+      let index = 6 + 12 * number // odometer
+
       data = Object.assign(data, {
         alarm: utils.getAlarm(command[1], null),
         loc: {
@@ -45,34 +48,34 @@ const parse = raw => {
         hdop: parsedData[7] !== '' ? parseFloat(parsedData[7]) : null,
         status: {
           // parsedData[24]
-          raw: parsedData[24],
+          raw: parsedData[index + 6],
           sos: false,
           input: {
             '1':
               utils.nHexDigit(
                 utils.hex2bin(
-                  utils.nHexDigit(parsedData[24], 10).substring(6, 8)
+                  utils.nHexDigit(parsedData[index + 6], 10).substring(6, 8)
                 ),
                 4
               )[3] === '1',
             '2':
               utils.nHexDigit(
                 utils.hex2bin(
-                  utils.nHexDigit(parsedData[24], 10).substring(6, 8)
+                  utils.nHexDigit(parsedData[index + 6], 10).substring(6, 8)
                 ),
                 4
               )[2] === '1',
             '3':
               utils.nHexDigit(
                 utils.hex2bin(
-                  utils.nHexDigit(parsedData[24], 10).substring(6, 8)
+                  utils.nHexDigit(parsedData[index + 6], 10).substring(6, 8)
                 ),
                 4
               )[1] === '1',
             '4':
               utils.nHexDigit(
                 utils.hex2bin(
-                  utils.nHexDigit(parsedData[24], 10).substring(6, 8)
+                  utils.nHexDigit(parsedData[index + 6], 10).substring(6, 8)
                 ),
                 4
               )[0] === '1'
@@ -81,30 +84,30 @@ const parse = raw => {
             '1':
               utils.nHexDigit(
                 utils.hex2bin(
-                  utils.nHexDigit(parsedData[24], 10).substring(8, 10)
+                  utils.nHexDigit(parsedData[index + 6], 10).substring(8, 10)
                 ),
                 3
               )[2] === '1',
             '2':
               utils.nHexDigit(
                 utils.hex2bin(
-                  utils.nHexDigit(parsedData[24], 10).substring(8, 10)
+                  utils.nHexDigit(parsedData[index + 6], 10).substring(8, 10)
                 ),
                 3
               )[1] === '1',
             '3':
               utils.nHexDigit(
                 utils.hex2bin(
-                  utils.nHexDigit(parsedData[24], 10).substring(8, 10)
+                  utils.nHexDigit(parsedData[index + 6], 10).substring(8, 10)
                 ),
                 3
               )[0] === '1'
           },
           charge: parseFloat(parsedData[4]) > 5,
           state:
-            utils.nHexDigit(parsedData[24], 10).substring(4, 6) !== ''
+            utils.nHexDigit(parsedData[index + 6], 10).substring(4, 6) !== ''
               ? utils.states[
-                utils.nHexDigit(parsedData[24], 10).substring(4, 6)
+                utils.nHexDigit(parsedData[index + 6], 10).substring(4, 6)
               ]
               : null
         },
@@ -113,20 +116,32 @@ const parse = raw => {
         datetime:
           parsedData[13] !== '' ? utils.parseDate(parsedData[13]) : null,
         voltage: {
-          battery: parsedData[23] !== '' ? parseFloat(parsedData[23]) : null, // percentage
+          battery:
+            parsedData[index + 5] !== ''
+              ? parseFloat(parsedData[index + 5])
+              : null, // percentage
           inputCharge:
             parsedData[4] !== '' ? parseFloat(parsedData[4]) / 1000 : null,
-          ada: parsedData[21] !== '' ? parseFloat(parsedData[21]) / 1000 : null,
-          adb: parsedData[22] !== '' ? parseFloat(parsedData[22]) / 1000 : null
+          ada:
+            parsedData[index + 3] !== ''
+              ? parseFloat(parsedData[index + 3]) / 1000
+              : null,
+          adb:
+            parsedData[index + 4] !== ''
+              ? parseFloat(parsedData[index + 4]) / 1000
+              : null
         },
         mcc: parsedData[14] !== '' ? parseInt(parsedData[14], 10) : null,
         mnc: parsedData[15] !== '' ? parseInt(parsedData[15], 10) : null,
         lac: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
         cid: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
-        odometer: parsedData[19] !== '' ? parseFloat(parsedData[19]) : null,
+        odometer:
+          parsedData[index + 1] !== ''
+            ? parseFloat(parsedData[index + 1])
+            : null,
         hourmeter:
-          parsedData[20] !== ''
-            ? utils.getHoursForHourmeter(parsedData[20])
+          parsedData[index + 2] !== ''
+            ? utils.getHoursForHourmeter(parsedData[index + 2])
             : null
       })
     } catch (err) {
@@ -134,6 +149,8 @@ const parse = raw => {
     }
   } else if (command[1] === 'GTERI') {
     // GPS with AC100 Devices Connected
+    let number = parsedData[7] !== '' ? parseInt(parsedData[7], 10) : 1
+    let index = 7 + 12 * number // odometer
     data = Object.assign(data, {
       alarm: utils.getAlarm(command[1], null),
       loc: {
@@ -147,35 +164,35 @@ const parse = raw => {
       ),
       hdop: parsedData[8] !== '' ? parseFloat(parsedData[8]) : null,
       status: {
-        // parsedData[24]
-        raw: parsedData[25],
+        // parsedData[index + 6]
+        raw: parsedData[index + 6],
         sos: false,
         input: {
           '1':
             utils.nHexDigit(
               utils.hex2bin(
-                utils.nHexDigit(parsedData[25], 10).substring(6, 8)
+                utils.nHexDigit(parsedData[index + 6], 10).substring(6, 8)
               ),
               4
             )[3] === '1',
           '2':
             utils.nHexDigit(
               utils.hex2bin(
-                utils.nHexDigit(parsedData[25], 10).substring(6, 8)
+                utils.nHexDigit(parsedData[index + 6], 10).substring(6, 8)
               ),
               4
             )[2] === '1',
           '3':
             utils.nHexDigit(
               utils.hex2bin(
-                utils.nHexDigit(parsedData[25], 10).substring(6, 8)
+                utils.nHexDigit(parsedData[index + 6], 10).substring(6, 8)
               ),
               4
             )[1] === '1',
           '4':
             utils.nHexDigit(
               utils.hex2bin(
-                utils.nHexDigit(parsedData[25], 10).substring(6, 8)
+                utils.nHexDigit(parsedData[index + 6], 10).substring(6, 8)
               ),
               4
             )[0] === '1'
@@ -184,49 +201,61 @@ const parse = raw => {
           '1':
             utils.nHexDigit(
               utils.hex2bin(
-                utils.nHexDigit(parsedData[25], 10).substring(8, 10)
+                utils.nHexDigit(parsedData[index + 6], 10).substring(8, 10)
               ),
               3
             )[2] === '1',
           '2':
             utils.nHexDigit(
               utils.hex2bin(
-                utils.nHexDigit(parsedData[25], 10).substring(8, 10)
+                utils.nHexDigit(parsedData[index + 6], 10).substring(8, 10)
               ),
               3
             )[1] === '1',
           '3':
             utils.nHexDigit(
               utils.hex2bin(
-                utils.nHexDigit(parsedData[25], 10).substring(8, 10)
+                utils.nHexDigit(parsedData[index + 6], 10).substring(8, 10)
               ),
               3
             )[0] === '1'
         },
         charge: parseFloat(parsedData[5]) > 5,
         state:
-          utils.nHexDigit(parsedData[25], 10).substring(4, 6) !== ''
-            ? utils.states[utils.nHexDigit(parsedData[25], 10).substring(4, 6)]
+          utils.nHexDigit(parsedData[index + 6], 10).substring(4, 6) !== ''
+            ? utils.states[
+              utils.nHexDigit(parsedData[index + 6], 10).substring(4, 6)
+            ]
             : null
       },
       azimuth: parsedData[10] !== '' ? parseFloat(parsedData[10]) : null,
       altitude: parsedData[11] !== '' ? parseFloat(parsedData[11]) : null,
       datetime: parsedData[14] !== '' ? utils.parseDate(parsedData[14]) : null,
       voltage: {
-        battery: parsedData[24] !== '' ? parseFloat(parsedData[24]) : null, // percentage
+        battery:
+          parsedData[index + 5] !== ''
+            ? parseFloat(parsedData[index + 5])
+            : null, // percentage
         inputCharge:
           parsedData[5] !== '' ? parseFloat(parsedData[5]) / 1000 : null,
-        ada: parsedData[22] !== '' ? parseFloat(parsedData[22]) / 1000 : null,
-        adb: parsedData[23] !== '' ? parseFloat(parsedData[23]) / 1000 : null
+        ada:
+          parsedData[index + 3] !== ''
+            ? parseFloat(parsedData[index + 3]) / 1000
+            : null,
+        adb:
+          parsedData[index + 4] !== ''
+            ? parseFloat(parsedData[index + 4]) / 1000
+            : null
       },
       mcc: parsedData[15] !== '' ? parseInt(parsedData[15], 10) : null,
       mnc: parsedData[16] !== '' ? parseInt(parsedData[16], 10) : null,
       lac: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
       cid: parsedData[18] !== '' ? parseInt(parsedData[18], 16) : null,
-      odometer: parsedData[20] !== '' ? parseFloat(parsedData[20]) : null,
+      odometer:
+        parsedData[index + 1] !== '' ? parseFloat(parsedData[index + 1]) : null,
       hourmeter:
-        parsedData[21] !== ''
-          ? utils.getHoursForHourmeter(parsedData[21])
+        parsedData[index + 2] !== ''
+          ? utils.getHoursForHourmeter(parsedData[index + 2])
           : null
     })
     // External Data
@@ -238,11 +267,11 @@ const parse = raw => {
       utils.nHexDigit(utils.hex2bin(parsedData[4]), 5)[1] === '1'
     const fuelVolume =
       utils.nHexDigit(utils.hex2bin(parsedData[4]), 5)[0] === '1'
-    const fuelSensorData = digitFuelSensor ? parsedData[28] : null
+    const fuelSensorData = digitFuelSensor ? parsedData[index + 9] : null
     const ac100DevicesConnected =
       AC100 && digitFuelSensor
-        ? parseInt(parsedData[28], 10)
-        : AC100 && !digitFuelSensor ? parseInt(parsedData[27], 10) : 0
+        ? parseInt(parsedData[index + 9], 10)
+        : AC100 && !digitFuelSensor ? parseInt(parsedData[index + 8], 10) : 0
 
     let externalData = {
       eriMask: {
@@ -253,31 +282,33 @@ const parse = raw => {
         fuelLevelPercentage: fuelLevelPercentage,
         fuelVolume: fuelVolume
       },
-      uartDeviceType: utils.uartDeviceTypes[parsedData[26]]
+      uartDeviceType: utils.uartDeviceTypes[parsedData[index + 7]]
     }
     // Fuel Sensor
-    if (parsedData[26] === '1') {
+    if (parsedData[index + 7] === '1') {
       if (digitFuelSensor && !AC100) {
         externalData = Object.assign(externalData, {
           fuelSensorData: {
             data: fuelSensorData,
-            sensorType: parsedData[29],
+            sensorType: parsedData[index + 10],
             percentage:
-              fuelLevelPercentage && parsedData[30] !== ''
-                ? parseInt(parsedData[30], 10)
+              fuelLevelPercentage && parsedData[index + 11] !== ''
+                ? parseInt(parsedData[index + 11], 10)
                 : null,
             volume:
-              fuelVolume && fuelLevelPercentage && parsedData[31] !== ''
-                ? parseInt(parsedData[31], 10)
-                : fuelVolume && !fuelLevelPercentage && parsedData[30] !== ''
-                  ? parseInt(parsedData[30], 10)
+              fuelVolume && fuelLevelPercentage && parsedData[index + 12] !== ''
+                ? parseInt(parsedData[index + 12], 10)
+                : fuelVolume &&
+                  !fuelLevelPercentage &&
+                  parsedData[index + 11] !== ''
+                  ? parseInt(parsedData[index + 11], 10)
                   : null
           },
           AC100Devices: null
         })
       } else if (!digitFuelSensor && AC100) {
         let ac100Devices = []
-        let count = 29
+        let count = index + 10
         for (var i = 0; i < ac100DevicesConnected; i++) {
           ac100Devices.push({
             deviceNumber: parsedData[count],
@@ -297,7 +328,7 @@ const parse = raw => {
         let count =
           fuelVolume && fuelLevelPercentage
             ? 33
-            : fuelVolume && !fuelLevelPercentage ? 32 : 31
+            : fuelVolume && !fuelLevelPercentage ? index + 13 : index + 12
         for (var j = 0; j < ac100DevicesConnected; j++) {
           ac100Devices.push({
             deviceNumber: parsedData[count],
@@ -311,26 +342,28 @@ const parse = raw => {
         externalData = Object.assign(externalData, {
           fuelSensorData: {
             data: fuelSensorData,
-            sensorType: parsedData[30],
+            sensorType: parsedData[index + 11],
             percentage:
-              fuelLevelPercentage && parsedData[31] !== ''
-                ? parseInt(parsedData[31], 10)
+              fuelLevelPercentage && parsedData[index + 12] !== ''
+                ? parseInt(parsedData[index + 12], 10)
                 : null,
             volume:
-              fuelVolume && fuelLevelPercentage && parsedData[32] !== ''
-                ? parseInt(parsedData[32], 10)
-                : fuelVolume && !fuelLevelPercentage && parsedData[31] !== ''
-                  ? parseInt(parsedData[31], 10)
+              fuelVolume && fuelLevelPercentage && parsedData[index + 13] !== ''
+                ? parseInt(parsedData[index + 13], 10)
+                : fuelVolume &&
+                  !fuelLevelPercentage &&
+                  parsedData[index + 12] !== ''
+                  ? parseInt(parsedData[index + 12], 10)
                   : null
           },
           AC100Devices: ac100Devices
         })
       }
-    } else if (parsedData[26] === '2') {
+    } else if (parsedData[index + 7] === '2') {
       // AC100 1 Wire Bus
       if (!digitFuelSensor && AC100) {
         let ac100Devices = []
-        let count = 28
+        let count = index + 9
         for (var k = 0; k < ac100DevicesConnected; k++) {
           ac100Devices.push({
             deviceNumber: parsedData[count],
@@ -357,7 +390,7 @@ const parse = raw => {
         })
       } else if (digitFuelSensor && AC100) {
         let ac100Devices = []
-        let count = 29
+        let count = index + 10
         for (var l = 0; l < ac100DevicesConnected; l++) {
           ac100Devices.push({
             deviceNumber: parsedData[count],
