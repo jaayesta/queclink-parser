@@ -4,6 +4,7 @@ const utils = require('./utils.js')
 const gv200 = require('./gv200.js')
 const gv300 = require('./gv300.js')
 const gv300w = require('./gv300w.js')
+const gv75w = require('./gv75w.js')
 const gmt100 = require('./gmt100.js')
 const gv55 = require('./gv55.js')
 const gl300 = require('./gl300.js')
@@ -87,6 +88,8 @@ const parse = (raw, options) => {
       result = getAckCommand(raw.toString(), options.lang)
     } else if (device === 'GV300W') {
       result = gv300w.parse(raw.toString())
+    } else if (device === 'GV75W') {
+      result = gv75w.parse(raw.toString())
     } else if (device === 'GV300') {
       result = gv300.parse(raw.toString())
     } else if (device === 'GV200') {
