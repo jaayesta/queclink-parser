@@ -122,14 +122,8 @@ const parse = raw => {
               : null, // percentage
           inputCharge:
             parsedData[4] !== '' ? parseFloat(parsedData[4]) / 1000 : null,
-          ada:
-            parsedData[index + 3] !== ''
-              ? parseFloat(parsedData[index + 3]) / 1000
-              : null,
-          adb:
-            parsedData[index + 4] !== ''
-              ? parseFloat(parsedData[index + 4]) / 1000
-              : null
+          ada: null,
+          adb: null
         },
         mcc: parsedData[14] !== '' ? parseInt(parsedData[14], 10) : null,
         mnc: parsedData[15] !== '' ? parseInt(parsedData[15], 10) : null,
@@ -238,14 +232,8 @@ const parse = raw => {
             : null, // percentage
         inputCharge:
           parsedData[5] !== '' ? parseFloat(parsedData[5]) / 1000 : null,
-        ada:
-          parsedData[index + 3] !== ''
-            ? parseFloat(parsedData[index + 3]) / 1000
-            : null,
-        adb:
-          parsedData[index + 4] !== ''
-            ? parseFloat(parsedData[index + 4]) / 1000
-            : null
+        ada: null,
+        adb: null
       },
       mcc: parsedData[15] !== '' ? parseInt(parsedData[15], 10) : null,
       mnc: parsedData[16] !== '' ? parseInt(parsedData[16], 10) : null,
@@ -464,8 +452,8 @@ const parse = raw => {
             : null, // percentage
         inputCharge:
           parsedData[9] !== '' ? parseFloat(parsedData[9]) / 1000 : null,
-        ada: parsedData[18] !== '' ? parseFloat(parsedData[18]) / 1000 : null,
-        adb: parsedData[19] !== '' ? parseFloat(parsedData[19]) / 1000 : null
+        ada: null,
+        adb: null
       },
       lastFixUTCTime:
         parsedData[16] !== '' ? utils.parseDate(parsedData[16]) : null,
@@ -534,8 +522,8 @@ const parse = raw => {
         battery: parsedData[23] !== '' ? parseFloat(parsedData[23]) : null, // percentage
         inputCharge:
           parsedData[4] !== '' ? parseFloat(parsedData[4]) / 1000 : null,
-        ada: parsedData[21] !== '' ? parseFloat(parsedData[21]) / 1000 : null,
-        adb: parsedData[22] !== '' ? parseFloat(parsedData[22]) / 1000 : null
+        ada: null,
+        adb: null
       },
       mcc: parsedData[14] !== '' ? parseInt(parsedData[14], 10) : null,
       mnc: parsedData[15] !== '' ? parseInt(parsedData[15], 10) : null,
@@ -1086,8 +1074,7 @@ const parse = raw => {
         battery: null,
         inputCharge: null,
         ada: null,
-        adb: null,
-        adc: null
+        adb: null
       },
       mcc: parsedData[13] !== '' ? parseInt(parsedData[13], 10) : null,
       mnc: parsedData[14] !== '' ? parseInt(parsedData[14], 10) : null,
