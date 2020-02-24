@@ -547,6 +547,83 @@ const parse = raw => {
           ? utils.getHoursForHourmeter(parsedData[20])
           : null
     })
+  } else if (command[1] === 'GTTMP') {
+    // Temperature Alarm
+    let number = parsedData[7] !== '' ? parseInt(parsedData[7], 10) : 1
+    let index = 8 + 12 * number // odometer
+    data = Object.assign(data, {
+      alarm: utils.getAlarm(command[1], parsedData[6], [
+        parsedData[index + 9],
+        parsedData[index + 11]
+      ]),
+      loc: {
+        type: 'Point',
+        coordinates: [parseFloat(parsedData[12]), parseFloat(parsedData[13])]
+      },
+      speed: parsedData[9] !== '' ? parseFloat(parsedData[9]) : null,
+      gpsStatus: utils.checkGps(
+        parseFloat(parsedData[12]),
+        parseFloat(parsedData[13])
+      ),
+      hdop: parsedData[8] !== '' ? parseFloat(parsedData[8]) : null,
+      status: {
+        // parsedData[24]
+        raw: `${parsedData[index + 4]}${parsedData[index + 5]}`,
+        sos: false,
+        input: {
+          '4':
+            utils.nHexDigit(utils.hex2bin(parsedData[index + 4][1]), 4)[0] ===
+            '1',
+          '3':
+            utils.nHexDigit(utils.hex2bin(parsedData[index + 4][1]), 4)[1] ===
+            '1',
+          '2':
+            utils.nHexDigit(utils.hex2bin(parsedData[index + 4][1]), 4)[2] ===
+            '1',
+          '1':
+            utils.nHexDigit(utils.hex2bin(parsedData[index + 4][1]), 4)[3] ===
+            '1'
+        },
+        output: {
+          '3':
+            utils.nHexDigit(utils.hex2bin(parsedData[index + 5][1]), 4)[1] ===
+            '1',
+          '2':
+            utils.nHexDigit(utils.hex2bin(parsedData[index + 5][1]), 4)[2] ===
+            '1',
+          '1':
+            utils.nHexDigit(utils.hex2bin(parsedData[index + 5][1]), 4)[3] ===
+            '1'
+        },
+        charge: parseFloat(parsedData[5]) > 5,
+        state: null
+      },
+      azimuth: parsedData[10] !== '' ? parseFloat(parsedData[10]) : null,
+      altitude: parsedData[11] !== '' ? parseFloat(parsedData[11]) : null,
+      datetime: parsedData[14] !== '' ? utils.parseDate(parsedData[14]) : null,
+      voltage: {
+        battery: null, // percentage
+        inputCharge:
+          parsedData[5] !== '' ? parseFloat(parsedData[5]) / 1000 : null,
+        ada:
+          parsedData[index + 2] !== ''
+            ? parseFloat(parsedData[index + 2]) / 1000
+            : null,
+        adb:
+          parsedData[index + 3] !== ''
+            ? parseFloat(parsedData[index + 3]) / 1000
+            : null
+      },
+      mcc: parsedData[15] !== '' ? parseInt(parsedData[15], 10) : null,
+      mnc: parsedData[16] !== '' ? parseInt(parsedData[16], 10) : null,
+      lac: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
+      cid: parsedData[18] !== '' ? parseInt(parsedData[18], 16) : null,
+      odometer: parsedData[index] !== '' ? parseFloat(parsedData[index]) : null,
+      hourmeter:
+        parsedData[index + 1] !== ''
+          ? utils.getHoursForHourmeter(parsedData[index + 1])
+          : null
+    })
   } else if (
     command[1] === 'GTPNA' ||
     command[1] === 'GTPFA' ||
