@@ -375,7 +375,7 @@ const getAlarm = (command, report, extra = false) => {
       deviceID: extra[0],
       status: report[1] === '0', // 0 means outside the range, 1 means inside
       temperature: temperature,
-      message: messages[command][report[1]]
+      message: messages[command][report[1]].replace('()', `(${temperature}°C)`)
     }
   } else if (command === 'GTFLA') {
     const before =

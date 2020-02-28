@@ -13,8 +13,8 @@
   },
   "GTFLA": "Combustible reducido en consumption%",
   "GTTMP": {
-    "0": "Temperatura fuera de rango",
-    "1": "Regreso a temperatura dentro de rango"
+    "0": "Temperatura fuera de rango ()",
+    "1": "Regreso a temperatura dentro de rango ()"
   },
   "GTCAN": "Reporte CAN BUS: data",
   "GTJES": "Resumen de datos OBDII",
