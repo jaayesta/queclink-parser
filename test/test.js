@@ -301,6 +301,14 @@ describe('queclink-parzer', () => {
     })
   })
 
+  describe('getAck', () => {
+    it('should return raw ACK', () => {
+      const serial = 54525
+      const raw = queclink.getAck(serial)
+      expect(raw).to.eql('+SACK:D4FD$')
+    })
+  })
+
   describe('getRebootCommand', () => {
     it('should return raw REBOOT', () => {
       const password = '000000'
@@ -863,7 +871,9 @@ describe('queclink-parzer', () => {
       expect(data.alarm.type).to.eq('Outside_Temperature')
       expect(data.alarm.number).to.eq(3)
       expect(data.alarm.status).to.equal(false)
-      expect(data.alarm.message).to.eq('Regreso a temperatura dentro de rango')
+      expect(data.alarm.message).to.eq(
+        'Regreso a temperatura dentro de rango (25°C)'
+      )
     })
     it('should return GTFLA alarm', () => {
       const raw = Buffer.from(

@@ -142,5 +142,7 @@
     "3": "Frenada Brusca Girando",
     "4": "Aceleración Brusca Girando",
     "5": "Comportamiento Brusco Desconocido"
-  }
+  },
+  "GTDOG": "Dispositivo reiniciado por protocolo",
+  "GTGSM": "GSM Report"
 }

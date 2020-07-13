@@ -44,6 +44,14 @@ const getAckHeartBeat = (protocolVersion, count) => {
 }
 
 /*
+  Returns the ACK for the given data
+*/
+const getAck = serial => {
+  let count = utils.nHexDigit(utils.dec2hex(serial), 4).toUpperCase()
+  return `+SACK:${count}$`
+}
+
+/*
   Returns the reboot command
 */
 const getRebootCommand = (password, serial) => {
@@ -295,6 +303,7 @@ module.exports = {
   isQueclink: isQueclink,
   isHeartBeat: isHeartBeat,
   getAckHeartBeat: getAckHeartBeat,
+  getAck: getAck,
   parseCommand: parseCommand,
   getRebootCommand: getRebootCommand,
   getImei: getImei
