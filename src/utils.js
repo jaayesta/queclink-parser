@@ -213,7 +213,10 @@ const getAlarm = (command, report, extra = false) => {
   } else if (command === 'GTRTL') {
     return { type: 'Gps', status: 'Requested' }
   } else if (command === 'GTGSM') {
-    return { type: 'GSM_Report' }
+    return {
+      type: 'GSM_Report',
+      message: messages[command]
+    }
   } else if (command === 'GTINF') {
     return { type: 'General_Info_Report' }
   } else if (command === 'GTDIS') {
@@ -443,7 +446,10 @@ const getAlarm = (command, report, extra = false) => {
       message: messages[command][reportType]
     }
   } else {
-    return { type: command }
+    return {
+      type: command,
+      message: messages[command] ? messages[command] : ''
+    }
   }
 }
 
