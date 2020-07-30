@@ -638,7 +638,6 @@ const parse = raw => {
   } else if (
     command[1] === 'GTMPN' ||
     command[1] === 'GTMPF' ||
-    command[1] === 'GTCRA' ||
     command[1] === 'GTJDR'
   ) {
     data = Object.assign(data, {
@@ -667,6 +666,36 @@ const parse = raw => {
       mnc: parsedData[12] !== '' ? parseInt(parsedData[12], 10) : null,
       lac: parsedData[13] !== '' ? parseInt(parsedData[13], 16) : null,
       cid: parsedData[14] !== '' ? parseInt(parsedData[14], 16) : null,
+      odometer: null,
+      hourmeter: null
+    })
+  } else if (command[1] === 'GTCRA') {
+    data = Object.assign(data, {
+      alarm: utils.getAlarm(command[1], parsedData[4]),
+      loc: {
+        type: 'Point',
+        coordinates: [parseFloat(parsedData[9]), parseFloat(parsedData[10])]
+      },
+      speed: parsedData[6] !== '' ? parseFloat(parsedData[6]) : null,
+      gpsStatus: utils.checkGps(
+        parseFloat(parsedData[9]),
+        parseFloat(parsedData[10])
+      ),
+      hdop: parsedData[5] !== '' ? parseFloat(parsedData[5]) : null,
+      status: null,
+      azimuth: parsedData[7] !== '' ? parseFloat(parsedData[7]) : null,
+      altitude: parsedData[8] !== '' ? parseFloat(parsedData[8]) : null,
+      datetime: parsedData[11] !== '' ? utils.parseDate(parsedData[11]) : null,
+      voltage: {
+        battery: null,
+        inputCharge: null,
+        ada: null,
+        adb: null
+      },
+      mcc: parsedData[12] !== '' ? parseInt(parsedData[12], 10) : null,
+      mnc: parsedData[13] !== '' ? parseInt(parsedData[13], 10) : null,
+      lac: parsedData[14] !== '' ? parseInt(parsedData[14], 16) : null,
+      cid: parsedData[15] !== '' ? parseInt(parsedData[15], 16) : null,
       odometer: null,
       hourmeter: null
     })

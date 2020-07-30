@@ -144,5 +144,6 @@
     "5": "Comportamiento Brusco Desconocido"
   },
   "GTDOG": "Dispositivo reiniciado por protocolo",
-  "GTGSM": "GSM Report"
+  "GTGSM": "GSM Report",
+  "GTCRA": "Posible choque detectado"
 }

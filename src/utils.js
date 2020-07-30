@@ -445,6 +445,13 @@ const getAlarm = (command, report, extra = false) => {
       status: parseInt(reportType, 10),
       message: messages[command][reportType]
     }
+  } else if (command === 'GTCRA') {
+    return {
+      type: 'Crash',
+      status: true,
+      counter: report,
+      message: messages[command]
+    }
   } else {
     return {
       type: command,
