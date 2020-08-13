@@ -452,6 +452,10 @@ const getAlarm = (command, report, extra = false) => {
       counter: report,
       message: messages[command]
     }
+  } else if (command === 'GTGEO') {
+    return {
+      type: 'Device_Geofence'
+    }
   } else {
     return {
       type: command,
