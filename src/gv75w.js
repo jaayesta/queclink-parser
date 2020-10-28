@@ -106,7 +106,7 @@ const parse = raw => {
           charge: parseFloat(parsedData[4]) > 5,
           state:
             utils.nHexDigit(parsedData[index + 6], 10).substring(4, 6) !== ''
-              ? utils.states[
+              ? utils.states[ // eslint-disable-line
                 utils.nHexDigit(parsedData[index + 6], 10).substring(4, 6)
               ]
               : null
@@ -217,7 +217,7 @@ const parse = raw => {
         charge: parseFloat(parsedData[5]) > 5,
         state:
           utils.nHexDigit(parsedData[index + 6], 10).substring(4, 6) !== ''
-            ? utils.states[
+            ? utils.states[ // eslint-disable-line
               utils.nHexDigit(parsedData[index + 6], 10).substring(4, 6)
             ]
             : null
@@ -1057,35 +1057,63 @@ const parse = raw => {
       }
     })
   } else if (command[1] === 'GTDAT') {
-    data = Object.assign(data, {
-      loc: {
-        type: 'Point',
-        coordinates: [parseFloat(parsedData[12]), parseFloat(parsedData[13])]
-      },
-      speed: parsedData[9] !== '' ? parseFloat(parsedData[9]) : null,
-      gpsStatus: utils.checkGps(
-        parseFloat(parsedData[12]),
-        parseFloat(parsedData[13])
-      ),
-      hdop: parsedData[8] !== '' ? parseFloat(parsedData[8]) : null,
-      status: null,
-      azimuth: parsedData[10] !== '' ? parseFloat(parsedData[10]) : null,
-      altitude: parsedData[11] !== '' ? parseFloat(parsedData[11]) : null,
-      datetime: parsedData[14] !== '' ? utils.parseDate(parsedData[14]) : null,
-      voltage: {
-        battery: null,
-        inputCharge: null,
-        ada: null,
-        adb: null
-      },
-      mcc: parsedData[15] !== '' ? parseInt(parsedData[15], 10) : null,
-      mnc: parsedData[16] !== '' ? parseInt(parsedData[16], 10) : null,
-      lac: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
-      cid: parsedData[18] !== '' ? parseInt(parsedData[18], 16) : null,
-      odometer: null,
-      hourmeter: null,
-      serialData: parsedData[7] !== '' ? parsedData[7] : null
-    })
+    let dataIndex = 4
+    // Short format
+    if (parsedData.length === 7) {
+      data = Object.assign(data, {
+        loc: null,
+        speed: null,
+        gpsStatus: null,
+        hdop: null,
+        status: null,
+        azimuth: null,
+        altitude: null,
+        datetime: null,
+        voltage: {
+          battery: null,
+          inputCharge: null,
+          ada: null,
+          adb: null
+        },
+        mcc: null,
+        mnc: null,
+        lac: null,
+        cid: null,
+        odometer: null,
+        hourmeter: null
+      })
+    } else {
+      dataIndex = 7
+      data = Object.assign(data, {
+        loc: {
+          type: 'Point',
+          coordinates: [parseFloat(parsedData[12]), parseFloat(parsedData[13])]
+        },
+        speed: parsedData[9] !== '' ? parseFloat(parsedData[9]) : null,
+        gpsStatus: utils.checkGps(
+          parseFloat(parsedData[12]),
+          parseFloat(parsedData[13])
+        ),
+        hdop: parsedData[8] !== '' ? parseFloat(parsedData[8]) : null,
+        status: null,
+        azimuth: parsedData[10] !== '' ? parseFloat(parsedData[10]) : null,
+        altitude: parsedData[11] !== '' ? parseFloat(parsedData[11]) : null,
+        datetime:
+          parsedData[14] !== '' ? utils.parseDate(parsedData[14]) : null,
+        voltage: {
+          battery: null,
+          inputCharge: null,
+          ada: null,
+          adb: null
+        },
+        mcc: parsedData[15] !== '' ? parseInt(parsedData[15], 10) : null,
+        mnc: parsedData[16] !== '' ? parseInt(parsedData[16], 10) : null,
+        lac: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
+        cid: parsedData[18] !== '' ? parseInt(parsedData[18], 16) : null,
+        odometer: null,
+        hourmeter: null
+      })
+    }
 
     // Checks if its a temperature GTDAT -> DT
     if (/^>DT/.test(parsedData[7])) {
@@ -1150,7 +1178,66 @@ const parse = raw => {
     } else {
       // Normal GTDAT
       data = Object.assign(data, {
-        alarm: utils.getAlarm(command[1], null)
+        alarm: utils.getAlarm(command[1], parsedData[dataIndex])
+      })
+    }
+  } else if (command[1] === 'GTDTT') {
+    // short format
+    if (parsedData.length === 11) {
+      data = Object.assign(data, {
+        alarm: utils.getAlarm(command[1], parsedData[8], parsedData[6]),
+        loc: null,
+        speed: null,
+        gpsStatus: null,
+        hdop: null,
+        status: null,
+        azimuth: null,
+        altitude: null,
+        datetime: null,
+        voltage: {
+          battery: null,
+          inputCharge: null,
+          ada: null,
+          adb: null
+        },
+        mcc: null,
+        mnc: null,
+        lac: null,
+        cid: null,
+        odometer: null,
+        hourmeter: null
+      })
+    } else {
+      // Long format
+      data = Object.assign(data, {
+        alarm: utils.getAlarm(command[1], parsedData[8], parsedData[6]),
+        loc: {
+          type: 'Point',
+          coordinates: [parseFloat(parsedData[13]), parseFloat(parsedData[14])]
+        },
+        speed: parsedData[10] !== '' ? parseFloat(parsedData[10]) : null,
+        gpsStatus: utils.checkGps(
+          parseFloat(parsedData[13]),
+          parseFloat(parsedData[14])
+        ),
+        hdop: parsedData[9] !== '' ? parseFloat(parsedData[9]) : null,
+        status: null,
+        azimuth: parsedData[11] !== '' ? parseFloat(parsedData[11]) : null,
+        altitude: parsedData[12] !== '' ? parseFloat(parsedData[12]) : null,
+        datetime:
+          parsedData[15] !== '' ? utils.parseDate(parsedData[15]) : null,
+        voltage: {
+          battery: null,
+          inputCharge: null,
+          ada: null,
+          adb: null
+        },
+        mcc: parsedData[16] !== '' ? parseInt(parsedData[16], 10) : null,
+        mnc: parsedData[17] !== '' ? parseInt(parsedData[17], 10) : null,
+        lac: parsedData[18] !== '' ? parseInt(parsedData[18], 16) : null,
+        cid: parsedData[19] !== '' ? parseInt(parsedData[19], 16) : null,
+        odometer: null,
+        hourmeter: null
       })
     }
   } else if (command[1] === 'GTDOS') {

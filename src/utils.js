@@ -415,6 +415,14 @@ const getAlarm = (command, report, extra = false) => {
   } else if (command === 'GTDAT') {
     return {
       type: 'Serial_Data',
+      data: report,
+      message: messages[command]
+    }
+  } else if (command === 'GTDTT') {
+    return {
+      type: 'Transparent_Data',
+      dataType: extra,
+      data: report,
       message: messages[command]
     }
   } else if (command === 'GTSOA') {

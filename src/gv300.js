@@ -102,7 +102,7 @@ const parse = raw => {
           charge: parseFloat(parsedData[4]) > 5,
           state:
             utils.nHexDigit(parsedData[24], 10).substring(4, 6) !== ''
-              ? utils.states[
+              ? utils.states[ // eslint-disable-line
                 utils.nHexDigit(parsedData[24], 10).substring(4, 6)
               ]
               : null

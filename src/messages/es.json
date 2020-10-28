@@ -145,5 +145,6 @@
   },
   "GTDOG": "Dispositivo reiniciado por protocolo",
   "GTGSM": "GSM Report",
-  "GTCRA": "Posible choque detectado"
+  "GTCRA": "Posible choque detectado",
+  "GTDTT": "Data transparente del puerto serial"
 }
