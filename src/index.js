@@ -11,6 +11,7 @@ const gl300 = require('./gl300.js')
 const gv500 = require('./gv500.js')
 const gv800w = require('./gv800w.js')
 const gl50 = require('./gl50.js')
+const gv50p = require('./gv50p.js')
 
 /*
   Checks if raw comes from a Queclink device
@@ -114,6 +115,8 @@ const parse = (raw, options) => {
       result = gv800w.parse(raw.toString())
     } else if (device === 'GL50' || device === 'GL50B') {
       result = gl50.parse(raw.toString())
+    } else if (device === 'GV50P') {
+      result = gv50p.parse(raw.toString())
     }
   }
   return result
