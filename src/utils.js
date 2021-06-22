@@ -39,7 +39,8 @@ const devices = {
   '2C': 'GL300W', // New version
   '3F': 'GMT100', // New version
   F8: 'GV800W',
-  '41': 'GV75W'
+  '41': 'GV75W',
+  FC: 'GV600W'
 }
 
 /*
@@ -155,7 +156,7 @@ const getFuelConsumption = fuelString => {
 }
 
 /*
-  Returns hormeter in seconds from string hourmeter
+  Returns hormeter in hours from string hourmeter
   in format HHHHH:MM:SS
 */
 const getHoursForHourmeter = hourmeter => {
@@ -225,7 +226,9 @@ const getAlarm = (command, report, extra = false) => {
     const reportType = parseInt(report[1], 10)
     if (extra === true && reportID === 1) {
       reportID = 2
-    } else if (['gv800w', 'gv300w', 'gv75w', 'GMT100'].includes(extra)) {
+    } else if (
+      ['gv800w', 'gv600w', 'gv300w', 'gv75w', 'GMT100'].includes(extra)
+    ) {
       reportID += 1
     }
     return {
