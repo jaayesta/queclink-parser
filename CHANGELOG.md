@@ -1,3 +1,9 @@
+#### 1.3.18 (2021-06-22)
+
+##### New Features
+
+* **devices:**  support for GV600 series added ([4dc0c779](https://github.com/jaayesta/queclink-parser/commit/4dc0c779e2245c7a8802f4e24f222863268e27b9))
+
 #### 1.3.17 (2021-04-23)
 
 #### 1.3.16 (2020-10-28)
