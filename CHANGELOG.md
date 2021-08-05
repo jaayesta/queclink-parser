@@ -1,3 +1,9 @@
+#### 1.3.19 (2021-08-05)
+
+##### Bug Fixes
+
+* **gv600w:**  fix parse gv600w GTDAT short format ([bd995505](https://github.com/jaayesta/queclink-parser/commit/bd99550501610c5b9c8843b268e415a3fcb26247))
+
 #### 1.3.18 (2021-06-22)
 
 ##### New Features
