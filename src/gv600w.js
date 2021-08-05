@@ -882,104 +882,65 @@ const parse = raw => {
       }
     })
   } else if (command[1] === 'GTDAT') {
-    data = Object.assign(data, {
-      loc: {
-        type: 'Point',
-        coordinates: [parseFloat(parsedData[12]), parseFloat(parsedData[13])]
-      },
-      speed: parsedData[9] !== '' ? parseFloat(parsedData[9]) : null,
-      gpsStatus: utils.checkGps(
-        parseFloat(parsedData[12]),
-        parseFloat(parsedData[13])
-      ),
-      hdop: parsedData[8] !== '' ? parseFloat(parsedData[8]) : null,
-      status: null,
-      azimuth: parsedData[10] !== '' ? parseFloat(parsedData[10]) : null,
-      altitude: parsedData[11] !== '' ? parseFloat(parsedData[11]) : null,
-      datetime: parsedData[14] !== '' ? utils.parseDate(parsedData[14]) : null,
-      voltage: {
-        battery: null,
-        inputCharge: null,
-        ada: null,
-        adb: null,
-        adc: null,
-        add: null
-      },
-      mcc: parsedData[15] !== '' ? parseInt(parsedData[15], 10) : null,
-      mnc: parsedData[16] !== '' ? parseInt(parsedData[16], 10) : null,
-      lac: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
-      cid: parsedData[18] !== '' ? parseInt(parsedData[18], 16) : null,
-      odometer: null,
-      hourmeter: null,
-      serialData: parsedData[7] !== '' ? parsedData[7] : null
-    })
-
-    // Checks if its a temperature GTDAT -> DT
-    if (/^>DT/.test(parsedData[7])) {
-      const parsedSerialData =
-        parsedData[7] !== '' ? parsedData[7].split('|') : ''
-      let externalData = {
-        eriMask: {
-          raw: '00000000',
-          digitFuelSensor: false,
-          AC100: false,
-          reserved: false,
-          fuelLevelPercentage: false,
-          fuelVolume: false
+    if (parsedData.length > 8) {
+      // Long format
+      data = Object.assign(data, {
+        loc: {
+          type: 'Point',
+          coordinates: [parseFloat(parsedData[12]), parseFloat(parsedData[13])]
         },
-        uartDeviceType: 'Camaleon',
-        fuelSensorData: null
-      }
-      let AC100Devices = [
-        {
-          deviceNumber: `${parsedData[2]}|1`,
-          deviceType: '1',
-          deviceData:
-            parsedSerialData[3] !== '' ? parseFloat(parsedSerialData[3]) : null
-        }
-      ]
-      if (parsedSerialData[4] !== '') {
-        AC100Devices.push({
-          deviceNumber: `${parsedData[2]}|2`,
-          deviceType: '1',
-          deviceData:
-            parsedSerialData[4] !== '' ? parseFloat(parsedSerialData[4]) : null
-        })
-      }
-      externalData = Object.assign(externalData, {
-        AC100Devices: AC100Devices
-      })
-      data = Object.assign(data, {
-        alarm: utils.getAlarm('GTERI', null),
-        externalData: externalData
-      })
-    } else if (/^>ET/.test(parsedData[7])) {
-      // Temp Alarms
-      // GTTMP
-      const parsedSerialData =
-        parsedData[7] !== '' ? parsedData[7].split('|') : ''
-      const alarm = utils.getAlarm('GTTMP', `${parsedSerialData[2]}0`, [
-        `${parsedData[2]}|${parsedSerialData[2]}`,
-        parsedSerialData[4]
-      ])
-      data = Object.assign(data, {
-        alarm: alarm
-      })
-    } else if (/^>ID/.test(parsedData[7])) {
-      // Checks if its a iButton GTDAT -> DT
-      const parsedSerialData =
-        parsedData[7] !== '' ? parsedData[7].split('|') : ''
-      const driverID = parsedSerialData[2] ? parsedSerialData[2] : ''
-      const alarm = utils.getAlarm('GTIDA', `${driverID},1`)
-      data = Object.assign(data, {
-        alarm: alarm
+        speed: parsedData[9] !== '' ? parseFloat(parsedData[9]) : null,
+        gpsStatus: utils.checkGps(
+          parseFloat(parsedData[12]),
+          parseFloat(parsedData[13])
+        ),
+        hdop: parsedData[8] !== '' ? parseFloat(parsedData[8]) : null,
+        status: null,
+        azimuth: parsedData[10] !== '' ? parseFloat(parsedData[10]) : null,
+        altitude: parsedData[11] !== '' ? parseFloat(parsedData[11]) : null,
+        datetime:
+          parsedData[14] !== '' ? utils.parseDate(parsedData[14]) : null,
+        voltage: {
+          battery: null,
+          inputCharge: null,
+          ada: null,
+          adb: null,
+          adc: null,
+          add: null
+        },
+        mcc: parsedData[15] !== '' ? parseInt(parsedData[15], 10) : null,
+        mnc: parsedData[16] !== '' ? parseInt(parsedData[16], 10) : null,
+        lac: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
+        cid: parsedData[18] !== '' ? parseInt(parsedData[18], 16) : null,
+        odometer: null,
+        hourmeter: null,
+        serialData: parsedData[7] !== '' ? parsedData[7] : null
       })
     } else {
-      // Normal GTDAT
+      // Short format
       data = Object.assign(data, {
-        alarm: utils.getAlarm(command[1], null)
+        loc: null,
+        speed: null,
+        gpsStatus: null,
+        hdop: null,
+        status: null,
+        azimuth: null,
+        altitude: null,
+        datetime: null,
+        voltage: null,
+        mcc: null,
+        mnc: null,
+        lac: null,
+        cid: null,
+        odometer: null,
+        hourmeter: null,
+        serialData: parsedData[4] !== '' ? parsedData[4] : null
       })
     }
+
+    data = Object.assign(data, {
+      alarm: utils.getAlarm(command[1], null)
+    })
   } else if (command[1] === 'GTDOS') {
     data = Object.assign(data, {
       alarm: utils.getAlarm(command[1], `${parsedData[4]},${parsedData[5]}`),
