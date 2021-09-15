@@ -8,10 +8,10 @@ const langs = { es: langEs, en: langEn }
   Data patterns
 */
 const patterns = {
-  message: /^\+RESP/,
-  ack: /^\+ACK/,
-  buffer: /^\+BUFF/,
-  heartbeat: /^\+ACK:GTHBD/
+  message: /^\+RESP.+\$$/,
+  ack: /^\+ACK.+\$$/,
+  buffer: /^\+BUFF.+\$$/,
+  heartbeat: /^\+ACK:GTHBD.+\$$/
 }
 
 /*

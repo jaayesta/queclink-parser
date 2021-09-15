@@ -255,6 +255,15 @@ describe('queclink-parzer', () => {
       expect(data.cid).to.eql(24897)
       expect(data.odometer).to.eql(0)
     })
+
+    it('should parse a incomplete raw data as UNKNOWN type', () => {
+      const raw = Buffer.from(
+        '+RESP:GTERI,350502,135790246811220,,00000002,13740,11,1,1,3.3,150,516.8,-70.640961,-33.374944,20210914170'
+      )
+      const data = queclink.parse(raw)
+      expect(data.raw).to.eql(raw.toString())
+      expect(data.type).to.eql('UNKNOWN')
+    })
   })
   describe('isQueclink', () => {
     it('should return true', () => {
