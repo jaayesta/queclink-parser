@@ -1,3 +1,9 @@
+#### 1.3.20 (2021-09-23)
+
+##### Bug Fixes
+
+* **parse:**  add end character to all patterns ([44cf0796](https://github.com/jaayesta/queclink-parser/commit/44cf0796f07c5006f12e709a70e02e39b4188c6c))
+
 #### 1.3.19 (2021-08-05)
 
 ##### Bug Fixes
