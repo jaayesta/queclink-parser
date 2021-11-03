@@ -1,3 +1,9 @@
+#### 1.3.21 (2021-11-03)
+
+##### Bug Fixes
+
+* **buff:**  buff pattern fixed ([882ebc02](https://github.com/jaayesta/queclink-parser/commit/882ebc02c1a7a483937086cc8f0415cd3a346121))
+
 #### 1.3.20 (2021-09-23)
 
 ##### Bug Fixes
