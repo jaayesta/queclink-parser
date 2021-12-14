@@ -8,7 +8,7 @@ const utils = require('./utils.js')
  * @returns {Object<string, *>}
  */
 const parse = raw => {
-  raw = raw.substr(0, raw.length - 1)
+  raw = raw.substring(0, raw.length - 1)
 
   const parsedData = raw.split(',')
   const command = parsedData[0].split(':')
