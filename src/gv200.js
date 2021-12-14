@@ -8,7 +8,8 @@ const utils = require('./utils.js')
  * @returns {Object<string, *>}
  */
 const parse = originalRaw => {
-  const raw = originalRaw.substring(0, originalRaw.length - 1)
+  const lastIndex = originalRaw.length - 1
+  const raw = originalRaw.substring(0, lastIndex)
 
   const parsedData = raw.split(',')
   const command = parsedData[0].split(':')
@@ -16,6 +17,9 @@ const parse = originalRaw => {
   let history = false
   if (utils.patterns.buffer.test(command[0])) {
     history = true
+    if (originalRaw[lastIndex] !== '$') {
+      return { type: 'UNKNOWN', raw: originalRaw }
+    }
   }
 
   let data = {
