@@ -1,9 +1,12 @@
 'use strict'
 const utils = require('./utils.js')
 
-/*
-  Parses messages data from GV200 devices
-*/
+/**
+ * Parses messages data from GV200 devices
+ *
+ * @param {string} raw -
+ * @returns {Object<string, *>}
+ */
 const parse = raw => {
   raw = raw.substr(0, raw.length - 1)
 
