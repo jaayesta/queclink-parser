@@ -4,11 +4,11 @@ const utils = require('./utils.js')
 /**
  * Parses messages data from GV200 devices
  *
- * @param {string} raw -
+ * @param {string} originalRaw -
  * @returns {Object<string, *>}
  */
-const parse = raw => {
-  raw = raw.substring(0, raw.length - 1)
+const parse = originalRaw => {
+  const raw = originalRaw.substring(0, originalRaw.length - 1)
 
   const parsedData = raw.split(',')
   const command = parsedData[0].split(':')
