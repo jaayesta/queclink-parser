@@ -26,6 +26,7 @@ const devices = {
   '08': 'GMT100',
   '09': 'GV50P', // GV50 Plus
   '0F': 'GV55',
+  '50': 'GV55W',
   '10': 'GV55 LITE',
   '11': 'GL500',
   '1A': 'GL300',

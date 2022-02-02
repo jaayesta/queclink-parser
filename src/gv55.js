@@ -4,7 +4,7 @@ const utils = require('./utils.js')
 /*
   Parses messages data from GV55 devices
 */
-const parse = raw => {
+const parse = (raw, d) => {
   raw = raw.substr(0, raw.length - 1)
 
   const parsedData = raw.split(',')
@@ -18,7 +18,7 @@ const parse = raw => {
   let data = {
     raw: `${raw.toString()}$`,
     manufacturer: 'queclink',
-    device: 'Queclink-GV55',
+    device: d === 'GV55W' ? 'Queclink-GV55W' : 'Queclink-GV55',
     type: 'data',
     imei: parsedData[2],
     protocolVersion: utils.getProtocolVersion(parsedData[1]),

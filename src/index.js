@@ -106,8 +106,8 @@ const parse = (raw, options) => {
       result = gv200.parse(raw.toString())
     } else if (device === 'GV500') {
       result = gv500.parse(raw.toString())
-    } else if (device === 'GV55') {
-      result = gv55.parse(raw.toString())
+    } else if (device === 'GV55' || device === 'GV55W') {
+      result = gv55.parse(raw.toString(), device)
     } else if (device === 'GMT100') {
       result = gmt100.parse(raw.toString())
     } else if (device === 'GL300' || device === 'GL300W') {
