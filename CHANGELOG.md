@@ -1,3 +1,9 @@
+### 1.4.0 (2022-02-02)
+
+##### New Features
+
+* **gv55w:**  support for gv55w added ([6e6cde95](https://github.com/jaayesta/queclink-parser/commit/6e6cde95be791134f993059883db1184a52bac9a))
+
 #### 1.3.21 (2021-11-03)
 
 ##### Bug Fixes
