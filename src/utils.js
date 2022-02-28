@@ -31,6 +31,7 @@ const devices = {
   '11': 'GL500',
   '1A': 'GL300',
   '1F': 'GV500',
+  '5E': 'GV500MAP',
   '25': 'GV300', // New Version
   '35': 'GV200', // New Version
   '27': 'GV300W',
