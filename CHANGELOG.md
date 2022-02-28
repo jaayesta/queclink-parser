@@ -1,3 +1,9 @@
+#### 1.4.1 (2022-02-28)
+
+##### New Features
+
+* **gv500map:**  suport for gv500Map added ([6155dcbb](https://github.com/jaayesta/queclink-parser/commit/6155dcbb2a4feb8383e357beeca06c7d4feed4eb))
+
 ### 1.4.0 (2022-02-02)
 
 ##### New Features
