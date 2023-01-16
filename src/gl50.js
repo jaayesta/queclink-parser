@@ -202,7 +202,7 @@ const parse = raw => {
     })
   } else {
     data = Object.assign(data, {
-      alarm: utils.getAlarm(command[1], null)
+      alarm: utils.getAlarm(command[1], raw.toString())
     })
   }
   // Check gps data
