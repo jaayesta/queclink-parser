@@ -1,3 +1,9 @@
+#### 1.4.2 (2023-01-16)
+
+##### Bug Fixes
+
+* **messages:**  fixes empty messages in events not supported directly. Adds raw message as message ([fa8eaf92](https://github.com/jaayesta/queclink-parser/commit/fa8eaf92b66623ea6ff53d6febc52e570d16b487))
+
 #### 1.4.1 (2022-02-28)
 
 ##### New Features
