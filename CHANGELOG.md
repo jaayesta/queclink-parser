@@ -1,3 +1,9 @@
+#### 1.4.3 (2023-03-04)
+
+##### New Features
+
+* **overSpeed:**  overspeedtype added to over speed alarm ([fc3554d4](https://github.com/jaayesta/queclink-parser/commit/fc3554d4b48b7da43b62931272fa048b68d1f736))
+
 #### 1.4.2 (2023-01-16)
 
 ##### Bug Fixes
