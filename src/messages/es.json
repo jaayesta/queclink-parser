@@ -146,5 +146,42 @@
   "GTDOG": "Dispositivo reiniciado por protocolo",
   "GTGSM": "GSM Report",
   "GTCRA": "Posible choque detectado",
-  "GTDTT": "Data transparente del puerto serial"
+  "GTDTT": "Data transparente del puerto serial",
+  "+ACK": {
+    "GTBSI": "Configurado: APN",
+    "GTSRI": "Configurado: servidor backend",
+    "GTQSS": "Configurado: APN y servidor backend",
+    "GTCFG": "Configuración general exitosa!",
+    "GTPIN": "Configurado: SIM desbloqueada",
+    "GTFRI": "Configurado: reportes de ubicación",
+    "GTTOW": "Alarma configurada: remolque",
+    "GTSPD": "Alarma configurada: velocidad",
+    "GTSPA": "Alarma configurada: exceso de velocidad",
+    "GTBZA": "Buzzer configurado con éxito!",
+    "GTSOS": "Alarma configurada: acción SOS",
+    "GTIDL": "Alarma configurada: ralentí",
+    "GTHBM": "Alarma configurada: conducción brusca",
+    "GTJBS": "Alarma configurada: jamming",
+    "GTJDC": "Configurado: detección de jamming",
+    "GTOUT": "Configurado: salidas digitales",
+    "GTDIS": "Configurado: entradas digitales",
+    "GTEPS": "Configurado: monitoreo de batería en vehículo",
+    "GTURT": "Configurado: comunicación serial",
+    "GTIDA": "Configurado: identificación de conductor",
+    "GTACD": "Configurado: dispositivo AC100",
+    "GTHMC": "Configurado: horómetro",
+    "GTCMD": "Configurado: nuevo comando en memoria",
+    "GTUDF": "Configurado: función personalizada",
+    "GTRTO": {
+      "GPS": "Se enviará el estado GNSS",
+      "RTL": "Solicitud de posición actual",
+      "READ": "Solicitud de configuración vigente",
+      "REBOOT": "Dispositivo Reiniciado",
+      "RESET": "Restaurar configuración de fábrica",
+      "PWROFF": "Dispositivo apagado",
+      "VER": "Solicitud de versión de firmware",
+      "BAT": "Solicitud de nivel de batería",
+      "IOS": "Solicitud de estados I/O"
+    }
+  }
 }
