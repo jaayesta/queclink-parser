@@ -1,3 +1,9 @@
+### 1.5.0 (2023-03-08)
+
+##### Bug Fixes
+
+* **ACK:**  command field added to ACK generic commands ([bd5f8701](https://github.com/jaayesta/queclink-parser/commit/bd5f870172e86f654f74ecfabfe8de7b85139a88))
+
 #### 1.4.3 (2023-03-04)
 
 ##### New Features
