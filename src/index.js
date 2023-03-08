@@ -145,11 +145,24 @@ const getAckCommand = (raw, lang) => {
         : null,
     counter: parseInt(utils.hex2dec(parsedData[parsedData.length - 1]), 10)
   }
-  if (command[1] === 'GTRTO') {
+
+  data.message = messages['+ACK'][command[1]] || messages.default
+  if (command[1] === 'GTSPD') {
+    data.command = 'SETOVERSPEEDALARM'
+  } else if (command[1] === 'GTOUT') {
+    data.command = 'SETIOSWITCH'
+  } else if (command[1] === 'GTRTO') {
     data.message =
       messages['+ACK'][command[1]][parsedData[4]] || messages.default
-  } else {
-    data.message = messages['+ACK'][command[1]] || messages.default
+    if (parsedData[4] === 'RESET') {
+      data.command = 'CLEARBUF'
+    } else if (parsedData[4] === 'REBOOT') {
+      data.command = 'REBOOT'
+    } else if (parsedData[4] === 'RTL') {
+      data.command = 'REQUESTCURRENTPOSITION'
+    }
+  } else if (command[1] === 'GTJBS') {
+    data.command = 'ANTIJAMMER'
   }
   return data
 }
