@@ -147,6 +147,7 @@ const getAckCommand = (raw, lang) => {
   }
 
   data.message = messages['+ACK'][command[1]] || messages.default
+  data.command = 'CONFIG'
   if (command[1] === 'GTSPD') {
     data.command = 'SETOVERSPEEDALARM'
   } else if (command[1] === 'GTOUT') {
