@@ -135,6 +135,7 @@ const getAckCommand = (raw, lang) => {
   const command = parsedData[0].split(':')
 
   let data = {
+    raw: rawData,
     manufacturer: 'queclink',
     device: 'Queclink-COMMAND-OK',
     type: 'ok',
@@ -144,11 +145,16 @@ const getAckCommand = (raw, lang) => {
         : null,
     counter: parseInt(utils.hex2dec(parsedData[parsedData.length - 1]), 10)
   }
+
+  data.message = messages['+ACK'][command[1]] || messages.default
+  data.command = 'CONFIG'
   if (command[1] === 'GTSPD') {
     data.command = 'SETOVERSPEEDALARM'
   } else if (command[1] === 'GTOUT') {
     data.command = 'SETIOSWITCH'
   } else if (command[1] === 'GTRTO') {
+    data.message =
+      messages['+ACK'][command[1]][parsedData[4]] || messages.default
     if (parsedData[4] === 'RESET') {
       data.command = 'CLEARBUF'
     } else if (parsedData[4] === 'REBOOT') {
@@ -159,7 +165,6 @@ const getAckCommand = (raw, lang) => {
   } else if (command[1] === 'GTJBS') {
     data.command = 'ANTIJAMMER'
   }
-  data.message = messages[data.command] || messages.default
   return data
 }
 
