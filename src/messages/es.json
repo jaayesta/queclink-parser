@@ -163,7 +163,7 @@
     "GTHBM": "Alarma configurada: conducción brusca",
     "GTJBS": "Alarma configurada: jamming",
     "GTJDC": "Config: detección de jamming",
-    "GTOUT": "Config: salidas digitales",
+    "GTOUT": "Cambio de estado en las salidas digitales",
     "GTDIS": "Config: entradas digitales",
     "GTEPS": "Config: monitoreo de batería en vehículo",
     "GTURT": "Config: comunicación serial",
