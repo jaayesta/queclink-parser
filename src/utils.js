@@ -471,7 +471,7 @@ const getAlarm = (command, report, extra = false) => {
     return {
       type: 'Device_Geofence'
     }
-  } else if (command === 'GTALC' || command === 'GTALM') {
+  } else if (command === 'GTALC' || command === 'GTALM' || command === 'GTALS') {
     return {
       type: command,
       status: 'CONFIG',
