@@ -73,9 +73,9 @@
     "1": "Dispositivo en movimiento",
     "0": "Dispositivo detenido"
   },
-  "GTSTP": "Partida de vehículo finalizada",
-  "GTLSP": "Partida de vehículo finalizada",
-  "GTSTR": "Partida de vehículo iniciada",
+  "GTSTP": "Vehículo detenido",
+  "GTLSP": "Detención extendida detectada",
+  "GTSTR": "Vehículo inicia movimiento",
   "GTANT": {
     "0": "Antena GPS conectada",
     "1": "Antena GPS desconectada"
