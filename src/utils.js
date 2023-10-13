@@ -471,7 +471,11 @@ const getAlarm = (command, report, extra = false) => {
     return {
       type: 'Device_Geofence'
     }
-  } else if (command === 'GTALC' || command === 'GTALM' || command === 'GTALS') {
+  } else if (
+    command === 'GTALC' ||
+    command === 'GTALM' ||
+    command === 'GTALS'
+  ) {
     return {
       type: command,
       status: 'CONFIG',
@@ -569,7 +573,6 @@ const nHexDigit = (num, n) => {
   Parses date
 */
 const parseDate = date => {
-  console.log(date)
   return new Date(
     `${date.replace(
       /(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/,

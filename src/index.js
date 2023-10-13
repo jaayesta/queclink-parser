@@ -145,7 +145,10 @@ const getAckCommand = (raw, lang) => {
         ? parseInt(utils.hex2dec(parsedData[parsedData.length - 3]), 10)
         : null,
     counter: parseInt(utils.hex2dec(parsedData[parsedData.length - 1]), 10),
-    datetime: parsedData[parsedData.length - 2] !== '' ? utils.parseDate(parsedData[parsedData.length - 2]) : null,
+    datetime:
+      parsedData[parsedData.length - 2] !== ''
+        ? utils.parseDate(parsedData[parsedData.length - 2])
+        : null,
     message: messages['+ACK'][command[1]] || messages.default
   }
 
