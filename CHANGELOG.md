@@ -1,3 +1,13 @@
+#### 1.5.1 (2023-10-13)
+
+##### New Features
+
+* **ack:**  datetime added to ack data ([6b66e8e9](https://github.com/jaayesta/queclink-parser/commit/6b66e8e93977c06469f0132125d23e91c88e9dfd))
+
+##### Bug Fixes
+
+* **lint:**  se corrigen test y console.log ([724fc6ee](https://github.com/jaayesta/queclink-parser/commit/724fc6eeeab90dee82b1a99687a57476ba3af58a))
+
 ### 1.5.0 (2023-03-08)
 
 ##### Bug Fixes
