@@ -9,8 +9,8 @@ const langs = { es: langEs, en: langEn }
 */
 const patterns = {
   message: /^\+RESP.+\$$/,
-  ack: /^\+ACK.+\$$/,
   buffer: /^\+BUFF/,
+  ack: /^\+ACK.+\$$/,
   heartbeat: /^\+ACK:GTHBD.+\$$/
 }
 
@@ -569,6 +569,7 @@ const nHexDigit = (num, n) => {
   Parses date
 */
 const parseDate = date => {
+  console.log(date)
   return new Date(
     `${date.replace(
       /(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/,
