@@ -129,6 +129,7 @@
     "1": "Entrada digital port activada",
     "0": "Entrada digital port desactivada"
   },
+  "GTIOB": "Salida digital modificada por IOB",
   "GTDOS": {
     "1": "Salida digital port activada",
     "0": "Salida digital port desactivada"
@@ -140,12 +141,12 @@
   "GTDAT": "Datos del puerto serial recibidos",
   "GTSOA": "Compartimento tarjeta SIM abierto",
   "GTHBM": {
-    "0": "Frenada Brusca",
-    "1": "Aceleración Brusca",
-    "2": "Giro Brusco",
-    "3": "Frenada Brusca Girando",
-    "4": "Aceleración Brusca Girando",
-    "5": "Comportamiento Brusco Desconocido"
+    "0": "Frenada Brusca at_vel",
+    "1": "Aceleración Brusca at_vel",
+    "2": "Giro Brusco at_vel",
+    "3": "Frenada Brusca Girando at_vel",
+    "4": "Aceleración Brusca Girando at_vel",
+    "5": "Comportamiento Brusco Desconocido at_vel"
   },
   "GTDOG": {
     "1": "Dispositivo reiniciado por frecuencia configurada",

@@ -453,12 +453,21 @@ const getAlarm = (command, report, extra = false) => {
         4: acceleration turning
         5: unknown harsh behavior
       */
-    // const reportID = parseInt(report[0], 10)
+    let reportID = parseInt(report[0], 10)
+    if (reportID === 1) {
+      reportID = ' con velocidad baja'
+    } else if (reportID === 2) {
+      reportID = ' con velocidad media'
+    } else if (reportID === 3) {
+      reportID = ' con velocidad alta'
+    } else {
+      reportID = ''
+    }
     const reportType = report[1]
     return {
       type: 'Harsh_Behavior',
       status: parseInt(reportType, 10),
-      message: messages[command][reportType]
+      message: messages[command][reportType].replace(' at_vel', reportID)
     }
   } else if (command === 'GTCRA') {
     return {
