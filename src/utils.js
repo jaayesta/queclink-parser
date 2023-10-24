@@ -467,11 +467,32 @@ const getAlarm = (command, report, extra = false) => {
       counter: report,
       message: messages[command]
     }
+  } else if (command === 'GTDOG') {
+    /*
+      status:
+        1: Reboot for time based working mode
+        2: Reboot for ignition on workinkg mode
+        3: Input triggered reboot
+        4: GSM watchdog reboot
+        5: GPRS watchdog reboot
+        6: Reboot because of fail in sending message
+      */
+    // const reportID = parseInt(report[0], 10)
+    const reportType = report[1]
+    return {
+      type: 'Watchdog_Protocol',
+      status: parseInt(reportType, 10),
+      message: messages[command][reportType]
+    }
   } else if (command === 'GTGEO') {
     return {
       type: 'Device_Geofence'
     }
-  } else if (command === 'GTALC' || command === 'GTALM' || command === 'GTALS') {
+  } else if (
+    command === 'GTALC' ||
+    command === 'GTALM' ||
+    command === 'GTALS'
+  ) {
     return {
       type: command,
       status: 'CONFIG',
