@@ -144,12 +144,12 @@
     "5": "Comportamiento Brusco Desconocido"
   },
   "GTDOG": {
-    "1": "Dispositivo reiniciado (frecuencia)",
-    "2": "Dispositivo reiniciado (ignición)",
-    "3": "Dispositivo reiniciado (entrada digital)",
-    "4": "Dispositivo reiniciado (sin señal GSM)",
-    "5": "Dispositivo reiniciado (sin señal GPRS)",
-    "6": "Dispositivo reiniciado (error en comunicación)"
+    "1": "Dispositivo reiniciado por frecuencia configurada",
+    "2": "Dispositivo reiniciado por ignición",
+    "3": "Dispositivo reiniciado por entrada digital",
+    "4": "Dispositivo reiniciado por estar sin señal GSM",
+    "5": "Dispositivo reiniciado por estar sin señal GPRS",
+    "6": "Dispositivo reiniciado por error en comunicación"
   },
   "GTGSM": "GSM Report",
   "GTCRA": "Posible choque detectado",
