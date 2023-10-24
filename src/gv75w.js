@@ -468,6 +468,7 @@ const parse = raw => {
     command[1] === 'GTRTL' ||
     command[1] === 'GTDOG' ||
     command[1] === 'GTIGL' ||
+    command[1] === 'GTVGL' ||
     command[1] === 'GTHBM'
   ) {
     // Common Alarms

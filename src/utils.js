@@ -258,7 +258,7 @@ const getAlarm = (command, report, extra = false) => {
       overSpeedType: 'device',
       message: messages[command][reportType]
     }
-  } else if (command === 'GTIGL') {
+  } else if (command === 'GTIGL' || command === 'GTVGL') {
     const reportType = parseInt(report[1], 16)
     return {
       type: 'DI',
