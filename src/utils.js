@@ -258,13 +258,38 @@ const getAlarm = (command, report, extra = false) => {
       overSpeedType: 'device',
       message: messages[command][reportType]
     }
-  } else if (command === 'GTIGL' || command === 'GTVGL') {
+  } else if (command === 'GTIGL') {
     const reportType = parseInt(report[1], 16)
     return {
       type: 'DI',
       number: 1,
       status: reportType === 0,
       message: messages[command][reportType === 0 ? '1' : '0']
+    }
+  } else if (command === 'GTVGL') {
+    let reportID = parseInt(report[0], 10)
+    const reportType = parseInt(report[1], 10)
+    if (reportID === 0) {
+      reportID = ''
+    } else if (reportID === 1) {
+      reportID = ' por sensor de movimiento'
+    } else if (reportID === 2) {
+      reportID = ' por voltaje de batería'
+    } else if (reportID === 4) {
+      reportID = ' por acelerómetro'
+    } else if (reportID === 7) {
+      reportID = ' por metodología combinada'
+    } else {
+      reportID = ''
+    }
+    return {
+      type: 'DI',
+      number: 1,
+      status: reportType === 0,
+      message: messages[command][reportType === 0 ? '1' : '0'].replace(
+        ' mode',
+        reportID
+      )
     }
   } else if (command === 'GTIGN') {
     const duration = report !== '' ? parseInt(report, 10) : null
