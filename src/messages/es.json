@@ -116,8 +116,8 @@
     "0": "Entrada digital 1 desactivada"
   },
   "GTVGL": {
-    "1": "Entrada digital 1 activada mode",
-    "0": "Entrada digital 1 desactivada mode"
+    "1": "Entrada digital 1 activada",
+    "0": "Entrada digital 1 desactivada"
   },
   "GTSPD": {
     "0": "Exceso de Velocidad",
