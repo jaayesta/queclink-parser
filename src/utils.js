@@ -145,6 +145,14 @@ const checkGps = (lng, lat) => {
 }
 
 /*
+  Returns if the number of satellites is
+  included in the report
+*/
+const includeSatellites = positionAppendMask => {
+  return positionAppendMask === '01'
+}
+
+/*
   Gets the temperature from AC100 device in celcious degrees
 */
 const getTempInCelciousDegrees = hexTemp => {
@@ -708,6 +716,7 @@ module.exports = {
   getDevice: getDevice,
   getProtocolVersion: getProtocolVersion,
   checkGps: checkGps,
+  includeSatellites: includeSatellites,
   getTempInCelciousDegrees: getTempInCelciousDegrees,
   getFuelConsumption: getFuelConsumption,
   getHoursForHourmeter: getHoursForHourmeter,

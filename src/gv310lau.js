@@ -33,10 +33,12 @@ const parse = raw => {
     try {
       let number = parsedData[6] !== '' ? parseInt(parsedData[6], 10) : 1
       let index = 6 + 12 * number // odometer
+      let satelliteInfo = false
 
       // If get satellites is configured
-      if (parsedData.length === 32) {
+      if (utils.includeSatellites(parsedData[18])) {
         index += 1
+        satelliteInfo = true
       }
 
       data = Object.assign(data, {
@@ -145,7 +147,9 @@ const parse = raw => {
         lac: parsedData[15] !== '' ? parseInt(parsedData[16], 16) : null,
         cid: parsedData[16] !== '' ? parseInt(parsedData[17], 16) : null,
         satellites:
-          parsedData.length === 32 ? parseInt(parsedData[index], 10) : null,
+          satelliteInfo && parsedData[index] !== ''
+            ? parseInt(parsedData[index], 10)
+            : null,
         odometer:
           parsedData[index + 1] !== ''
             ? parseFloat(parsedData[index + 1])
@@ -162,10 +166,12 @@ const parse = raw => {
     // GPS with AC100 Devices Connected
     let number = parsedData[7] !== '' ? parseInt(parsedData[7], 10) : 1
     let index = 7 + 12 * number // odometer
+    let satelliteInfo = false
 
     // If get satellites is configured
-    if (parsedData.slice(0, 28).slice(-1)[0].length === 6) {
+    if (utils.includeSatellites(parsedData[19])) {
       index += 1
+      satelliteInfo = true
     }
 
     data = Object.assign(data, {
@@ -273,7 +279,7 @@ const parse = raw => {
       lac: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
       cid: parsedData[18] !== '' ? parseInt(parsedData[18], 16) : null,
       satellites:
-        parsedData.slice(0, 28).slice(-1)[0].length === 6
+        satelliteInfo && parsedData[index] !== ''
           ? parseFloat(parsedData[index])
           : null,
       odometer:
@@ -520,6 +526,16 @@ const parse = raw => {
     command[1] === 'GTHBM'
   ) {
     // Common Alarms
+    let number = parsedData[6] !== '' ? parseInt(parsedData[6], 10) : 1
+    let index = 6 + 12 * number // odometer
+    let satelliteInfo = false
+
+    // If get satellites is configured
+    if (utils.includeSatellites(parsedData[18])) {
+      index += 1
+      satelliteInfo = true
+    }
+
     data = Object.assign(data, {
       alarm: utils.getAlarm(command[1], parsedData[5], 'gv310lau'),
       loc: {
@@ -540,17 +556,41 @@ const parse = raw => {
         battery: null,
         inputCharge: null,
         ada: null,
-        adb: null
+        adb: null,
+        adc: null
       },
       mcc: parsedData[14] !== '' ? parseInt(parsedData[14], 10) : null,
       mnc: parsedData[15] !== '' ? parseInt(parsedData[15], 10) : null,
       lac: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
       cid: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
-      odometer: parsedData[19] !== '' ? parseFloat(parsedData[19]) : null,
+      satellites:
+        satelliteInfo && parsedData[index] !== ''
+          ? parseInt(parsedData[index])
+          : null,
+      odometer:
+        parsedData[index + 1] !== '' ? parseFloat(parsedData[index + 1]) : null,
+      overspeedStatus:
+        parseInt(parsedData[4], 10) === 1 || parseInt(parsedData[4], 10) === 3
+          ? parsedData[index + 2] === '1'
+          : null,
+      lastSpeedStateDuration:
+        parseInt(parsedData[4], 10) === 2
+          ? parsedData[index + 2]
+          : parseInt(parsedData[4], 10) === 3 ? parsedData[index + 3] : null,
       hourmeter: null
     })
   } else if (command[1] === 'GTEPS' || command[1] === 'GTAIS') {
     // External low battery and Low voltage for analog input
+    let number = parsedData[6] !== '' ? parseInt(parsedData[6], 10) : 1
+    let index = 6 + 12 * number // odometer
+    let satelliteInfo = false
+
+    // If get satellites is configured
+    if (utils.includeSatellites(parsedData[18])) {
+      index += 1
+      satelliteInfo = true
+    }
+
     data = Object.assign(data, {
       alarm: utils.getAlarm(command[1], parsedData[5]),
       loc: {
@@ -568,30 +608,40 @@ const parse = raw => {
       altitude: parsedData[10] !== '' ? parseFloat(parsedData[10]) : null,
       datetime: parsedData[13] !== '' ? utils.parseDate(parsedData[13]) : null,
       voltage: {
-        battery: parsedData[23] !== '' ? parseFloat(parsedData[23]) : null, // percentage
-        inputCharge:
-          parsedData[4] !== '' ? parseFloat(parsedData[4]) / 1000 : null,
-        ada: parsedData[21] !== '' ? parseFloat(parsedData[21]) / 1000 : null,
-        adb: parsedData[22] !== '' ? parseFloat(parsedData[22]) / 1000 : null
+        battery: parsedData[4] !== '' ? parseFloat(parsedData[4]) / 1000 : null,
+        inputCharge: null,
+        ada: null,
+        adb: null,
+        adc: null
       },
       mcc: parsedData[14] !== '' ? parseInt(parsedData[14], 10) : null,
       mnc: parsedData[15] !== '' ? parseInt(parsedData[15], 10) : null,
       lac: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
       cid: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
-      odometer: parsedData[19] !== '' ? parseFloat(parsedData[19]) : null,
-      hourmeter:
-        parsedData[20] !== ''
-          ? utils.getHoursForHourmeter(parsedData[20])
-          : null
+      satellites:
+        satelliteInfo && parsedData[index] !== ''
+          ? parseInt(parsedData[index])
+          : null,
+      odometer:
+        parsedData[index + 1] !== '' ? parseFloat(parsedData[index + 1]) : null,
+      hourmeter: null
     })
   } else if (command[1] === 'GTTMP') {
     // Temperature Alarm
     let number = parsedData[7] !== '' ? parseInt(parsedData[7], 10) : 1
-    let index = 8 + 12 * number // odometer
+    let index = 7 + 12 * number // odometer
+    let satelliteInfo = false
+
+    // If get satellites is configured
+    if (utils.includeSatellites(parsedData[19])) {
+      index += 1
+      satelliteInfo = true
+    }
+
     data = Object.assign(data, {
       alarm: utils.getAlarm(command[1], parsedData[6], [
-        parsedData[index + 9],
-        parsedData[index + 11]
+        parsedData[index + 11],
+        parsedData[index + 13]
       ]),
       loc: {
         type: 'Point',
@@ -605,31 +655,31 @@ const parse = raw => {
       hdop: parsedData[8] !== '' ? parseFloat(parsedData[8]) : null,
       status: {
         // parsedData[24]
-        raw: `${parsedData[index + 4]}${parsedData[index + 5]}`,
+        raw: `${parsedData[index + 6]}${parsedData[index + 7]}`,
         sos: false,
         input: {
           '4':
-            utils.nHexDigit(utils.hex2bin(parsedData[index + 4][1]), 4)[0] ===
+            utils.nHexDigit(utils.hex2bin(parsedData[index + 6][1]), 4)[0] ===
             '1',
           '3':
-            utils.nHexDigit(utils.hex2bin(parsedData[index + 4][1]), 4)[1] ===
+            utils.nHexDigit(utils.hex2bin(parsedData[index + 6][1]), 4)[1] ===
             '1',
           '2':
-            utils.nHexDigit(utils.hex2bin(parsedData[index + 4][1]), 4)[2] ===
+            utils.nHexDigit(utils.hex2bin(parsedData[index + 6][1]), 4)[2] ===
             '1',
           '1':
-            utils.nHexDigit(utils.hex2bin(parsedData[index + 4][1]), 4)[3] ===
+            utils.nHexDigit(utils.hex2bin(parsedData[index + 6][1]), 4)[3] ===
             '1'
         },
         output: {
           '3':
-            utils.nHexDigit(utils.hex2bin(parsedData[index + 5][1]), 4)[1] ===
+            utils.nHexDigit(utils.hex2bin(parsedData[index + 7][1]), 4)[1] ===
             '1',
           '2':
-            utils.nHexDigit(utils.hex2bin(parsedData[index + 5][1]), 4)[2] ===
+            utils.nHexDigit(utils.hex2bin(parsedData[index + 7][1]), 4)[2] ===
             '1',
           '1':
-            utils.nHexDigit(utils.hex2bin(parsedData[index + 5][1]), 4)[3] ===
+            utils.nHexDigit(utils.hex2bin(parsedData[index + 7][1]), 4)[3] ===
             '1'
         },
         charge: parseFloat(parsedData[5]) > 5,
@@ -643,22 +693,31 @@ const parse = raw => {
         inputCharge:
           parsedData[5] !== '' ? parseFloat(parsedData[5]) / 1000 : null,
         ada:
-          parsedData[index + 2] !== ''
-            ? parseFloat(parsedData[index + 2]) / 1000
-            : null,
-        adb:
           parsedData[index + 3] !== ''
             ? parseFloat(parsedData[index + 3]) / 1000
+            : null,
+        adb:
+          parsedData[index + 4] !== ''
+            ? parseFloat(parsedData[index + 4]) / 1000
+            : null,
+        adc:
+          parsedData[index + 5] !== ''
+            ? parseFloat(parsedData[index + 5]) / 1000
             : null
       },
       mcc: parsedData[15] !== '' ? parseInt(parsedData[15], 10) : null,
       mnc: parsedData[16] !== '' ? parseInt(parsedData[16], 10) : null,
       lac: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
       cid: parsedData[18] !== '' ? parseInt(parsedData[18], 16) : null,
-      odometer: parsedData[index] !== '' ? parseFloat(parsedData[index]) : null,
+      satellites:
+        satelliteInfo && parsedData[index] !== ''
+          ? parseInt(parsedData[index], 10)
+          : null,
+      odometer:
+        parsedData[index + 1] !== '' ? parseFloat(parsedData[index + 1]) : null,
       hourmeter:
-        parsedData[index + 1] !== ''
-          ? utils.getHoursForHourmeter(parsedData[index + 1])
+        parsedData[index + 2] !== ''
+          ? utils.getHoursForHourmeter(parsedData[index + 2])
           : null
     })
   } else if (
