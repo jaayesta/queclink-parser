@@ -42,7 +42,8 @@ const devices = {
   '3F': 'GMT100', // New version
   F8: 'GV800W',
   '41': 'GV75W',
-  FC: 'GV600W'
+  FC: 'GV600W',
+  '6E': 'GV310LAU'
 }
 
 /*
@@ -84,6 +85,26 @@ const uartDeviceTypes = {
   '0': 'No device',
   '1': 'Digit Fuel Sensor',
   '2': 'AC100 1 Wire Bus'
+}
+
+/*
+  Network Types
+*/
+const networkTypes = {
+  '0': '2G',
+  '1': '3G',
+  '2': '4G',
+  '99': 'Unknow'
+}
+
+/*
+  GPS Antena Status
+*/
+const externalGPSAntennaOptions = {
+  '0': 'Working',
+  '1': 'Detected in open circuit state',
+  '3': 'Unknow state',
+  '': 'Unknow'
 }
 
 /*
@@ -173,6 +194,48 @@ const getHoursForHourmeter = hourmeter => {
 }
 
 /*
+  Returns the dBm signal strength
+*/
+const getSignalStrength = (networkType, value) => {
+  if (value === 99) {
+    return null
+  }
+
+  let calc, dBm
+  if (networkType === '2G' || networkType === '3G') {
+    calc = 2 * value - 113
+    dBm = calc < -113 ? 0 : calc > -51 ? 100 : calc
+  } else if (networkType === '4G') {
+    calc = 96 / 97 * value - 140
+    dBm = calc < -140 ? 0 : calc > -44 ? 100 : calc
+  } else {
+    dBm = null
+  }
+
+  return dBm
+}
+
+/*
+  Returns the percentage of signal strength
+*/
+const getSignalPercentage = (networkType, value) => {
+  if (value === 99) {
+    return null
+  }
+
+  let perc
+  if (networkType === '2G' || networkType === '3G') {
+    perc = value / 31 * 100
+  } else if (networkType === '4G') {
+    perc = value / 97 * 100
+  } else {
+    perc = null
+  }
+
+  return perc
+}
+
+/*
   Gets the alarm type
 */
 const getAlarm = (command, report, extra = false) => {
@@ -229,7 +292,9 @@ const getAlarm = (command, report, extra = false) => {
     if (extra === true && reportID === 1) {
       reportID = 2
     } else if (
-      ['gv800w', 'gv600w', 'gv300w', 'gv75w', 'GMT100'].includes(extra)
+      ['gv800w', 'gv600w', 'gv300w', 'gv310lau', 'gv75w', 'GMT100'].includes(
+        extra
+      )
     ) {
       reportID += 1
     }
@@ -638,12 +703,16 @@ module.exports = {
   OBDIIProtocols: OBDIIProtocols,
   states: states,
   uartDeviceTypes: uartDeviceTypes,
+  networkTypes: networkTypes,
+  externalGPSAntennaOptions: externalGPSAntennaOptions,
   getDevice: getDevice,
   getProtocolVersion: getProtocolVersion,
   checkGps: checkGps,
   getTempInCelciousDegrees: getTempInCelciousDegrees,
   getFuelConsumption: getFuelConsumption,
   getHoursForHourmeter: getHoursForHourmeter,
+  getSignalStrength: getSignalStrength,
+  getSignalPercentage: getSignalPercentage,
   getAlarm: getAlarm,
   bin2dec: bin2dec,
   bin2hex: bin2hex,
