@@ -66,7 +66,9 @@
   "GTSTT": "Movimiento de dispositivo detectado",
   "GTHBD": "Conexión viva",
   "GTRMD": {
-    "1": "Roaming activado",
+    "3": "Bloqueo de roaming",
+    "2": "Roaming desconocido activado",
+    "1": "Roaming conocido activado",
     "0": "Roaming desactivado"
   },
   "GTNMR": {
@@ -78,7 +80,8 @@
   "GTSTR": "Vehículo inicia movimiento",
   "GTANT": {
     "0": "Antena GPS conectada",
-    "1": "Antena GPS desconectada"
+    "1": "Antena GPS desconectada",
+    "3": "Antena GPS en estado desconocido"
   },
   "GTAIS": {
     "2": "Botón SOS presionado"
