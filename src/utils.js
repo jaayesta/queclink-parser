@@ -88,6 +88,13 @@ const uartDeviceTypes = {
 }
 
 /*
+  Data Types for DTT
+*/
+const dataTypes = {
+  '0': 'Binary',
+  '1': 'Hexadecimal'
+}
+/*
   Network Types
 */
 const networkTypes = {
@@ -526,7 +533,7 @@ const getAlarm = (command, report, extra = false) => {
   } else if (command === 'GTDTT') {
     return {
       type: 'Transparent_Data',
-      dataType: extra,
+      dataType: dataTypes[extra],
       data: report,
       message: messages[command]
     }
