@@ -141,6 +141,15 @@ const getProtocolVersion = protocol => {
 }
 
 /*
+  Gets the software/hardware version
+*/
+const getVersion = hexVersion => {
+  const X = parseInt(hexVersion.substring(0, 2), 16)
+  const Y = parseInt(hexVersion.substring(2, 4), 16)
+  return `${X}.${Y}`
+}
+
+/*
   Checks if the location has a valid gps position
 */
 const checkGps = (lng, lat) => {
@@ -611,6 +620,29 @@ const getAlarm = (command, report, extra = false) => {
       type: command,
       status: 'CONFIG',
       message: report
+    }
+  } else if (command === 'GTCID') {
+    return {
+      type: command,
+      status: 'CONFIG',
+      message: messages[command].replace('data', report)
+    }
+  } else if (command === 'GTCSQ') {
+    return {
+      type: command,
+      status: 'CONFIG',
+      message: messages[command].replace(
+        'data',
+        report !== '' ? 100 * parseInt(parseFloat(report) / 7, 10) : '--'
+      )
+    }
+  } else if (command === 'GTVER') {
+    return {
+      type: command,
+      status: 'CONFIG',
+      message: messages[command]
+        .replace('data0', getVersion(report[0]))
+        .replace('data1', getVersion(report[1]))
     }
   } else {
     return {

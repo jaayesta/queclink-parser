@@ -164,6 +164,9 @@
   "GTASC": "Acelerómetro calibrado automáticamente",
   "GTDTT": "Data transparente del puerto serial",
   "GTMON": "Se ha detectado una llamada entrante",
+  "GTCID": "ICC de la SIM: data",
+  "GTCSQ": "Nivel de señal GSM: data%",
+  "GTVER": "FW: data0 - HW: data1",
   "+ACK": {
     "GTBSI": "Config: APN",
     "GTSRI": "Config: servidor backend",

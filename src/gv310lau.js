@@ -1580,6 +1580,97 @@ const parse = raw => {
       odometer: null,
       hourmeter: null
     })
+  } else if (command[1] === 'GTCID') {
+    data = Object.assign(data, {
+      alarm: utils.getAlarm(command[1], parsedData[4], 'gv310lau'),
+      loc: {
+        type: 'Point',
+        coordinates: [null, null]
+      },
+      speed: null,
+      gpsStatus: null,
+      hdop: null,
+      status: null,
+      azimuth: null,
+      altitude: null,
+      datetime: parsedData[5] !== '' ? utils.parseDate(parsedData[5]) : null,
+      voltage: {
+        battery: null,
+        inputCharge: null,
+        ada: null,
+        adb: null,
+        adc: null
+      },
+      mcc: null,
+      mnc: null,
+      lac: null,
+      cid: null,
+      satellites: null,
+      odometer: null,
+      hourmeter: null
+    })
+  } else if (command[1] === 'GTCSQ') {
+    data = Object.assign(data, {
+      alarm: utils.getAlarm(command[1], parsedData[5], 'gv310lau'),
+      loc: {
+        type: 'Point',
+        coordinates: [null, null]
+      },
+      speed: null,
+      gpsStatus: null,
+      hdop: null,
+      status: null,
+      azimuth: null,
+      altitude: null,
+      datetime: parsedData[6] !== '' ? utils.parseDate(parsedData[6]) : null,
+      voltage: {
+        battery: null,
+        inputCharge: null,
+        ada: null,
+        adb: null,
+        adc: null
+      },
+      mcc: null,
+      mnc: null,
+      lac: null,
+      cid: null,
+      satellites: null,
+      odometer: null,
+      hourmeter: null
+    })
+  } else if (command[1] === 'GTVER') {
+    data = Object.assign(data, {
+      alarm: utils.getAlarm(
+        command[1],
+        [parsedData[5], parsedData[6]],
+        'gv310lau'
+      ),
+      loc: {
+        type: 'Point',
+        coordinates: [null, null]
+      },
+      speed: null,
+      gpsStatus: null,
+      hdop: null,
+      status: null,
+      azimuth: null,
+      altitude: null,
+      datetime: parsedData[7] !== '' ? utils.parseDate(parsedData[7]) : null,
+      voltage: {
+        battery: null,
+        inputCharge: null,
+        ada: null,
+        adb: null,
+        adc: null
+      },
+      mcc: null,
+      mnc: null,
+      lac: null,
+      cid: null,
+      satellites: null,
+      odometer: null,
+      hourmeter: null
+    })
   } else {
     data = Object.assign(data, {
       alarm: utils.getAlarm(command[1], raw.toString())
