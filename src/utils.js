@@ -115,6 +115,30 @@ const externalGPSAntennaOptions = {
 }
 
 /*
+  Peer roles in Bluetooth
+*/
+const peerRoles = {
+  '0': 'Master',
+  '1': 'Slave'
+}
+
+/*
+  Peer addesses type for Bluetooth
+*/
+const peerAddressesTypes = {
+  '0': 'Public',
+  '1': 'Random'
+}
+
+/*
+  Reasons for bluetooth disconnection
+*/
+const disconnectionReasons = {
+  '0': 'Normal',
+  '4': 'Device  pairing fails'
+}
+
+/*
   Gets the Queclink Device Type
 */
 const getDevice = raw => {
@@ -752,6 +776,9 @@ module.exports = {
   uartDeviceTypes: uartDeviceTypes,
   networkTypes: networkTypes,
   externalGPSAntennaOptions: externalGPSAntennaOptions,
+  peerRoles: peerRoles,
+  peerAddressesTypes: peerAddressesTypes,
+  disconnectionReasons: disconnectionReasons,
   getDevice: getDevice,
   getProtocolVersion: getProtocolVersion,
   checkGps: checkGps,

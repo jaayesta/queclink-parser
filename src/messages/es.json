@@ -167,6 +167,8 @@
   "GTCID": "ICC de la SIM: data",
   "GTCSQ": "Nivel de señal GSM: data%",
   "GTVER": "FW: data0 - HW: data1",
+  "GTBCS": "Dispositivo bluetooth conectado",
+  "GTBDS": "Dispositivo bluetooth desconectado",
   "+ACK": {
     "GTBSI": "Config: APN",
     "GTSRI": "Config: servidor backend",

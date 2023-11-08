@@ -1671,6 +1671,90 @@ const parse = raw => {
       odometer: null,
       hourmeter: null
     })
+  } else if (command[1] === 'GTBCS' || command[1] === 'GTBDS') {
+    // Bluetooth connection/desconnection
+    let index = 16 // odometer
+    let satelliteInfo = false
+
+    // If get satellites is configured
+    if (utils.includeSatellites(parsedData[index])) {
+      index += 1
+      satelliteInfo = true
+    }
+
+    data = Object.assign(data, {
+      alarm: utils.getAlarm(command[1], parsedData[5], 'gv310lau'),
+      loc: {
+        type: 'Point',
+        coordinates: [parseFloat(parsedData[11]), parseFloat(parsedData[12])]
+      },
+      speed: parsedData[6] !== '' ? parseFloat(parsedData[6]) : null,
+      gpsStatus: utils.checkGps(
+        parseFloat(parsedData[11]),
+        parseFloat(parsedData[12])
+      ),
+      hdop: parsedData[5] !== '' ? parseFloat(parsedData[5]) : null,
+      status: null,
+      azimuth: parsedData[7] !== '' ? parseFloat(parsedData[7]) : null,
+      altitude: parsedData[8] !== '' ? parseFloat(parsedData[8]) : null,
+      datetime: parsedData[11] !== '' ? utils.parseDate(parsedData[11]) : null,
+      voltage: {
+        battery: null,
+        inputCharge: null,
+        ada: null,
+        adb: null,
+        adc: null
+      },
+      mcc: parsedData[12] !== '' ? parseInt(parsedData[12], 10) : null,
+      mnc: parsedData[13] !== '' ? parseInt(parsedData[13], 10) : null,
+      lac: parsedData[14] !== '' ? parseInt(parsedData[14], 16) : null,
+      cid: parsedData[15] !== '' ? parseInt(parsedData[15], 16) : null,
+      satellites:
+        satelliteInfo && parsedData[index] !== ''
+          ? parseInt(parsedData[index])
+          : null,
+      odometer: null,
+      hourmeter: null,
+      bluetooth: {
+        raw: parsedData[index + 1],
+        connected: parsedData[index + 6] !== '',
+        bluetoothInfo: {
+          name:
+            parsedData[index + 2] !== '' &&
+            utils.nHexDigit(utils.hex2bin(parsedData[index + 1]), 16)[15] ===
+              '1'
+              ? parsedData[index + 2]
+              : null,
+          mac:
+            parsedData[index + 3] !== '' &&
+            utils.nHexDigit(utils.hex2bin(parsedData[index + 1]), 16)[14] ===
+              '1'
+              ? parsedData[index + 3]
+              : null
+        },
+        peerInfo: {
+          role:
+            parsedData[index + 4] !== '' &&
+            utils.nHexDigit(utils.hex2bin(parsedData[index + 1]), 16)[7] === '1'
+              ? utils.peerRoles[parsedData[index + 4]]
+              : null,
+          type:
+            parsedData[index + 5] !== '' &&
+            utils.nHexDigit(utils.hex2bin(parsedData[index + 1]), 16)[5] === '1'
+              ? utils.peerAddressesTypes[parsedData[index + 5]]
+              : null,
+          mac:
+            parsedData[index + 6] !== '' &&
+            utils.nHexDigit(utils.hex2bin(parsedData[index + 1]), 16)[4] === '1'
+              ? parsedData[index + 6]
+              : null
+        },
+        disconnectionReason:
+          parsedData[index + 7] !== '' && command[1] === 'GTBDS'
+            ? utils.disconnectionReasons[parsedData[index + 7]]
+            : null
+      }
+    })
   } else {
     data = Object.assign(data, {
       alarm: utils.getAlarm(command[1], raw.toString())
