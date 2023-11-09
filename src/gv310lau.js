@@ -1683,7 +1683,7 @@ const parse = raw => {
     }
 
     data = Object.assign(data, {
-      alarm: utils.getAlarm(command[1], parsedData[5], 'gv310lau'),
+      alarm: utils.getAlarm(command[1], null, 'gv310lau'),
       loc: {
         type: 'Point',
         coordinates: [parseFloat(parsedData[11]), parseFloat(parsedData[12])]
@@ -1732,7 +1732,10 @@ const parse = raw => {
               ? parsedData[index + 3]
               : null
         },
-        peerInfo: {
+        accessoryInfo: {
+          accessory: null,
+          model: null,
+          name: null,
           role:
             parsedData[index + 4] !== '' &&
             utils.nHexDigit(utils.hex2bin(parsedData[index + 1]), 16)[7] === '1'
@@ -1753,6 +1756,113 @@ const parse = raw => {
           parsedData[index + 7] !== '' && command[1] === 'GTBDS'
             ? utils.disconnectionReasons[parsedData[index + 7]]
             : null
+      }
+    })
+  } else if (command[1] === 'GTBAA') {
+    // Bluetooth alarms
+    let satelliteInfo = false
+    let appendIx = 8
+    let appendMask = utils.nHexDigit(utils.hex2bin(parsedData[appendIx]), 16) // ENCONTRAR MÉTODO PARA VER QUÉ CAMPOS VAN Y QUÉ CAMPOS NO... ALGO COMO UNA SUMA Y RESTA AUTOMÁTICA
+    let index = 16
+
+    let aNameIx = appendIx + parseInt(appendMask[15])
+    let aMacIx = aNameIx + parseInt(appendMask[14])
+    let aStatIx = aMacIx + parseInt(appendMask[13])
+    let aBatIx = aStatIx + parseInt(appendMask[12])
+    let aTmpIx = aBatIx + parseInt(appendMask[11])
+    let aHumIx = aTmpIx + parseInt(appendMask[10])
+    let aDatIx = aHumIx + parseInt(appendMask[8])
+    let aEvIx = aDatIx + parseInt(appendMask[7])
+    let pressIx = aEvIx + parseInt(appendMask[6])
+    let timeIx = pressIx + parseInt(appendMask[5])
+    let eTmpIx = timeIx + parseInt(appendMask[4])
+    let magIx = eTmpIx + parseInt(appendMask[3])
+    let aBatpIx = magIx + parseInt(appendMask[2])
+    let relIx = aBatpIx + parseInt(appendMask[1])
+
+    // If get satellites is configured
+    if (utils.includeSatellites(parsedData[index])) {
+      index += 1
+      satelliteInfo = true
+    }
+
+    data = Object.assign(data, {
+      alarm: utils.getAlarm(command[1], parsedData[7], 'gv310lau'),
+      loc: {
+        type: 'Point',
+        coordinates: [parseFloat(parsedData[11]), parseFloat(parsedData[12])]
+      },
+      speed: parsedData[6] !== '' ? parseFloat(parsedData[6]) : null,
+      gpsStatus: utils.checkGps(
+        parseFloat(parsedData[11]),
+        parseFloat(parsedData[12])
+      ),
+      hdop: parsedData[5] !== '' ? parseFloat(parsedData[5]) : null,
+      status: null,
+      azimuth: parsedData[7] !== '' ? parseFloat(parsedData[7]) : null,
+      altitude: parsedData[8] !== '' ? parseFloat(parsedData[8]) : null,
+      datetime: parsedData[11] !== '' ? utils.parseDate(parsedData[11]) : null,
+      voltage: {
+        battery: null,
+        inputCharge: null,
+        ada: null,
+        adb: null,
+        adc: null
+      },
+      mcc: parsedData[12] !== '' ? parseInt(parsedData[12], 10) : null,
+      mnc: parsedData[13] !== '' ? parseInt(parsedData[13], 10) : null,
+      lac: parsedData[14] !== '' ? parseInt(parsedData[14], 16) : null,
+      cid: parsedData[15] !== '' ? parseInt(parsedData[15], 16) : null,
+      satellites:
+        satelliteInfo && parsedData[index] !== ''
+          ? parseInt(parsedData[index])
+          : null,
+      odometer: null,
+      hourmeter: null,
+      bluetooth: {
+        raw: null,
+        connected: true, // REVISAR
+        bluetoothInfo: {
+          name: null,
+          mac: null
+        },
+        accessoryInfo: {
+          accesory:
+            parsedData[5] !== ''
+              ? utils.bluetoothAccessories[parsedData[5]]
+              : null,
+          model: parsedData[6] !== '' ? parseInt(parsedData[6]) : null,
+          name:
+            parsedData[aNameIx] !== '' && appendMask[15] === '1'
+              ? parsedData[aNameIx]
+              : null,
+          role: null,
+          type: null,
+          mac:
+            parsedData[aMacIx] !== '' && appendMask[14] === '1'
+              ? parsedData[aMacIx]
+              : null,
+          status:
+            parsedData[aStatIx] !== '' && appendMask[13] === '1'
+              ? parsedData[aStatIx]
+              : null,
+          batteryLevel:
+            parsedData[aBatIx] !== '' && appendMask[12] === '1'
+              ? parsedData[aBatIx]
+              : null,
+          temperature:
+            parsedData[aTmpIx] !== '' && appendMask[11] === '1'
+              ? parsedData[aTmpIx]
+              : null,
+          humidity:
+            parsedData[aHumIx] !== '' && appendMask[10] === '1'
+              ? parsedData[aHumIx]
+              : null,
+          testest:
+            parsedData[relIx] !== '' && appendMask[10] === '1'
+              ? parsedData[relIx]
+              : null
+        }
       }
     })
   } else {

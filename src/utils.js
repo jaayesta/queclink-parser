@@ -139,6 +139,53 @@ const disconnectionReasons = {
 }
 
 /*
+  Accesories Types of Bluetooth
+*/
+const bluetoothAccessories = {
+  '0': 'No bluetooth Accessory',
+  '1': 'Escort sensor',
+  '2': 'Beacon temperature sensor',
+  '3': 'Bluetooth beacon accessory',
+  '6': 'Beacon Multi-Functional Sensor',
+  '11': 'Magnet Sensor',
+  '12': 'BLE TPMS sensor',
+  '13': 'Relay Sensor'
+}
+
+/*
+  Accessories Models for Bluetooth
+*/
+// const AccessoriesModels = {
+//   '1': {
+//     '0': 'TD_BLE fuel sensor',
+//     '3': 'Angle sensor'
+//   },
+//   '2': {
+//     '0': 'Temperature sensor (WST300)',
+//     '1': 'Temperature sensor (ELA)'
+//   },
+//   '6': {
+//     '2': 'Temperature and humidity sensor (WTH300)',
+//     '3': 'Temperature and humidity sensor (RHT ELA)',
+//     '4': 'Temperature and humidity sensor (WMS301)',
+//     '25': 'Temperature and humidity sensor (WTH301)'
+//   },
+//   '7': {
+//     '0': 'Fuel level sensor (DUT-E S7)',
+//     '1': 'Fuel flowmeter sensor (DFM 100 S7)',
+//     '2': 'Fuel flowmeter sensor (DFM 250DS7)',
+//     '3': 'Axle load sensor (GNOM DDE S7)',
+//     '4': 'Axle load sensor (GNOM DP S7)'
+//   },
+//   '11': {
+//     '0':'Door sensor (MAG ELA)'
+//   },
+//   '13': {
+//     '0': 'Relay (WRL300)'
+//   }
+// }
+
+/*
   Gets the Queclink Device Type
 */
 const getDevice = raw => {
@@ -668,6 +715,15 @@ const getAlarm = (command, report, extra = false) => {
         .replace('data0', getVersion(report[0]))
         .replace('data1', getVersion(report[1]))
     }
+  } else if (command === 'GTBCS') {
+    return { type: 'Bluetooth_Connected', message: messages[command] }
+  } else if (command === 'GTBDS') {
+    return { type: 'Bluetooth_Disonnected', message: messages[command] }
+  } else if (command === 'GTBAA') {
+    return {
+      type: 'Bluetooth_Alarm',
+      message: messages[command][report]
+    }
   } else {
     return {
       type: command,
@@ -779,6 +835,8 @@ module.exports = {
   peerRoles: peerRoles,
   peerAddressesTypes: peerAddressesTypes,
   disconnectionReasons: disconnectionReasons,
+  bluetoothAccessories: bluetoothAccessories,
+  // AccessoriesModels: AccessoriesModels,
   getDevice: getDevice,
   getProtocolVersion: getProtocolVersion,
   checkGps: checkGps,
