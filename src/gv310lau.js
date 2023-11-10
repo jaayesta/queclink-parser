@@ -1752,6 +1752,24 @@ const parse = raw => {
               ? parsedData[index + 6]
               : null
         },
+        accessoryData: {
+          temperature: null,
+          humidity: null,
+          mode: null,
+          event: null,
+          tirePresure: null,
+          timestamp: null,
+          enhancedTemperature: null,
+          magDevice: {
+            id: null,
+            eventCounter: null,
+            magnetState: null
+          },
+          relay: {
+            configResult: null,
+            state: null
+          }
+        },
         disconnectionReason:
           parsedData[index + 7] !== '' && command[1] === 'GTBDS'
             ? utils.disconnectionReasons[parsedData[index + 7]]
