@@ -1762,27 +1762,51 @@ const parse = raw => {
     // Bluetooth alarms
     let satelliteInfo = false
     let appendIx = 8
-    let appendMask = utils.nHexDigit(utils.hex2bin(parsedData[appendIx]), 16) // ENCONTRAR MÉTODO PARA VER QUÉ CAMPOS VAN Y QUÉ CAMPOS NO... ALGO COMO UNA SUMA Y RESTA AUTOMÁTICA
-    let index = 16
-
+    let appendMask = utils.nHexDigit(utils.hex2bin(parsedData[appendIx]), 16)
+    let btAccessory = parsedData[5]
     let aNameIx = appendIx + parseInt(appendMask[15])
     let aMacIx = aNameIx + parseInt(appendMask[14])
     let aStatIx = aMacIx + parseInt(appendMask[13])
     let aBatIx = aStatIx + parseInt(appendMask[12])
-    let aTmpIx = aBatIx + parseInt(appendMask[11])
-    let aHumIx = aTmpIx + parseInt(appendMask[10])
-    let aDatIx = aHumIx + parseInt(appendMask[8])
-    let aEvIx = aDatIx + parseInt(appendMask[7])
-    let pressIx = aEvIx + parseInt(appendMask[6])
-    let timeIx = pressIx + parseInt(appendMask[5])
-    let eTmpIx = timeIx + parseInt(appendMask[4])
-    let magIx = eTmpIx + parseInt(appendMask[3])
-    let aBatpIx = magIx + parseInt(appendMask[2])
-    let relIx = aBatpIx + parseInt(appendMask[1])
+    let index = aBatIx + 1
+    let aTmpIx = ['2', '6'].includes(btAccessory)
+      ? index + parseInt(appendMask[11])
+      : index
+    let aHumIx = btAccessory === '6' ? aTmpIx + parseInt(appendMask[10]) : index
+    let modeIx = btAccessory + parsedData[6] === '13' ? index + 1 : index
+    let aEvIx =
+      modeIx > index
+        ? modeIx + 1
+        : ['1', '11', '13'].includes(btAccessory)
+          ? index + parseInt(appendMask[7])
+          : index
+    let pressIx = btAccessory === '12' ? index + parseInt(appendMask[6]) : index
+    let timeIx =
+      btAccessory === '12' ? pressIx + parseInt(appendMask[5]) : index
+    let eTmpIx =
+      btAccessory === '2'
+        ? aTmpIx + parseInt(appendMask[4])
+        : btAccessory === '6' ? aHumIx + parseInt(appendMask[4]) : index
+    let magIx =
+      btAccessory === '11' && aEvIx > index
+        ? aEvIx + parseInt(appendMask[3])
+        : index
+    let aBatpIx =
+      btAccessory === '1'
+        ? aEvIx + parseInt(appendMask[2])
+        : ['2', '6'].includes(btAccessory)
+          ? eTmpIx + parseInt(appendMask[2])
+          : btAccessory === '11'
+            ? magIx + 2 + parseInt(appendMask[2])
+            : index + parseInt(appendMask[2])
+    let relIx =
+      btAccessory === '13' ? aBatpIx + parseInt(appendMask[2]) : aBatIx
+    let newIndex = relIx > aBatpIx ? relIx + 2 : aBatpIx
+    let satIndex = newIndex + 11
 
     // If get satellites is configured
-    if (utils.includeSatellites(parsedData[index])) {
-      index += 1
+    if (utils.includeSatellites(parsedData[satIndex])) {
+      satIndex += 1
       satelliteInfo = true
     }
 
@@ -1790,18 +1814,34 @@ const parse = raw => {
       alarm: utils.getAlarm(command[1], parsedData[7], 'gv310lau'),
       loc: {
         type: 'Point',
-        coordinates: [parseFloat(parsedData[11]), parseFloat(parsedData[12])]
+        coordinates: [
+          parseFloat(parsedData[newIndex + 4]),
+          parseFloat(parsedData[newIndex + 5])
+        ]
       },
-      speed: parsedData[6] !== '' ? parseFloat(parsedData[6]) : null,
+      speed:
+        parsedData[newIndex + 1] !== ''
+          ? parseFloat(parsedData[newIndex + 1])
+          : null,
       gpsStatus: utils.checkGps(
-        parseFloat(parsedData[11]),
-        parseFloat(parsedData[12])
+        parseFloat(parsedData[newIndex + 4]),
+        parseFloat(parsedData[newIndex + 5])
       ),
-      hdop: parsedData[5] !== '' ? parseFloat(parsedData[5]) : null,
+      hdop:
+        parsedData[newIndex] !== '' ? parseFloat(parsedData[newIndex]) : null,
       status: null,
-      azimuth: parsedData[7] !== '' ? parseFloat(parsedData[7]) : null,
-      altitude: parsedData[8] !== '' ? parseFloat(parsedData[8]) : null,
-      datetime: parsedData[11] !== '' ? utils.parseDate(parsedData[11]) : null,
+      azimuth:
+        parsedData[newIndex + 2] !== ''
+          ? parseFloat(parsedData[newIndex + 2])
+          : null,
+      altitude:
+        parsedData[newIndex + 3] !== ''
+          ? parseFloat(parsedData[newIndex + 3])
+          : null,
+      datetime:
+        parsedData[newIndex + 6] !== ''
+          ? utils.parseDate(parsedData[newIndex + 6])
+          : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -1809,28 +1849,38 @@ const parse = raw => {
         adb: null,
         adc: null
       },
-      mcc: parsedData[12] !== '' ? parseInt(parsedData[12], 10) : null,
-      mnc: parsedData[13] !== '' ? parseInt(parsedData[13], 10) : null,
-      lac: parsedData[14] !== '' ? parseInt(parsedData[14], 16) : null,
-      cid: parsedData[15] !== '' ? parseInt(parsedData[15], 16) : null,
+      mcc:
+        parsedData[newIndex + 7] !== ''
+          ? parseInt(parsedData[newIndex + 7], 10)
+          : null,
+      mnc:
+        parsedData[newIndex + 8] !== ''
+          ? parseInt(parsedData[newIndex + 8], 10)
+          : null,
+      lac:
+        parsedData[newIndex + 9] !== ''
+          ? parseInt(parsedData[newIndex + 9], 16)
+          : null,
+      cid:
+        parsedData[newIndex + 10] !== ''
+          ? parseInt(parsedData[newIndex + 10], 16)
+          : null,
       satellites:
-        satelliteInfo && parsedData[index] !== ''
-          ? parseInt(parsedData[index])
+        satelliteInfo && parsedData[satIndex] !== ''
+          ? parseInt(parsedData[satIndex])
           : null,
       odometer: null,
       hourmeter: null,
       bluetooth: {
         raw: null,
-        connected: true, // REVISAR
+        connected: null,
         bluetoothInfo: {
           name: null,
           mac: null
         },
         accessoryInfo: {
           accesory:
-            parsedData[5] !== ''
-              ? utils.bluetoothAccessories[parsedData[5]]
-              : null,
+            btAccessory !== '' ? utils.bluetoothAccessories[btAccessory] : null,
           model: parsedData[6] !== '' ? parseInt(parsedData[6]) : null,
           name:
             parsedData[aNameIx] !== '' && appendMask[15] === '1'
@@ -1850,18 +1900,86 @@ const parse = raw => {
             parsedData[aBatIx] !== '' && appendMask[12] === '1'
               ? parsedData[aBatIx]
               : null,
+          batteryPercentage:
+            parsedData[aBatpIx] !== '' && appendMask[2] === '1'
+              ? parsedData[aBatpIx]
+              : null
+        },
+        accessoryData: {
           temperature:
-            parsedData[aTmpIx] !== '' && appendMask[11] === '1'
-              ? parsedData[aTmpIx]
+            parsedData[index] !== '' &&
+            appendMask[11] === '1' &&
+            ['2', '6'].includes(btAccessory)
+              ? parsedData[index]
               : null,
           humidity:
-            parsedData[aHumIx] !== '' && appendMask[10] === '1'
+            parsedData[aHumIx] !== '' &&
+            appendMask[10] === '1' &&
+            btAccessory === '6'
               ? parsedData[aHumIx]
               : null,
-          testest:
-            parsedData[relIx] !== '' && appendMask[10] === '1'
-              ? parsedData[relIx]
-              : null
+          mode:
+            parsedData[modeIx] !== '' && btAccessory + parsedData[6] === '13'
+              ? parsedData[modeIx]
+              : null,
+          event:
+            parsedData[aEvIx] !== '' &&
+            appendMask[7] === '1' &&
+            ['1', '11', '13'].includes(btAccessory)
+              ? parsedData[aEvIx]
+              : null,
+          tirePresure:
+            parsedData[pressIx] !== '' &&
+            appendMask[6] === '1' &&
+            btAccessory === '12'
+              ? parsedData[pressIx]
+              : null,
+          timestamp:
+            parsedData[timeIx] !== '' &&
+            appendMask[5] === '1' &&
+            btAccessory === '12'
+              ? parsedData[timeIx]
+              : null,
+          enhancedTemperature:
+            parsedData[eTmpIx] !== '' &&
+            appendMask[4] === '1' &&
+            ['2', '6'].includes(btAccessory)
+              ? parsedData[eTmpIx]
+              : null,
+          magDevice: {
+            id:
+              parsedData[magIx] !== '' &&
+              appendMask[3] === '1' &&
+              btAccessory === '11'
+                ? parsedData[magIx]
+                : null,
+            eventCounter:
+              parsedData[magIx + 1] !== '' &&
+              appendMask[3] === '1' &&
+              btAccessory === '11'
+                ? parsedData[magIx + 1]
+                : null,
+            magnetState:
+              parsedData[magIx + 2] !== '' &&
+              appendMask[3] === '1' &&
+              btAccessory === '11'
+                ? parsedData[magIx + 2]
+                : null
+          },
+          relay: {
+            configResult:
+              parsedData[relIx] !== '' &&
+              appendMask[2] === '1' &&
+              btAccessory === '13'
+                ? parsedData[relIx]
+                : null,
+            state:
+              parsedData[relIx + 1] !== '' &&
+              appendMask[2] === '1' &&
+              btAccessory === '13'
+                ? parsedData[relIx + 1]
+                : null
+          }
         }
       }
     })

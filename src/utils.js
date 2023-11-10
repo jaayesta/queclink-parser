@@ -79,7 +79,7 @@ const OBDIIProtocols = {
 }
 
 /*
-  Uart Devices
+  Possible Uart Devices
 */
 const uartDeviceTypes = {
   '0': 'No device',
@@ -88,14 +88,14 @@ const uartDeviceTypes = {
 }
 
 /*
-  Data Types for DTT
+  Possible Data Types for DTT
 */
 const dataTypes = {
   '0': 'Binary',
   '1': 'Hexadecimal'
 }
 /*
-  Network Types
+  Possible Network Types
 */
 const networkTypes = {
   '0': '2G',
@@ -105,7 +105,7 @@ const networkTypes = {
 }
 
 /*
-  GPS Antena Status
+  Possible GPS Antena Status
 */
 const externalGPSAntennaOptions = {
   '0': 'Working',
@@ -115,7 +115,7 @@ const externalGPSAntennaOptions = {
 }
 
 /*
-  Peer roles in Bluetooth
+  Possible Peer roles in Bluetooth
 */
 const peerRoles = {
   '0': 'Master',
@@ -123,7 +123,7 @@ const peerRoles = {
 }
 
 /*
-  Peer addesses type for Bluetooth
+  Possible Peer addesses type for Bluetooth
 */
 const peerAddressesTypes = {
   '0': 'Public',
@@ -131,7 +131,7 @@ const peerAddressesTypes = {
 }
 
 /*
-  Reasons for bluetooth disconnection
+  Possible Reasons for bluetooth disconnection
 */
 const disconnectionReasons = {
   '0': 'Normal',
@@ -139,7 +139,7 @@ const disconnectionReasons = {
 }
 
 /*
-  Accesories Types of Bluetooth
+  Possible Accesories Types of Bluetooth
 */
 const bluetoothAccessories = {
   '0': 'No bluetooth Accessory',
@@ -153,7 +153,7 @@ const bluetoothAccessories = {
 }
 
 /*
-  Accessories Models for Bluetooth
+  Possible Accessories Models for Bluetooth
 */
 // const AccessoriesModels = {
 //   '1': {
