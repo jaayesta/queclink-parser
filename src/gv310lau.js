@@ -2001,6 +2001,127 @@ const parse = raw => {
         }
       }
     })
+  } else if (command[1] === 'GTBID') {
+    // Bluetooth beacon detection
+    let number = parsedData[4] !== '' ? parseInt(parsedData[4]) : 1
+    let index = 5 + 7 * number // hdop
+    let satelliteInfo = false
+    let satIndex = index + 12
+    /*
+      index depende también del Append Mask de cada dispositivo.
+      - Verificar que Append Mask sea una configuración por cada dispositivo o una general
+      - En el primer caso, cada uno tendrá Beacon ID Model, Append Mask y según este último cada dato posterior es opcional
+      - En el segundo caso, basta tomar el primer Append Mask y ver cuántos datos vendrán para calcular index
+    */
+
+    // If get satellites is configured
+    if (utils.includeSatellites(parsedData[satIndex])) {
+      satIndex += 1
+      satelliteInfo = true
+    }
+
+    data = Object.assign(data, {
+      alarm: utils.getAlarm(command[1], null, 'gv310lau'),
+      loc: {
+        type: 'Point',
+        coordinates: [
+          parseFloat(parsedData[index + 4]),
+          parseFloat(parsedData[index + 5])
+        ]
+      },
+      speed:
+        parsedData[index + 1] !== '' ? parseFloat(parsedData[index + 1]) : null,
+      gpsStatus: utils.checkGps(
+        parseFloat(parsedData[index + 4]),
+        parseFloat(parsedData[index + 5])
+      ),
+      hdop: parsedData[index] !== '' ? parseFloat(parsedData[index]) : null,
+      status: null,
+      azimuth:
+        parsedData[index + 2] !== '' ? parseFloat(parsedData[index + 2]) : null,
+      altitude:
+        parsedData[index + 3] !== '' ? parseFloat(parsedData[index + 3]) : null,
+      datetime:
+        parsedData[index + 6] !== ''
+          ? utils.parseDate(parsedData[index + 6])
+          : null,
+      voltage: {
+        battery: null,
+        inputCharge: null,
+        ada: null,
+        adb: null,
+        adc: null
+      },
+      mcc: parsedData[12] !== '' ? parseInt(parsedData[12], 10) : null,
+      mnc: parsedData[13] !== '' ? parseInt(parsedData[13], 10) : null,
+      lac: parsedData[14] !== '' ? parseInt(parsedData[14], 16) : null,
+      cid: parsedData[15] !== '' ? parseInt(parsedData[15], 16) : null,
+      satellites:
+        satelliteInfo && parsedData[index] !== ''
+          ? parseInt(parsedData[index])
+          : null,
+      odometer: null,
+      hourmeter: null
+    })
+
+    data = Object.assign(data, {
+      bluetooth: {
+        raw: parsedData[index + 1],
+        connected: parsedData[index + 6] !== '',
+        bluetoothInfo: {
+          name:
+            parsedData[index + 2] !== '' &&
+            utils.nHexDigit(utils.hex2bin(parsedData[index + 1]), 16)[15] ===
+              '1'
+              ? parsedData[index + 2]
+              : null,
+          mac:
+            parsedData[index + 3] !== '' &&
+            utils.nHexDigit(utils.hex2bin(parsedData[index + 1]), 16)[14] ===
+              '1'
+              ? parsedData[index + 3]
+              : null
+        },
+        accessoryInfo: {
+          accessory: null,
+          model: parsedData[2],
+          name: null,
+          role:
+            parsedData[index + 4] !== '' &&
+            utils.nHexDigit(utils.hex2bin(parsedData[index + 1]), 16)[7] === '1'
+              ? utils.peerRoles[parsedData[index + 4]]
+              : null,
+          type:
+            parsedData[index + 5] !== '' &&
+            utils.nHexDigit(utils.hex2bin(parsedData[index + 1]), 16)[5] === '1'
+              ? utils.peerAddressesTypes[parsedData[index + 5]]
+              : null,
+          mac:
+            parsedData[index + 6] !== '' &&
+            utils.nHexDigit(utils.hex2bin(parsedData[index + 1]), 16)[4] === '1'
+              ? parsedData[index + 6]
+              : null
+        },
+        accessoryData: {
+          temperature: null,
+          humidity: null,
+          mode: null,
+          event: null,
+          tirePresure: null,
+          timestamp: null,
+          enhancedTemperature: null,
+          magDevice: {
+            id: null,
+            eventCounter: null,
+            magnetState: null
+          },
+          relay: {
+            configResult: null,
+            state: null
+          }
+        }
+      }
+    })
   } else {
     data = Object.assign(data, {
       alarm: utils.getAlarm(command[1], raw.toString())

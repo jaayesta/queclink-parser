@@ -153,37 +153,14 @@ const bluetoothAccessories = {
 }
 
 /*
-  Possible Accessories Models for Bluetooth
+  Possible Beacon ID Models
 */
-// const AccessoriesModels = {
-//   '1': {
-//     '0': 'TD_BLE fuel sensor',
-//     '3': 'Angle sensor'
-//   },
-//   '2': {
-//     '0': 'Temperature sensor (WST300)',
-//     '1': 'Temperature sensor (ELA)'
-//   },
-//   '6': {
-//     '2': 'Temperature and humidity sensor (WTH300)',
-//     '3': 'Temperature and humidity sensor (RHT ELA)',
-//     '4': 'Temperature and humidity sensor (WMS301)',
-//     '25': 'Temperature and humidity sensor (WTH301)'
-//   },
-//   '7': {
-//     '0': 'Fuel level sensor (DUT-E S7)',
-//     '1': 'Fuel flowmeter sensor (DFM 100 S7)',
-//     '2': 'Fuel flowmeter sensor (DFM 250DS7)',
-//     '3': 'Axle load sensor (GNOM DDE S7)',
-//     '4': 'Axle load sensor (GNOM DP S7)'
-//   },
-//   '11': {
-//     '0':'Door sensor (MAG ELA)'
-//   },
-//   '13': {
-//     '0': 'Relay (WRL300)'
-//   }
-// }
+const beaconModels = {
+  '0': 'WKF300',
+  '1': 'iBeacon E6',
+  '2': 'ID ELA',
+  '4': 'WID310'
+}
 
 /*
   Gets the Queclink Device Type
@@ -836,7 +813,7 @@ module.exports = {
   peerAddressesTypes: peerAddressesTypes,
   disconnectionReasons: disconnectionReasons,
   bluetoothAccessories: bluetoothAccessories,
-  // AccessoriesModels: AccessoriesModels,
+  beaconModels: beaconModels,
   getDevice: getDevice,
   getProtocolVersion: getProtocolVersion,
   checkGps: checkGps,

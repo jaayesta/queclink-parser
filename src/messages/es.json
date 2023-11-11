@@ -189,6 +189,7 @@
     "14": "Puerta cerrada",
     "15": "Evento de relé"
   },
+  "GTBID": "Se ha detectado baliza bluetooth",
   "+ACK": {
     "GTBSI": "Config: APN",
     "GTSRI": "Config: servidor backend",
