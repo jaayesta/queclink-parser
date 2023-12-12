@@ -84,7 +84,10 @@ const OBDIIProtocols = {
 const uartDeviceTypes = {
   '0': 'No device',
   '1': 'Digit Fuel Sensor',
-  '2': 'AC100 1 Wire Bus'
+  '2': 'AC100 1 Wire Bus',
+  '5': 'CANBUS device',
+  '6': 'AU100 device',
+  '7': 'RF433 accessory'
 }
 
 /*
@@ -153,6 +156,35 @@ const bluetoothAccessories = {
 }
 
 /*
+  Possible Accesories Models for Bluetooth Accessories
+*/
+const bluetoothModels = {
+  '1': {
+    '0': 'TD_BLE fuel sensor',
+    '3': 'Angle sensor'
+  },
+  '2': {
+    '0': 'WTS300 (Temperature sensor)',
+    '1': 'Temperature ELA'
+  },
+  '6': {
+    '2': 'WTH300 (Temperature and Humidity Sensor)',
+    '3': 'RHT ELA (Temperature and Humidity Sensor)',
+    '4': 'WMS301 (Door Sensor with embedded Temperature and Humidity Sensor)',
+    '5': 'WTH301 (Temperature and Humidity Sensor)'
+  },
+  '11': {
+    '0': 'MAG ELA (Door Sensor)'
+  },
+  '12': {
+    '0': 'MLD BLE TPMS (ATP100/ATP102)'
+  },
+  '13': {
+    '0': 'WRL300 (Bluetooth Relay)'
+  }
+}
+
+/*
   Possible Beacon ID Models
 */
 const beaconModels = {
@@ -160,6 +192,12 @@ const beaconModels = {
   '1': 'iBeacon E6',
   '2': 'ID ELA',
   '4': 'WID310'
+}
+
+const beaconTypes = {
+  '0': 'ID',
+  '1': 'iBeacon',
+  '2': 'Eddystone'
 }
 
 /*
@@ -790,6 +828,18 @@ const nHexDigit = (num, n) => {
 }
 
 /*
+  Return the sum of ones in hexadecimal number
+*/
+const sumOnes = num => {
+  let sum = 0
+  let hex = hex2bin(num)
+  for (let i = 0; i < hex.length; i++) {
+    sum += parseInt(hex[i])
+  }
+  return sum
+}
+
+/*
   Parses date
 */
 const parseDate = date => {
@@ -813,7 +863,9 @@ module.exports = {
   peerAddressesTypes: peerAddressesTypes,
   disconnectionReasons: disconnectionReasons,
   bluetoothAccessories: bluetoothAccessories,
+  bluetoothModels: bluetoothModels,
   beaconModels: beaconModels,
+  beaconTypes: beaconTypes,
   getDevice: getDevice,
   getProtocolVersion: getProtocolVersion,
   checkGps: checkGps,
@@ -831,5 +883,6 @@ module.exports = {
   hex2bin: hex2bin,
   hex2dec: hex2dec,
   nHexDigit: nHexDigit,
+  sumOnes: sumOnes,
   parseDate: parseDate
 }
