@@ -459,8 +459,8 @@ const parse = raw => {
       let btIndex = digitFuelSensor ? index + 10 : index + 9
       let cnt = btIndex + 1
       let btNum = parsedData[btIndex] !== '' ? parseInt(parsedData[btIndex]) : 1
-      for (var c = 0; c < btNum; c++) {
-        var appendMask = utils.nHexDigit(utils.hex2bin(parsedData[cnt + 4]), 16)
+      for (let c = 0; c < btNum; c++) {
+        let appendMask = utils.nHexDigit(utils.hex2bin(parsedData[cnt + 4]), 16)
 
         let aNameIx = cnt + 4 + parseInt(appendMask[15])
         let aMacIx = aNameIx + parseInt(appendMask[14])
@@ -498,25 +498,25 @@ const parse = raw => {
               : null,
           status:
             parsedData[aStatIx] !== '' && appendMask[13] === '1'
-              ? parsedData[aStatIx]
+              ? parseInt(parsedData[aStatIx])
               : null,
           batteryLevel:
             parsedData[aBatIx] !== '' && appendMask[12] === '1'
-              ? parsedData[aBatIx]
+              ? parseInt(parsedData[aBatIx])
               : null,
           batteryPercentage:
             parsedData[aBatpIx] !== '' && appendMask[2] === '1'
-              ? parsedData[aBatpIx]
+              ? parseFloat(parsedData[aBatpIx])
               : null,
           accessoryData: {
             rawData: parsedData[cnt + 3] !== '' ? parsedData[cnt + 3] : null,
             temperature:
               parsedData[aTmpIx] !== '' && appendMask[11] === '1'
-                ? parsedData[aTmpIx]
+                ? parseInt(parsedData[aTmpIx])
                 : null,
             humidity:
               parsedData[aHumIx] !== '' && appendMask[10] === '1'
-                ? parsedData[aHumIx]
+                ? parseInt(parsedData[aHumIx])
                 : null,
             outputStatus:
               parsedData[ioIx] !== '' && appendMask[8] === '1'
@@ -532,23 +532,23 @@ const parse = raw => {
                 : null,
             mode:
               parsedData[modeIx] !== '' && appendMask[7] === '1'
-                ? parsedData[modeIx]
+                ? parseInt(parsedData[modeIx])
                 : null,
             event:
               parsedData[aEvIx] !== '' && appendMask[7] === '1'
-                ? parsedData[aEvIx]
+                ? parseInt(parsedData[aEvIx])
                 : null,
             tirePresure:
               parsedData[pressIx] !== '' && appendMask[6] === '1'
-                ? parsedData[pressIx]
+                ? parseInt(parsedData[pressIx])
                 : null,
             timestamp:
               parsedData[timeIx] !== '' && appendMask[5] === '1'
-                ? parsedData[timeIx]
+                ? utils.parseDate(parsedData[timeIx])
                 : null,
             enhancedTemperature:
               parsedData[eTmpIx] !== '' && appendMask[4] === '1'
-                ? parsedData[eTmpIx]
+                ? parseFloat(parsedData[eTmpIx])
                 : null,
             magDevice: {
               id:
@@ -557,21 +557,21 @@ const parse = raw => {
                   : null,
               eventCounter:
                 parsedData[magIx + 1] !== '' && appendMask[3] === '1'
-                  ? parsedData[magIx + 1]
+                  ? parseInt(parsedData[magIx + 1])
                   : null,
               magnetState:
                 parsedData[magIx + 2] !== '' && appendMask[3] === '1'
-                  ? parsedData[magIx + 2]
+                  ? parseInt(parsedData[magIx + 2])
                   : null
             },
             relay: {
               configResult:
                 parsedData[relIx] !== '' && appendMask[1] === '1'
-                  ? parsedData[relIx]
+                  ? parseInt(parsedData[relIx])
                   : null,
               state:
                 parsedData[relIx + 1] !== '' && appendMask[1] === '1'
-                  ? parsedData[relIx + 1]
+                  ? parseInt(parsedData[relIx + 1])
                   : null
             }
           }
@@ -1924,40 +1924,21 @@ const parse = raw => {
     let aMacIx = aNameIx + parseInt(appendMask[14])
     let aStatIx = aMacIx + parseInt(appendMask[13])
     let aBatIx = aStatIx + parseInt(appendMask[12])
-    let index = aBatIx + 1
-    let aTmpIx = ['2', '6'].includes(btAccessory)
-      ? index + parseInt(appendMask[11])
-      : index
-    let aHumIx = btAccessory === '6' ? aTmpIx + parseInt(appendMask[10]) : index
-    let modeIx = btAccessory + parsedData[6] === '13' ? index + 1 : index
-    let aEvIx =
-      modeIx > index
-        ? modeIx + 1
-        : ['1', '11', '13'].includes(btAccessory)
-          ? index + parseInt(appendMask[7])
-          : index
-    let pressIx = btAccessory === '12' ? index + parseInt(appendMask[6]) : index
-    let timeIx =
-      btAccessory === '12' ? pressIx + parseInt(appendMask[5]) : index
-    let eTmpIx =
-      btAccessory === '2'
-        ? aTmpIx + parseInt(appendMask[4])
-        : btAccessory === '6' ? aHumIx + parseInt(appendMask[4]) : index
-    let magIx =
-      btAccessory === '11' && aEvIx > index
-        ? aEvIx + parseInt(appendMask[3])
-        : index
+    let aTmpIx = aBatIx + parseInt(appendMask[11])
+    let aHumIx = aTmpIx + parseInt(appendMask[10])
+    let ioIx = aHumIx + parseInt(appendMask[8])
+    let modeIx =
+      appendMask[8] === '1' ? ioIx + 2 + parseInt(appendMask[7]) : ioIx
+    let aEvIx = appendMask[7] === '1' ? modeIx + 1 : modeIx
+    let pressIx = aEvIx + parseInt(appendMask[6])
+    let timeIx = pressIx + parseInt(appendMask[5])
+    let eTmpIx = timeIx + parseInt(appendMask[4])
+    let magIx = eTmpIx + parseInt(appendMask[3])
     let aBatpIx =
-      btAccessory === '1'
-        ? aEvIx + parseInt(appendMask[2])
-        : ['2', '6'].includes(btAccessory)
-          ? eTmpIx + parseInt(appendMask[2])
-          : btAccessory === '11'
-            ? magIx + 2 + parseInt(appendMask[2])
-            : index + parseInt(appendMask[2])
-    let relIx =
-      btAccessory === '13' ? aBatpIx + parseInt(appendMask[2]) : aBatIx
-    let newIndex = relIx > aBatpIx ? relIx + 2 : aBatpIx
+      appendMask[3] === '1' ? magIx + 2 + parseInt(appendMask[2]) : eTmpIx
+    let relIx = aBatpIx + parseInt(appendMask[1])
+
+    let newIndex = appendMask[1] === '1' ? relIx + 2 : relIx + 1
     let satIndex = newIndex + 11
 
     // If get satellites is configured
@@ -2050,90 +2031,68 @@ const parse = raw => {
               : null,
           status:
             parsedData[aStatIx] !== '' && appendMask[13] === '1'
-              ? parsedData[aStatIx]
+              ? parseInt(parsedData[aStatIx])
               : null,
           batteryLevel:
             parsedData[aBatIx] !== '' && appendMask[12] === '1'
-              ? parsedData[aBatIx]
+              ? parseInt(parsedData[aBatIx])
               : null,
           batteryPercentage:
             parsedData[aBatpIx] !== '' && appendMask[2] === '1'
-              ? parsedData[aBatpIx]
+              ? parseFloat(parsedData[aBatpIx])
               : null
         },
         accessoryData: {
           temperature:
-            parsedData[index] !== '' &&
-            appendMask[11] === '1' &&
-            ['2', '6'].includes(btAccessory)
-              ? parsedData[index]
+            parsedData[aTmpIx] !== '' && appendMask[11] === '1'
+              ? parseInt(parsedData[aTmpIx])
               : null,
           humidity:
-            parsedData[aHumIx] !== '' &&
-            appendMask[10] === '1' &&
-            btAccessory === '6'
-              ? parsedData[aHumIx]
+            parsedData[aHumIx] !== '' && appendMask[10] === '1'
+              ? parseInt(parsedData[aHumIx])
               : null,
           mode:
-            parsedData[modeIx] !== '' && btAccessory + parsedData[6] === '13'
-              ? parsedData[modeIx]
+            parsedData[modeIx] !== '' && appendMask[7] === '1'
+              ? parseInt(parsedData[modeIx])
               : null,
           event:
-            parsedData[aEvIx] !== '' &&
-            appendMask[7] === '1' &&
-            ['1', '11', '13'].includes(btAccessory)
-              ? parsedData[aEvIx]
+            parsedData[aEvIx] !== '' && appendMask[7] === '1'
+              ? parseInt(parsedData[aEvIx])
               : null,
           tirePresure:
-            parsedData[pressIx] !== '' &&
-            appendMask[6] === '1' &&
-            btAccessory === '12'
-              ? parsedData[pressIx]
+            parsedData[pressIx] !== '' && appendMask[6] === '1'
+              ? parseInt(parsedData[pressIx])
               : null,
           timestamp:
-            parsedData[timeIx] !== '' &&
-            appendMask[5] === '1' &&
-            btAccessory === '12'
-              ? parsedData[timeIx]
+            parsedData[timeIx] !== '' && appendMask[5] === '1'
+              ? utils.parseDate(parsedData[timeIx])
               : null,
           enhancedTemperature:
-            parsedData[eTmpIx] !== '' &&
-            appendMask[4] === '1' &&
-            ['2', '6'].includes(btAccessory)
-              ? parsedData[eTmpIx]
+            parsedData[eTmpIx] !== '' && appendMask[4] === '1'
+              ? parseFloat(parsedData[eTmpIx])
               : null,
           magDevice: {
             id:
-              parsedData[magIx] !== '' &&
-              appendMask[3] === '1' &&
-              btAccessory === '11'
+              parsedData[magIx] !== '' && appendMask[3] === '1'
                 ? parsedData[magIx]
                 : null,
             eventCounter:
-              parsedData[magIx + 1] !== '' &&
-              appendMask[3] === '1' &&
-              btAccessory === '11'
-                ? parsedData[magIx + 1]
+              parsedData[magIx + 1] !== '' && appendMask[3] === '1'
+                ? parseInt(parsedData[magIx + 1])
                 : null,
             magnetState:
-              parsedData[magIx + 2] !== '' &&
-              appendMask[3] === '1' &&
-              btAccessory === '11'
-                ? parsedData[magIx + 2]
+              parsedData[magIx + 2] !== '' && appendMask[3] === '1'
+                ? parseInt(parsedData[magIx + 2])
                 : null
           },
           relay: {
             configResult:
-              parsedData[relIx] !== '' &&
-              appendMask[2] === '1' &&
-              btAccessory === '13'
-                ? parsedData[relIx]
+              parsedData[relIx] !== '' && appendMask[1] === '1'
+                ? parseInt(parsedData[relIx])
                 : null,
             state:
-              parsedData[relIx + 1] !== '' &&
-              appendMask[2] === '1' &&
-              btAccessory === '13'
-                ? parsedData[relIx + 1]
+              parsedData[relIx + 1] !== '' && appendMask[1] === '1'
+                ? parseInt(parsedData[relIx + 1])
                 : null
           }
         }
@@ -2214,24 +2173,21 @@ const parse = raw => {
       hourmeter: null
     })
 
-    let bluetoothData = {
-      devices: number
-    }
-
+    let btDevices = []
     let btIndex = 5
     for (let i = 1; i <= number; i++) {
       let appendMask = utils.nHexDigit(
         utils.hex2bin(parsedData[btIndex + 1]),
-        16
+        8
       )
       let macIx = btIndex + 1 + parseInt(appendMask[6])
       let batIx = macIx + parseInt(appendMask[4])
       let sigIx = batIx + parseInt(appendMask[1])
       let typeIx = sigIx + parseInt(appendMask[0])
-      bluetoothData = Object.assign(bluetoothData, {
+      btDevices.push({
         model:
           parsedData[btIndex] !== ''
-            ? utils.beaconModels(parsedData[btIndex])
+            ? utils.beaconModels[parsedData[btIndex]]
             : null,
         appendMask:
           parsedData[btIndex + 1] !== '' ? parsedData[btIndex + 1] : null,
@@ -2256,66 +2212,19 @@ const parse = raw => {
             ? parsedData[typeIx + 1]
             : null
       })
+      btIndex = typeIx + 1
     }
-    // data = Object.assign(data, {
-    //   bluetooth: {
-    //     raw: parsedData[index + 1],
-    //     connected: parsedData[index + 6] !== '',
-    //     bluetoothInfo: {
-    //       name:
-    //         parsedData[index + 2] !== '' &&
-    //         utils.nHexDigit(utils.hex2bin(parsedData[index + 1]), 16)[15] ===
-    //           '1'
-    //           ? parsedData[index + 2]
-    //           : null,
-    //       mac:
-    //         parsedData[index + 3] !== '' &&
-    //         utils.nHexDigit(utils.hex2bin(parsedData[index + 1]), 16)[14] ===
-    //           '1'
-    //           ? parsedData[index + 3]
-    //           : null
-    //     },
-    //     accessoryInfo: {
-    //       accessory: null,
-    //       model: parsedData[2],
-    //       name: null,
-    //       role:
-    //         parsedData[index + 4] !== '' &&
-    //         utils.nHexDigit(utils.hex2bin(parsedData[index + 1]), 16)[7] === '1'
-    //           ? utils.peerRoles[parsedData[index + 4]]
-    //           : null,
-    //       type:
-    //         parsedData[index + 5] !== '' &&
-    //         utils.nHexDigit(utils.hex2bin(parsedData[index + 1]), 16)[5] === '1'
-    //           ? utils.peerAddressesTypes[parsedData[index + 5]]
-    //           : null,
-    //       mac:
-    //         parsedData[index + 6] !== '' &&
-    //         utils.nHexDigit(utils.hex2bin(parsedData[index + 1]), 16)[4] === '1'
-    //           ? parsedData[index + 6]
-    //           : null
-    //     },
-    //     accessoryData: {
-    //       temperature: null,
-    //       humidity: null,
-    //       mode: null,
-    //       event: null,
-    //       tirePresure: null,
-    //       timestamp: null,
-    //       enhancedTemperature: null,
-    //       magDevice: {
-    //         id: null,
-    //         eventCounter: null,
-    //         magnetState: null
-    //       },
-    //       relay: {
-    //         configResult: null,
-    //         state: null
-    //       }
-    //     }
-    //   }
-    // })
+
+    let bluetoothData = {
+      connectedDevices: number,
+      btDevices: btDevices
+    }
+
+    data = Object.assign(data, {
+      bluetoothData: bluetoothData
+    })
   } else {
+    // GTBAR report is not parsed because it only supports one device
     data = Object.assign(data, {
       alarm: utils.getAlarm(command[1], raw.toString())
     })
