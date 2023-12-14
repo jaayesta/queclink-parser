@@ -960,12 +960,12 @@ const parse = raw => {
       mnc: parsedData[13] !== '' ? parseInt(parsedData[13], 10) : null,
       lac: parsedData[14] !== '' ? parseInt(parsedData[14], 16) : null,
       cid: parsedData[15] !== '' ? parseInt(parsedData[15], 16) : null,
-      odometer: null,
-      hourmeter: null,
       satellites:
         satelliteInfo && parsedData[index] !== ''
           ? parseInt(parsedData[index], 10)
-          : null
+          : null,
+      odometer: null,
+      hourmeter: null
     })
   } else if (command[1] === 'GTCRA') {
     // Crash report
@@ -2266,6 +2266,52 @@ const parse = raw => {
 
     data = Object.assign(data, {
       bluetoothData: bluetoothData
+    })
+  } else if (command[1] === 'GTVGN') {
+    // Common Alarms
+    let index = 18 // possition append mask
+    let satelliteInfo = false
+
+    // If get satellites is configured
+    if (utils.includeSatellites(parsedData[index])) {
+      index += 1
+      satelliteInfo = true
+    }
+
+    data = Object.assign(data, {
+      alarm: utils.getAlarm(command[1], [parsedData[6], parsedData[5]]),
+      loc: {
+        type: 'Point',
+        coordinates: [parseFloat(parsedData[11]), parseFloat(parsedData[12])]
+      },
+      speed: parsedData[8] !== '' ? parseFloat(parsedData[8]) : null,
+      gpsStatus: utils.checkGps(
+        parseFloat(parsedData[11]),
+        parseFloat(parsedData[12])
+      ),
+      hdop: parsedData[7] !== '' ? parseFloat(parsedData[7]) : null,
+      status: null,
+      azimuth: parsedData[9] !== '' ? parseFloat(parsedData[9]) : null,
+      altitude: parsedData[10] !== '' ? parseFloat(parsedData[10]) : null,
+      datetime: parsedData[13] !== '' ? utils.parseDate(parsedData[13]) : null,
+      voltage: {
+        battery: null,
+        inputCharge: null,
+        ada: null,
+        adb: null,
+        adc: null
+      },
+      mcc: parsedData[14] !== '' ? parseInt(parsedData[14], 10) : null,
+      mnc: parsedData[15] !== '' ? parseInt(parsedData[15], 10) : null,
+      lac: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
+      cid: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
+      satellites:
+        satelliteInfo && parsedData[index] !== ''
+          ? parseInt(parsedData[index])
+          : null,
+      odometer:
+        parsedData[index + 2] !== '' ? parseFloat(parsedData[index + 2]) : null,
+      hourmeter: parsedData[index + 1] !== '' ? parsedData[index + 1] : null
     })
   } else {
     // GTBAR report is not parsed because it only supports one device

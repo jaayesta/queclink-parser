@@ -119,8 +119,16 @@
     "0": "Entrada digital 1 desactivada"
   },
   "GTVGL": {
-    "1": "Entrada digital 1 activada mode",
-    "0": "Entrada digital 1 desactivada mode"
+    "1": "Entrada virtual 1 activada mode",
+    "0": "Entrada virtual 1 desactivada mode"
+  },
+  "GTVGN": {
+    "0": "Entrada virtual 1 activada por motivo desconocido",
+    "1": "Entrada virtual 1 activada por sensor de movimiento",
+    "2": "Entrada virtual 1 activada por fuente de poder",
+    "3": "Entrada virtual 1 activada por motivo desconocido",
+    "4": "Entrada virtual 1 activada por acelerómetro",
+    "7": "Entrada virtual 1 activada por sensor de movimiento y acelerómetro"
   },
   "GTSPD": {
     "0": "Exceso de Velocidad",

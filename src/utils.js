@@ -484,6 +484,15 @@ const getAlarm = (command, report, extra = false) => {
       duration: duration,
       message: messages[command]
     }
+  } else if (command === 'GTVGN') {
+    const duration = report[0] !== '' ? parseInt(report[0], 10) : null
+    return {
+      type: 'DI',
+      number: 1,
+      status: true,
+      duration: duration,
+      message: messages[command][report[1]]
+    }
   } else if (command === 'GTPNA') {
     return { type: 'Power', status: true, message: messages[command] }
   } else if (command === 'GTPFA') {
