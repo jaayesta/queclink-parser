@@ -923,6 +923,50 @@ const parse = raw => {
       odometer: null,
       hourmeter: null
     })
+  } else if (command[1] === 'GTJDR') {
+    let index = 16 // position append mask
+    let satelliteInfo = false
+
+    // If get satellites is configured
+    if (utils.includeSatellites(parsedData[index])) {
+      index += 1
+      satelliteInfo = true
+    }
+
+    data = Object.assign(data, {
+      alarm: utils.getAlarm(command[1], null),
+      loc: {
+        type: 'Point',
+        coordinates: [parseFloat(parsedData[9]), parseFloat(parsedData[10])]
+      },
+      speed: parsedData[6] !== '' ? parseFloat(parsedData[6]) : null,
+      gpsStatus: utils.checkGps(
+        parseFloat(parsedData[9]),
+        parseFloat(parsedData[10])
+      ),
+      hdop: parsedData[5] !== '' ? parseFloat(parsedData[5]) : null,
+      status: null,
+      azimuth: parsedData[7] !== '' ? parseFloat(parsedData[7]) : null,
+      altitude: parsedData[8] !== '' ? parseFloat(parsedData[8]) : null,
+      datetime: parsedData[11] !== '' ? utils.parseDate(parsedData[11]) : null,
+      voltage: {
+        battery: null,
+        inputCharge: null,
+        ada: null,
+        adb: null,
+        adc: null
+      },
+      mcc: parsedData[12] !== '' ? parseInt(parsedData[12], 10) : null,
+      mnc: parsedData[13] !== '' ? parseInt(parsedData[13], 10) : null,
+      lac: parsedData[14] !== '' ? parseInt(parsedData[14], 16) : null,
+      cid: parsedData[15] !== '' ? parseInt(parsedData[15], 16) : null,
+      odometer: null,
+      hourmeter: null,
+      satellites:
+        satelliteInfo && parsedData[index] !== ''
+          ? parseInt(parsedData[index], 10)
+          : null
+    })
   } else if (command[1] === 'GTCRA') {
     // Crash report
     let index = 16 // position append mask
