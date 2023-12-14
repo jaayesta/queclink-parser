@@ -130,6 +130,14 @@
     "4": "Entrada virtual 1 activada por acelerómetro",
     "7": "Entrada virtual 1 activada por sensor de movimiento y acelerómetro"
   },
+  "GTVGF": {
+    "0": "Entrada virtual 1 desactivada por motivo desconocido",
+    "1": "Entrada virtual 1 desactivada por sensor de movimiento",
+    "2": "Entrada virtual 1 desactivada por fuente de poder",
+    "3": "Entrada virtual 1 desactivada por motivo desconocido",
+    "4": "Entrada virtual 1 desactivada por acelerómetro",
+    "7": "Entrada virtual 1 desactivada por sensor de movimiento y acelerómetro"
+  },
   "GTSPD": {
     "0": "Exceso de Velocidad",
     "1": "Retorno a velocidad permitida"

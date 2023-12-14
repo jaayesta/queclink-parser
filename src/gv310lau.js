@@ -2267,7 +2267,7 @@ const parse = raw => {
     data = Object.assign(data, {
       bluetoothData: bluetoothData
     })
-  } else if (command[1] === 'GTVGN') {
+  } else if (command[1] === 'GTVGN' || command[1] === 'GTVGF') {
     // Common Alarms
     let index = 18 // possition append mask
     let satelliteInfo = false
