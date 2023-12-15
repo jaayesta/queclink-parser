@@ -2383,6 +2383,367 @@ const parse = raw => {
           )
           : null
     })
+  } else if (command[1] === 'GTCLT') {
+    // CANBUS Alarm
+    let index = 71 // odometer
+    let satelliteInfo = false
+
+    // If get satellites is configured
+    if (utils.includeSatellites(parsedData[index])) {
+      index += 1
+      satelliteInfo = true
+    }
+
+    let alarmMask1 =
+      parsedData[5] !== ''
+        ? utils
+          .nHexDigit(utils.hex2bin(parsedData[5]), 32)
+          .split('')
+          .reverse()
+          .join('')
+        : null
+    let alarmMask2 =
+      parsedData[6] !== ''
+        ? utils
+          .nHexDigit(utils.hex2bin(parsedData[6]), 32)
+          .split('')
+          .reverse()
+          .join('')
+        : null
+    let alarmMask3 =
+      parsedData[7] !== ''
+        ? utils
+          .nHexDigit(utils.hex2bin(parsedData[7]), 32)
+          .split('')
+          .reverse()
+          .join('')
+        : null
+    let inicatorsBin =
+      parsedData[28] !== ''
+        ? utils.nHexDigit(utils.hex2bin(parsedData[28]), 16)
+        : null
+    let lights =
+      parsedData[29] !== ''
+        ? utils.nHexDigit(utils.hex2bin(parsedData[29]), 8)
+        : null
+    let doors =
+      parsedData[30] !== ''
+        ? utils.nHexDigit(utils.hex2bin(parsedData[30]), 8)
+        : null
+    let canExpansionMask =
+      parsedData[33] !== ''
+        ? utils
+          .nHexDigit(utils.hex2bin(parsedData[33]), 32)
+          .split('')
+          .reverse()
+          .join('')
+        : null
+    let expansionBin =
+      parsedData[54] !== ''
+        ? utils
+          .nHexDigit(utils.hex2bin(parsedData[54]), 16)
+          .split('')
+          .reverse()
+          .join('')
+        : null
+    let tachographBin =
+      parsedData[27] !== ''
+        ? utils
+          .nHexDigit(utils.hex2bin(parsedData[27]), 8)
+          .split('')
+          .reverse()
+          .join('')
+        : null
+    data = Object.assign(data, {
+      alarm: utils.getAlarm(command[1], parsedData[6], [
+        parsedData[index + 11],
+        parsedData[index + 13]
+      ]),
+      loc: {
+        type: 'Point',
+        coordinates: [parseFloat(parsedData[64]), parseFloat(parsedData[65])]
+      },
+      speed: parsedData[61] !== '' ? parseFloat(parsedData[61]) : null,
+      gpsStatus: utils.checkGps(
+        parseFloat(parsedData[64]),
+        parseFloat(parsedData[65])
+      ),
+      hdop: parsedData[60] !== '' ? parseFloat(parsedData[60]) : null,
+      canBusDataMask: parsedData[10] !== '' ? parsedData[10] : null,
+      azimuth: parsedData[62] !== '' ? parseFloat(parsedData[62]) : null,
+      altitude: parsedData[63] !== '' ? parseFloat(parsedData[63]) : null,
+      datetime: parsedData[66] !== '' ? utils.parseDate(parsedData[66]) : null,
+      mcc: parsedData[67] !== '' ? parseInt(parsedData[67], 10) : null,
+      mnc: parsedData[68] !== '' ? parseInt(parsedData[68], 10) : null,
+      lac: parsedData[69] !== '' ? parseInt(parsedData[69], 16) : null,
+      cid: parsedData[70] !== '' ? parseInt(parsedData[70], 16) : null,
+      satellites:
+        satelliteInfo && parsedData[index] !== ''
+          ? parseInt(parsedData[index], 10)
+          : null,
+      odometer: null,
+      hourmeter: null,
+      configuredAlarms: {
+        alarm1: {
+          raw: parsedData[5] !== '' ? parsedData[5] : null,
+          oilLevelLowIndicator: alarmMask1 ? alarmMask1[28] === '1' : null,
+          serviceCallIndicator: alarmMask1 ? alarmMask1[27] === '1' : null,
+          aribagsIndicator: alarmMask1 ? alarmMask1[26] === '1' : null,
+          checkEngineIndicator: alarmMask1 ? alarmMask1[25] === '1' : null,
+          ABSFailureIndicator: alarmMask1 ? alarmMask1[23] === '1' : null,
+          engineHotIndicator: alarmMask1 ? alarmMask1[22] === '1' : null,
+          oilPressureIndicator: alarmMask1 ? alarmMask1[21] === '1' : null,
+          brakeSystemaFailureIndicator: alarmMask1
+            ? alarmMask1[20] === '1'
+            : null,
+          batteryIndicator: alarmMask1 ? alarmMask1[19] === '1' : null,
+          coolantLevelLowIndicator: alarmMask1 ? alarmMask1[18] === '1' : null,
+          brakeFluidLowIndicator: alarmMask1 ? alarmMask1[17] === '1' : null,
+          webcastIndicator: alarmMask1 ? alarmMask1[16] === '1' : null,
+          trunkIndicator: alarmMask1 ? alarmMask1[15] === '1' : null,
+          doorsIndicator: alarmMask1 ? alarmMask1[14] === '1' : null,
+          frontFogLightsIndicator: alarmMask1 ? alarmMask1[13] === '1' : null,
+          rearFogLightsIndicator: alarmMask1 ? alarmMask1[12] === '1' : null,
+          highBeamsIndicator: alarmMask1 ? alarmMask1[11] === '1' : null,
+          lowBeamsIndicator: alarmMask1 ? alarmMask1[10] === '1' : null,
+          runningLightsIndicator: alarmMask1 ? alarmMask1[9] === '1' : null,
+          reverseGearIndicator: alarmMask1 ? alarmMask1[8] === '1' : null,
+          centralLockIndicator: alarmMask1 ? alarmMask1[7] === '1' : null,
+          handbrakeIndicator: alarmMask1 ? alarmMask1[6] === '1' : null,
+          clutchPedalIndicator: alarmMask1 ? alarmMask1[5] === '1' : null,
+          brakePedalIndicator: alarmMask1 ? alarmMask1[4] === '1' : null,
+          cruiseControlIndicator: alarmMask1 ? alarmMask1[3] === '1' : null,
+          airConditioningIndicator: alarmMask1 ? alarmMask1[2] === '1' : null,
+          driverSeatbeltIndicator: alarmMask1 ? alarmMask1[1] === '1' : null,
+          fuelLowIndicator: alarmMask1 ? alarmMask1[0] === '1' : null
+        },
+        alarm2: {
+          raw: parsedData[6] !== '' ? parsedData[6] : null,
+          hood: alarmMask2 ? alarmMask2[21] === '1' : null,
+          trunk: alarmMask2 ? alarmMask2[20] === '1' : null,
+          rearRightDoor: alarmMask2 ? alarmMask2[19] === '1' : null,
+          rearLeftDoor: alarmMask2 ? alarmMask2[18] === '1' : null,
+          passengeDoor: alarmMask2 ? alarmMask2[17] === '1' : null,
+          driverDoor: alarmMask2 ? alarmMask2[16] === '1' : null,
+          hazadrLights: alarmMask2 ? alarmMask2[5] === '1' : null,
+          readFogLights: alarmMask2 ? alarmMask2[4] === '1' : null,
+          fronFogLights: alarmMask2 ? alarmMask2[3] === '1' : null,
+          highBeam: alarmMask2 ? alarmMask2[2] === '1' : null,
+          lowBeam: alarmMask2 ? alarmMask2[1] === '1' : null,
+          runningLights: alarmMask2 ? alarmMask2[0] === '1' : null
+        },
+        alarm3: {
+          raw: parsedData[7] !== '' ? parsedData[7] : null,
+          overHighRPM: alarmMask3 ? alarmMask3[3] === '1' : null,
+          underHighRPM: alarmMask3 ? alarmMask3[2] === '1' : null,
+          overLowRPM: alarmMask3 ? alarmMask3[1] === '1' : null,
+          underLowRPM: alarmMask3 ? alarmMask3[0] === '1' : null
+        }
+      },
+      canData: {
+        vin: parsedData[11] !== '' ? parseInt(parsedData[11]) : null,
+        ignitionKey:
+          parsedData[12] !== '' ? parseInt(parsedData[12], 10) : null,
+        distance: parsedData[13] !== '' ? parsedData[13] : null,
+        fuelUsed: parsedData[14] !== '' ? parseFloat(parsedData[14]) : null, // float
+        rpm: parsedData[15] !== '' ? parseInt(parsedData[15], 10) : null, // int
+        speed: parsedData[16] !== '' ? parseFloat(parsedData[16]) : null,
+        coolantTemp:
+          parsedData[17] !== '' ? parseInt(parsedData[17], 10) : null,
+        fuelConsumption: parsedData[18] !== '' ? parsedData[18] : null,
+        fuelLevel: parsedData[19] !== '' ? parsedData[19] : null,
+        range: parsedData[20] !== '' ? parsedData[20] : null,
+        acceleratorPressure:
+          parsedData[21] !== '' ? parseFloat(parsedData[21]) : null, // %
+        engineHours: parsedData[22] !== '' ? parseFloat(parsedData[22]) : null,
+        drivingTime: parsedData[23] !== '' ? parseFloat(parsedData[23]) : null,
+        idleTime: parsedData[24] !== '' ? parseFloat(parsedData[24]) : null,
+        idleFuelUsed: parsedData[25] !== '' ? parseFloat(parsedData[25]) : null,
+        axleWight2: parsedData[26] !== '' ? parseInt(parsedData[26]) : null,
+        tachograph: {
+          raw: parsedData[27] !== '' ? parsedData[27] : null,
+          validDriverData: tachographBin ? tachographBin[7] === '1' : null,
+          insertedDriverCard: tachographBin ? tachographBin[5] === '1' : null,
+          driverWorkingState: tachographBin
+            ? utils.drivingWorkingStates[
+              parseInt(tachographBin.substring(3, 5), 2)
+            ]
+            : null,
+          drivingTimeState: tachographBin
+            ? utils.drivingTimeStates[
+              parseInt(tachographBin.substring(5, 8), 2)
+            ]
+            : null
+        },
+        indicators: {
+          raw: parsedData[28] !== '' ? parsedData[28] : null,
+          lowFuel: inicatorsBin ? inicatorsBin[0] === '1' : null,
+          driverSeatbelt: inicatorsBin ? inicatorsBin[1] === '1' : null,
+          airConditioning: inicatorsBin ? inicatorsBin[2] === '1' : null,
+          cruiseControl: inicatorsBin ? inicatorsBin[3] === '1' : null,
+          brakePedal: inicatorsBin ? inicatorsBin[4] === '1' : null,
+          clutchPedal: inicatorsBin ? inicatorsBin[5] === '1' : null,
+          handbrake: inicatorsBin ? inicatorsBin[6] === '1' : null,
+          centralLock: inicatorsBin ? inicatorsBin[7] === '1' : null,
+          reverseGear: inicatorsBin ? inicatorsBin[8] === '1' : null,
+          runningLights: inicatorsBin ? inicatorsBin[9] === '1' : null,
+          lowBeams: inicatorsBin ? inicatorsBin[10] === '1' : null,
+          highBeams: inicatorsBin ? inicatorsBin[11] === '1' : null,
+          rearFogLights: inicatorsBin ? inicatorsBin[12] === '1' : null,
+          frontFogLights: inicatorsBin ? inicatorsBin[13] === '1' : null,
+          doors: inicatorsBin ? inicatorsBin[14] === '1' : null,
+          trunk: inicatorsBin ? inicatorsBin[15] === '1' : null
+        },
+        lights: {
+          raw: parsedData[29] !== '' ? parsedData[29] : null,
+          running: lights ? lights[0] === '1' : null,
+          lowBeams: lights ? lights[1] === '1' : null,
+          frontFog: lights ? lights[2] === '1' : null,
+          rearFog: lights ? lights[3] === '1' : null,
+          hazard: lights ? lights[4] === '1' : null
+        },
+        doors: {
+          raw: parsedData[30] !== '' ? parsedData[30] : null,
+          driver: doors ? doors[0] === '1' : null,
+          passenger: doors ? doors[1] === '1' : null,
+          rearLeft: doors ? doors[2] === '1' : null,
+          rearRight: doors ? doors[3] === '1' : null,
+          trunk: doors ? doors[4] === '1' : null,
+          hood: doors ? doors[5] === '1' : null
+        },
+        overSpeedTime: parsedData[31] !== '' ? parsedData[31] : null,
+        overSpeedEngineTime: parsedData[32] !== '' ? parsedData[32] : null,
+        canReportExpansionMask: {
+          raw: parsedData[33] !== '' ? parsedData[33] : null,
+          engineTorque: canExpansionMask ? canExpansionMask[23] === '1' : null,
+          rapidAccelerations: canExpansionMask
+            ? canExpansionMask[22] === '1'
+            : null,
+          rapidBrakings: canExpansionMask ? canExpansionMask[21] === '1' : null,
+          expansionInformation: canExpansionMask
+            ? canExpansionMask[20] === '1'
+            : null,
+          registrationNumber: canExpansionMask
+            ? canExpansionMask[19] === '1'
+            : null,
+          tachographDriver2Name: canExpansionMask
+            ? canExpansionMask[18] === '1'
+            : null,
+          tachographDriver1Name: canExpansionMask
+            ? canExpansionMask[17] === '1'
+            : null,
+          tachographDriver2Card: canExpansionMask
+            ? canExpansionMask[16] === '1'
+            : null,
+          tachographDriver1Card: canExpansionMask
+            ? canExpansionMask[15] === '1'
+            : null,
+          totalBrakeApplications: canExpansionMask
+            ? canExpansionMask[14] === '1'
+            : null,
+          totalAcceleratorKickDownTime: canExpansionMask
+            ? canExpansionMask[13] === '1'
+            : null,
+          totalCruiseControlTime: canExpansionMask
+            ? canExpansionMask[12] === '1'
+            : null,
+          totalEffectiveEngineSpeedTime: canExpansionMask
+            ? canExpansionMask[11] === '1'
+            : null,
+          totalAcceleratorKickDown: canExpansionMask
+            ? canExpansionMask[10] === '1'
+            : null,
+          pedalBrakingFactor: canExpansionMask
+            ? canExpansionMask[9] === '1'
+            : null,
+          engineBrakingFactor: canExpansionMask
+            ? canExpansionMask[8] === '1'
+            : null,
+          analogInputValue: canExpansionMask
+            ? canExpansionMask[7] === '1'
+            : null,
+          tachographDrivingDirection: canExpansionMask
+            ? canExpansionMask[6] === '1'
+            : null,
+          tachographVehicleMotionSignal: canExpansionMask
+            ? canExpansionMask[5] === '1'
+            : null,
+          tachographOverspeedSignal: canExpansionMask
+            ? canExpansionMask[4] === '1'
+            : null,
+          AxleWeight4: canExpansionMask ? canExpansionMask[3] === '1' : null,
+          AxleWeight3: canExpansionMask ? canExpansionMask[2] === '1' : null,
+          AxleWeight1: canExpansionMask ? canExpansionMask[1] === '1' : null,
+          adBlueLevel: canExpansionMask ? canExpansionMask[0] === '1' : null
+        },
+        canExpanded: {
+          adBlueLevel:
+            parsedData[34] !== '' ? parseFloat(parsedData[34]) : null,
+          axleWeight1: parsedData[35] !== '' ? parseInt(parsedData[35]) : null,
+          axleWeight3: parsedData[36] !== '' ? parseInt(parsedData[36]) : null,
+          axleWeight4: parsedData[37] !== '' ? parseInt(parsedData[37]) : null,
+          tachographOverspeedSignal:
+            parsedData[38] !== '' ? parseInt(parsedData[38]) : null,
+          tachographVehicleMotionSignal:
+            parsedData[39] !== '' ? parseInt(parsedData[39]) : null,
+          tachographDrivingDirection:
+            parsedData[40] !== '' ? parseInt(parsedData[40]) : null,
+          analogInputValue:
+            parsedData[41] !== '' ? parseInt(parsedData[41]) : null,
+          engineBrakingFactor:
+            parsedData[42] !== '' ? parseInt(parsedData[42]) : null,
+          pedalBrakingFactor:
+            parsedData[43] !== '' ? parseInt(parsedData[43]) : null,
+          totalAcceleratorKickDown:
+            parsedData[44] !== '' ? parseInt(parsedData[44]) : null,
+          totalEffectiveEngineSpeedTime:
+            parsedData[45] !== '' ? parseFloat(parsedData[45]) : null,
+          totalCruiseControlTime:
+            parsedData[46] !== '' ? parseFloat(parsedData[46]) : null,
+          totalAcceleratorKickDownTime:
+            parsedData[47] !== '' ? parseFloat(parsedData[47]) : null,
+          totalBrakeApplications:
+            parsedData[48] !== '' ? parseInt(parsedData[48]) : null,
+          tachographDriver1Card:
+            parsedData[49] !== '' ? parseInt(parsedData[49]) : null,
+          tachographDriver2Card:
+            parsedData[50] !== '' ? parseInt(parsedData[50]) : null,
+          tachographDriver1Name: parsedData[51] !== '' ? parsedData[51] : null,
+          tachographDriver2Name: parsedData[52] !== '' ? parsedData[52] : null,
+          registrationNumber:
+            parsedData[53] !== '' ? parseInt(parsedData[53]) : null,
+          expansionInformation: {
+            raw: parsedData[54] !== '' ? parsedData[54] : null,
+            webasto: expansionBin ? expansionBin[0] === '1' : null,
+            brakeFluidLowIndicator: expansionBin
+              ? expansionBin[1] === '1'
+              : null,
+            coolantLevelLowIndicator: expansionBin
+              ? expansionBin[2] === '1'
+              : null,
+            batteryIndicator: expansionBin ? expansionBin[3] === '1' : null,
+            brakeSystemaFailureIndicator: expansionBin
+              ? expansionBin[4] === '1'
+              : null,
+            oilPressureIndicator: expansionBin ? expansionBin[5] === '1' : null,
+            engineHotIndicator: expansionBin ? expansionBin[6] === '1' : null,
+            ABSFailureIndicator: expansionBin ? expansionBin[7] === '1' : null,
+            checkEngineIndicator: expansionBin ? expansionBin[9] === '1' : null,
+            aribagsIndicator: expansionBin ? expansionBin[10] === '1' : null,
+            serviceCallIndicator: expansionBin
+              ? expansionBin[11] === '1'
+              : null,
+            oilLevelLowIndicator: expansionBin ? expansionBin[12] === '1' : null
+          },
+          rapidBrakings:
+            parsedData[55] !== '' ? parseInt(parsedData[55]) : null,
+          rapidAccelerations:
+            parsedData[56] !== '' ? parseInt(parsedData[56]) : null,
+          engineTorque:
+            parsedData[57] !== '' ? parseFloat(parsedData[57]) : null
+        }
+      }
+    })
   } else {
     // GTBAR report is not parsed because it only supports one device
     data = Object.assign(data, {

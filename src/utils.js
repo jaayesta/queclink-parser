@@ -194,10 +194,37 @@ const beaconModels = {
   '4': 'WID310'
 }
 
+/*
+  Possible Beacon Types
+*/
 const beaconTypes = {
   '0': 'ID',
   '1': 'iBeacon',
   '2': 'Eddystone'
+}
+
+/*
+  Possible Driving Time Related States
+*/
+const drivingTimeStates = {
+  0: 'Sin límites alcanzados',
+  1: 'Conducción sobre 4 horas y 15 minutos',
+  2: 'Conducción sobre 4 horas y 30 minutos',
+  3: 'Conducción sobre 8 horas y 45 minutos',
+  4: 'Conducción sobre 9 horas',
+  5: 'Conducción sobre 15 horas y 45 minutos (con descanso menor a 8 horas en las últimas 24 horas)',
+  6: 'Conducción sobre 16 horas',
+  7: 'Otro límite'
+}
+
+/*
+  Possible Driving Working States
+*/
+const drivingWorkingStates = {
+  0: 'Normal',
+  1: 'En descanso - Durmiendo',
+  2: 'Conductor disponible - Descanso corto',
+  3: 'Conduciendo - En el volante'
 }
 
 /*
@@ -889,6 +916,8 @@ module.exports = {
   bluetoothModels: bluetoothModels,
   beaconModels: beaconModels,
   beaconTypes: beaconTypes,
+  drivingTimeStates: drivingTimeStates,
+  drivingWorkingStates: drivingWorkingStates,
   getDevice: getDevice,
   getProtocolVersion: getProtocolVersion,
   checkGps: checkGps,

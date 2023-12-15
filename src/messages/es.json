@@ -16,7 +16,8 @@
     "0": "Temperatura fuera de rango ()",
     "1": "Regreso a temperatura dentro de rango ()"
   },
-  "GTCAN": "Reporte CAN BUS: data",
+  "GTCAN": "Reporte Can Bus: data",
+  "GTCLT": "Alarma Can Bus", 
   "GTJES": "Resumen de datos OBDII",
   "GTOSM": {
     "0": {
