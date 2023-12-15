@@ -2313,6 +2313,76 @@ const parse = raw => {
         parsedData[index + 2] !== '' ? parseFloat(parsedData[index + 2]) : null,
       hourmeter: parsedData[index + 1] !== '' ? parsedData[index + 1] : null
     })
+  } else if (command[1] === 'GTGSM') {
+    data = Object.assign(data, {
+      alarm: utils.getAlarm(command[1], null),
+      fixType: parsedData[3] !== '' ? parsedData[3] : null
+    })
+    let antData = []
+    var index = 4
+    for (let i = 0; i < 6; i++) {
+      antData.push({
+        mcc: parsedData[index] !== '' ? parseInt(parsedData[index], 10) : null,
+        mnc:
+          parsedData[index + 1] !== ''
+            ? parseInt(parsedData[index + 1], 10)
+            : null,
+        lac:
+          parsedData[index + 2] !== '' ||
+          parsedData[index + 2].toUpperCase() === 'FFFF'
+            ? parseInt(parsedData[index + 2], 16)
+            : null,
+        cid:
+          parsedData[index + 3] !== '' ||
+          parsedData[index + 3].toUpperCase() === 'FFFF'
+            ? parseInt(parsedData[index + 3], 16)
+            : null,
+        rxLevel:
+          parsedData[index + 4] !== ''
+            ? utils.getSignalStrength(
+              'GSM',
+              parseInt(parsedData[index + 4], 10)
+            )
+            : null,
+        rxSignalPercentage:
+          parsedData[index + 4] !== ''
+            ? utils.getSignalPercentage(
+              'GSM',
+              parseInt(parsedData[index + 4], 10)
+            )
+            : null
+      })
+      index += 6
+    }
+    data = Object.assign(data, {
+      neighborCells: antData,
+      mcc: parsedData[index] !== '' ? parseInt(parsedData[index], 10) : null,
+      mnc:
+        parsedData[index + 1] !== ''
+          ? parseInt(parsedData[index + 1], 10)
+          : null,
+      lac:
+        parsedData[index + 2] !== '' ||
+        parsedData[index + 2].toUpperCase() === 'FFFF'
+          ? parseInt(parsedData[index + 2], 16)
+          : null,
+      cid:
+        parsedData[index + 3] !== '' ||
+        parsedData[index + 3].toUpperCase() === 'FFFF'
+          ? parseInt(parsedData[index + 3], 16)
+          : null,
+      rxLevel:
+        parsedData[index + 4] !== ''
+          ? utils.getSignalStrength('GSM', parseInt(parsedData[index + 4], 10))
+          : null,
+      rxSignalPercentage:
+        parsedData[index + 4] !== ''
+          ? utils.getSignalPercentage(
+            'GSM',
+            parseInt(parsedData[index + 4], 10)
+          )
+          : null
+    })
   } else {
     // GTBAR report is not parsed because it only supports one device
     data = Object.assign(data, {

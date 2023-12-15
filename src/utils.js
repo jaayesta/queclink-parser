@@ -318,6 +318,9 @@ const getSignalStrength = (networkType, value) => {
   } else if (networkType === '4G') {
     calc = 96 / 97 * value - 140
     dBm = calc < -140 ? 0 : calc > -44 ? 100 : calc
+  } else if (networkType === 'GSM') {
+    calc = value - 110
+    dBm = calc < -110 ? 0 : calc > -47 ? 100 : calc
   } else {
     dBm = null
   }
@@ -338,11 +341,13 @@ const getSignalPercentage = (networkType, value) => {
     perc = value / 31 * 100
   } else if (networkType === '4G') {
     perc = value / 97 * 100
+  } else if (networkType === 'GSM') {
+    perc = value / 63 * 100
   } else {
     perc = null
   }
 
-  return perc
+  return Math.round((perc + Number.EPSILON) * 100) / 100
 }
 
 /*

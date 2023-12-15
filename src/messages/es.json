@@ -175,7 +175,7 @@
     "5": "Dispositivo reiniciado por estar sin señal GPRS",
     "6": "Dispositivo reiniciado por error en comunicación"
   },
-  "GTGSM": "GSM Report",
+  "GTGSM": "Reporte de antenas GSM",
   "GTCRA": "Posible choque detectado",
   "GTASC": "Acelerómetro calibrado automáticamente",
   "GTDTT": "Data transparente del puerto serial",
