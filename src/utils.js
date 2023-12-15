@@ -538,6 +538,12 @@ const getAlarm = (command, report, extra = false) => {
     return { type: 'Power', status: true, message: messages[command] }
   } else if (command === 'GTPFA') {
     return { type: 'Power', status: false, message: messages[command] }
+  } else if (command === 'GTPNR' || command === 'GTPFR') {
+    return {
+      type: 'Power_Reason',
+      status: command === 'GTPNR',
+      message: messages[command][report]
+    }
   } else if (command === 'GTMPN' || command === 'GTEPN') {
     // Change for connected to power supply
     return { type: 'Charge', status: true, message: messages[command] }

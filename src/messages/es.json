@@ -139,6 +139,18 @@
     "4": "Entrada virtual 1 desactivada por acelerómetro",
     "7": "Entrada virtual 1 desactivada por sensor de movimiento y acelerómetro"
   },
+  "GTPNR": {
+    "0": "Normal",
+    "1": "Reinicio por Actualización de Firmware",
+    "2": "Reinicio por comando RTO",
+    "3": "Reinicio por protocolo watchdog"
+  },
+  "GTPFR": {
+    "0": "Apagado por comando RTO",
+    "1": "Batería baja",
+    "2": "Reinicio por comando RTO",
+    "3": "Reinicio por protocolo watchdog"
+  },
   "GTSPD": {
     "0": "Exceso de Velocidad",
     "1": "Retorno a velocidad permitida"
