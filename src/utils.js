@@ -775,6 +775,14 @@ const getAlarm = (command, report, extra = false) => {
       status: 'CONFIG',
       message: messages[command].replace('data', report)
     }
+  } else if (command === 'GTLBA') {
+    let type = report[0]
+    let serial = report[1]
+    return {
+      type: command,
+      status: 'BT_Low_Battery',
+      message: messages[command][type].replace('serial', parseInt(serial, 16))
+    }
   } else if (command === 'GTCSQ') {
     return {
       type: command,

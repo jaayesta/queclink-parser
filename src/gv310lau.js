@@ -2817,6 +2817,51 @@ const parse = raw => {
         svrInfo: parsedData[6] !== '' ? parsedData[6] : null
       }
     })
+  } else if (command[1] === 'GTLBA') {
+    // Low Battery for FR433 devices
+    let index = 17 // possition append mask
+    let satelliteInfo = false
+
+    // If get satellites is configured
+    if (utils.includeSatellites(parsedData[index])) {
+      index += 1
+      satelliteInfo = true
+    }
+
+    data = Object.assign(data, {
+      alarm: utils.getAlarm(command[1], [parsedData[4], parsedData[5]]),
+      loc: {
+        type: 'Point',
+        coordinates: [parseFloat(parsedData[10]), parseFloat(parsedData[11])]
+      },
+      speed: parsedData[7] !== '' ? parseFloat(parsedData[7]) : null,
+      gpsStatus: utils.checkGps(
+        parseFloat(parsedData[10]),
+        parseFloat(parsedData[11])
+      ),
+      hdop: parsedData[6] !== '' ? parseFloat(parsedData[6]) : null,
+      status: null,
+      azimuth: parsedData[8] !== '' ? parseFloat(parsedData[8]) : null,
+      altitude: parsedData[9] !== '' ? parseFloat(parsedData[9]) : null,
+      datetime: parsedData[12] !== '' ? utils.parseDate(parsedData[12]) : null,
+      voltage: {
+        battery: null,
+        inputCharge: null,
+        ada: null,
+        adb: null,
+        adc: null
+      },
+      mcc: parsedData[13] !== '' ? parseInt(parsedData[13], 10) : null,
+      mnc: parsedData[14] !== '' ? parseInt(parsedData[14], 10) : null,
+      lac: parsedData[15] !== '' ? parseInt(parsedData[15], 16) : null,
+      cid: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
+      satellites:
+        satelliteInfo && parsedData[index] !== ''
+          ? parseInt(parsedData[index])
+          : null,
+      odometer: null,
+      hourmeter: null
+    })
   } else {
     // GTBAR report is not parsed because it only supports one device
     data = Object.assign(data, {

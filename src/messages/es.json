@@ -225,7 +225,11 @@
     "15": "Evento de relé"
   },
   "GTBID": "Se ha detectado baliza bluetooth",
-  "GTLBA": "Batería de dispositivo bluetooth baja",
+  "GTLBA": {
+    "1": "Batería baja en el WTS100 con serie serial",
+    "2": "Batería baja en el WTH100 con serie serial",
+    "3": "Batería baja en el botón SOS con seria serial"
+  },
   "+ACK": {
     "GTBSI": "Config: APN",
     "GTSRI": "Config: servidor backend",
