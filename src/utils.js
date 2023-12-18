@@ -206,7 +206,7 @@ const beaconTypes = {
 /*
   Possible Driving Time Related States
 */
-const drivingTimeStates = {
+const dTimeStates = {
   0: 'Sin límites alcanzados',
   1: 'Conducción sobre 4 horas y 15 minutos',
   2: 'Conducción sobre 4 horas y 30 minutos',
@@ -220,7 +220,7 @@ const drivingTimeStates = {
 /*
   Possible Driving Working States
 */
-const drivingWorkingStates = {
+const dWorkingStates = {
   0: 'Normal',
   1: 'En descanso - Durmiendo',
   2: 'Conductor disponible - Descanso corto',
@@ -589,6 +589,12 @@ const getAlarm = (command, report, extra = false) => {
     }
   } else if (command === 'GTEPS') {
     return { type: 'External_Low_battery', message: messages[command] }
+  } else if (command === 'GTSVR') {
+    return {
+      type: 'Stolen_Vehicle_Alarm',
+      status: report === '0',
+      message: messages[command][report]
+    }
   } else if (command === 'GTAIS' || command === 'GTMAI') {
     const reportID = parseInt(report[0], 10)
     const reportType = parseInt(report[1], 10)
@@ -922,8 +928,8 @@ module.exports = {
   bluetoothModels: bluetoothModels,
   beaconModels: beaconModels,
   beaconTypes: beaconTypes,
-  drivingTimeStates: drivingTimeStates,
-  drivingWorkingStates: drivingWorkingStates,
+  dTimeStates: dTimeStates,
+  dWorkingStates: dWorkingStates,
   getDevice: getDevice,
   getProtocolVersion: getProtocolVersion,
   checkGps: checkGps,

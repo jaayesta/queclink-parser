@@ -2294,7 +2294,7 @@ const parse = raw => {
       bluetoothData: bluetoothData
     })
   } else if (command[1] === 'GTVGN' || command[1] === 'GTVGF') {
-    // Common Alarms
+    // Virtual ignition
     let index = 18 // possition append mask
     let satelliteInfo = false
 
@@ -2591,14 +2591,10 @@ const parse = raw => {
           validDriverData: tachographBin ? tachographBin[7] === '1' : null,
           insertedDriverCard: tachographBin ? tachographBin[5] === '1' : null,
           driverWorkingState: tachographBin
-            ? utils.drivingWorkingStates[
-              parseInt(tachographBin.substring(3, 5), 2)
-            ]
+            ? utils.dWorkingStates[parseInt(tachographBin.substring(3, 5), 2)]
             : null,
           drivingTimeState: tachographBin
-            ? utils.drivingTimeStates[
-              parseInt(tachographBin.substring(5, 8), 2)
-            ]
+            ? utils.dTimeStates[parseInt(tachographBin.substring(5, 8), 2)]
             : null
         },
         indicators: {
@@ -2768,6 +2764,57 @@ const parse = raw => {
           engineTorque:
             parsedData[57] !== '' ? parseFloat(parsedData[57]) : null
         }
+      }
+    })
+  } else if (command[1] === 'GTSVR') {
+    // Primary Stolen Vehicle Recovery
+    // Primary: GV310LAU - Ghost: GV58LAU
+    let index = 19 // possition append mask
+    let satelliteInfo = false
+
+    // If get satellites is configured
+    if (utils.includeSatellites(parsedData[index])) {
+      index += 1
+      satelliteInfo = true
+    }
+
+    data = Object.assign(data, {
+      alarm: utils.getAlarm(command[1], parsedData[4]),
+      loc: {
+        type: 'Point',
+        coordinates: [parseFloat(parsedData[12]), parseFloat(parsedData[13])]
+      },
+      speed: parsedData[9] !== '' ? parseFloat(parsedData[9]) : null,
+      gpsStatus: utils.checkGps(
+        parseFloat(parsedData[12]),
+        parseFloat(parsedData[13])
+      ),
+      hdop: parsedData[8] !== '' ? parseFloat(parsedData[8]) : null,
+      status: null,
+      azimuth: parsedData[10] !== '' ? parseFloat(parsedData[10]) : null,
+      altitude: parsedData[11] !== '' ? parseFloat(parsedData[11]) : null,
+      datetime: parsedData[14] !== '' ? utils.parseDate(parsedData[14]) : null,
+      voltage: {
+        battery: null,
+        inputCharge: null,
+        ada: null,
+        adb: null,
+        adc: null
+      },
+      mcc: parsedData[15] !== '' ? parseInt(parsedData[15], 10) : null,
+      mnc: parsedData[16] !== '' ? parseInt(parsedData[16], 10) : null,
+      lac: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
+      cid: parsedData[18] !== '' ? parseInt(parsedData[18], 16) : null,
+      satellites:
+        satelliteInfo && parsedData[index] !== ''
+          ? parseInt(parsedData[index])
+          : null,
+      odometer:
+        parsedData[index + 2] !== '' ? parseFloat(parsedData[index + 2]) : null,
+      hourmeter: parsedData[index + 1] !== '' ? parsedData[index + 1] : null,
+      bluetooth: {
+        mac: parsedData[5] !== '' ? parsedData[5] : null,
+        svrInfo: parsedData[6] !== '' ? parsedData[6] : null
       }
     })
   } else {

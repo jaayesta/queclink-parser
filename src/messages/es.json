@@ -11,6 +11,11 @@
     "0": "Conductor identificado no autorizado",
     "2": "Término de sesión de conductor identificado."
   },
+  "GTSVR": {
+    "0": "Se perdió conexión con el dispositivo",
+    "1": "Se volvió a conectar el dispositivo",
+    "2": "Falló la conexión del dispositivo durante la instalación"
+  },
   "GTFLA": "Combustible reducido en consumption%",
   "GTTMP": {
     "0": "Temperatura fuera de rango ()",
@@ -220,6 +225,7 @@
     "15": "Evento de relé"
   },
   "GTBID": "Se ha detectado baliza bluetooth",
+  "GTLBA": "Batería de dispositivo bluetooth baja",
   "+ACK": {
     "GTBSI": "Config: APN",
     "GTSRI": "Config: servidor backend",
