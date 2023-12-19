@@ -735,7 +735,7 @@ const getAlarm = (command, report, extra = false) => {
     return {
       type: 'Crash',
       status: true,
-      counter: report,
+      counter: parseInt(report, 16),
       message: messages[command]
     }
   } else if (command === 'GTDOG') {

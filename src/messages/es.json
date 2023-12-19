@@ -162,6 +162,7 @@
     "1": "Retorno a velocidad permitida"
   },
   "GTSOS": "Botón SOS presionado",
+  "GTWPB": "Botón SOS presionado",
   "GTTOW": "Vehículo remolcado",
   "GTDIS": {
     "1": "Entrada digital port activada",

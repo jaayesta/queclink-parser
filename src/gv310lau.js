@@ -32,7 +32,7 @@ const parse = raw => {
   if (command[1] === 'GTFRI') {
     try {
       let number = parsedData[6] !== '' ? parseInt(parsedData[6], 10) : 1
-      let index = 6 + 12 * number // odometer
+      let index = 6 + 12 * number // position append mask
       let satelliteInfo = false
 
       // If get satellites is configured
@@ -165,7 +165,7 @@ const parse = raw => {
   } else if (command[1] === 'GTERI') {
     // GPS with AC100 and/or Bluetoth Devices Connected
     let number = parsedData[7] !== '' ? parseInt(parsedData[7], 10) : 1
-    let index = 7 + 12 * number // odometer
+    let index = 7 + 12 * number // position append mask
     let satelliteInfo = false
 
     // If get satellites is configured
@@ -665,7 +665,7 @@ const parse = raw => {
   ) {
     // Common Alarms
     let number = parsedData[6] !== '' ? parseInt(parsedData[6], 10) : 1
-    let index = 6 + 12 * number // odometer
+    let index = 6 + 12 * number // position append mask
     let satelliteInfo = false
 
     // If get satellites is configured
@@ -720,7 +720,7 @@ const parse = raw => {
   } else if (command[1] === 'GTEPS' || command[1] === 'GTAIS') {
     // External low battery and Low voltage for analog input
     let number = parsedData[6] !== '' ? parseInt(parsedData[6], 10) : 1
-    let index = 6 + 12 * number // odometer
+    let index = 6 + 12 * number // position append mask
     let satelliteInfo = false
 
     // If get satellites is configured
@@ -767,7 +767,7 @@ const parse = raw => {
   } else if (command[1] === 'GTTMP') {
     // Temperature Alarm
     let number = parsedData[7] !== '' ? parseInt(parsedData[7], 10) : 1
-    let index = 7 + 12 * number // odometer
+    let index = 7 + 12 * number // position append mask
     let satelliteInfo = false
 
     // If get satellites is configured
@@ -949,105 +949,20 @@ const parse = raw => {
       odometer: null,
       hourmeter: null
     })
-  } else if (command[1] === 'GTJDR') {
+  } else if (
+    command[1] === 'GTJDR' ||
+    command[1] === 'GTANT' ||
+    command[1] === 'GTRMD' ||
+    command[1] === 'GTCRA' ||
+    command[1] === 'GTBPL' ||
+    command[1] === 'GTSTT' ||
+    command[1] === 'GTWPB'
+  ) {
     let index = 16 // position append mask
     let satelliteInfo = false
 
     // If get satellites is configured
     if (utils.includeSatellites(parsedData[index])) {
-      index += 1
-      satelliteInfo = true
-    }
-
-    data = Object.assign(data, {
-      alarm: utils.getAlarm(command[1], null),
-      loc: {
-        type: 'Point',
-        coordinates: [parseFloat(parsedData[9]), parseFloat(parsedData[10])]
-      },
-      speed: parsedData[6] !== '' ? parseFloat(parsedData[6]) : null,
-      gpsStatus: utils.checkGps(
-        parseFloat(parsedData[9]),
-        parseFloat(parsedData[10])
-      ),
-      hdop: parsedData[5] !== '' ? parseFloat(parsedData[5]) : null,
-      status: null,
-      azimuth: parsedData[7] !== '' ? parseFloat(parsedData[7]) : null,
-      altitude: parsedData[8] !== '' ? parseFloat(parsedData[8]) : null,
-      datetime: parsedData[11] !== '' ? utils.parseDate(parsedData[11]) : null,
-      voltage: {
-        battery: null,
-        inputCharge: null,
-        ada: null,
-        adb: null,
-        adc: null
-      },
-      mcc: parsedData[12] !== '' ? parseInt(parsedData[12], 10) : null,
-      mnc: parsedData[13] !== '' ? parseInt(parsedData[13], 10) : null,
-      lac: parsedData[14] !== '' ? parseInt(parsedData[14], 16) : null,
-      cid: parsedData[15] !== '' ? parseInt(parsedData[15], 16) : null,
-      satellites:
-        satelliteInfo && parsedData[index] !== ''
-          ? parseInt(parsedData[index], 10)
-          : null,
-      odometer: null,
-      hourmeter: null
-    })
-  } else if (command[1] === 'GTCRA') {
-    // Crash report
-    let index = 16 // position append mask
-    let satelliteInfo = false
-
-    // If get satellites is configured
-    if (utils.includeSatellites(parsedData[16])) {
-      index += 1
-      satelliteInfo = true
-    }
-
-    data = Object.assign(data, {
-      alarm: utils.getAlarm(command[1], parsedData[4]),
-      loc: {
-        type: 'Point',
-        coordinates: [parseFloat(parsedData[9]), parseFloat(parsedData[10])]
-      },
-      speed: parsedData[6] !== '' ? parseFloat(parsedData[6]) : null,
-      gpsStatus: utils.checkGps(
-        parseFloat(parsedData[9]),
-        parseFloat(parsedData[10])
-      ),
-      hdop: parsedData[5] !== '' ? parseFloat(parsedData[5]) : null,
-      status: null,
-      azimuth: parsedData[7] !== '' ? parseFloat(parsedData[7]) : null,
-      altitude: parsedData[8] !== '' ? parseFloat(parsedData[8]) : null,
-      datetime: parsedData[11] !== '' ? utils.parseDate(parsedData[11]) : null,
-      voltage: {
-        battery: null,
-        inputCharge: null,
-        ada: null,
-        adb: null,
-        adc: null
-      },
-      mcc: parsedData[12] !== '' ? parseInt(parsedData[12], 10) : null,
-      mnc: parsedData[13] !== '' ? parseInt(parsedData[13], 10) : null,
-      lac: parsedData[14] !== '' ? parseInt(parsedData[14], 16) : null,
-      cid: parsedData[15] !== '' ? parseInt(parsedData[15], 16) : null,
-      satellites:
-        satelliteInfo && parsedData[index] !== ''
-          ? parseInt(parsedData[index], 10)
-          : null,
-      odometer: null,
-      hourmeter: null
-    })
-  } else if (
-    command[1] === 'GTANT' ||
-    command[1] === 'GTRMD' ||
-    command[1] === 'GTBPL'
-  ) {
-    let index = 16 // odometer
-    let satelliteInfo = false
-
-    // If get satellites is configured
-    if (utils.includeSatellites(parsedData[16])) {
       index += 1
       satelliteInfo = true
     }
@@ -1087,7 +1002,7 @@ const parse = raw => {
       hourmeter: null
     })
   } else if (command[1] === 'GTJDS') {
-    let index = 17 // odometer
+    let index = 17 // position append mask
     let satelliteInfo = false
 
     // If get satellites is configured
@@ -1131,7 +1046,7 @@ const parse = raw => {
       hourmeter: null
     })
   } else if (command[1] === 'GTIGN' || command[1] === 'GTIGF') {
-    let index = 16 // odometer
+    let index = 16 // position append mask
     let satelliteInfo = false
 
     // If get satellites is configured
@@ -1179,7 +1094,7 @@ const parse = raw => {
           : null
     })
   } else if (command[1] === 'GTIDN' || command[1] === 'GTIDF') {
-    let index = 17 // odometer
+    let index = 17 // position append mask
     let satelliteInfo = false
 
     // If get satellites is configured
@@ -1228,7 +1143,7 @@ const parse = raw => {
     command[1] === 'GTSTP' ||
     command[1] === 'GTLSP'
   ) {
-    let index = 17 // odometer
+    let index = 17 // position append mask
     let satelliteInfo = false
 
     // If get satellites is configured
@@ -1272,54 +1187,9 @@ const parse = raw => {
         parsedData[index + 1] !== '' ? parseFloat(parsedData[index + 1]) : null,
       hourmeter: null
     })
-  } else if (command[1] === 'GTSTT') {
-    let index = 16 // odometer
-    let satelliteInfo = false
-
-    // If get satellites is configured
-    if (utils.includeSatellites(parsedData[index])) {
-      index += 1
-      satelliteInfo = true
-    }
-
-    // Motion State Changed
-    data = Object.assign(data, {
-      alarm: utils.getAlarm(command[1], null),
-      loc: {
-        type: 'Point',
-        coordinates: [parseFloat(parsedData[9]), parseFloat(parsedData[10])]
-      },
-      speed: parsedData[6] !== '' ? parseFloat(parsedData[6]) : null,
-      gpsStatus: utils.checkGps(
-        parseFloat(parsedData[9]),
-        parseFloat(parsedData[10])
-      ),
-      hdop: parsedData[5] !== '' ? parseFloat(parsedData[5]) : null,
-      status: null,
-      azimuth: parsedData[7] !== '' ? parseFloat(parsedData[7]) : null,
-      altitude: parsedData[8] !== '' ? parseFloat(parsedData[8]) : null,
-      datetime: parsedData[11] !== '' ? utils.parseDate(parsedData[11]) : null,
-      voltage: {
-        battery: null,
-        inputCharge: null,
-        ada: null,
-        adb: null,
-        adc: null
-      },
-      mcc: parsedData[12] !== '' ? parseInt(parsedData[12], 10) : null,
-      mnc: parsedData[13] !== '' ? parseInt(parsedData[13], 10) : null,
-      lac: parsedData[14] !== '' ? parseInt(parsedData[14], 16) : null,
-      cid: parsedData[15] !== '' ? parseInt(parsedData[15], 16) : null,
-      satellites:
-        satelliteInfo && parsedData[index] !== ''
-          ? parseInt(parsedData[index], 10)
-          : null,
-      odometer: null,
-      hourmeter: null
-    })
   } else if (command[1] === 'GTGSS') {
     // GPS Status
-    let index = 19 // odometer
+    let index = 19 // position append mask
     let satelliteInfo = false
 
     // If get satellites is configured
@@ -1366,7 +1236,7 @@ const parse = raw => {
   } else if (command[1] === 'GTIDA') {
     // iButton
     let number = parsedData[7] !== '' ? parseInt(parsedData[7], 10) : 1
-    let index = 7 + 12 * number // odometer
+    let index = 7 + 12 * number // position append mask
     let satelliteInfo = false
 
     // If get satellites is configured
@@ -1411,7 +1281,7 @@ const parse = raw => {
       hourmeter: null
     })
   } else if (command[1] === 'GTCAN') {
-    let index = 67 // odometer
+    let index = 67 // position append mask
     let satelliteInfo = false
 
     // If get satellites is configured
@@ -1558,7 +1428,7 @@ const parse = raw => {
       })
     } else {
       dataIndex = 7
-      let index = 19 // odometer
+      let index = 19 // position append mask
       let satelliteInfo = false
 
       // If get satellites is configured
@@ -1699,7 +1569,7 @@ const parse = raw => {
       })
     } else {
       // Long format
-      let index = 20 // odometer
+      let index = 20 // position append mask
       let satelliteInfo = false
 
       // If get satellites is configured
@@ -1745,7 +1615,7 @@ const parse = raw => {
       })
     }
   } else if (command[1] === 'GTDOS') {
-    let index = 17 // odometer
+    let index = 17 // position append mask
     let satelliteInfo = false
 
     // If get satellites is configured
@@ -1881,7 +1751,7 @@ const parse = raw => {
     })
   } else if (command[1] === 'GTBCS' || command[1] === 'GTBDS') {
     // Bluetooth connection/desconnection
-    let index = 16 // odometer
+    let index = 16 // position append mask
     let satelliteInfo = false
 
     // If get satellites is configured
@@ -2411,7 +2281,7 @@ const parse = raw => {
     })
   } else if (command[1] === 'GTCLT') {
     // CANBUS Alarm
-    let index = 71 // odometer
+    let index = 71 // position append mask
     let satelliteInfo = false
 
     // If get satellites is configured
