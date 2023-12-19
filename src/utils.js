@@ -297,6 +297,17 @@ const getTempInCelciousDegrees = hexTemp => {
 }
 
 /*
+  Gets the Two's Complement for hex numbers
+*/
+const get2Complement = (hexNumber, n) => {
+  let binNumber = nHexDigit(hex2bin(hexNumber), n * 4)
+  if (binNumber.substring(0, 1) === '0') {
+    return parseInt(hexNumber, 16)
+  }
+  return (parseInt('F'.repeat(n), 16) - parseInt(hexNumber, 16) + 1) * -1
+}
+
+/*
   Gets fuel consumption from string
 */
 const getFuelConsumption = fuelString => {
@@ -731,6 +742,28 @@ const getAlarm = (command, report, extra = false) => {
       status: parseInt(reportType, 10),
       message: messages[command][reportType].replace(' at_vel', reportID)
     }
+  } else if (command === 'GTHBE') {
+    /*
+      status:
+        0: braking
+        1: acceleration
+        2: turning
+        3: braking turning
+        4: acceleration turning
+        5: unknown harsh behavior
+      */
+    let x = get2Complement(extra[0].substring(0, 4), 4)
+    let y = get2Complement(extra[0].substring(4, 8), 4)
+    let z = get2Complement(extra[0].substring(8, 12), 4)
+    return {
+      type: 'Harsh_Behavior_Data',
+      calibration: report[0] === '2',
+      duration: extra[1],
+      magnitude: Number(
+        Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2)).toFixed(2)
+      ),
+      message: messages[command][report[1]]
+    }
   } else if (command === 'GTCRA') {
     return {
       type: 'Crash',
@@ -942,6 +975,7 @@ module.exports = {
   getProtocolVersion: getProtocolVersion,
   checkGps: checkGps,
   includeSatellites: includeSatellites,
+  get2Complement: get2Complement,
   getTempInCelciousDegrees: getTempInCelciousDegrees,
   getFuelConsumption: getFuelConsumption,
   getHoursForHourmeter: getHoursForHourmeter,

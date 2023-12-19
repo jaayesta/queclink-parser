@@ -187,6 +187,14 @@
     "4": "Aceleración Brusca Girando at_vel",
     "5": "Comportamiento Brusco Desconocido at_vel"
   },
+  "GTHBE": {
+    "0": "Fin de Frenada Brusca",
+    "1": "Fin de Aceleración Brusca",
+    "2": "Fin de Giro Brusco",
+    "3": "Fin de Frenada Brusca Girando",
+    "4": "Fin de Aceleración Brusca Girando",
+    "5": "Fin de Comportamiento Brusco Desconocido"
+  },
   "GTDOG": {
     "1": "Dispositivo reiniciado por frecuencia configurada",
     "2": "Dispositivo reiniciado por ignición",

@@ -2732,6 +2732,131 @@ const parse = raw => {
       odometer: null,
       hourmeter: null
     })
+  } else if (command[1] === 'GTASC') {
+    // Calibrarion data for XYZ-axis acceleration sensor
+    let index = 24 // possition append mask
+    let satelliteInfo = false
+
+    // If get satellites is configured
+    if (utils.includeSatellites(parsedData[index])) {
+      index += 1
+      satelliteInfo = true
+    }
+
+    data = Object.assign(data, {
+      alarm: utils.getAlarm(command[1], null),
+      loc: {
+        type: 'Point',
+        coordinates: [parseFloat(parsedData[17]), parseFloat(parsedData[18])]
+      },
+      speed: parsedData[14] !== '' ? parseFloat(parsedData[14]) : null,
+      gpsStatus: utils.checkGps(
+        parseFloat(parsedData[17]),
+        parseFloat(parsedData[18])
+      ),
+      hdop: parsedData[13] !== '' ? parseFloat(parsedData[13]) : null,
+      status: null,
+      azimuth: parsedData[15] !== '' ? parseFloat(parsedData[15]) : null,
+      altitude: parsedData[16] !== '' ? parseFloat(parsedData[16]) : null,
+      datetime: parsedData[19] !== '' ? utils.parseDate(parsedData[19]) : null,
+      voltage: {
+        battery: null,
+        inputCharge: null,
+        ada: null,
+        adb: null,
+        adc: null
+      },
+      mcc: parsedData[20] !== '' ? parseInt(parsedData[20], 10) : null,
+      mnc: parsedData[21] !== '' ? parseInt(parsedData[21], 10) : null,
+      lac: parsedData[22] !== '' ? parseInt(parsedData[22], 16) : null,
+      cid: parsedData[23] !== '' ? parseInt(parsedData[23], 16) : null,
+      satellites:
+        satelliteInfo && parsedData[index] !== ''
+          ? parseInt(parsedData[index])
+          : null,
+      calibration: {
+        xForward: parsedData[4] !== '' ? parseFloat(parsedData[4]) : null,
+        yForward: parsedData[5] !== '' ? parseFloat(parsedData[5]) : null,
+        zForward: parsedData[6] !== '' ? parseFloat(parsedData[6]) : null,
+        xSide: parsedData[7] !== '' ? parseFloat(parsedData[7]) : null,
+        ySide: parsedData[8] !== '' ? parseFloat(parsedData[8]) : null,
+        zSide: parsedData[9] !== '' ? parseFloat(parsedData[9]) : null,
+        xVertical: parsedData[10] !== '' ? parseFloat(parsedData[10]) : null,
+        yVertical: parsedData[11] !== '' ? parseFloat(parsedData[11]) : null,
+        zVertical: parsedData[12] !== '' ? parseFloat(parsedData[12]) : null
+      },
+      odometer: null,
+      hourmeter: null
+    })
+  } else if (command[1] === 'GTHBE') {
+    // Harsh Behavior Information
+    // Only works when GTHBM is in mode 5
+    let index = 18 // possition append mask
+    let satelliteInfo = false
+
+    // If get satellites is configured
+    if (utils.includeSatellites(parsedData[index])) {
+      index += 1
+      satelliteInfo = true
+    }
+
+    let maxAcc = parsedData[index + 1] !== '' ? parsedData[index + 1] : null
+    let avgAcc = parsedData[index + 2] !== '' ? parsedData[index + 2] : null
+    let duration =
+      parsedData[index + 3] !== '' ? parseFloat(parsedData[index + 3]) : null
+
+    data = Object.assign(data, {
+      alarm: utils.getAlarm(
+        command[1],
+        [parsedData[5], parsedData[6]],
+        [maxAcc, duration]
+      ),
+      loc: {
+        type: 'Point',
+        coordinates: [parseFloat(parsedData[11]), parseFloat(parsedData[12])]
+      },
+      speed: parsedData[8] !== '' ? parseFloat(parsedData[8]) : null,
+      gpsStatus: utils.checkGps(
+        parseFloat(parsedData[11]),
+        parseFloat(parsedData[12])
+      ),
+      hdop: parsedData[7] !== '' ? parseFloat(parsedData[7]) : null,
+      status: null,
+      azimuth: parsedData[9] !== '' ? parseFloat(parsedData[9]) : null,
+      altitude: parsedData[10] !== '' ? parseFloat(parsedData[10]) : null,
+      datetime: parsedData[13] !== '' ? utils.parseDate(parsedData[13]) : null,
+      voltage: {
+        battery: null,
+        inputCharge: null,
+        ada: null,
+        adb: null,
+        adc: null
+      },
+      mcc: parsedData[14] !== '' ? parseInt(parsedData[14], 10) : null,
+      mnc: parsedData[15] !== '' ? parseInt(parsedData[15], 10) : null,
+      lac: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
+      cid: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
+      satellites:
+        satelliteInfo && parsedData[index] !== ''
+          ? parseInt(parsedData[index])
+          : null,
+      maxAcceleration: {
+        raw: maxAcc,
+        x: maxAcc ? utils.get2Complement(maxAcc.substring(0, 4), 4) : null,
+        y: maxAcc ? utils.get2Complement(maxAcc.substring(4, 8), 4) : null,
+        z: maxAcc ? utils.get2Complement(maxAcc.substring(8, 12), 4) : null
+      },
+      avgAcceleration: {
+        raw: avgAcc,
+        x: avgAcc ? utils.get2Complement(avgAcc.substring(0, 4), 4) : null,
+        y: avgAcc ? utils.get2Complement(avgAcc.substring(4, 8), 4) : null,
+        z: avgAcc ? utils.get2Complement(avgAcc.substring(8, 12), 4) : null
+      },
+      duration: duration,
+      odometer:
+        parsedData[index + 4] !== '' ? parseFloat(parsedData[index + 4]) : null,
+      hourmeter: null
+    })
   } else {
     // GTBAR report is not parsed because it only supports one device
     data = Object.assign(data, {
