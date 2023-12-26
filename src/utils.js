@@ -666,6 +666,12 @@ const getAlarm = (command, report, extra = false) => {
     return { type: 'Motion_State_Changed', message: messages[command] }
   } else if (command === 'GTPDP') {
     return { type: 'GPRS_Connection_Established', message: messages[command] }
+  } else if (command === 'GTAVC') {
+    return {
+      type: 'Serial_Communication_Status',
+      status: report === '1',
+      message: messages[command][report]
+    }
   } else if (command === 'GTGSS') {
     return {
       type: 'Gps_Status',

@@ -956,6 +956,7 @@ const parse = raw => {
     command[1] === 'GTCRA' ||
     command[1] === 'GTBPL' ||
     command[1] === 'GTSTT' ||
+    command[1] === 'GTAVC' ||
     command[1] === 'GTWPB'
   ) {
     let index = 16 // position append mask

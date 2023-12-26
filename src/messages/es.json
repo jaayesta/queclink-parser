@@ -70,6 +70,10 @@
   },
   "GTPDP": "Conexión GPRS establecida",
   "GTSTT": "Movimiento de dispositivo detectado",
+  "GTAVC": {
+    "0": "Puerto serial desconectado",
+    "1": "Puerto serial conectado"
+  },
   "GTHBD": "Conexión viva",
   "GTRMD": {
     "3": "Bloqueo de roaming",
