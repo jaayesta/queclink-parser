@@ -2841,20 +2841,84 @@ const parse = raw => {
           ? parseInt(parsedData[index])
           : null,
       maxAcceleration: {
+        // Acceleration in m/s2
         raw: maxAcc,
-        x: maxAcc ? utils.get2Complement(maxAcc.substring(0, 4), 4) : null,
-        y: maxAcc ? utils.get2Complement(maxAcc.substring(4, 8), 4) : null,
-        z: maxAcc ? utils.get2Complement(maxAcc.substring(8, 12), 4) : null
+        x: maxAcc
+          ? utils.getAccelerationMagnitude(maxAcc.substring(0, 4), 4)
+          : null,
+        y: maxAcc
+          ? utils.getAccelerationMagnitude(maxAcc.substring(4, 8), 4)
+          : null,
+        z: maxAcc
+          ? utils.getAccelerationMagnitude(maxAcc.substring(8, 12), 4)
+          : null
       },
       avgAcceleration: {
+        // Acceleration in m/s2
         raw: avgAcc,
-        x: avgAcc ? utils.get2Complement(avgAcc.substring(0, 4), 4) : null,
-        y: avgAcc ? utils.get2Complement(avgAcc.substring(4, 8), 4) : null,
-        z: avgAcc ? utils.get2Complement(avgAcc.substring(8, 12), 4) : null
+        x: avgAcc
+          ? utils.getAccelerationMagnitude(avgAcc.substring(0, 4), 4)
+          : null,
+        y: avgAcc
+          ? utils.getAccelerationMagnitude(avgAcc.substring(4, 8), 4)
+          : null,
+        z: avgAcc
+          ? utils.getAccelerationMagnitude(avgAcc.substring(8, 12), 4)
+          : null
       },
       duration: duration,
       odometer:
         parsedData[index + 4] !== '' ? parseFloat(parsedData[index + 4]) : null,
+      hourmeter: null
+    })
+  } else if (command[1] === 'GTAUR') {
+    // Result of AU100 Configuration
+    // Not verified yet (possible error in documentation)
+    let index = 21 // possition append mask
+    let satelliteInfo = false
+
+    // If get satellites is configured
+    if (utils.includeSatellites(parsedData[index])) {
+      index += 1
+      satelliteInfo = true
+    }
+
+    data = Object.assign(data, {
+      alarm: utils.getAlarm(command[1], [
+        parsedData[4],
+        parsedData[5],
+        parsedData[6]
+      ]),
+      loc: {
+        type: 'Point',
+        coordinates: [parseFloat(parsedData[14]), parseFloat(parsedData[15])]
+      },
+      speed: parsedData[11] !== '' ? parseFloat(parsedData[11]) : null,
+      gpsStatus: utils.checkGps(
+        parseFloat(parsedData[14]),
+        parseFloat(parsedData[15])
+      ),
+      hdop: parsedData[10] !== '' ? parseFloat(parsedData[10]) : null,
+      status: null,
+      azimuth: parsedData[12] !== '' ? parseFloat(parsedData[12]) : null,
+      altitude: parsedData[13] !== '' ? parseFloat(parsedData[13]) : null,
+      datetime: parsedData[16] !== '' ? utils.parseDate(parsedData[16]) : null,
+      voltage: {
+        battery: null,
+        inputCharge: null,
+        ada: null,
+        adb: null,
+        adc: null
+      },
+      mcc: parsedData[17] !== '' ? parseInt(parsedData[17], 10) : null,
+      mnc: parsedData[18] !== '' ? parseInt(parsedData[18], 10) : null,
+      lac: parsedData[19] !== '' ? parseInt(parsedData[19], 16) : null,
+      cid: parsedData[20] !== '' ? parseInt(parsedData[20], 16) : null,
+      satellites:
+        satelliteInfo && parsedData[index] !== ''
+          ? parseInt(parsedData[index])
+          : null,
+      odometer: null,
       hourmeter: null
     })
   } else {

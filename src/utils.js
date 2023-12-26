@@ -228,6 +228,15 @@ const dWorkingStates = {
 }
 
 /*
+  Possible port N Types for AU100
+*/
+const portNTypes = {
+  '0': 'Deshabilitado',
+  '1': 'RS232',
+  '3': '1-wire'
+}
+
+/*
   Gets the Queclink Device Type
 */
 const getDevice = raw => {
@@ -299,12 +308,19 @@ const getTempInCelciousDegrees = hexTemp => {
 /*
   Gets the Two's Complement for hex numbers
 */
-const get2Complement = (hexNumber, n) => {
+const getAccelerationMagnitude = (hexNumber, n) => {
   let binNumber = nHexDigit(hex2bin(hexNumber), n * 4)
-  if (binNumber.substring(0, 1) === '0') {
-    return parseInt(hexNumber, 16)
+  if (binNumber.substring(0, 5) !== '11111') {
+    return Number((parseInt(hexNumber, 16) / 82 * 9.80665).toFixed(2))
   }
-  return (parseInt('F'.repeat(n), 16) - parseInt(hexNumber, 16) + 1) * -1
+  return Number(
+    (
+      (parseInt('F'.repeat(n), 16) - parseInt(hexNumber, 16) + 1) *
+      -1 /
+      82 *
+      9.80665
+    ).toFixed(2)
+  )
 }
 
 /*
@@ -424,6 +440,13 @@ const getAlarm = (command, report, extra = false) => {
     }
   } else if (command === 'GTOPN') {
     return { type: 'OBDII_Connected', status: true, message: messages[command] }
+  } else if (command === 'GTAUR') {
+    return {
+      id: report[0] !== '' ? parseInt(report[0]) : null,
+      type: portNTypes[report[1]],
+      status: report[2] === '0',
+      message: messages[command]
+    }
   } else if (command === 'GTOPF') {
     return {
       type: 'OBDII_Connected',
@@ -752,16 +775,16 @@ const getAlarm = (command, report, extra = false) => {
         4: acceleration turning
         5: unknown harsh behavior
       */
-    let x = get2Complement(extra[0].substring(0, 4), 4)
-    let y = get2Complement(extra[0].substring(4, 8), 4)
-    let z = get2Complement(extra[0].substring(8, 12), 4)
+    let x = getAccelerationMagnitude(extra[0].substring(0, 4), 4)
+    let y = getAccelerationMagnitude(extra[0].substring(4, 8), 4)
+    let z = getAccelerationMagnitude(extra[0].substring(8, 12), 4)
     return {
       type: 'Harsh_Behavior_Data',
       calibration: report[0] === '2',
       duration: extra[1],
       magnitude: Number(
         Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2)).toFixed(2)
-      ),
+      ).toString(),
       message: messages[command][report[1]]
     }
   } else if (command === 'GTCRA') {
@@ -975,7 +998,7 @@ module.exports = {
   getProtocolVersion: getProtocolVersion,
   checkGps: checkGps,
   includeSatellites: includeSatellites,
-  get2Complement: get2Complement,
+  getAccelerationMagnitude: getAccelerationMagnitude,
   getTempInCelciousDegrees: getTempInCelciousDegrees,
   getFuelConsumption: getFuelConsumption,
   getHoursForHourmeter: getHoursForHourmeter,

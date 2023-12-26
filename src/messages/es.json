@@ -120,6 +120,7 @@
   "GTPNA": "Dispositivo Encendido",
   "GTIGN": "Entrada digital 1 activada",
   "GTIGF": "Entrada digital 1 desactivada",
+  "GTAUR": "Configuración AU100",
   "GTIGL": {
     "1": "Entrada digital 1 activada",
     "0": "Entrada digital 1 desactivada"
