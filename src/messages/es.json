@@ -211,6 +211,10 @@
   },
   "GTGSM": "Reporte de antenas GSM",
   "GTCRA": "Posible choque detectado",
+  "GTCRG": {
+    "0": "Información previa al posible choque recibida",
+    "1": "Información posterior al posible choque recibida"
+  },
   "GTASC": "Acelerómetro calibrado automáticamente",
   "GTDTT": "Data transparente del puerto serial",
   "GTMON": "Se ha detectado una llamada entrante",

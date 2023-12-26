@@ -672,6 +672,12 @@ const getAlarm = (command, report, extra = false) => {
       status: report === '1',
       message: messages[command][report]
     }
+  } else if (command === 'GTCRG') {
+    return {
+      type: 'Crash_Information',
+      before: report === '0',
+      message: messages[command][report]
+    }
   } else if (command === 'GTGSS') {
     return {
       type: 'Gps_Status',

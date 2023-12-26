@@ -1002,6 +1002,63 @@ const parse = raw => {
       odometer: null,
       hourmeter: null
     })
+  } else if (command[1] === 'GTCRG') {
+    let number = parsedData[5] !== '' ? parseInt(parsedData[5]) : 1
+    let start = 6
+
+    data = Object.assign(data, {
+      alarm: utils.getAlarm(command[1], parsedData[4]),
+      voltage: {
+        battery: null,
+        inputCharge: null,
+        ada: null,
+        adb: null,
+        adc: null
+      }
+    })
+
+    let more = []
+    for (let i = 1; i <= number; i++) {
+      more.push({
+        id: parsedData[start] !== '' ? parseInt(parsedData[start]) : null,
+        loc: {
+          type: 'Point',
+          coordinates: [
+            parseFloat(parsedData[start + 5]),
+            parseFloat(parsedData[start + 6])
+          ]
+        },
+        speed:
+          parsedData[start + 2] !== ''
+            ? parseFloat(parsedData[start + 2])
+            : null,
+        gpsStatus: utils.checkGps(
+          parseFloat(parsedData[start + 5]),
+          parseFloat(parsedData[start + 6])
+        ),
+        hdop:
+          parsedData[start + 1] !== ''
+            ? parseFloat(parsedData[start + 1])
+            : null,
+        azimuth:
+          parsedData[start + 3] !== ''
+            ? parseFloat(parsedData[start + 3])
+            : null,
+        altitude:
+          parsedData[start + 4] !== ''
+            ? parseFloat(parsedData[start + 4])
+            : null,
+        datetime:
+          parsedData[start + 7] !== ''
+            ? utils.parseDate(parsedData[start + 7])
+            : null
+      })
+      start += 8
+    }
+
+    data = Object.assign(data, {
+      gnssData: more
+    })
   } else if (command[1] === 'GTJDS') {
     let index = 17 // position append mask
     let satelliteInfo = false
