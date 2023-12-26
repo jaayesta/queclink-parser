@@ -817,6 +817,16 @@ const getAlarm = (command, report, extra = false) => {
       counter: parseInt(report, 16),
       message: messages[command]
     }
+  } else if (command === 'GTCRD') {
+    return {
+      type: '3Axis_Information  ',
+      message: messages[command]
+    }
+  } else if (command === 'GTACC') {
+    return {
+      type: 'Accelerometer_Info',
+      message: messages[command]
+    }
   } else if (command === 'GTDOG') {
     /*
       status:

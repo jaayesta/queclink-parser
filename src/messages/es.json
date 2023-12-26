@@ -211,6 +211,8 @@
   },
   "GTGSM": "Reporte de antenas GSM",
   "GTCRA": "Posible choque detectado",
+  "GTCRD": "Información del acelerómetro de 3 ejes",
+  "GTACC": "Información del acelerómetro",
   "GTCRG": {
     "0": "Información previa al posible choque recibida",
     "1": "Información posterior al posible choque recibida"
