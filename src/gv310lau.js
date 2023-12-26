@@ -1658,6 +1658,51 @@ const parse = raw => {
       odometer: null,
       hourmeter: null
     })
+  } else if (command[1] === 'GTDOM') {
+    // Waveform beeing monitored
+    let index = 18 // position append mask
+    let satelliteInfo = false
+
+    // If get satellites is configured
+    if (utils.includeSatellites(parsedData[index])) {
+      index += 1
+      satelliteInfo = true
+    }
+
+    data = Object.assign(data, {
+      alarm: utils.getAlarm(command[1], [parsedData[4], parsedData[5]]),
+      loc: {
+        type: 'Point',
+        coordinates: [parseFloat(parsedData[11]), parseFloat(parsedData[12])]
+      },
+      speed: parsedData[8] !== '' ? parseFloat(parsedData[8]) : null,
+      gpsStatus: utils.checkGps(
+        parseFloat(parsedData[11]),
+        parseFloat(parsedData[12])
+      ),
+      hdop: parsedData[7] !== '' ? parseFloat(parsedData[7]) : null,
+      status: null,
+      azimuth: parsedData[9] !== '' ? parseFloat(parsedData[9]) : null,
+      altitude: parsedData[10] !== '' ? parseFloat(parsedData[10]) : null,
+      datetime: parsedData[13] !== '' ? utils.parseDate(parsedData[13]) : null,
+      voltage: {
+        battery: null,
+        inputCharge: null,
+        ada: null,
+        adb: null,
+        adc: null
+      },
+      mcc: parsedData[14] !== '' ? parseInt(parsedData[14], 10) : null,
+      mnc: parsedData[15] !== '' ? parseInt(parsedData[15], 10) : null,
+      lac: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
+      cid: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
+      satellites:
+        satelliteInfo && parsedData[index] !== ''
+          ? parseInt(parsedData[index], 10)
+          : null,
+      odometer: null,
+      hourmeter: null
+    })
   } else if (command[1] === 'GTCID') {
     data = Object.assign(data, {
       alarm: utils.getAlarm(command[1], parsedData[4], 'gv310lau'),

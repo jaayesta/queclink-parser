@@ -715,6 +715,17 @@ const getAlarm = (command, report, extra = false) => {
       status: outputStatus === '1',
       message: messages[command][outputStatus].replace('port', outputId)
     }
+  } else if (command === 'GTDOM') {
+    const waveShape = report[0] !== '' ? parseInt(report[0]) : null
+    const outputId = report[1] !== '' ? parseInt(report[1]) : null
+    return {
+      type: 'DO',
+      number: outputId,
+      wave: waveShape,
+      message: messages[command]
+        .replace('port', outputId)
+        .replace('wave', waveShape)
+    }
   } else if (command === 'GTDAT') {
     return {
       type: 'Serial_Data',
