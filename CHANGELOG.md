@@ -1,3 +1,63 @@
+### 1.6.0 (2024-01-08)
+
+##### New Features
+
+* **GV310LAU:**
+  *  support for new CAN message ([740b9766](https://github.com/jaayesta/queclink-parser/commit/740b9766fc316a2190628d9567912e77881a77d6))
+  *  support CRD & ACC message ([96ad6b97](https://github.com/jaayesta/queclink-parser/commit/96ad6b97b6b8aace45c1975fdfddd2faf6b28bd0))
+  *  support CRG message ([97535bfc](https://github.com/jaayesta/queclink-parser/commit/97535bfcdbeed0806916f5b7bda694baacafdeec))
+  *  support AVC message ([5da24cbd](https://github.com/jaayesta/queclink-parser/commit/5da24cbd4cf74454a6a11273f51fac7d801f4d1c))
+  *  support DOM message ([556d4094](https://github.com/jaayesta/queclink-parser/commit/556d409475e594758ea2b9d9485ea3c5552b79e9))
+  *  support AUR message ([8ee6ea25](https://github.com/jaayesta/queclink-parser/commit/8ee6ea25401c15d986d35e8d085118238ccbd329))
+  *  support for new ASC & HBE message ([c2e9d7bc](https://github.com/jaayesta/queclink-parser/commit/c2e9d7bc3279deda612979508cbbf20ed6685137))
+  *  support for new WPB message and corrections ([af2e8968](https://github.com/jaayesta/queclink-parser/commit/af2e89682aa5b1b6f4efcf51c7dcc0ebde83e5b8))
+  *  support for new LBA message ([62bdd3a0](https://github.com/jaayesta/queclink-parser/commit/62bdd3a050b2dbf8f977e49e1b5642508d7b68d3))
+  *  support for new GTSVR message ([e0f702c9](https://github.com/jaayesta/queclink-parser/commit/e0f702c9249859fa29f3d5821fa957bd00e995a9))
+  *  support for new GTPNR message ([cf332566](https://github.com/jaayesta/queclink-parser/commit/cf332566b7d067b29335115e553460889de5ee15))
+  *  support for GTPNR and GTPFR ([b116ed25](https://github.com/jaayesta/queclink-parser/commit/b116ed259277b183e270ea200509807941437e9c))
+  *  support for GTCLT ([2cc96e2d](https://github.com/jaayesta/queclink-parser/commit/2cc96e2dfd0e363f8dee853a20ae6741691f9e47))
+  *  support for GTGSM ([d302a452](https://github.com/jaayesta/queclink-parser/commit/d302a4524f441c159661337883bb00984f388a23))
+  *  support for GTVGF ([95acd6be](https://github.com/jaayesta/queclink-parser/commit/95acd6be9fb2130ab859e9aa866f28d107bbd62f))
+  *  support for GTVGN ([5c796f14](https://github.com/jaayesta/queclink-parser/commit/5c796f14c9b4fbeeccd7370cd74e77fce9cd2ae9))
+  *  support for GTJDR ([5153d32b](https://github.com/jaayesta/queclink-parser/commit/5153d32baa87d3d7e2a7a0b72c1689e13028dc28))
+  *  support for GTBID ([f0141dd8](https://github.com/jaayesta/queclink-parser/commit/f0141dd8fb1d0a8671530863913b29e6be21ea85))
+  *  support for BT data in GTERI ([84978903](https://github.com/jaayesta/queclink-parser/commit/84978903f4dadbf613cee08695bcb1918697c77c))
+  *  support for BT data in GTERI ([1fa5f3d7](https://github.com/jaayesta/queclink-parser/commit/1fa5f3d797744d41c5b9911249acae78a8b129b0))
+  *  bluetooth beacon accessory (incomplete) ([09a606fb](https://github.com/jaayesta/queclink-parser/commit/09a606fbb552f6deed8c21f7295c49d602c3dd40))
+  *  New BT elements in BCS & BDS ([3fe8ab7b](https://github.com/jaayesta/queclink-parser/commit/3fe8ab7b086c4088467d3b18cea52bbd4efb83fb))
+  *  bluetooth accessories ([429fd42b](https://github.com/jaayesta/queclink-parser/commit/429fd42bd91a4ad365d653ec6b26c16c203fec84))
+  *  bluetooth accessories (incomplete) ([995d86eb](https://github.com/jaayesta/queclink-parser/commit/995d86eb310cc7e29dc2e0567f8c1972c96c97dd))
+  *  bluetooth connected/disconnected ([0550cff1](https://github.com/jaayesta/queclink-parser/commit/0550cff1920d1d64d837ec51222ca05e3f284c89))
+  *  parse and messages for CID, CSQ and VER ([8ed00766](https://github.com/jaayesta/queclink-parser/commit/8ed0076695b269023ed1e41a82992ea5ceffc0ea))
+  *  parse for GSS, CAN, IDA, DAT, DTT and DOS ([02a0fb4e](https://github.com/jaayesta/queclink-parser/commit/02a0fb4ed0807a106ac8b295856660fafb4d748c))
+  *  parse for power, batt, jamming and crash ([efe77794](https://github.com/jaayesta/queclink-parser/commit/efe777941a32184ccee155d7e76ecbcdf1e0589e))
+  *  parse for info, EPS and TMP ([7d072fef](https://github.com/jaayesta/queclink-parser/commit/7d072fefbd65e2a1e7f2c0f83b7ecfad73f7d521))
+* **GV310L:**  parse for FRI, ERI and INF messages ([2c20aaf1](https://github.com/jaayesta/queclink-parser/commit/2c20aaf16909e2c8f06e267ba73b0ce64e24f958))
+* **messages:**
+  *  detail in VGL text ([3d33db8b](https://github.com/jaayesta/queclink-parser/commit/3d33db8b52ae4c0306b267e4ac402d66f36a5648))
+  *  detail in HBM text ([9b02e5b2](https://github.com/jaayesta/queclink-parser/commit/9b02e5b210051586474a42a16b980ef8b7e1991e))
+* **VGL:**  virtual ignition detection ([16e97327](https://github.com/jaayesta/queclink-parser/commit/16e973277c00cac55f20e3eb4726b4b380c403ef))
+* **dog:**  get reason for device reboot ([8b4cec14](https://github.com/jaayesta/queclink-parser/commit/8b4cec1467a63eabcaf462ccca831b34501410bc))
+
+##### Bug Fixes
+
+* **test:**  fix alarm test ([2c7abfd2](https://github.com/jaayesta/queclink-parser/commit/2c7abfd2225e66a180e3a9cbcac2540b3e81da80))
+* **conflict:**  fix last merge conflicts ([cee2ffd2](https://github.com/jaayesta/queclink-parser/commit/cee2ffd2afa6bfc5bab36a6a1d0e1b539c7b52a8))
+* **GV310LAU:**  CAN message ([2a07a396](https://github.com/jaayesta/queclink-parser/commit/2a07a3960a43d71618ba94a731aac64dfe3f0234))
+* **GTCLT:**  line with error ([377cff09](https://github.com/jaayesta/queclink-parser/commit/377cff09446d21f16b0021be1a12373a401b73ea))
+* **messages:**
+  *  detail in VGL text ([d59daa82](https://github.com/jaayesta/queclink-parser/commit/d59daa82fbc40ca9ac89e6c7d813ba2d5350da48))
+  *  correction in VGL text ([d462d72b](https://github.com/jaayesta/queclink-parser/commit/d462d72be4287c84409c0814dbeb10ebe1d31fed))
+  *  new ACKs & DOG messages ([31ca8ff1](https://github.com/jaayesta/queclink-parser/commit/31ca8ff1afce267f8c6b7f482d03b12866281d7f))
+* **DOG:**  better messages ([a264c439](https://github.com/jaayesta/queclink-parser/commit/a264c4394412b2970a9a6bb21950d43a439a2836))
+
+##### Other Changes
+
+* **examples:**
+  *  examples for this dev ([38d586ac](https://github.com/jaayesta/queclink-parser/commit/38d586ac11eac439c3c70d15a8d6aa0f264151db))
+  *  examples for this dev ([d2ac1248](https://github.com/jaayesta/queclink-parser/commit/d2ac1248ef96112cc0f4bec15fb581b3a4628c6d))
+  *  examples for this dev ([befa2630](https://github.com/jaayesta/queclink-parser/commit/befa26302f18fd21983a7328a76af88cfa8818ab))
+
 #### 1.5.5 (2023-10-13)
 
 #### 1.5.4 (2023-10-13)
