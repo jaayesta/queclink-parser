@@ -42,7 +42,8 @@ const devices = {
   '3F': 'GMT100', // New version
   F8: 'GV800W',
   '41': 'GV75W',
-  FC: 'GV600W'
+  FC: 'GV600W',
+  '6E': 'GV310LAU'
 }
 
 /*
@@ -78,12 +79,161 @@ const OBDIIProtocols = {
 }
 
 /*
-  Uart Devices
+  Possible Uart Devices
 */
 const uartDeviceTypes = {
   '0': 'No device',
   '1': 'Digit Fuel Sensor',
-  '2': 'AC100 1 Wire Bus'
+  '2': 'AC100 1 Wire Bus',
+  '5': 'CANBUS device',
+  '6': 'AU100 device',
+  '7': 'RF433 accessory'
+}
+
+/*
+  Possible Data Types for DTT
+*/
+const dataTypes = {
+  '0': 'Binary',
+  '1': 'Hexadecimal'
+}
+/*
+  Possible Network Types
+*/
+const networkTypes = {
+  '0': '2G',
+  '1': '3G',
+  '2': '4G',
+  '99': 'Unknow'
+}
+
+/*
+  Possible GPS Antena Status
+*/
+const externalGPSAntennaOptions = {
+  '0': 'Working',
+  '1': 'Detected in open circuit state',
+  '3': 'Unknow state',
+  '': 'Unknow'
+}
+
+/*
+  Possible Peer roles in Bluetooth
+*/
+const peerRoles = {
+  '0': 'Master',
+  '1': 'Slave'
+}
+
+/*
+  Possible Peer addesses type for Bluetooth
+*/
+const peerAddressesTypes = {
+  '0': 'Public',
+  '1': 'Random'
+}
+
+/*
+  Possible Reasons for bluetooth disconnection
+*/
+const disconnectionReasons = {
+  '0': 'Normal',
+  '4': 'Device  pairing fails'
+}
+
+/*
+  Possible Accesories Types of Bluetooth
+*/
+const bluetoothAccessories = {
+  '0': 'No bluetooth Accessory',
+  '1': 'Escort sensor',
+  '2': 'Beacon temperature sensor',
+  '3': 'Bluetooth beacon accessory',
+  '6': 'Beacon Multi-Functional Sensor',
+  '11': 'Magnet Sensor',
+  '12': 'BLE TPMS sensor',
+  '13': 'Relay Sensor'
+}
+
+/*
+  Possible Accesories Models for Bluetooth Accessories
+*/
+const bluetoothModels = {
+  '1': {
+    '0': 'TD_BLE fuel sensor',
+    '3': 'Angle sensor'
+  },
+  '2': {
+    '0': 'WTS300 (Temperature sensor)',
+    '1': 'Temperature ELA'
+  },
+  '6': {
+    '2': 'WTH300 (Temperature and Humidity Sensor)',
+    '3': 'RHT ELA (Temperature and Humidity Sensor)',
+    '4': 'WMS301 (Door Sensor with embedded Temperature and Humidity Sensor)',
+    '5': 'WTH301 (Temperature and Humidity Sensor)'
+  },
+  '11': {
+    '0': 'MAG ELA (Door Sensor)'
+  },
+  '12': {
+    '0': 'MLD BLE TPMS (ATP100/ATP102)'
+  },
+  '13': {
+    '0': 'WRL300 (Bluetooth Relay)'
+  }
+}
+
+/*
+  Possible Beacon ID Models
+*/
+const beaconModels = {
+  '0': 'WKF300',
+  '1': 'iBeacon E6',
+  '2': 'ID ELA',
+  '4': 'WID310'
+}
+
+/*
+  Possible Beacon Types
+*/
+const beaconTypes = {
+  '0': 'ID',
+  '1': 'iBeacon',
+  '2': 'Eddystone'
+}
+
+/*
+  Possible Driving Time Related States
+*/
+const dTimeStates = {
+  0: 'Sin límites alcanzados',
+  1: 'Conducción sobre 4 horas y 15 minutos',
+  2: 'Conducción sobre 4 horas y 30 minutos',
+  3: 'Conducción sobre 8 horas y 45 minutos',
+  4: 'Conducción sobre 9 horas',
+  5: 'Conducción sobre 15 horas y 45 minutos (con descanso menor a 8 horas en las últimas 24 horas)',
+  6: 'Conducción sobre 16 horas',
+  7: 'Otro límite'
+}
+
+/*
+  Possible Driving Working States
+*/
+const dWorkingStates = {
+  0: 'Normal',
+  1: 'En descanso - Durmiendo',
+  2: 'Conductor disponible - Descanso corto',
+  3: 'Conduciendo - En el volante'
+}
+
+/*
+  Possible port N Types for AU100
+*/
+const portNTypes = {
+  '0': 'Deshabilitado',
+  '1': 'RS232',
+  '3': '1-wire'
 }
 
 /*
@@ -113,6 +263,15 @@ const getProtocolVersion = protocol => {
 }
 
 /*
+  Gets the software/hardware version
+*/
+const getVersion = hexVersion => {
+  const X = parseInt(hexVersion.substring(0, 2), 16)
+  const Y = parseInt(hexVersion.substring(2, 4), 16)
+  return `${X}.${Y}`
+}
+
+/*
   Checks if the location has a valid gps position
 */
 const checkGps = (lng, lat) => {
@@ -121,6 +280,14 @@ const checkGps = (lng, lat) => {
     return true
   }
   return false
+}
+
+/*
+  Returns if the number of satellites is
+  included in the report
+*/
+const includeSatellites = positionAppendMask => {
+  return positionAppendMask === '01'
 }
 
 /*
@@ -136,6 +303,24 @@ const getTempInCelciousDegrees = hexTemp => {
     return (parseInt('FFFF', 16) - parseInt(hexTemp, 16) + 1) * -0.0625
   }
   return parseFloat(hex2dec(hexTemp)) * 0.0625
+}
+
+/*
+  Gets the Two's Complement for hex numbers
+*/
+const getAccelerationMagnitude = (hexNumber, n) => {
+  let binNumber = nHexDigit(hex2bin(hexNumber), n * 4)
+  if (binNumber.substring(0, 5) !== '11111') {
+    return Number((parseInt(hexNumber, 16) / 82 * 9.80665).toFixed(2))
+  }
+  return Number(
+    (
+      (parseInt('F'.repeat(n), 16) - parseInt(hexNumber, 16) + 1) *
+      -1 /
+      82 *
+      9.80665
+    ).toFixed(2)
+  )
 }
 
 /*
@@ -170,6 +355,53 @@ const getHoursForHourmeter = hourmeter => {
   } catch (e) {
     return null
   }
+}
+
+/*
+  Returns the dBm signal strength
+*/
+const getSignalStrength = (networkType, value) => {
+  if (value === 99) {
+    return null
+  }
+
+  let calc, dBm
+  if (networkType === '2G' || networkType === '3G') {
+    calc = 2 * value - 113
+    dBm = calc < -113 ? 0 : calc > -51 ? 100 : calc
+  } else if (networkType === '4G') {
+    calc = 96 / 97 * value - 140
+    dBm = calc < -140 ? 0 : calc > -44 ? 100 : calc
+  } else if (networkType === 'GSM') {
+    calc = value - 110
+    dBm = calc < -110 ? 0 : calc > -47 ? 100 : calc
+  } else {
+    dBm = null
+  }
+
+  return dBm
+}
+
+/*
+  Returns the percentage of signal strength
+*/
+const getSignalPercentage = (networkType, value) => {
+  if (value === 99) {
+    return null
+  }
+
+  let perc
+  if (networkType === '2G' || networkType === '3G') {
+    perc = value / 31 * 100
+  } else if (networkType === '4G') {
+    perc = value / 97 * 100
+  } else if (networkType === 'GSM') {
+    perc = value / 63 * 100
+  } else {
+    perc = null
+  }
+
+  return Math.round((perc + Number.EPSILON) * 100) / 100
 }
 
 /*
@@ -208,6 +440,13 @@ const getAlarm = (command, report, extra = false) => {
     }
   } else if (command === 'GTOPN') {
     return { type: 'OBDII_Connected', status: true, message: messages[command] }
+  } else if (command === 'GTAUR') {
+    return {
+      id: report[0] !== '' ? parseInt(report[0]) : null,
+      type: portNTypes[report[1]],
+      status: report[2] === '0',
+      message: messages[command]
+    }
   } else if (command === 'GTOPF') {
     return {
       type: 'OBDII_Connected',
@@ -229,7 +468,9 @@ const getAlarm = (command, report, extra = false) => {
     if (extra === true && reportID === 1) {
       reportID = 2
     } else if (
-      ['gv800w', 'gv600w', 'gv300w', 'gv75w', 'GMT100'].includes(extra)
+      ['gv800w', 'gv600w', 'gv300w', 'gv310lau', 'gv75w', 'GMT100'].includes(
+        extra
+      )
     ) {
       reportID += 1
     }
@@ -309,10 +550,34 @@ const getAlarm = (command, report, extra = false) => {
       duration: duration,
       message: messages[command]
     }
+  } else if (command === 'GTVGN') {
+    const duration = report[0] !== '' ? parseInt(report[0], 10) : null
+    return {
+      type: 'DI',
+      number: 1,
+      status: true,
+      duration: duration,
+      message: messages[command][report[1]]
+    }
+  } else if (command === 'GTVGF') {
+    const duration = report[0] !== '' ? parseInt(report[0], 10) : null
+    return {
+      type: 'DI',
+      number: 1,
+      status: false,
+      duration: duration,
+      message: messages[command][report[1]]
+    }
   } else if (command === 'GTPNA') {
     return { type: 'Power', status: true, message: messages[command] }
   } else if (command === 'GTPFA') {
     return { type: 'Power', status: false, message: messages[command] }
+  } else if (command === 'GTPNR' || command === 'GTPFR') {
+    return {
+      type: 'Power_Reason',
+      status: command === 'GTPNR',
+      message: messages[command][report]
+    }
   } else if (command === 'GTMPN' || command === 'GTEPN') {
     // Change for connected to power supply
     return { type: 'Charge', status: true, message: messages[command] }
@@ -358,6 +623,12 @@ const getAlarm = (command, report, extra = false) => {
     }
   } else if (command === 'GTEPS') {
     return { type: 'External_Low_battery', message: messages[command] }
+  } else if (command === 'GTSVR') {
+    return {
+      type: 'Stolen_Vehicle_Alarm',
+      status: report === '0',
+      message: messages[command][report]
+    }
   } else if (command === 'GTAIS' || command === 'GTMAI') {
     const reportID = parseInt(report[0], 10)
     const reportType = parseInt(report[1], 10)
@@ -395,6 +666,18 @@ const getAlarm = (command, report, extra = false) => {
     return { type: 'Motion_State_Changed', message: messages[command] }
   } else if (command === 'GTPDP') {
     return { type: 'GPRS_Connection_Established', message: messages[command] }
+  } else if (command === 'GTAVC') {
+    return {
+      type: 'Serial_Communication_Status',
+      status: report === '1',
+      message: messages[command][report]
+    }
+  } else if (command === 'GTCRG') {
+    return {
+      type: 'Crash_Information',
+      before: report === '0',
+      message: messages[command][report]
+    }
   } else if (command === 'GTGSS') {
     return {
       type: 'Gps_Status',
@@ -444,6 +727,17 @@ const getAlarm = (command, report, extra = false) => {
       status: outputStatus === '1',
       message: messages[command][outputStatus].replace('port', outputId)
     }
+  } else if (command === 'GTDOM') {
+    const waveShape = report[0] !== '' ? parseInt(report[0]) : null
+    const outputId = report[1] !== '' ? parseInt(report[1]) : null
+    return {
+      type: 'DO',
+      number: outputId,
+      wave: waveShape,
+      message: messages[command]
+        .replace('port', outputId)
+        .replace('wave', waveShape)
+    }
   } else if (command === 'GTDAT') {
     return {
       type: 'Serial_Data',
@@ -453,7 +747,7 @@ const getAlarm = (command, report, extra = false) => {
   } else if (command === 'GTDTT') {
     return {
       type: 'Transparent_Data',
-      dataType: extra,
+      dataType: dataTypes[extra],
       data: report,
       message: messages[command]
     }
@@ -494,11 +788,43 @@ const getAlarm = (command, report, extra = false) => {
       status: parseInt(reportType, 10),
       message: messages[command][reportType].replace(' at_vel', reportID)
     }
+  } else if (command === 'GTHBE') {
+    /*
+      status:
+        0: braking
+        1: acceleration
+        2: turning
+        3: braking turning
+        4: acceleration turning
+        5: unknown harsh behavior
+      */
+    let x = getAccelerationMagnitude(extra[0].substring(0, 4), 4)
+    let y = getAccelerationMagnitude(extra[0].substring(4, 8), 4)
+    let z = getAccelerationMagnitude(extra[0].substring(8, 12), 4)
+    return {
+      type: 'Harsh_Behavior_Data',
+      calibration: report[0] === '2',
+      duration: extra[1],
+      magnitude: Number(
+        Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2)).toFixed(2)
+      ).toString(),
+      message: messages[command][report[1]]
+    }
   } else if (command === 'GTCRA') {
     return {
       type: 'Crash',
       status: true,
-      counter: report,
+      counter: parseInt(report, 16),
+      message: messages[command]
+    }
+  } else if (command === 'GTCRD') {
+    return {
+      type: '3Axis_Information  ',
+      message: messages[command]
+    }
+  } else if (command === 'GTACC') {
+    return {
+      type: 'Accelerometer_Info',
       message: messages[command]
     }
   } else if (command === 'GTDOG') {
@@ -531,6 +857,46 @@ const getAlarm = (command, report, extra = false) => {
       type: command,
       status: 'CONFIG',
       message: report
+    }
+  } else if (command === 'GTCID') {
+    return {
+      type: command,
+      status: 'CONFIG',
+      message: messages[command].replace('data', report)
+    }
+  } else if (command === 'GTLBA') {
+    let type = report[0]
+    let serial = report[1]
+    return {
+      type: command,
+      status: 'BT_Low_Battery',
+      message: messages[command][type].replace('serial', parseInt(serial, 16))
+    }
+  } else if (command === 'GTCSQ') {
+    return {
+      type: command,
+      status: 'CONFIG',
+      message: messages[command].replace(
+        'data',
+        report !== '' ? 100 * parseInt(parseFloat(report) / 7, 10) : '--'
+      )
+    }
+  } else if (command === 'GTVER') {
+    return {
+      type: command,
+      status: 'CONFIG',
+      message: messages[command]
+        .replace('data0', getVersion(report[0]))
+        .replace('data1', getVersion(report[1]))
+    }
+  } else if (command === 'GTBCS') {
+    return { type: 'Bluetooth_Connected', message: messages[command] }
+  } else if (command === 'GTBDS') {
+    return { type: 'Bluetooth_Disonnected', message: messages[command] }
+  } else if (command === 'GTBAA') {
+    return {
+      type: 'Bluetooth_Alarm',
+      message: messages[command][report]
     }
   } else {
     return {
@@ -621,6 +987,18 @@ const nHexDigit = (num, n) => {
 }
 
 /*
+  Return the sum of ones in hexadecimal number
+*/
+const sumOnes = num => {
+  let sum = 0
+  let hex = hex2bin(num)
+  for (let i = 0; i < hex.length; i++) {
+    sum += parseInt(hex[i])
+  }
+  return sum
+}
+
+/*
   Parses date
 */
 const parseDate = date => {
@@ -638,12 +1016,27 @@ module.exports = {
   OBDIIProtocols: OBDIIProtocols,
   states: states,
   uartDeviceTypes: uartDeviceTypes,
+  networkTypes: networkTypes,
+  externalGPSAntennaOptions: externalGPSAntennaOptions,
+  peerRoles: peerRoles,
+  peerAddressesTypes: peerAddressesTypes,
+  disconnectionReasons: disconnectionReasons,
+  bluetoothAccessories: bluetoothAccessories,
+  bluetoothModels: bluetoothModels,
+  beaconModels: beaconModels,
+  beaconTypes: beaconTypes,
+  dTimeStates: dTimeStates,
+  dWorkingStates: dWorkingStates,
   getDevice: getDevice,
   getProtocolVersion: getProtocolVersion,
   checkGps: checkGps,
+  includeSatellites: includeSatellites,
+  getAccelerationMagnitude: getAccelerationMagnitude,
   getTempInCelciousDegrees: getTempInCelciousDegrees,
   getFuelConsumption: getFuelConsumption,
   getHoursForHourmeter: getHoursForHourmeter,
+  getSignalStrength: getSignalStrength,
+  getSignalPercentage: getSignalPercentage,
   getAlarm: getAlarm,
   bin2dec: bin2dec,
   bin2hex: bin2hex,
@@ -652,5 +1045,6 @@ module.exports = {
   hex2bin: hex2bin,
   hex2dec: hex2dec,
   nHexDigit: nHexDigit,
+  sumOnes: sumOnes,
   parseDate: parseDate
 }

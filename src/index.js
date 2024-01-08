@@ -13,6 +13,7 @@ const gv800w = require('./gv800w.js')
 const gv600w = require('./gv600w.js')
 const gl50 = require('./gl50.js')
 const gv50p = require('./gv50p.js')
+const gv310lau = require('./gv310lau.js')
 
 /*
   Checks if raw comes from a Queclink device
@@ -98,6 +99,8 @@ const parse = (raw, options) => {
       result = getAckCommand(raw.toString(), options.lang)
     } else if (device === 'GV300W') {
       result = gv300w.parse(raw.toString())
+    } else if (device === 'GV310LAU') {
+      result = gv310lau.parse(raw.toString())
     } else if (device === 'GV75W') {
       result = gv75w.parse(raw.toString())
     } else if (device === 'GV300') {

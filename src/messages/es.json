@@ -11,12 +11,18 @@
     "0": "Conductor identificado no autorizado",
     "2": "Término de sesión de conductor identificado."
   },
+  "GTSVR": {
+    "0": "Se perdió conexión con el dispositivo",
+    "1": "Se volvió a conectar el dispositivo",
+    "2": "Falló la conexión del dispositivo durante la instalación"
+  },
   "GTFLA": "Combustible reducido en consumption%",
   "GTTMP": {
     "0": "Temperatura fuera de rango ()",
     "1": "Regreso a temperatura dentro de rango ()"
   },
-  "GTCAN": "Reporte CAN BUS: data",
+  "GTCAN": "Reporte Can Bus",
+  "GTCLT": "Alarma Can Bus", 
   "GTJES": "Resumen de datos OBDII",
   "GTOSM": {
     "0": {
@@ -64,9 +70,15 @@
   },
   "GTPDP": "Conexión GPRS establecida",
   "GTSTT": "Movimiento de dispositivo detectado",
+  "GTAVC": {
+    "0": "Puerto serial desconectado",
+    "1": "Puerto serial conectado"
+  },
   "GTHBD": "Conexión viva",
   "GTRMD": {
-    "1": "Roaming activado",
+    "3": "Bloqueo de roaming",
+    "2": "Roaming desconocido activado",
+    "1": "Roaming conocido activado",
     "0": "Roaming desactivado"
   },
   "GTNMR": {
@@ -78,7 +90,8 @@
   "GTSTR": "Vehículo inicia movimiento",
   "GTANT": {
     "0": "Antena GPS conectada",
-    "1": "Antena GPS desconectada"
+    "1": "Antena GPS desconectada",
+    "3": "Antena GPS en estado desconocido"
   },
   "GTAIS": {
     "2": "Botón SOS presionado"
@@ -111,19 +124,50 @@
   "GTPNA": "Dispositivo Encendido",
   "GTIGN": "Entrada digital 1 activada",
   "GTIGF": "Entrada digital 1 desactivada",
+  "GTAUR": "Configuración AU100",
   "GTIGL": {
     "1": "Entrada digital 1 activada",
     "0": "Entrada digital 1 desactivada"
   },
   "GTVGL": {
-    "1": "Entrada digital 1 activada mode",
-    "0": "Entrada digital 1 desactivada mode"
+    "1": "Entrada virtual 1 activada mode",
+    "0": "Entrada virtual 1 desactivada mode"
+  },
+  "GTVGN": {
+    "0": "Entrada virtual 1 activada por motivo desconocido",
+    "1": "Entrada virtual 1 activada por sensor de movimiento",
+    "2": "Entrada virtual 1 activada por fuente de poder",
+    "3": "Entrada virtual 1 activada por motivo desconocido",
+    "4": "Entrada virtual 1 activada por acelerómetro",
+    "7": "Entrada virtual 1 activada por sensor de movimiento y acelerómetro"
+  },
+  "GTVGF": {
+    "0": "Entrada virtual 1 desactivada por motivo desconocido",
+    "1": "Entrada virtual 1 desactivada por sensor de movimiento",
+    "2": "Entrada virtual 1 desactivada por fuente de poder",
+    "3": "Entrada virtual 1 desactivada por motivo desconocido",
+    "4": "Entrada virtual 1 desactivada por acelerómetro",
+    "7": "Entrada virtual 1 desactivada por sensor de movimiento y acelerómetro"
+  },
+  "GTPNR": {
+    "0": "Normal",
+    "1": "Reinicio por Actualización de Firmware",
+    "2": "Reinicio por comando RTO",
+    "3": "Reinicio por protocolo watchdog",
+    "6": "Reinicio por actualización de configuración"
+  },
+  "GTPFR": {
+    "0": "Apagado por comando RTO",
+    "1": "Batería baja",
+    "2": "Reinicio por comando RTO",
+    "3": "Reinicio por protocolo watchdog"
   },
   "GTSPD": {
     "0": "Exceso de Velocidad",
     "1": "Retorno a velocidad permitida"
   },
   "GTSOS": "Botón SOS presionado",
+  "GTWPB": "Botón SOS presionado",
   "GTTOW": "Vehículo remolcado",
   "GTDIS": {
     "1": "Entrada digital port activada",
@@ -134,6 +178,7 @@
     "1": "Salida digital port activada",
     "0": "Salida digital port desactivada"
   },
+  "GTDOM": "Salida digital port activada con forma de onda wave",
   "GTNMD": {
     "0": "Vehículo en movimiento",
     "1": "Vehículo detenido"
@@ -148,6 +193,14 @@
     "4": "Aceleración Brusca Girando at_vel",
     "5": "Comportamiento Brusco Desconocido at_vel"
   },
+  "GTHBE": {
+    "0": "Fin de Frenada Brusca",
+    "1": "Fin de Aceleración Brusca",
+    "2": "Fin de Giro Brusco",
+    "3": "Fin de Frenada Brusca Girando",
+    "4": "Fin de Aceleración Brusca Girando",
+    "5": "Fin de Comportamiento Brusco Desconocido"
+  },
   "GTDOG": {
     "1": "Dispositivo reiniciado por frecuencia configurada",
     "2": "Dispositivo reiniciado por ignición",
@@ -156,11 +209,48 @@
     "5": "Dispositivo reiniciado por estar sin señal GPRS",
     "6": "Dispositivo reiniciado por error en comunicación"
   },
-  "GTGSM": "GSM Report",
+  "GTGSM": "Reporte de antenas GSM",
   "GTCRA": "Posible choque detectado",
+  "GTCRD": "Información del acelerómetro de 3 ejes",
+  "GTACC": "Información del acelerómetro",
+  "GTCRG": {
+    "0": "Información previa al posible choque recibida",
+    "1": "Información posterior al posible choque recibida"
+  },
   "GTASC": "Acelerómetro calibrado automáticamente",
   "GTDTT": "Data transparente del puerto serial",
   "GTMON": "Se ha detectado una llamada entrante",
+  "GTCID": "ICC de la SIM: data",
+  "GTCSQ": "Nivel de señal GSM: data%",
+  "GTVER": "FW: data0 - HW: data1",
+  "GTBCS": "Accesorio bluetooth conectado",
+  "GTBDS": "Accesorio bluetooth desconectado",
+  "GTBAA": {
+    "00": "Accesorio con batería baja",
+    "01": "Temperatura baja",
+    "02": "Temperatura alta",
+    "03": "Temperatura dentro del rango configurado",
+    "04": "Botón presionado",
+    "07": "Bajo nivel de humedad",
+    "08": "Alto nivel de humedad",
+    "09": "Humedad dentro del rango congigurado",
+    "0A": "Evento de ángulo",
+    "0C": "Evento de magneto",
+    "0E": "Presión baja en neumático",
+    "0F": "Presión alta en neumático",
+    "10": "Presión de neumático en el rango configurado",
+    "11": "No se ha detectado accesorio bluetooth",
+    "12": "Se ha detectado un accesorio bluetooth",
+    "13": "Puerta abierta",
+    "14": "Puerta cerrada",
+    "15": "Evento de relé"
+  },
+  "GTBID": "Se ha detectado baliza bluetooth",
+  "GTLBA": {
+    "1": "Batería baja en el WTS100 con serie serial",
+    "2": "Batería baja en el WTH100 con serie serial",
+    "3": "Batería baja en el botón SOS con seria serial"
+  },
   "+ACK": {
     "GTBSI": "Config: APN",
     "GTSRI": "Config: servidor backend",
