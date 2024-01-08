@@ -836,7 +836,7 @@ describe('queclink-parzer', () => {
       const data = queclink.parse(raw)
       expect(data.alarm.type).to.eq('Roaming')
       expect(data.alarm.status).to.equal(true)
-      expect(data.alarm.message).to.eq('Roaming activado')
+      expect(data.alarm.message).to.eq('Roaming conocido activado')
     })
     it('should return GTSTT alarm', () => {
       const raw = Buffer.from(
