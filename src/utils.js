@@ -266,6 +266,31 @@ const getAlarm = (command, report, extra = false) => {
       status: reportType === 0,
       message: messages[command][reportType === 0 ? '1' : '0']
     }
+  } else if (command === 'GTVGL') {
+    let reportID = parseInt(report[0], 10)
+    const reportType = parseInt(report[1], 10)
+    if (reportID === 0) {
+      reportID = ''
+    } else if (reportID === 1) {
+      reportID = ' por sensor de movimiento'
+    } else if (reportID === 2) {
+      reportID = ' por voltaje de batería'
+    } else if (reportID === 4) {
+      reportID = ' por acelerómetro'
+    } else if (reportID === 7) {
+      reportID = ' por metodología combinada'
+    } else {
+      reportID = ''
+    }
+    return {
+      type: 'DI',
+      number: 1,
+      status: reportType === 0,
+      message: messages[command][reportType === 0 ? '1' : '0'].replace(
+        ' mode',
+        reportID
+      )
+    }
   } else if (command === 'GTIGN') {
     const duration = report !== '' ? parseInt(report, 10) : null
     return {
@@ -453,12 +478,21 @@ const getAlarm = (command, report, extra = false) => {
         4: acceleration turning
         5: unknown harsh behavior
       */
-    // const reportID = parseInt(report[0], 10)
+    let reportID = parseInt(report[0], 10)
+    if (reportID === 1) {
+      reportID = ' con velocidad baja'
+    } else if (reportID === 2) {
+      reportID = ' con velocidad media'
+    } else if (reportID === 3) {
+      reportID = ' con velocidad alta'
+    } else {
+      reportID = ''
+    }
     const reportType = report[1]
     return {
       type: 'Harsh_Behavior',
       status: parseInt(reportType, 10),
-      message: messages[command][reportType]
+      message: messages[command][reportType].replace(' at_vel', reportID)
     }
   } else if (command === 'GTCRA') {
     return {
