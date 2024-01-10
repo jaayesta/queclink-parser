@@ -266,6 +266,9 @@ const getProtocolVersion = protocol => {
   Gets the software/hardware version
 */
 const getVersion = hexVersion => {
+  if (hexVersion === '') {
+    return 'no disponible'
+  }
   const X = parseInt(hexVersion.substring(0, 2), 16)
   const Y = parseInt(hexVersion.substring(2, 4), 16)
   return `${X}.${Y}`
@@ -478,7 +481,7 @@ const getAlarm = (command, report, extra = false) => {
       type: 'DI',
       number: reportID,
       status: reportType === 1,
-      message: messages[command][reportType].replace('port', reportID)
+      message: messages[command][reportType].replace('id',reportID)
     }
   } else if (command === 'GTNMR') {
     const reportType = report[1]
@@ -508,18 +511,16 @@ const getAlarm = (command, report, extra = false) => {
       message: messages[command][reportType === 0 ? '1' : '0']
     }
   } else if (command === 'GTVGL') {
-    let reportID = parseInt(report[0], 10)
-    const reportType = parseInt(report[1], 10)
-    if (reportID === 0) {
-      reportID = ''
-    } else if (reportID === 1) {
-      reportID = ' por sensor de movimiento'
+    let reportID = parseInt(report[0], 16)
+    const reportType = parseInt(report[1], 16)
+    if (reportID === 1) {
+      reportID = 'por seYansor de movimiento'
     } else if (reportID === 2) {
-      reportID = ' por voltaje de batería'
+      reportID = 'por voltaje de batería'
     } else if (reportID === 4) {
-      reportID = ' por acelerómetro'
+      reportID = 'por acelerómetro'
     } else if (reportID === 7) {
-      reportID = ' por metodología combinada'
+      reportID = 'por metodología combinada'
     } else {
       reportID = ''
     }
@@ -527,10 +528,8 @@ const getAlarm = (command, report, extra = false) => {
       type: 'DI',
       number: 1,
       status: reportType === 0,
-      message: messages[command][reportType === 0 ? '1' : '0'].replace(
-        ' mode',
-        reportID
-      )
+      reason: reportID,
+      message: messages[command][reportType === 0 ? '1' : '0']
     }
   } else if (command === 'GTIGN') {
     const duration = report !== '' ? parseInt(report, 10) : null
@@ -725,7 +724,7 @@ const getAlarm = (command, report, extra = false) => {
       type: 'DO',
       number: outputId,
       status: outputStatus === '1',
-      message: messages[command][outputStatus].replace('port', outputId)
+      message: messages[command][outputStatus]
     }
   } else if (command === 'GTDOM') {
     const waveShape = report[0] !== '' ? parseInt(report[0]) : null
@@ -735,8 +734,6 @@ const getAlarm = (command, report, extra = false) => {
       number: outputId,
       wave: waveShape,
       message: messages[command]
-        .replace('port', outputId)
-        .replace('wave', waveShape)
     }
   } else if (command === 'GTDAT') {
     return {
@@ -772,21 +769,23 @@ const getAlarm = (command, report, extra = false) => {
         4: acceleration turning
         5: unknown harsh behavior
       */
-    let reportID = parseInt(report[0], 10)
+    let reportID = parseInt(report[0], 16)
+    let vel
     if (reportID === 1) {
-      reportID = ' con velocidad baja'
+      vel = 'baja'
     } else if (reportID === 2) {
-      reportID = ' con velocidad media'
+      vel = 'media'
     } else if (reportID === 3) {
-      reportID = ' con velocidad alta'
+      vel = 'alta'
     } else {
-      reportID = ''
+      vel = ''
     }
     const reportType = report[1]
     return {
       type: 'Harsh_Behavior',
       status: parseInt(reportType, 10),
-      message: messages[command][reportType].replace(' at_vel', reportID)
+      velocity: vel !== '' ? vel : null,
+      message: messages[command][reportType]
     }
   } else if (command === 'GTHBE') {
     /*
@@ -870,21 +869,24 @@ const getAlarm = (command, report, extra = false) => {
     return {
       type: command,
       status: 'BT_Low_Battery',
-      message: messages[command][type].replace('serial', parseInt(serial, 16))
+      serialNumber: serial !== '' ? parseInt(serial, 16) : null,
+      message: messages[command][type]
     }
   } else if (command === 'GTCSQ') {
     return {
       type: command,
       status: 'CONFIG',
-      message: messages[command].replace(
-        'data',
-        report !== '' ? 100 * parseInt(parseFloat(report) / 7, 10) : '--'
-      )
+      // message: messages[command].replace(
+      //   'data',
+      //   report !== '' ? 100 * parseInt(parseFloat(report) / 7, 10) : '--'
+      // )
     }
   } else if (command === 'GTVER') {
     return {
       type: command,
       status: 'CONFIG',
+      firmware: {raw: report[0], value: parseFloat(getVersion(report[0]))},
+      hardware: {raw: report[1], value: parseFloat(getVersion(report[1]))},
       message: messages[command]
         .replace('data0', getVersion(report[0]))
         .replace('data1', getVersion(report[1]))

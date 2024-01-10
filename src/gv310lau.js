@@ -1947,35 +1947,35 @@ const parse = raw => {
       odometer: null,
       hourmeter: null
     })
-  } else if (command[1] === 'GTCSQ') {
-    data = Object.assign(data, {
-      alarm: utils.getAlarm(command[1], parsedData[5], 'gv310lau'),
-      loc: {
-        type: 'Point',
-        coordinates: [null, null]
-      },
-      speed: null,
-      gpsStatus: null,
-      hdop: null,
-      status: null,
-      azimuth: null,
-      altitude: null,
-      datetime: parsedData[6] !== '' ? utils.parseDate(parsedData[6]) : null,
-      voltage: {
-        battery: null,
-        inputCharge: null,
-        ada: null,
-        adb: null,
-        adc: null
-      },
-      mcc: null,
-      mnc: null,
-      lac: null,
-      cid: null,
-      satellites: null,
-      odometer: null,
-      hourmeter: null
-    })
+  // } else if (command[1] === 'GTCSQ') {
+  //   data = Object.assign(data, {
+  //     alarm: utils.getAlarm(command[1], parsedData[5]),
+  //     loc: {
+  //       type: 'Point',
+  //       coordinates: [null, null]
+  //     },
+  //     speed: null,
+  //     gpsStatus: null,
+  //     hdop: null,
+  //     status: null,
+  //     azimuth: null,
+  //     altitude: null,
+  //     datetime: parsedData[6] !== '' ? utils.parseDate(parsedData[6]) : null,
+  //     voltage: {
+  //       battery: null,
+  //       inputCharge: null,
+  //       ada: null,
+  //       adb: null,
+  //       adc: null
+  //     },
+  //     mcc: null,
+  //     mnc: null,
+  //     lac: null,
+  //     cid: null,
+  //     satellites: null,
+  //     odometer: null,
+  //     hourmeter: null
+  //   })
   } else if (command[1] === 'GTVER') {
     data = Object.assign(data, {
       alarm: utils.getAlarm(
