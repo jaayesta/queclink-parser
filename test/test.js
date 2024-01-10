@@ -39,7 +39,7 @@ describe('queclink-parzer', () => {
       expect(data.device).to.eql('Queclink-COMMAND-OK')
       expect(data.type).to.eql('ok')
       expect(data.command).to.eql('SETIOSWITCH')
-      expect(data.message).to.eql('Cambio de estado en las salidas digitales')
+      expect(data.message).to.eql('Config: salidas digitales')
       expect(data.serial).to.eql(24)
       expect(data.counter).to.eql(23)
     })
@@ -818,7 +818,7 @@ describe('queclink-parzer', () => {
       const data = queclink.parse(raw)
       expect(data.alarm.type).to.eq('Vehicle_Start_Status')
       expect(data.alarm.status).to.equal(false)
-      expect(data.alarm.message).to.eq('Partida de vehículo finalizada')
+      expect(data.alarm.message).to.eq('Detención extendida detectada')
     })
     it('should return GTSTP alarm', () => {
       const raw = Buffer.from(
@@ -827,7 +827,7 @@ describe('queclink-parzer', () => {
       const data = queclink.parse(raw)
       expect(data.alarm.type).to.eq('Vehicle_Start_Status')
       expect(data.alarm.status).to.equal(false)
-      expect(data.alarm.message).to.eq('Partida de vehículo finalizada')
+      expect(data.alarm.message).to.eq('Vehículo detenido')
     })
     it('should return GTRMD alarm', () => {
       const raw = Buffer.from(
@@ -836,7 +836,7 @@ describe('queclink-parzer', () => {
       const data = queclink.parse(raw)
       expect(data.alarm.type).to.eq('Roaming')
       expect(data.alarm.status).to.equal(true)
-      expect(data.alarm.message).to.eq('Roaming activado')
+      expect(data.alarm.message).to.eq('Roaming conocido activado')
     })
     it('should return GTSTT alarm', () => {
       const raw = Buffer.from(

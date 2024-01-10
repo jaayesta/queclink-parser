@@ -9,8 +9,8 @@ const langs = { es: langEs, en: langEn }
 */
 const patterns = {
   message: /^\+RESP.+\$$/,
-  ack: /^\+ACK.+\$$/,
   buffer: /^\+BUFF/,
+  ack: /^\+ACK.+\$$/,
   heartbeat: /^\+ACK:GTHBD.+\$$/
 }
 

@@ -139,6 +139,7 @@ const getAckCommand = (raw, lang) => {
 
   let data = {
     raw: rawData,
+    rawCommand: command[1],
     manufacturer: 'queclink',
     device: 'Queclink-COMMAND-OK',
     type: 'ok',
@@ -146,11 +147,14 @@ const getAckCommand = (raw, lang) => {
       parsedData[parsedData.length - 3] !== ''
         ? parseInt(utils.hex2dec(parsedData[parsedData.length - 3]), 10)
         : null,
-    counter: parseInt(utils.hex2dec(parsedData[parsedData.length - 1]), 10)
+    counter: parseInt(utils.hex2dec(parsedData[parsedData.length - 1]), 10),
+    datetime:
+      parsedData[parsedData.length - 2] !== ''
+        ? utils.parseDate(parsedData[parsedData.length - 2])
+        : null,
+    message: messages['+ACK'][command[1]] || messages.default
   }
 
-  data.message = messages['+ACK'][command[1]] || messages.default
-  data.command = 'CONFIG'
   if (command[1] === 'GTSPD') {
     data.command = 'SETOVERSPEEDALARM'
   } else if (command[1] === 'GTOUT') {
@@ -167,6 +171,8 @@ const getAckCommand = (raw, lang) => {
     }
   } else if (command[1] === 'GTJBS') {
     data.command = 'ANTIJAMMER'
+  } else {
+    data.command = 'CONFIG'
   }
   return data
 }
