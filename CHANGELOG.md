@@ -1,3 +1,9 @@
+#### 1.8.4 (2024-01-11)
+
+##### Bug Fixes
+
+* **replace:**  new 'replace' deleted in utils. ([37598dfc](https://github.com/jaayesta/queclink-parser/commit/37598dfc8017fbbf8d0ea2ed40228c3f31408f7e))
+
 #### 1.8.3 (2024-01-08)
 
 #### 1.8.2 (2024-01-08)
