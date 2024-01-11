@@ -170,15 +170,15 @@
   "GTWPB": "Botón SOS presionado",
   "GTTOW": "Vehículo remolcado",
   "GTDIS": {
-    "1": "Entrada digital port activada",
-    "0": "Entrada digital port desactivada"
+    "1": "Entrada digital id activada",
+    "0": "Entrada digital id desactivada"
   },
   "GTIOB": "Salida digital modificada por IOB",
   "GTDOS": {
-    "1": "Salida digital port activada",
-    "0": "Salida digital port desactivada"
+    "1": "Salida digital activada",
+    "0": "Salida digital desactivada"
   },
-  "GTDOM": "Salida digital port activada con forma de onda wave",
+  "GTDOM": "Salida digital activada",
   "GTNMD": {
     "0": "Vehículo en movimiento",
     "1": "Vehículo detenido"
@@ -186,12 +186,12 @@
   "GTDAT": "Datos del puerto serial recibidos",
   "GTSOA": "Compartimento tarjeta SIM abierto",
   "GTHBM": {
-    "0": "Frenada Brusca at_vel",
-    "1": "Aceleración Brusca at_vel",
-    "2": "Giro Brusco at_vel",
-    "3": "Frenada Brusca Girando at_vel",
-    "4": "Aceleración Brusca Girando at_vel",
-    "5": "Comportamiento Brusco Desconocido at_vel"
+    "0": "Frenada Brusca",
+    "1": "Aceleración Brusca",
+    "2": "Giro Brusco",
+    "3": "Frenada Brusca Girando",
+    "4": "Aceleración Brusca Girando",
+    "5": "Comportamiento Brusco Desconocido"
   },
   "GTHBE": {
     "0": "Fin de Frenada Brusca",
@@ -247,9 +247,9 @@
   },
   "GTBID": "Se ha detectado baliza bluetooth",
   "GTLBA": {
-    "1": "Batería baja en el WTS100 con serie serial",
-    "2": "Batería baja en el WTH100 con serie serial",
-    "3": "Batería baja en el botón SOS con seria serial"
+    "1": "Batería baja en el WTS100",
+    "2": "Batería baja en el WTH100",
+    "3": "Batería baja en el botón SOS bluetooth"
   },
   "+ACK": {
     "GTBSI": "Config: APN",
