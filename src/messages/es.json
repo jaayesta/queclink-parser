@@ -150,15 +150,15 @@
     "7": "Entrada virtual 1 desactivada por sensor de movimiento y acelerómetro"
   },
   "GTPNR": {
-    "0": "Normal",
+    "0": "Dispositivo encendido normalmente",
     "1": "Reinicio por Actualización de Firmware",
-    "2": "Reinicio por comando RTO",
-    "3": "Reinicio por protocolo watchdog",
+    "2": "Dispositivo encendido por reinicio",
+    "3": "Dispositivo encendido por protocolo watchdog",
     "6": "Reinicio por actualización de configuración"
   },
   "GTPFR": {
     "0": "Apagado por comando RTO",
-    "1": "Batería baja",
+    "1": "Apagado por batería baja",
     "2": "Reinicio por comando RTO",
     "3": "Reinicio por protocolo watchdog"
   },
