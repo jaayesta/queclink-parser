@@ -2210,10 +2210,16 @@ const parse = raw => {
       hourmeter: null,
       bluetooth: {
         raw: null,
-        connected: null,
+        connected: btAccessory !== '',
         bluetoothInfo: {
-          name: null,
-          mac: null
+          name:
+            parsedData[aNameIx] !== '' && appendMask[15] === '1'
+              ? parsedData[aNameIx]
+              : null,
+            mac:
+              parsedData[aMacIx] !== '' && appendMask[14] === '1'
+                ? parsedData[aMacIx]
+                : null,
         },
         accessoryInfo: {
           accesory:
