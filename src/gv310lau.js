@@ -2024,12 +2024,12 @@ const parse = raw => {
       alarm: utils.getAlarm(command[1], null, 'gv310lau'),
       loc: {
         type: 'Point',
-        coordinates: [parseFloat(parsedData[11]), parseFloat(parsedData[12])]
+        coordinates: [parseFloat(parsedData[9]), parseFloat(parsedData[10])]
       },
       speed: parsedData[6] !== '' ? parseFloat(parsedData[6]) : null,
       gpsStatus: utils.checkGps(
-        parseFloat(parsedData[11]),
-        parseFloat(parsedData[12])
+        parseFloat(parsedData[9]),
+        parseFloat(parsedData[10])
       ),
       hdop: parsedData[5] !== '' ? parseFloat(parsedData[5]) : null,
       status: null,
