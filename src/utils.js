@@ -466,8 +466,8 @@ const getAlarm = (command, report, extra = false) => {
   } else if (command === 'GTINF') {
     return { type: 'General_Info_Report' }
   } else if (command === 'GTDIS') {
-    let reportID = parseInt(report[0], 10)
-    const reportType = parseInt(report[1], 10)
+    let reportID = parseInt(report[0], 16)
+    const reportType = parseInt(report[1], 16)
     if (extra === true && reportID === 1) {
       reportID = 2
     } else if (
@@ -480,8 +480,8 @@ const getAlarm = (command, report, extra = false) => {
     return {
       type: 'DI',
       number: reportID,
-      status: reportType === 1,
-      message: messages[command][reportType].replace('id',reportID)
+      status: reportType === 1, 
+      message: messages[command][report[1]].replace('id',reportID)
     }
   } else if (command === 'GTNMR') {
     const reportType = report[1]

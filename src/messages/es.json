@@ -219,7 +219,7 @@
   },
   "GTASC": "Acelerómetro calibrado automáticamente",
   "GTDTT": "Data transparente del puerto serial",
-  "GTMON": "Se ha detectado una llamada entrante",
+  "GTMON": "Llamada telefónica completada",
   "GTCID": "ICC de la SIM: data",
   "GTCSQ": "Nivel de señal GSM: data%",
   "GTVER": "FW: data0 - HW: data1",
