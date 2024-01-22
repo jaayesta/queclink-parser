@@ -43,7 +43,8 @@ const devices = {
   F8: 'GV800W',
   '41': 'GV75W',
   FC: 'GV600W',
-  '6E': 'GV310LAU'
+  '6E': 'GV310LAU',
+  '802004': 'GV58LAU'
 }
 
 /*
@@ -250,18 +251,31 @@ const getDevice = raw => {
   Gets the protocol version
 */
 const getProtocolVersion = protocol => {
-  return {
-    raw: protocol,
-    deviceType: devices.hasOwnProperty(protocol.substring(0, 2))
+  let deviceType
+  let deviceVersion
+  if (protocol.substring(0, 6) === '802004') {
+    deviceType = devices.hasOwnProperty(protocol.substring(0, 6))
+      ? devices[protocol.substring(0, 6)]
+      : null
+    deviceVersion = `${parseInt(protocol.substring(6, 8), 16)}.${parseInt(
+      protocol.substring(8, 10),
+      16
+    )}`
+  } else {
+    deviceType = devices.hasOwnProperty(protocol.substring(0, 2))
       ? devices[protocol.substring(0, 2)]
-      : null,
-    version: `${parseInt(protocol.substring(2, 4), 16)}.${parseInt(
+      : null
+    deviceVersion = `${parseInt(protocol.substring(2, 4), 16)}.${parseInt(
       protocol.substring(4, 6),
       16
     )}`
   }
+  return {
+    raw: protocol,
+    deviceType: deviceType,
+    version: deviceVersion
+  }
 }
-
 /*
   Gets the software/hardware version
 */
@@ -290,7 +304,7 @@ const checkGps = (lng, lat) => {
   included in the report
 */
 const includeSatellites = positionAppendMask => {
-  return positionAppendMask === '01'
+  return ['01', '03', '05', '07'].includes(positionAppendMask)
 }
 
 /*
@@ -480,8 +494,8 @@ const getAlarm = (command, report, extra = false) => {
     return {
       type: 'DI',
       number: reportID,
-      status: reportType === 1, 
-      message: messages[command][report[1]].replace('id',reportID)
+      status: reportType === 1,
+      message: messages[command][report[1]].replace('id', reportID)
     }
   } else if (command === 'GTNMR') {
     const reportType = report[1]
@@ -514,13 +528,13 @@ const getAlarm = (command, report, extra = false) => {
     let reportID = parseInt(report[0], 16)
     const reportType = parseInt(report[1], 16)
     if (reportID === 1) {
-      reportID = 'por seYansor de movimiento'
+      reportID = 'sensor de movimiento'
     } else if (reportID === 2) {
-      reportID = 'por voltaje de batería'
+      reportID = 'voltaje de batería'
     } else if (reportID === 4) {
-      reportID = 'por acelerómetro'
+      reportID = 'acelerómetro'
     } else if (reportID === 7) {
-      reportID = 'por metodología combinada'
+      reportID = 'sensor de movimiento, voltaje o acelerómetro'
     } else {
       reportID = ''
     }
@@ -875,7 +889,7 @@ const getAlarm = (command, report, extra = false) => {
   } else if (command === 'GTCSQ') {
     return {
       type: command,
-      status: 'CONFIG',
+      status: 'CONFIG'
       // message: messages[command].replace(
       //   'data',
       //   report !== '' ? 100 * parseInt(parseFloat(report) / 7, 10) : '--'
@@ -885,8 +899,8 @@ const getAlarm = (command, report, extra = false) => {
     return {
       type: command,
       status: 'CONFIG',
-      firmware: {raw: report[0], value: parseFloat(getVersion(report[0]))},
-      hardware: {raw: report[1], value: parseFloat(getVersion(report[1]))},
+      firmware: { raw: report[0], value: parseFloat(getVersion(report[0])) },
+      hardware: { raw: report[1], value: parseFloat(getVersion(report[1])) },
       message: messages[command]
         .replace('data0', getVersion(report[0]))
         .replace('data1', getVersion(report[1]))
