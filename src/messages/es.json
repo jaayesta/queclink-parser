@@ -150,17 +150,17 @@
     "7": "Entrada virtual 1 desactivada por sensor de movimiento y acelerómetro"
   },
   "GTPNR": {
-    "0": "Dispositivo encendido normalmente",
-    "1": "Reinicio por Actualización de Firmware",
-    "2": "Dispositivo encendido por reinicio",
-    "3": "Dispositivo encendido por protocolo watchdog",
+    "0": "Dispositivo encendido",
+    "1": "Dispositivo reiniciado por Actualización de Firmware",
+    "2": "Dispositivo operando nuevamente",
+    "3": "Dispositivo operando nuevamente",
     "6": "Reinicio por actualización de configuración"
   },
   "GTPFR": {
-    "0": "Apagado por comando RTO",
-    "1": "Apagado por batería baja",
-    "2": "Reinicio por comando RTO",
-    "3": "Reinicio por protocolo watchdog"
+    "0": "Dispositivo apagado remotamente",
+    "1": "Dispositivo apagado por batería baja",
+    "2": "Dispositivo apagado por reinicio remoto",
+    "3": "Dispositivo apagado por protocolo watchdog"
   },
   "GTSPD": {
     "0": "Exceso de Velocidad",
