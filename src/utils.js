@@ -109,6 +109,17 @@ const networkTypes = {
 }
 
 /*
+  Possible Jammed Network Types
+*/
+const jammingNetworkTypes = {
+  '1': '2G',
+  '2': '4G',
+  '3': '2G, 3G y 4G',
+  '4': '3G',
+  '5': '2G y 3G'
+}
+
+/*
   Possible GPS Antena Status
 */
 const externalGPSAntennaOptions = {
@@ -628,13 +639,15 @@ const getAlarm = (command, report, extra = false) => {
       type: 'Jamming',
       status: true,
       gps: false,
-      message: messages[command]
+      jammingNetwork: jammingNetworkTypes[report],
+      message: report !== '' ? `${messages[command]}: ${jammingNetworkTypes[report]}` : messages[command]
     }
   } else if (command === 'GTJDS') {
     return {
       type: 'Jamming',
       status: report === '2',
       gps: false,
+      jammingNetwork: typeof(extra) !== 'undefined' && extra !== '' ? jammingNetworkTypes[extra] : null,
       message: messages[command][report]
     }
   } else if (command === 'GTGPJ') {
@@ -886,7 +899,13 @@ const getAlarm = (command, report, extra = false) => {
     return {
       type: command,
       status: 'CONFIG',
-      message: messages[command].replace('data', report)
+      message: report !== '' ? messages[command].replace('data', report) : messages[command].replace('data', '-')
+    }
+  } else if (command === 'GTSCS') {
+    return {
+      type: command,
+      status: 'CONFIG',
+      selfCalibration: report.split(',')[4] === '2'
     }
   } else if (command === 'GTLBA') {
     let type = report[0]
@@ -897,24 +916,22 @@ const getAlarm = (command, report, extra = false) => {
       serialNumber: serial !== '' ? parseInt(serial, 16) : null,
       message: messages[command][type]
     }
-  } else if (command === 'GTCSQ') {
+  } else if (command === 'GTCSQ' || command === 'GTATI') {
     return {
       type: command,
-      status: 'CONFIG'
-      // message: messages[command].replace(
-      //   'data',
-      //   report !== '' ? 100 * parseInt(parseFloat(report) / 7, 10) : '--'
-      // )
+      status: 'CONFIG',
+      message: report
     }
   } else if (command === 'GTVER') {
     return {
       type: command,
       status: 'CONFIG',
-      firmware: { raw: report[0], value: parseFloat(getVersion(report[0])) },
-      hardware: { raw: report[1], value: parseFloat(getVersion(report[1])) },
-      message: messages[command]
+      firmware: report[0] !== '' ? { raw: report[0], value: parseFloat(getVersion(report[0])) } : null,
+      hardware: report[1] !== '' ? { raw: report[1], value: parseFloat(getVersion(report[1])) } : null,
+      message: report[0] !== '' && report[1] !== '' ? 
+        messages[command]
         .replace('data0', getVersion(report[0]))
-        .replace('data1', getVersion(report[1]))
+        .replace('data1', getVersion(report[1])) : 'Datos de versión incompletos'
     }
   } else if (command === 'GTBCS') {
     return { type: 'Bluetooth_Connected', message: messages[command] }

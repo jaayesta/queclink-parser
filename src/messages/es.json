@@ -100,7 +100,7 @@
     "2": "Botón SOS presionado"
   },
   "GTEPS": "Batería de Fuente de Poder Baja",
-  "GTJDR": "Vehículo Jammeado",
+  "GTJDR": "Jamming detectado",
   "GTJDS": {
     "1": "Cese de Jammer",
     "2": "Vehículo Jammeado"
