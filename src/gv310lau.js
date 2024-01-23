@@ -32,15 +32,16 @@ const parse = raw => {
   if (command[1] === 'GTFRI') {
     try {
       let number = parsedData[6] !== '' ? parseInt(parsedData[6], 10) : 1
-      let index = 6 + 12 * number // position append mask
+      let index = 6 + 12 * number
       let satelliteInfo = false
-
+      
       // If get satellites is configured
       if (utils.includeSatellites(parsedData[18])) {
-        index += 1
+        index = 6 + 13 * number
         satelliteInfo = true
       }
 
+      console.log(index + 7)
       data = Object.assign(data, {
         alarm: utils.getAlarm(command[1], null),
         loc: {
@@ -54,7 +55,6 @@ const parse = raw => {
         ),
         hdop: parsedData[7] !== '' ? parseFloat(parsedData[7]) : null,
         status: {
-          // parsedData[26]
           raw: parsedData[index + 7],
           sos: false,
           input: {
@@ -130,15 +130,15 @@ const parse = raw => {
           inputCharge:
             parsedData[4] !== '' ? parseFloat(parsedData[4]) / 1000 : null,
           ada:
-            parsedData[index + 4] !== ''
+            parsedData[index + 3] !== ''
               ? parseFloat(parsedData[index + 3]) / 1000
               : null,
           adb:
-            parsedData[index + 5] !== ''
+            parsedData[index + 4] !== ''
               ? parseFloat(parsedData[index + 4]) / 1000
               : null,
           adc:
-            parsedData[index + 6] !== ''
+            parsedData[index + 5] !== ''
               ? parseFloat(parsedData[index + 5]) / 1000
               : null
         },
@@ -168,9 +168,9 @@ const parse = raw => {
     let index = 7 + 12 * number // position append mask
     let satelliteInfo = false
 
-    // If get satellites is configured
-    if (utils.includeSatellites(parsedData[index])) {
-      index += 1
+     // If get satellites is configured
+     if (utils.includeSatellites(parsedData[19])) {
+      index = 6 + 13 * number
       satelliteInfo = true
     }
 
@@ -597,17 +597,17 @@ const parse = raw => {
       alarm: utils.getAlarm(command[1], null),
       state: utils.states[parsedData[4]],
       gsmInfo: {
-        SIM_ICC: parsedData[5],
-        networkType: utils.networkTypes[parsedData[10]],
-        RSSI: parseInt(parsedData[6], 10),
-        RSSI_quality: utils.getSignalStrength(
+        SIM_ICC: parsedData[5] !== '' ? parsedData[5] : null,
+        networkType: parsedData[10] !== '' ? utils.networkTypes[parsedData[10]] : null,
+        RSSI: parsedData[6] !== '' ? parseInt(parsedData[6], 10) : null,
+        RSSI_quality: parsedData[10] !== '' ? utils.getSignalStrength(
           utils.networkTypes[parsedData[10]],
           parseInt(parsedData[6], 10)
-        ), // Signal Strength
-        RSSI_percentage: utils.getSignalPercentage(
+        ) : null, // Signal Strength
+        RSSI_percentage: parsedData[10] !== '' ? utils.getSignalPercentage(
           utils.networkTypes[parsedData[10]],
           parseInt(parsedData[6], 10)
-        ), // Signal Percetange
+        ) : null, // Signal Percetange
         GSM_quality:
           parsedData[7] !== ''
             ? 100 * parseInt(parseFloat(parsedData[7]) / 7, 10)
@@ -1298,8 +1298,8 @@ const parse = raw => {
     let satelliteInfo = false
 
     // If get satellites is configured
-    if (utils.includeSatellites(parsedData[index])) {
-      index += 1
+    if (utils.includeSatellites(parsedData[19])) {
+      index = 7 + 13 * number
       satelliteInfo = true
     }
 
@@ -1918,35 +1918,35 @@ const parse = raw => {
       odometer: null,
       hourmeter: null
     })
-  } else if (command[1] === 'GTCID') {
-    data = Object.assign(data, {
-      alarm: utils.getAlarm(command[1], parsedData[4], 'gv310lau'),
-      loc: {
-        type: 'Point',
-        coordinates: [null, null]
-      },
-      speed: null,
-      gpsStatus: null,
-      hdop: null,
-      status: null,
-      azimuth: null,
-      altitude: null,
-      datetime: parsedData[5] !== '' ? utils.parseDate(parsedData[5]) : null,
-      voltage: {
-        battery: null,
-        inputCharge: null,
-        ada: null,
-        adb: null,
-        adc: null
-      },
-      mcc: null,
-      mnc: null,
-      lac: null,
-      cid: null,
-      satellites: null,
-      odometer: null,
-      hourmeter: null
-    })
+  // } else if (command[1] === 'GTCID') {
+  //   data = Object.assign(data, {
+  //     alarm: utils.getAlarm(command[1], parsedData[4], 'gv310lau'),
+  //     loc: {
+  //       type: 'Point',
+  //       coordinates: [null, null]
+  //     },
+  //     speed: null,
+  //     gpsStatus: null,
+  //     hdop: null,
+  //     status: null,
+  //     azimuth: null,
+  //     altitude: null,
+  //     datetime: parsedData[5] !== '' ? utils.parseDate(parsedData[5]) : null,
+  //     voltage: {
+  //       battery: null,
+  //       inputCharge: null,
+  //       ada: null,
+  //       adb: null,
+  //       adc: null
+  //     },
+  //     mcc: null,
+  //     mnc: null,
+  //     lac: null,
+  //     cid: null,
+  //     satellites: null,
+  //     odometer: null,
+  //     hourmeter: null
+  //   })
   // } else if (command[1] === 'GTCSQ') {
   //   data = Object.assign(data, {
   //     alarm: utils.getAlarm(command[1], parsedData[5]),
