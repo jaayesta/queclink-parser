@@ -238,6 +238,17 @@ const portNTypes = {
 }
 
 /*
+  GNSS Trigger Types
+*/
+const gnssTriggerTypes = {
+  '0': 'Tiempo',
+  '1': 'Esquina',
+  '2': 'Distancia',
+  '3': 'Kilometraje',
+  '4': 'Óptimo (tiempo y distancia)'
+}
+
+/*
   Gets the Queclink Device Type
 */
 const getDevice = raw => {
@@ -1043,6 +1054,7 @@ module.exports = {
   beaconTypes: beaconTypes,
   dTimeStates: dTimeStates,
   dWorkingStates: dWorkingStates,
+  gnssTriggerTypes: gnssTriggerTypes,
   getDevice: getDevice,
   getProtocolVersion: getProtocolVersion,
   checkGps: checkGps,

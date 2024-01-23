@@ -35,11 +35,17 @@ const parse = raw => {
       let index = 6 + 12 * number // position append mask
       let satelliteInfo = false
 
+      let includeGnssTrigger = ['02', '03', '06', '07'].includes(
+        parsedData[index]
+      )
+
       // If get satellites is configured
-      if (utils.includeSatellites(parsedData[18])) {
+      if (utils.includeSatellites(parsedData[index])) {
         index += 1
         satelliteInfo = true
       }
+
+      let statusIx = includeGnssTrigger ? index + 8 : index + 7
 
       data = Object.assign(data, {
         alarm: utils.getAlarm(command[1], null),
@@ -54,93 +60,54 @@ const parse = raw => {
         ),
         hdop: parsedData[7] !== '' ? parseFloat(parsedData[7]) : null,
         status: {
-          // parsedData[26]
-          raw: parsedData[index + 7],
+          raw: parsedData[statusIx],
           sos: false,
           input: {
-            '1':
-              utils.nHexDigit(
-                utils.hex2bin(
-                  utils.nHexDigit(parsedData[index + 7], 10).substring(6, 8)
-                ),
-                4
-              )[3] === '1',
             '2':
               utils.nHexDigit(
-                utils.hex2bin(
-                  utils.nHexDigit(parsedData[index + 7], 10).substring(6, 8)
-                ),
-                4
-              )[2] === '1',
-            '3':
+                utils.hex2bin(parsedData[statusIx].substring(2, 4)),
+                8
+              )[7] === '1',
+            '1':
               utils.nHexDigit(
-                utils.hex2bin(
-                  utils.nHexDigit(parsedData[index + 7], 10).substring(6, 8)
-                ),
-                4
-              )[1] === '1',
-            '4':
-              utils.nHexDigit(
-                utils.hex2bin(
-                  utils.nHexDigit(parsedData[index + 7], 10).substring(6, 8)
-                ),
-                4
-              )[0] === '1'
+                utils.hex2bin(parsedData[statusIx].substring(2, 4)),
+                8
+              )[6] === '1'
           },
           output: {
-            '1':
-              utils.nHexDigit(
-                utils.hex2bin(
-                  utils.nHexDigit(parsedData[index + 7], 10).substring(8, 10)
-                ),
-                3
-              )[2] === '1',
-            '2':
-              utils.nHexDigit(
-                utils.hex2bin(
-                  utils.nHexDigit(parsedData[index + 7], 10).substring(8, 10)
-                ),
-                3
-              )[1] === '1',
             '3':
               utils.nHexDigit(
-                utils.hex2bin(
-                  utils.nHexDigit(parsedData[index + 7], 10).substring(8, 10)
-                ),
-                3
-              )[0] === '1'
+                utils.hex2bin(parsedData[statusIx].substring(4, 6)),
+                8
+              )[5] === '1',
+            '2':
+              utils.nHexDigit(
+                utils.hex2bin(parsedData[statusIx].substring(4, 6)),
+                8
+              )[6] === '1',
+            '1':
+              utils.nHexDigit(
+                utils.hex2bin(parsedData[statusIx].substring(4, 6)),
+                8
+              )[7] === '1'
           },
           charge: parseFloat(parsedData[4]) > 5,
-          state:
-            utils.nHexDigit(parsedData[index + 7], 10).substring(4, 6) !== ''
-              ? utils.states[ // eslint-disable-line
-                utils.nHexDigit(parsedData[index + 7], 10).substring(4, 6)
-              ]
-              : null
+          state: utils.states[parsedData[statusIx].substring(0, 2)]
         },
         azimuth: parsedData[9] !== '' ? parseFloat(parsedData[9]) : null,
         altitude: parsedData[10] !== '' ? parseFloat(parsedData[10]) : null,
         datetime:
           parsedData[13] !== '' ? utils.parseDate(parsedData[13]) : null,
         voltage: {
-          battery:
-            parsedData[index + 6] !== ''
-              ? parseFloat(parsedData[index + 6])
-              : null, // percentage
-          inputCharge:
-            parsedData[4] !== '' ? parseFloat(parsedData[4]) / 1000 : null,
-          ada:
-            parsedData[index + 4] !== ''
-              ? parseFloat(parsedData[index + 3]) / 1000
-              : null,
-          adb:
-            parsedData[index + 5] !== ''
-              ? parseFloat(parsedData[index + 4]) / 1000
-              : null,
-          adc:
-            parsedData[index + 6] !== ''
-              ? parseFloat(parsedData[index + 5]) / 1000
+          battery: includeGnssTrigger
+            ? parsedData[index + 7] !== ''
+              ? parseFloat(parsedData[index + 7])
               : null
+            : parsedData[index + 6] !== ''
+              ? parseFloat(parsedData[index + 6])
+              : null,
+          inputCharge:
+            parsedData[4] !== '' ? parseFloat(parsedData[4]) / 1000 : null
         },
         mcc: parsedData[13] !== '' ? parseInt(parsedData[14], 10) : null,
         mnc: parsedData[14] !== '' ? parseInt(parsedData[15], 10) : null,
@@ -150,12 +117,22 @@ const parse = raw => {
           satelliteInfo && parsedData[index] !== ''
             ? parseInt(parsedData[index], 10)
             : null,
-        odometer:
-          parsedData[index + 1] !== ''
+        gnssTrigger:
+          includeGnssTrigger && parsedData[index + 1] !== ''
+            ? utils.gnssTriggerTypes[parsedData[index + 1]]
+            : null,
+        odometer: includeGnssTrigger
+          ? parsedData[index + 2] !== ''
+            ? parseFloat(parsedData[index + 2])
+            : null
+          : parsedData[index + 1] !== ''
             ? parseFloat(parsedData[index + 1])
             : null,
-        hourmeter:
-          parsedData[index + 2] !== ''
+        hourmeter: includeGnssTrigger
+          ? parsedData[index + 3] !== ''
+            ? utils.getHoursForHourmeter(parsedData[index + 3])
+            : null
+          : parsedData[index + 2] !== ''
             ? utils.getHoursForHourmeter(parsedData[index + 2])
             : null
       })
@@ -168,11 +145,17 @@ const parse = raw => {
     let index = 7 + 12 * number // position append mask
     let satelliteInfo = false
 
+    let includeGnssTrigger = ['02', '03', '06', '07'].includes(
+      parsedData[index]
+    )
+
     // If get satellites is configured
     if (utils.includeSatellites(parsedData[index])) {
       index += 1
       satelliteInfo = true
     }
+
+    let statusIx = includeGnssTrigger ? index + 8 : index + 7
 
     data = Object.assign(data, {
       alarm: utils.getAlarm(command[1], null),
@@ -187,69 +170,39 @@ const parse = raw => {
       ),
       hdop: parsedData[8] !== '' ? parseFloat(parsedData[8]) : null,
       status: {
-        // parsedData[index + 7]
-        raw: parsedData[index + 7],
+        raw: parsedData[statusIx],
         sos: false,
         input: {
-          '1':
-            utils.nHexDigit(
-              utils.hex2bin(
-                utils.nHexDigit(parsedData[index + 7], 10).substring(6, 8)
-              ),
-              4
-            )[3] === '1',
           '2':
             utils.nHexDigit(
-              utils.hex2bin(
-                utils.nHexDigit(parsedData[index + 7], 10).substring(6, 8)
-              ),
-              4
-            )[2] === '1',
-          '3':
+              utils.hex2bin(parsedData[statusIx].substring(2, 4)),
+              8
+            )[7] === '1',
+          '1':
             utils.nHexDigit(
-              utils.hex2bin(
-                utils.nHexDigit(parsedData[index + 7], 10).substring(6, 8)
-              ),
-              4
-            )[1] === '1',
-          '4':
-            utils.nHexDigit(
-              utils.hex2bin(
-                utils.nHexDigit(parsedData[index + 7], 10).substring(6, 8)
-              ),
-              4
-            )[0] === '1'
+              utils.hex2bin(parsedData[statusIx].substring(2, 4)),
+              8
+            )[6] === '1'
         },
         output: {
-          '1':
-            utils.nHexDigit(
-              utils.hex2bin(
-                utils.nHexDigit(parsedData[index + 7], 10).substring(8, 10)
-              ),
-              3
-            )[2] === '1',
-          '2':
-            utils.nHexDigit(
-              utils.hex2bin(
-                utils.nHexDigit(parsedData[index + 7], 10).substring(8, 10)
-              ),
-              3
-            )[1] === '1',
           '3':
             utils.nHexDigit(
-              utils.hex2bin(
-                utils.nHexDigit(parsedData[index + 7], 10).substring(8, 10)
-              ),
-              3
-            )[0] === '1'
+              utils.hex2bin(parsedData[statusIx].substring(4, 6)),
+              8
+            )[5] === '1',
+          '2':
+            utils.nHexDigit(
+              utils.hex2bin(parsedData[statusIx].substring(4, 6)),
+              8
+            )[6] === '1',
+          '1':
+            utils.nHexDigit(
+              utils.hex2bin(parsedData[statusIx].substring(4, 6)),
+              8
+            )[7] === '1'
         },
         charge: parseFloat(parsedData[5]) > 5,
-        state:
-          utils.nHexDigit(parsedData[index + 7], 10).substring(4, 6) !== ''
-            ? utils.states[ // eslint-disable-line
-              utils.nHexDigit(parsedData[index + 7], 10).substring(4, 6)
-            ]
-            : null
+        state: utils.states[parsedData[statusIx].substring(0, 2)]
       },
       azimuth: parsedData[10] !== '' ? parseFloat(parsedData[10]) : null,
       altitude: parsedData[11] !== '' ? parseFloat(parsedData[11]) : null,
@@ -260,19 +213,7 @@ const parse = raw => {
             ? parseFloat(parsedData[index + 6])
             : null, // percentage
         inputCharge:
-          parsedData[5] !== '' ? parseFloat(parsedData[5]) / 1000 : null,
-        ada:
-          parsedData[index + 3] !== ''
-            ? parseFloat(parsedData[index + 3]) / 1000
-            : null,
-        adb:
-          parsedData[index + 4] !== ''
-            ? parseFloat(parsedData[index + 4]) / 1000
-            : null,
-        adc:
-          parsedData[index + 5] !== ''
-            ? parseFloat(parsedData[index + 5]) / 1000
-            : null
+          parsedData[5] !== '' ? parseFloat(parsedData[5]) / 1000 : null
       },
       mcc: parsedData[15] !== '' ? parseInt(parsedData[15], 10) : null,
       mnc: parsedData[16] !== '' ? parseInt(parsedData[16], 10) : null,
@@ -282,183 +223,48 @@ const parse = raw => {
         satelliteInfo && parsedData[index] !== ''
           ? parseFloat(parsedData[index])
           : null,
-      odometer:
-        parsedData[index + 1] !== '' ? parseFloat(parsedData[index + 1]) : null,
-      hourmeter:
-        parsedData[index + 2] !== ''
+      odometer: includeGnssTrigger
+        ? parsedData[index + 2] !== ''
+          ? parseFloat(parsedData[index + 2])
+          : null
+        : parsedData[index + 1] !== ''
+          ? parseFloat(parsedData[index + 1])
+          : null,
+      hourmeter: includeGnssTrigger
+        ? parsedData[index + 3] !== ''
+          ? utils.getHoursForHourmeter(parsedData[index + 3])
+          : null
+        : parsedData[index + 2] !== ''
           ? utils.getHoursForHourmeter(parsedData[index + 2])
           : null
     })
     // External Data
-    const digitFuelSensor =
-      utils.nHexDigit(utils.hex2bin(parsedData[4]), 11)[10] === '1'
-    const AC100 = utils.nHexDigit(utils.hex2bin(parsedData[4]), 11)[9] === '1'
-    const reserved =
-      utils.nHexDigit(utils.hex2bin(parsedData[4]), 11)[8] === '1'
-    const fuelLevelPercentage =
-      utils.nHexDigit(utils.hex2bin(parsedData[4]), 11)[7] === '1'
-    const fuelVolume =
-      utils.nHexDigit(utils.hex2bin(parsedData[4]), 11)[6] === '1'
     const bluetoothAccessory =
       utils.nHexDigit(utils.hex2bin(parsedData[4]), 11)[2] === '1'
-
-    const fuelSensorData = digitFuelSensor ? parsedData[index + 9] : null
-    const ac100DevicesConnected =
-      AC100 && digitFuelSensor
-        ? parseInt(parsedData[index + 10], 10)
-        : AC100 && !digitFuelSensor ? parseInt(parsedData[index + 9], 10) : 0
+    const canData = utils.nHexDigit(utils.hex2bin(parsedData[4]), 11)[8] === '1'
 
     let externalData = {
       eriMask: {
         raw: parsedData[4],
-        digitFuelSensor: digitFuelSensor,
-        AC100: AC100,
-        reserved: reserved,
-        fuelLevelPercentage: fuelLevelPercentage,
-        fuelVolume: fuelVolume,
+        canData: canData,
         bluetoothAccessory: bluetoothAccessory
-      },
-      uartDeviceType:
-        parsedData[index + 8] !== ''
-          ? utils.uartDeviceTypes[parsedData[index + 8]]
-          : null
-    }
-
-    if (parsedData[index + 8] === '1') {
-      // Fuel Sensor
-      if (digitFuelSensor && !AC100) {
-        externalData = Object.assign(externalData, {
-          fuelSensorData: {
-            data: fuelSensorData,
-            sensorType: parsedData[index + 11],
-            percentage:
-              fuelLevelPercentage && parsedData[index + 12] !== ''
-                ? parseInt(parsedData[index + 12], 10)
-                : null,
-            volume:
-              fuelVolume && fuelLevelPercentage && parsedData[index + 12] !== ''
-                ? parseInt(parsedData[index + 13], 10)
-                : fuelVolume &&
-                  !fuelLevelPercentage &&
-                  parsedData[index + 12] !== ''
-                  ? parseInt(parsedData[index + 12], 10)
-                  : null
-          },
-          AC100Devices: null
-        })
-      } else if (!digitFuelSensor && AC100) {
-        let ac100Devices = []
-        let count = index + 11
-        for (var i = 0; i < ac100DevicesConnected; i++) {
-          ac100Devices.push({
-            deviceNumber: parsedData[count],
-            deviceType: parsedData[count + 1],
-            deviceData: parsedData[count + 2]
-              ? utils.getTempInCelciousDegrees(parsedData[count + 2])
-              : null
-          })
-          count += 3
-        }
-        externalData = Object.assign(externalData, {
-          fuelSensorData: null,
-          AC100Devices: ac100Devices
-        })
-      } else if (digitFuelSensor && AC100) {
-        let ac100Devices = []
-        let count =
-          fuelVolume && fuelLevelPercentage
-            ? 33
-            : fuelVolume && !fuelLevelPercentage ? index + 13 : index + 12
-        for (var j = 0; j < ac100DevicesConnected; j++) {
-          ac100Devices.push({
-            deviceNumber: parsedData[count],
-            deviceType: parsedData[count + 1],
-            deviceData: parsedData[count + 2]
-              ? utils.getTempInCelciousDegrees(parsedData[count + 2])
-              : null
-          })
-          count += 3
-        }
-        externalData = Object.assign(externalData, {
-          fuelSensorData: {
-            data: fuelSensorData,
-            sensorType: parsedData[index + 11],
-            percentage:
-              fuelLevelPercentage && parsedData[index + 12] !== ''
-                ? parseInt(parsedData[index + 12], 10)
-                : null,
-            volume:
-              fuelVolume && fuelLevelPercentage && parsedData[index + 13] !== ''
-                ? parseInt(parsedData[index + 13], 10)
-                : fuelVolume &&
-                  !fuelLevelPercentage &&
-                  parsedData[index + 12] !== ''
-                  ? parseInt(parsedData[index + 12], 10)
-                  : null
-          },
-          AC100Devices: ac100Devices
-        })
-      }
-    } else if (parsedData[index + 8] === '2') {
-      // AC100 1 Wire Bus
-      if (!digitFuelSensor && AC100) {
-        let ac100Devices = []
-        let count = index + 10
-        for (var k = 0; k < ac100DevicesConnected; k++) {
-          ac100Devices.push({
-            deviceNumber: parsedData[count],
-            deviceType: parsedData[count + 1],
-            deviceData: parsedData[count + 2]
-              ? utils.getTempInCelciousDegrees(parsedData[count + 2])
-              : null
-          })
-          count += 3
-        }
-        externalData = Object.assign(externalData, {
-          fuelSensorData: null,
-          AC100Devices: ac100Devices
-        })
-      } else if (digitFuelSensor && !AC100) {
-        externalData = Object.assign(externalData, {
-          fuelSensorData: {
-            data: fuelSensorData,
-            sensorType: null,
-            percentage: null,
-            volume: null
-          },
-          AC100Devices: null
-        })
-      } else if (digitFuelSensor && AC100) {
-        let ac100Devices = []
-        let count = index + 12
-        for (var l = 0; l < ac100DevicesConnected; l++) {
-          ac100Devices.push({
-            deviceNumber: parsedData[count],
-            deviceType: parsedData[count + 1],
-            deviceData: parsedData[count + 2]
-              ? utils.getTempInCelciousDegrees(parsedData[count + 2])
-              : null
-          })
-          count += 3
-        }
-        externalData = Object.assign(externalData, {
-          fuelSensorData: {
-            data: fuelSensorData,
-            sensorType: null,
-            percentage: null,
-            volume: null
-          },
-          AC100Devices: ac100Devices
-        })
       }
     }
 
     // Bluetooth Accessories
     if (bluetoothAccessory) {
       let btDevices = []
-      let btIndex = digitFuelSensor ? index + 10 : index + 9
+      let btIndex
+
+      if (canData) {
+        btIndex = includeGnssTrigger ? index + 59 : index + 58
+      } else {
+        btIndex = includeGnssTrigger ? index + 10 : index + 9
+      }
+
       let cnt = btIndex + 1
       let btNum = parsedData[btIndex] !== '' ? parseInt(parsedData[btIndex]) : 1
+
       for (let c = 0; c < btNum; c++) {
         let appendMask = utils.nHexDigit(utils.hex2bin(parsedData[cnt + 4]), 16)
 
@@ -487,6 +293,7 @@ const parse = raw => {
             parsedData[cnt + 2] !== ''
               ? utils.bluetoothModels[parsedData[cnt + 1]][parsedData[cnt + 2]]
               : utils.bluetoothAccessories[parsedData[cnt + 1]],
+          rawData: parsedData[cnt + 3] !== '' ? parsedData[cnt + 3] : null,
           appendMask: parsedData[cnt + 4],
           name:
             parsedData[aNameIx] !== '' && appendMask[15] === '1'
@@ -859,19 +666,7 @@ const parse = raw => {
       voltage: {
         battery: null, // percentage
         inputCharge:
-          parsedData[5] !== '' ? parseFloat(parsedData[5]) / 1000 : null,
-        ada:
-          parsedData[index + 3] !== ''
-            ? parseFloat(parsedData[index + 3]) / 1000
-            : null,
-        adb:
-          parsedData[index + 4] !== ''
-            ? parseFloat(parsedData[index + 4]) / 1000
-            : null,
-        adc:
-          parsedData[index + 5] !== ''
-            ? parseFloat(parsedData[index + 5]) / 1000
-            : null
+          parsedData[5] !== '' ? parseFloat(parsedData[5]) / 1000 : null
       },
       mcc: parsedData[15] !== '' ? parseInt(parsedData[15], 10) : null,
       mnc: parsedData[16] !== '' ? parseInt(parsedData[16], 10) : null,
