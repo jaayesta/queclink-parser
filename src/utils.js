@@ -640,14 +640,20 @@ const getAlarm = (command, report, extra = false) => {
       status: true,
       gps: false,
       jammingNetwork: jammingNetworkTypes[report],
-      message: report !== '' ? `${messages[command]}: ${jammingNetworkTypes[report]}` : messages[command]
+      message:
+        report !== ''
+          ? `${messages[command]}: ${jammingNetworkTypes[report]}`
+          : messages[command]
     }
   } else if (command === 'GTJDS') {
     return {
       type: 'Jamming',
       status: report === '2',
       gps: false,
-      jammingNetwork: typeof(extra) !== 'undefined' && extra !== '' ? jammingNetworkTypes[extra] : null,
+      jammingNetwork:
+        typeof extra !== 'undefined' && extra !== ''
+          ? jammingNetworkTypes[extra]
+          : null,
       message: messages[command][report]
     }
   } else if (command === 'GTGPJ') {
@@ -899,7 +905,10 @@ const getAlarm = (command, report, extra = false) => {
     return {
       type: command,
       status: 'CONFIG',
-      message: report !== '' ? messages[command].replace('data', report) : messages[command].replace('data', '-')
+      message:
+        report !== ''
+          ? messages[command].replace('data', report)
+          : messages[command].replace('data', '-')
     }
   } else if (command === 'GTSCS') {
     return {
@@ -926,12 +935,20 @@ const getAlarm = (command, report, extra = false) => {
     return {
       type: command,
       status: 'CONFIG',
-      firmware: report[0] !== '' ? { raw: report[0], value: parseFloat(getVersion(report[0])) } : null,
-      hardware: report[1] !== '' ? { raw: report[1], value: parseFloat(getVersion(report[1])) } : null,
-      message: report[0] !== '' && report[1] !== '' ? 
-        messages[command]
-        .replace('data0', getVersion(report[0]))
-        .replace('data1', getVersion(report[1])) : 'Datos de versión incompletos'
+      firmware:
+        report[0] !== ''
+          ? { raw: report[0], value: parseFloat(getVersion(report[0])) }
+          : null,
+      hardware:
+        report[1] !== ''
+          ? { raw: report[1], value: parseFloat(getVersion(report[1])) }
+          : null,
+      message:
+        report[0] !== '' && report[1] !== ''
+          ? messages[command]
+            .replace('data0', getVersion(report[0]))
+            .replace('data1', getVersion(report[1]))
+          : 'Datos de versión incompletos'
     }
   } else if (command === 'GTBCS') {
     return { type: 'Bluetooth_Connected', message: messages[command] }
@@ -1035,9 +1052,9 @@ const nHexDigit = (num, n) => {
 */
 const sumOnes = num => {
   let sum = 0
-  let hex = hex2bin(num)
-  for (let i = 0; i < hex.length; i++) {
-    sum += parseInt(hex[i])
+  let bin = hex2bin(num)
+  for (let i = 0; i < bin.length; i++) {
+    sum += parseInt(bin[i])
   }
   return sum
 }
