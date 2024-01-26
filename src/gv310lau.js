@@ -34,14 +34,13 @@ const parse = raw => {
       let number = parsedData[6] !== '' ? parseInt(parsedData[6], 10) : 1
       let index = 6 + 12 * number
       let satelliteInfo = false
-      
+
       // If get satellites is configured
       if (utils.includeSatellites(parsedData[18])) {
         index = 6 + 13 * number
         satelliteInfo = true
       }
 
-      console.log(index + 7)
       data = Object.assign(data, {
         alarm: utils.getAlarm(command[1], null),
         loc: {
@@ -168,8 +167,8 @@ const parse = raw => {
     let index = 7 + 12 * number // position append mask
     let satelliteInfo = false
 
-     // If get satellites is configured
-     if (utils.includeSatellites(parsedData[19])) {
+    // If get satellites is configured
+    if (utils.includeSatellites(parsedData[19])) {
       index = 6 + 13 * number
       satelliteInfo = true
     }
@@ -598,16 +597,23 @@ const parse = raw => {
       state: utils.states[parsedData[4]],
       gsmInfo: {
         SIM_ICC: parsedData[5] !== '' ? parsedData[5] : null,
-        networkType: parsedData[10] !== '' ? utils.networkTypes[parsedData[10]] : null,
+        networkType:
+          parsedData[10] !== '' ? utils.networkTypes[parsedData[10]] : null,
         RSSI: parsedData[6] !== '' ? parseInt(parsedData[6], 10) : null,
-        RSSI_quality: parsedData[10] !== '' ? utils.getSignalStrength(
-          utils.networkTypes[parsedData[10]],
-          parseInt(parsedData[6], 10)
-        ) : null, // Signal Strength
-        RSSI_percentage: parsedData[10] !== '' ? utils.getSignalPercentage(
-          utils.networkTypes[parsedData[10]],
-          parseInt(parsedData[6], 10)
-        ) : null, // Signal Percetange
+        RSSI_quality:
+          parsedData[10] !== ''
+            ? utils.getSignalStrength(
+              utils.networkTypes[parsedData[10]],
+              parseInt(parsedData[6], 10)
+            )
+            : null, // Signal Strength
+        RSSI_percentage:
+          parsedData[10] !== ''
+            ? utils.getSignalPercentage(
+              utils.networkTypes[parsedData[10]],
+              parseInt(parsedData[6], 10)
+            )
+            : null, // Signal Percetange
         GSM_quality:
           parsedData[7] !== ''
             ? 100 * parseInt(parseFloat(parsedData[7]) / 7, 10)
@@ -1918,64 +1924,64 @@ const parse = raw => {
       odometer: null,
       hourmeter: null
     })
-  // } else if (command[1] === 'GTCID') {
-  //   data = Object.assign(data, {
-  //     alarm: utils.getAlarm(command[1], parsedData[4], 'gv310lau'),
-  //     loc: {
-  //       type: 'Point',
-  //       coordinates: [null, null]
-  //     },
-  //     speed: null,
-  //     gpsStatus: null,
-  //     hdop: null,
-  //     status: null,
-  //     azimuth: null,
-  //     altitude: null,
-  //     datetime: parsedData[5] !== '' ? utils.parseDate(parsedData[5]) : null,
-  //     voltage: {
-  //       battery: null,
-  //       inputCharge: null,
-  //       ada: null,
-  //       adb: null,
-  //       adc: null
-  //     },
-  //     mcc: null,
-  //     mnc: null,
-  //     lac: null,
-  //     cid: null,
-  //     satellites: null,
-  //     odometer: null,
-  //     hourmeter: null
-  //   })
-  // } else if (command[1] === 'GTCSQ') {
-  //   data = Object.assign(data, {
-  //     alarm: utils.getAlarm(command[1], parsedData[5]),
-  //     loc: {
-  //       type: 'Point',
-  //       coordinates: [null, null]
-  //     },
-  //     speed: null,
-  //     gpsStatus: null,
-  //     hdop: null,
-  //     status: null,
-  //     azimuth: null,
-  //     altitude: null,
-  //     datetime: parsedData[6] !== '' ? utils.parseDate(parsedData[6]) : null,
-  //     voltage: {
-  //       battery: null,
-  //       inputCharge: null,
-  //       ada: null,
-  //       adb: null,
-  //       adc: null
-  //     },
-  //     mcc: null,
-  //     mnc: null,
-  //     lac: null,
-  //     cid: null,
-  //     satellites: null,
-  //     odometer: null,
-  //     hourmeter: null
-  //   })
+    // } else if (command[1] === 'GTCID') {
+    //   data = Object.assign(data, {
+    //     alarm: utils.getAlarm(command[1], parsedData[4], 'gv310lau'),
+    //     loc: {
+    //       type: 'Point',
+    //       coordinates: [null, null]
+    //     },
+    //     speed: null,
+    //     gpsStatus: null,
+    //     hdop: null,
+    //     status: null,
+    //     azimuth: null,
+    //     altitude: null,
+    //     datetime: parsedData[5] !== '' ? utils.parseDate(parsedData[5]) : null,
+    //     voltage: {
+    //       battery: null,
+    //       inputCharge: null,
+    //       ada: null,
+    //       adb: null,
+    //       adc: null
+    //     },
+    //     mcc: null,
+    //     mnc: null,
+    //     lac: null,
+    //     cid: null,
+    //     satellites: null,
+    //     odometer: null,
+    //     hourmeter: null
+    //   })
+    // } else if (command[1] === 'GTCSQ') {
+    //   data = Object.assign(data, {
+    //     alarm: utils.getAlarm(command[1], parsedData[5]),
+    //     loc: {
+    //       type: 'Point',
+    //       coordinates: [null, null]
+    //     },
+    //     speed: null,
+    //     gpsStatus: null,
+    //     hdop: null,
+    //     status: null,
+    //     azimuth: null,
+    //     altitude: null,
+    //     datetime: parsedData[6] !== '' ? utils.parseDate(parsedData[6]) : null,
+    //     voltage: {
+    //       battery: null,
+    //       inputCharge: null,
+    //       ada: null,
+    //       adb: null,
+    //       adc: null
+    //     },
+    //     mcc: null,
+    //     mnc: null,
+    //     lac: null,
+    //     cid: null,
+    //     satellites: null,
+    //     odometer: null,
+    //     hourmeter: null
+    //   })
   } else if (command[1] === 'GTVER') {
     data = Object.assign(data, {
       alarm: utils.getAlarm(
@@ -2216,10 +2222,10 @@ const parse = raw => {
             parsedData[aNameIx] !== '' && appendMask[15] === '1'
               ? parsedData[aNameIx]
               : null,
-            mac:
-              parsedData[aMacIx] !== '' && appendMask[14] === '1'
-                ? parsedData[aMacIx]
-                : null,
+          mac:
+            parsedData[aMacIx] !== '' && appendMask[14] === '1'
+              ? parsedData[aMacIx]
+              : null
         },
         accessoryInfo: {
           accesory:
@@ -2308,10 +2314,16 @@ const parse = raw => {
     // Bluetooth beacon detection
     let number = parsedData[4] !== '' ? parseInt(parsedData[4]) : 1
     let index = 4
-    let appMk
+    let appMk, extra
     for (let i = 1; i <= number; i++) {
       appMk = utils.sumOnes(parsedData[index + 2])
-      index += 2 + appMk
+      extra =
+        parsedData[index + 5] === '0'
+          ? 1
+          : parsedData[index + 5] === '1'
+            ? 3
+            : parsedData[index + 5] === '2' ? 2 : 0
+      index += 2 + appMk + extra
     }
     let satelliteInfo = false
     let satIndex = index + 12
@@ -2415,10 +2427,39 @@ const parse = raw => {
             : null,
         data:
           appendMask[0] === '1' && parsedData[typeIx + 1] !== ''
-            ? parsedData[typeIx + 1]
+            ? {
+              idMfrData:
+                  parsedData[typeIx] === '0' && parsedData[typeIx + 1] !== ''
+                    ? parsedData[typeIx + 1]
+                    : null,
+              uuid:
+                  parsedData[typeIx] === '1' && parsedData[typeIx + 1] !== ''
+                    ? parsedData[typeIx + 1]
+                    : null,
+              major:
+                  parsedData[typeIx] === '1' && parsedData[typeIx + 2] !== ''
+                    ? parsedData[typeIx + 2]
+                    : null,
+              minor:
+                  parsedData[typeIx] === '1' && parsedData[typeIx + 3] !== ''
+                    ? parsedData[typeIx + 3]
+                    : null,
+              nid:
+                  parsedData[typeIx] === '2' && parsedData[typeIx + 1] !== ''
+                    ? parsedData[typeIx + 1]
+                    : null,
+              bid:
+                  parsedData[typeIx] === '2' && parsedData[typeIx + 2] !== ''
+                    ? parsedData[typeIx + 2]
+                    : null
+            }
             : null
       })
-      btIndex = typeIx + 1
+      let extra =
+        parsedData[typeIx] === '0'
+          ? 1
+          : parsedData[typeIx] === '1' ? 3 : parsedData[typeIx] === '2' ? 2 : 0
+      btIndex = typeIx + 1 + extra
     }
 
     let bluetoothData = {
