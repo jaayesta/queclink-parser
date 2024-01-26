@@ -161,7 +161,11 @@ const bluetoothAccessories = {
   '1': 'Escort sensor',
   '2': 'Beacon temperature sensor',
   '3': 'Bluetooth beacon accessory',
+  '4': 'BLE CAN100',
   '6': 'Beacon Multi-Functional Sensor',
+  '7': 'Technoton Accesory',
+  '8': 'BLE I/O expander',
+  '10': 'Fuel or angle sensor',
   '11': 'Magnet Sensor',
   '12': 'BLE TPMS sensor',
   '13': 'Relay Sensor'
@@ -179,11 +183,28 @@ const bluetoothModels = {
     '0': 'WTS300 (Temperature sensor)',
     '1': 'Temperature ELA'
   },
+  '4': {
+    '0': 'BLE CAN100'
+  },
   '6': {
     '2': 'WTH300 (Temperature and Humidity Sensor)',
     '3': 'RHT ELA (Temperature and Humidity Sensor)',
     '4': 'WMS301 (Door Sensor with embedded Temperature and Humidity Sensor)',
     '5': 'WTH301 (Temperature and Humidity Sensor)'
+  },
+  '7': {
+    '0': 'DUT-E S7',
+    '1': 'DFM 100S7',
+    '2': 'DFM 250DS7',
+    '3': 'GN0M DDE S7',
+    '4': 'GNOM DP S7'
+  },
+  '8': {
+    '0': 'WBC300'
+  },
+  '10': {
+    '0': 'Fuel Sensor',
+    '1': 'Angle Sensor'
   },
   '11': {
     '0': 'MAG ELA (Door Sensor)'
@@ -342,6 +363,15 @@ const getTempInCelciousDegrees = hexTemp => {
     return (parseInt('FFFF', 16) - parseInt(hexTemp, 16) + 1) * -0.0625
   }
   return parseFloat(hex2dec(hexTemp)) * 0.0625
+}
+
+/*
+  Gets the temperature and humidity from bluetooth device
+*/
+const getBtTempHumData = hexTemp => {
+  var int = parseInt(hexTemp.substring(0, 2), 16)
+  var dec = parseInt(hexTemp.substring(2, 4), 16)
+  return int + dec / 256
 }
 
 /*
@@ -1095,6 +1125,7 @@ module.exports = {
   includeSatellites: includeSatellites,
   getAccelerationMagnitude: getAccelerationMagnitude,
   getTempInCelciousDegrees: getTempInCelciousDegrees,
+  getBtTempHumData: getBtTempHumData,
   getFuelConsumption: getFuelConsumption,
   getHoursForHourmeter: getHoursForHourmeter,
   getSignalStrength: getSignalStrength,

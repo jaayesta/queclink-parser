@@ -289,8 +289,52 @@ const parse = raw => {
             parsedData[cnt + 2] !== ''
               ? utils.bluetoothModels[parsedData[cnt + 1]][parsedData[cnt + 2]]
               : utils.bluetoothAccessories[parsedData[cnt + 1]],
-          rawData: parsedData[cnt + 3] !== '' ? parsedData[cnt + 3] : null,
           appendMask: parsedData[cnt + 4],
+          rawData:
+            parsedData[cnt + 3] !== ''
+              ? {
+                raw: parsedData[cnt + 3],
+                fuelLevel:
+                    `${parsedData[cnt + 1]}${parsedData[cnt + 2]}` === '10'
+                      ? parsedData[cnt + 3]
+                      : null,
+                temperature:
+                    `${parsedData[cnt + 1]}${parsedData[cnt + 2]}` === '20'
+                      ? utils.getBtTempHumData(
+                        parsedData[cnt + 3].substring(4, 8)
+                      )
+                      : `${parsedData[cnt + 1]}${parsedData[cnt + 2]}` === '21'
+                        ? parsedData[cnt + 3] // Conversion not specified in documentation
+                        : `${parsedData[cnt + 1]}${parsedData[cnt + 2]}` ===
+                          '62'
+                          ? utils.getBtTempHumData(
+                            parsedData[cnt + 3].substring(0, 4)
+                          )
+                          : ['64', '65'].includes(
+                            `${parsedData[cnt + 1]}${parsedData[cnt + 2]}`
+                          )
+                            ? parseInt(
+                              parsedData[cnt + 3].substring(4, 8),
+                              16
+                            ) / 100
+                            : null,
+                humidity:
+                    `${parsedData[cnt + 1]}${parsedData[cnt + 2]}` === '20'
+                      ? utils.getBtTempHumData(
+                        parsedData[cnt + 3].substring(4, 8)
+                      )
+                      : `${parsedData[cnt + 1]}${parsedData[cnt + 2]}` === '62'
+                        ? utils.getBtTempHumData(
+                          parsedData[cnt + 3].substring(4, 8)
+                        )
+                        : ['64', '65'].includes(
+                          `${parsedData[cnt + 1]}${parsedData[cnt + 2]}`
+                        )
+                          ? parseInt(parsedData[cnt + 3].substring(0, 4), 16) /
+                            100
+                          : null
+              }
+              : null,
           name:
             parsedData[aNameIx] !== '' && appendMask[15] === '1'
               ? parsedData[aNameIx]
@@ -380,6 +424,7 @@ const parse = raw => {
           }
         })
         cnt = appendMask[1] === '1' ? relIx + 1 : relIx + 2
+        cnt = parsedData[cnt + 3] !== '' ? cnt - 1 : cnt
       }
       externalData = Object.assign(externalData, {
         btDevices: btDevices
@@ -2452,10 +2497,16 @@ const parse = raw => {
     // Bluetooth beacon detection
     let number = parsedData[4] !== '' ? parseInt(parsedData[4]) : 1
     let index = 4
-    let appMk
+    let appMk, extra
     for (let i = 1; i <= number; i++) {
       appMk = utils.sumOnes(parsedData[index + 2])
-      index += appMk
+      extra =
+        parsedData[index + 5] === '0'
+          ? 1
+          : parsedData[index + 5] === '1'
+            ? 3
+            : parsedData[index + 5] === '2' ? 2 : 0
+      index += 2 + appMk + extra
     }
     let satelliteInfo = false
     let satIndex = number * index + 12
@@ -2556,12 +2607,40 @@ const parse = raw => {
             : null,
         data:
           appendMask[0] === '1' && parsedData[typeIx + 1] !== ''
-            ? parsedData[typeIx + 1]
+            ? {
+              idMfrData:
+                  parsedData[typeIx] === '0' && parsedData[typeIx + 1] !== ''
+                    ? parsedData[typeIx + 1]
+                    : null,
+              uuid:
+                  parsedData[typeIx] === '1' && parsedData[typeIx + 1] !== ''
+                    ? parsedData[typeIx + 1]
+                    : null,
+              major:
+                  parsedData[typeIx] === '1' && parsedData[typeIx + 2] !== ''
+                    ? parsedData[typeIx + 2]
+                    : null,
+              minor:
+                  parsedData[typeIx] === '1' && parsedData[typeIx + 3] !== ''
+                    ? parsedData[typeIx + 3]
+                    : null,
+              nid:
+                  parsedData[typeIx] === '2' && parsedData[typeIx + 1] !== ''
+                    ? parsedData[typeIx + 1]
+                    : null,
+              bid:
+                  parsedData[typeIx] === '2' && parsedData[typeIx + 2] !== ''
+                    ? parsedData[typeIx + 2]
+                    : null
+            }
             : null
       })
-      btIndex = typeIx + 1
+      let extra =
+        parsedData[typeIx] === '0'
+          ? 1
+          : parsedData[typeIx] === '1' ? 3 : parsedData[typeIx] === '2' ? 2 : 0
+      btIndex = typeIx + 1 + extra
     }
-
     let bluetoothData = {
       connectedDevices: number,
       btDevices: btDevices
@@ -2737,6 +2816,9 @@ const parse = raw => {
     let index = 71 // position append mask
     let satelliteInfo = false
 
+    let includeStatus =
+      parsedData[index] !== '' ? parseInt(parsedData[index]) > 3 : null
+
     // If get satellites is configured
     if (utils.includeSatellites(parsedData[index])) {
       index += 1
@@ -2804,10 +2886,7 @@ const parse = raw => {
           .join('')
         : null
     data = Object.assign(data, {
-      alarm: utils.getAlarm(command[1], parsedData[6], [
-        parsedData[index + 11],
-        parsedData[index + 13]
-      ]),
+      alarm: utils.getAlarm(command[1], parsedData[6]),
       loc: {
         type: 'Point',
         coordinates: [parseFloat(parsedData[64]), parseFloat(parsedData[65])]
@@ -2830,6 +2909,43 @@ const parse = raw => {
         satelliteInfo && parsedData[index] !== ''
           ? parseInt(parsedData[index], 10)
           : null,
+      status: includeStatus
+        ? {
+          raw: parsedData[index + 1],
+          sos: false,
+          input: {
+            '2':
+                utils.nHexDigit(
+                  utils.hex2bin(parsedData[index + 1].substring(2, 4)),
+                  8
+                )[7] === '1',
+            '1':
+                utils.nHexDigit(
+                  utils.hex2bin(parsedData[index + 1].substring(2, 4)),
+                  8
+                )[6] === '1'
+          },
+          output: {
+            '3':
+                utils.nHexDigit(
+                  utils.hex2bin(parsedData[index + 1].substring(4, 6)),
+                  8
+                )[5] === '1',
+            '2':
+                utils.nHexDigit(
+                  utils.hex2bin(parsedData[index + 1].substring(4, 6)),
+                  8
+                )[6] === '1',
+            '1':
+                utils.nHexDigit(
+                  utils.hex2bin(parsedData[index + 1].substring(4, 6)),
+                  8
+                )[7] === '1'
+          },
+          charge: null,
+          state: utils.states[parsedData[index + 1].substring(0, 2)]
+        }
+        : null,
       odometer: null,
       hourmeter: null,
       configuredAlarms: {
