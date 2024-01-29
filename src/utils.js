@@ -351,6 +351,26 @@ const includeSatellites = positionAppendMask => {
 }
 
 /*
+  Returns if the GNSS trigger is
+  included in the report
+*/
+const includeGnssTrigger = positionAppendMask => {
+  return ['02', '03', '06', '07'].includes(positionAppendMask)
+}
+
+/*
+  Returns if Possition Append Mask includes
+  more information in the report
+*/
+const appendMaskData = positionAppendMask => {
+  let satelliteInfo = ['01', '03', '05', '07'].includes(positionAppendMask)
+  let gnssTrigger = ['02', '03', '06', '07'].includes(positionAppendMask)
+  let statusInfo = parseInt(positionAppendMask) > 3
+
+  return satelliteInfo + gnssTrigger + statusInfo
+}
+
+/*
   Gets the temperature from AC100 device in celcious degrees
 */
 const getTempInCelciousDegrees = hexTemp => {
@@ -1123,6 +1143,8 @@ module.exports = {
   getProtocolVersion: getProtocolVersion,
   checkGps: checkGps,
   includeSatellites: includeSatellites,
+  includeGnssTrigger: includeGnssTrigger,
+  appendMaskData: appendMaskData,
   getAccelerationMagnitude: getAccelerationMagnitude,
   getTempInCelciousDegrees: getTempInCelciousDegrees,
   getBtTempHumData: getBtTempHumData,

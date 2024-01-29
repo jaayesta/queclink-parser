@@ -32,18 +32,9 @@ const parse = raw => {
   if (command[1] === 'GTFRI') {
     try {
       let number = parsedData[6] !== '' ? parseInt(parsedData[6], 10) : 1
-      let index = 6 + 12 * number // position append mask
-      let satelliteInfo = false
-
-      let includeGnssTrigger = ['02', '03', '06', '07'].includes(parsedData[19])
-
-      // If get satellites is configured
-      if (utils.includeSatellites(parsedData[18])) {
-        index = 6 + 13 * number
-        satelliteInfo = true
-      }
-
-      let statusIx = includeGnssTrigger ? index + 8 : index + 7
+      let satelliteInfo = utils.includeSatellites(parsedData[18])
+      let gnssInfo = utils.includeGnssTrigger(parsedData[18])
+      let index = 6 + (12 + satelliteInfo + gnssInfo) * number + 1
 
       data = Object.assign(data, {
         alarm: utils.getAlarm(command[1], null),
@@ -58,46 +49,46 @@ const parse = raw => {
         ),
         hdop: parsedData[7] !== '' ? parseFloat(parsedData[7]) : null,
         status: {
-          raw: parsedData[statusIx],
+          raw: parsedData[index + 6],
           sos: false,
           input: {
             '2':
               utils.nHexDigit(
-                utils.hex2bin(parsedData[statusIx].substring(2, 4)),
+                utils.hex2bin(parsedData[index + 6].substring(2, 4)),
                 8
               )[7] === '1',
             '1':
               utils.nHexDigit(
-                utils.hex2bin(parsedData[statusIx].substring(2, 4)),
+                utils.hex2bin(parsedData[index + 6].substring(2, 4)),
                 8
               )[6] === '1'
           },
           output: {
             '3':
               utils.nHexDigit(
-                utils.hex2bin(parsedData[statusIx].substring(4, 6)),
+                utils.hex2bin(parsedData[index + 6].substring(4, 6)),
                 8
               )[5] === '1',
             '2':
               utils.nHexDigit(
-                utils.hex2bin(parsedData[statusIx].substring(4, 6)),
+                utils.hex2bin(parsedData[index + 6].substring(4, 6)),
                 8
               )[6] === '1',
             '1':
               utils.nHexDigit(
-                utils.hex2bin(parsedData[statusIx].substring(4, 6)),
+                utils.hex2bin(parsedData[index + 6].substring(4, 6)),
                 8
               )[7] === '1'
           },
           charge: parseFloat(parsedData[4]) > 5,
-          state: utils.states[parsedData[statusIx].substring(0, 2)]
+          state: utils.states[parsedData[index + 6].substring(0, 2)]
         },
         azimuth: parsedData[9] !== '' ? parseFloat(parsedData[9]) : null,
         altitude: parsedData[10] !== '' ? parseFloat(parsedData[10]) : null,
         datetime:
           parsedData[13] !== '' ? utils.parseDate(parsedData[13]) : null,
         voltage: {
-          battery: includeGnssTrigger
+          battery: gnssInfo
             ? parsedData[index + 7] !== ''
               ? parseFloat(parsedData[index + 7])
               : null
@@ -107,51 +98,104 @@ const parse = raw => {
           inputCharge:
             parsedData[4] !== '' ? parseFloat(parsedData[4]) / 1000 : null
         },
-        mcc: parsedData[13] !== '' ? parseInt(parsedData[14], 10) : null,
-        mnc: parsedData[14] !== '' ? parseInt(parsedData[15], 10) : null,
-        lac: parsedData[15] !== '' ? parseInt(parsedData[16], 16) : null,
-        cid: parsedData[16] !== '' ? parseInt(parsedData[17], 16) : null,
+        mcc: parsedData[14] !== '' ? parseInt(parsedData[14], 10) : null,
+        mnc: parsedData[15] !== '' ? parseInt(parsedData[15], 10) : null,
+        lac: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
+        cid: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
         satellites:
-          satelliteInfo && parsedData[index] !== ''
-            ? parseInt(parsedData[index], 10)
+          satelliteInfo && parsedData[index - (satelliteInfo + gnssInfo)] !== ''
+            ? parseInt(parsedData[index - (satelliteInfo + gnssInfo)], 10)
             : null,
         gnssTrigger:
-          includeGnssTrigger && parsedData[index + 1] !== ''
-            ? utils.gnssTriggerTypes[parsedData[index + 1]]
+          gnssInfo && parsedData[index - gnssInfo] !== ''
+            ? utils.gnssTriggerTypes[parsedData[index - gnssInfo]]
             : null,
-        odometer: includeGnssTrigger
-          ? parsedData[index + 2] !== ''
-            ? parseFloat(parsedData[index + 2])
-            : null
-          : parsedData[index + 1] !== ''
-            ? parseFloat(parsedData[index + 1])
-            : null,
-        hourmeter: includeGnssTrigger
-          ? parsedData[index + 3] !== ''
-            ? utils.getHoursForHourmeter(parsedData[index + 3])
-            : null
-          : parsedData[index + 2] !== ''
-            ? utils.getHoursForHourmeter(parsedData[index + 2])
+        odometer:
+          parsedData[index] !== '' ? parseFloat(parsedData[index]) : null,
+        hourmeter:
+          parsedData[index + 1] !== ''
+            ? utils.getHoursForHourmeter(parsedData[index + 1])
             : null
       })
+
+      // More than 1 GNSS report in data
+      if (number > 1) {
+        let moreData = []
+        for (let i = 1; i < number; i++) {
+          let gnssIx = 7 + (12 + gnssInfo + satelliteInfo) * i
+
+          moreData.push({
+            index: i,
+            loc: {
+              type: 'Point',
+              coordinates: [
+                parseFloat(parsedData[gnssIx + 4]),
+                parseFloat(parsedData[gnssIx + 5])
+              ]
+            },
+            speed:
+              parsedData[gnssIx + 1] !== ''
+                ? parseFloat(parsedData[gnssIx + 1])
+                : null,
+            gpsStatus: utils.checkGps(
+              parseFloat(parsedData[gnssIx + 4]),
+              parseFloat(parsedData[gnssIx + 5])
+            ),
+            hdop:
+              parsedData[gnssIx] !== '' ? parseFloat(parsedData[gnssIx]) : null,
+            azimuth:
+              parsedData[gnssIx + 2] !== ''
+                ? parseFloat(parsedData[gnssIx + 2])
+                : null,
+            altitude:
+              parsedData[gnssIx + 3] !== ''
+                ? parseFloat(parsedData[gnssIx + 3])
+                : null,
+            datetime:
+              parsedData[gnssIx + 6] !== ''
+                ? utils.parseDate(parsedData[gnssIx + 6])
+                : null,
+            mcc:
+              parsedData[gnssIx + 7] !== ''
+                ? parseInt(parsedData[gnssIx + 7], 10)
+                : null,
+            mnc:
+              parsedData[gnssIx + 8] !== ''
+                ? parseInt(parsedData[gnssIx + 8], 10)
+                : null,
+            lac:
+              parsedData[gnssIx + 9] !== ''
+                ? parseInt(parsedData[gnssIx + 9], 16)
+                : null,
+            cid:
+              parsedData[gnssIx + 10] !== ''
+                ? parseInt(parsedData[gnssIx + 10], 16)
+                : null,
+            satellites:
+              satelliteInfo && parsedData[gnssIx + satelliteInfo + 11] !== ''
+                ? parseInt(parsedData[gnssIx + satelliteInfo + 11], 10)
+                : null,
+            gnssTrigger:
+              gnssInfo &&
+              parsedData[gnssIx + satelliteInfo + gnssInfo + 11] !== ''
+                ? utils.gnssTriggerTypes[
+                  parsedData[gnssIx + satelliteInfo + gnssInfo + 11]
+                ]
+                : null
+          })
+        }
+
+        data = Object.assign(data, { moreData: moreData })
+      }
     } catch (err) {
       return { type: 'UNKNOWN', raw: data.raw.toString() }
     }
   } else if (command[1] === 'GTERI') {
     // GPS with AC100 and/or Bluetoth Devices Connected
     let number = parsedData[7] !== '' ? parseInt(parsedData[7], 10) : 1
-    let index = 7 + 12 * number // position append mask
-    let satelliteInfo = false
-
-    let includeGnssTrigger = ['02', '03', '06', '07'].includes(parsedData[19])
-
-    // If get satellites is configured
-    if (utils.includeSatellites(parsedData[19])) {
-      index = 7 + 13 * number
-      satelliteInfo = true
-    }
-
-    let statusIx = includeGnssTrigger ? index + 8 : index + 7
+    let satelliteInfo = utils.includeSatellites(parsedData[19])
+    let gnssInfo = utils.includeGnssTrigger(parsedData[19])
+    let index = 7 + (12 + satelliteInfo + gnssInfo) * number + 1
 
     data = Object.assign(data, {
       alarm: utils.getAlarm(command[1], null),
@@ -166,39 +210,39 @@ const parse = raw => {
       ),
       hdop: parsedData[8] !== '' ? parseFloat(parsedData[8]) : null,
       status: {
-        raw: parsedData[statusIx],
+        raw: parsedData[index + 6],
         sos: false,
         input: {
           '2':
             utils.nHexDigit(
-              utils.hex2bin(parsedData[statusIx].substring(2, 4)),
+              utils.hex2bin(parsedData[index + 6].substring(2, 4)),
               8
             )[7] === '1',
           '1':
             utils.nHexDigit(
-              utils.hex2bin(parsedData[statusIx].substring(2, 4)),
+              utils.hex2bin(parsedData[index + 6].substring(2, 4)),
               8
             )[6] === '1'
         },
         output: {
           '3':
             utils.nHexDigit(
-              utils.hex2bin(parsedData[statusIx].substring(4, 6)),
+              utils.hex2bin(parsedData[index + 6].substring(4, 6)),
               8
             )[5] === '1',
           '2':
             utils.nHexDigit(
-              utils.hex2bin(parsedData[statusIx].substring(4, 6)),
+              utils.hex2bin(parsedData[index + 6].substring(4, 6)),
               8
             )[6] === '1',
           '1':
             utils.nHexDigit(
-              utils.hex2bin(parsedData[statusIx].substring(4, 6)),
+              utils.hex2bin(parsedData[index + 6].substring(4, 6)),
               8
             )[7] === '1'
         },
         charge: parseFloat(parsedData[5]) > 5,
-        state: utils.states[parsedData[statusIx].substring(0, 2)]
+        state: utils.states[parsedData[index + 6].substring(0, 2)]
       },
       azimuth: parsedData[10] !== '' ? parseFloat(parsedData[10]) : null,
       altitude: parsedData[11] !== '' ? parseFloat(parsedData[11]) : null,
@@ -216,22 +260,17 @@ const parse = raw => {
       lac: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
       cid: parsedData[18] !== '' ? parseInt(parsedData[18], 16) : null,
       satellites:
-        satelliteInfo && parsedData[index] !== ''
-          ? parseFloat(parsedData[index])
+        satelliteInfo && parsedData[index - (satelliteInfo + gnssInfo)] !== ''
+          ? parseInt(parsedData[index - (satelliteInfo + gnssInfo)], 10)
           : null,
-      odometer: includeGnssTrigger
-        ? parsedData[index + 2] !== ''
-          ? parseFloat(parsedData[index + 2])
-          : null
-        : parsedData[index + 1] !== ''
-          ? parseFloat(parsedData[index + 1])
+      gnssTrigger:
+        gnssInfo && parsedData[index - gnssInfo] !== ''
+          ? utils.gnssTriggerTypes[parsedData[index - gnssInfo]]
           : null,
-      hourmeter: includeGnssTrigger
-        ? parsedData[index + 3] !== ''
-          ? utils.getHoursForHourmeter(parsedData[index + 3])
-          : null
-        : parsedData[index + 2] !== ''
-          ? utils.getHoursForHourmeter(parsedData[index + 2])
+      odometer: parsedData[index] !== '' ? parseFloat(parsedData[index]) : null,
+      hourmeter:
+        parsedData[index + 1] !== ''
+          ? utils.getHoursForHourmeter(parsedData[index + 1])
           : null
     })
     // External Data
@@ -253,9 +292,9 @@ const parse = raw => {
       let btIndex
 
       if (canData) {
-        btIndex = includeGnssTrigger ? index + 59 : index + 58
+        btIndex = index + 57
       } else {
-        btIndex = includeGnssTrigger ? index + 10 : index + 9
+        btIndex = index + 8
       }
 
       let cnt = btIndex + 1
@@ -434,6 +473,75 @@ const parse = raw => {
     data = Object.assign(data, {
       externalData: externalData
     })
+
+    // More than 1 GNSS report in data
+    if (number > 1) {
+      let moreData = []
+      for (let i = 1; i < number; i++) {
+        let gnssIx = 8 + (12 + gnssInfo + satelliteInfo) * i
+        moreData.push({
+          index: i,
+          loc: {
+            type: 'Point',
+            coordinates: [
+              parseFloat(parsedData[gnssIx + 4]),
+              parseFloat(parsedData[gnssIx + 5])
+            ]
+          },
+          speed:
+            parsedData[gnssIx + 1] !== ''
+              ? parseFloat(parsedData[gnssIx + 1])
+              : null,
+          gpsStatus: utils.checkGps(
+            parseFloat(parsedData[gnssIx + 4]),
+            parseFloat(parsedData[gnssIx + 5])
+          ),
+          hdop:
+            parsedData[gnssIx] !== '' ? parseFloat(parsedData[gnssIx]) : null,
+          azimuth:
+            parsedData[gnssIx + 2] !== ''
+              ? parseFloat(parsedData[gnssIx + 2])
+              : null,
+          altitude:
+            parsedData[gnssIx + 3] !== ''
+              ? parseFloat(parsedData[gnssIx + 3])
+              : null,
+          datetime:
+            parsedData[gnssIx + 6] !== ''
+              ? utils.parseDate(parsedData[gnssIx + 6])
+              : null,
+          mcc:
+            parsedData[gnssIx + 7] !== ''
+              ? parseInt(parsedData[gnssIx + 7], 10)
+              : null,
+          mnc:
+            parsedData[gnssIx + 8] !== ''
+              ? parseInt(parsedData[gnssIx + 8], 10)
+              : null,
+          lac:
+            parsedData[gnssIx + 9] !== ''
+              ? parseInt(parsedData[gnssIx + 9], 16)
+              : null,
+          cid:
+            parsedData[gnssIx + 10] !== ''
+              ? parseInt(parsedData[gnssIx + 10], 16)
+              : null,
+          satellites:
+            satelliteInfo && parsedData[gnssIx + satelliteInfo + 11] !== ''
+              ? parseInt(parsedData[gnssIx + satelliteInfo + 11], 10)
+              : null,
+          gnssTrigger:
+            gnssInfo &&
+            parsedData[gnssIx + satelliteInfo + gnssInfo + 11] !== ''
+              ? utils.gnssTriggerTypes[
+                parsedData[gnssIx + satelliteInfo + gnssInfo + 11]
+              ]
+              : null
+        })
+      }
+
+      data = Object.assign(data, { moreData: moreData })
+    }
   } else if (command[1] === 'GTHBD') {
     // Heartbeat. It must response an ACK command
     data = Object.assign(data, {
