@@ -460,68 +460,6 @@ const parse = raw => {
           AC100Devices: ac100Devices
         })
       }
-    }
-
-    // More than 1 GNSS report in data
-    if (number > 1) {
-      let moreData = []
-      for (let i = 1; i < number; i++) {
-        let gnssIx = satelliteInfo ? 8 + 13 * i : 8 + 12 * i
-        moreData.push({
-          index: i,
-          loc: {
-            type: 'Point',
-            coordinates: [
-              parseFloat(parsedData[gnssIx + 4]),
-              parseFloat(parsedData[gnssIx + 5])
-            ]
-          },
-          speed:
-            parsedData[gnssIx + 1] !== ''
-              ? parseFloat(parsedData[gnssIx + 1])
-              : null,
-          gpsStatus: utils.checkGps(
-            parseFloat(parsedData[gnssIx + 4]),
-            parseFloat(parsedData[gnssIx + 5])
-          ),
-          hdop:
-            parsedData[gnssIx] !== '' ? parseFloat(parsedData[gnssIx]) : null,
-          azimuth:
-            parsedData[gnssIx + 2] !== ''
-              ? parseFloat(parsedData[gnssIx + 2])
-              : null,
-          altitude:
-            parsedData[gnssIx + 3] !== ''
-              ? parseFloat(parsedData[gnssIx + 3])
-              : null,
-          datetime:
-            parsedData[gnssIx + 6] !== ''
-              ? utils.parseDate(parsedData[gnssIx + 6])
-              : null,
-          mcc:
-            parsedData[gnssIx + 7] !== ''
-              ? parseInt(parsedData[gnssIx + 7], 10)
-              : null,
-          mnc:
-            parsedData[gnssIx + 8] !== ''
-              ? parseInt(parsedData[gnssIx + 8], 10)
-              : null,
-          lac:
-            parsedData[gnssIx + 9] !== ''
-              ? parseInt(parsedData[gnssIx + 9], 16)
-              : null,
-          cid:
-            parsedData[gnssIx + 10] !== ''
-              ? parseInt(parsedData[gnssIx + 10], 16)
-              : null,
-          satellites:
-            satelliteInfo && parsedData[gnssIx + 12] !== ''
-              ? parseInt(parsedData[gnssIx + 12], 10)
-              : null
-        })
-      }
-
-      data = Object.assign(data, { moreData: moreData })
     } else if (parsedData[index + 8] === '2') {
       // AC100 1 Wire Bus
       if (!digitFuelSensor && AC100) {
@@ -709,6 +647,68 @@ const parse = raw => {
     data = Object.assign(data, {
       externalData: externalData
     })
+
+    // More than 1 GNSS report in data
+    if (number > 1) {
+      let moreData = []
+      for (let i = 1; i < number; i++) {
+        let gnssIx = satelliteInfo ? 8 + 13 * i : 8 + 12 * i
+        moreData.push({
+          index: i,
+          loc: {
+            type: 'Point',
+            coordinates: [
+              parseFloat(parsedData[gnssIx + 4]),
+              parseFloat(parsedData[gnssIx + 5])
+            ]
+          },
+          speed:
+            parsedData[gnssIx + 1] !== ''
+              ? parseFloat(parsedData[gnssIx + 1])
+              : null,
+          gpsStatus: utils.checkGps(
+            parseFloat(parsedData[gnssIx + 4]),
+            parseFloat(parsedData[gnssIx + 5])
+          ),
+          hdop:
+            parsedData[gnssIx] !== '' ? parseFloat(parsedData[gnssIx]) : null,
+          azimuth:
+            parsedData[gnssIx + 2] !== ''
+              ? parseFloat(parsedData[gnssIx + 2])
+              : null,
+          altitude:
+            parsedData[gnssIx + 3] !== ''
+              ? parseFloat(parsedData[gnssIx + 3])
+              : null,
+          datetime:
+            parsedData[gnssIx + 6] !== ''
+              ? utils.parseDate(parsedData[gnssIx + 6])
+              : null,
+          mcc:
+            parsedData[gnssIx + 7] !== ''
+              ? parseInt(parsedData[gnssIx + 7], 10)
+              : null,
+          mnc:
+            parsedData[gnssIx + 8] !== ''
+              ? parseInt(parsedData[gnssIx + 8], 10)
+              : null,
+          lac:
+            parsedData[gnssIx + 9] !== ''
+              ? parseInt(parsedData[gnssIx + 9], 16)
+              : null,
+          cid:
+            parsedData[gnssIx + 10] !== ''
+              ? parseInt(parsedData[gnssIx + 10], 16)
+              : null,
+          satellites:
+            satelliteInfo && parsedData[gnssIx + 12] !== ''
+              ? parseInt(parsedData[gnssIx + 12], 10)
+              : null
+        })
+      }
+
+      data = Object.assign(data, { moreData: moreData })
+    }
   } else if (command[1] === 'GTHBD') {
     // Heartbeat. It must response an ACK command
     data = Object.assign(data, {
