@@ -643,88 +643,6 @@ const parse = raw => {
         parsedData[index + 1] !== '' ? parseFloat(parsedData[index + 1]) : null,
       hourmeter: null
     })
-  } else if (command[1] === 'GTTMP') {
-    // Temperature Alarm
-    let number = parsedData[7] !== '' ? parseInt(parsedData[7], 10) : 1
-    let index = 7 + 12 * number // position append mask
-    let satelliteInfo = false
-
-    // If get satellites is configured
-    if (utils.includeSatellites(parsedData[19])) {
-      index += 1
-      satelliteInfo = true
-    }
-
-    data = Object.assign(data, {
-      alarm: utils.getAlarm(command[1], parsedData[6], [
-        parsedData[index + 11],
-        parsedData[index + 13]
-      ]),
-      loc: {
-        type: 'Point',
-        coordinates: [parseFloat(parsedData[12]), parseFloat(parsedData[13])]
-      },
-      speed: parsedData[9] !== '' ? parseFloat(parsedData[9]) : null,
-      gpsStatus: utils.checkGps(
-        parseFloat(parsedData[12]),
-        parseFloat(parsedData[13])
-      ),
-      hdop: parsedData[8] !== '' ? parseFloat(parsedData[8]) : null,
-      status: {
-        // parsedData[24]
-        raw: `${parsedData[index + 6]}${parsedData[index + 7]}`,
-        sos: false,
-        input: {
-          '4':
-            utils.nHexDigit(utils.hex2bin(parsedData[index + 6][1]), 4)[0] ===
-            '1',
-          '3':
-            utils.nHexDigit(utils.hex2bin(parsedData[index + 6][1]), 4)[1] ===
-            '1',
-          '2':
-            utils.nHexDigit(utils.hex2bin(parsedData[index + 6][1]), 4)[2] ===
-            '1',
-          '1':
-            utils.nHexDigit(utils.hex2bin(parsedData[index + 6][1]), 4)[3] ===
-            '1'
-        },
-        output: {
-          '3':
-            utils.nHexDigit(utils.hex2bin(parsedData[index + 7][1]), 4)[1] ===
-            '1',
-          '2':
-            utils.nHexDigit(utils.hex2bin(parsedData[index + 7][1]), 4)[2] ===
-            '1',
-          '1':
-            utils.nHexDigit(utils.hex2bin(parsedData[index + 7][1]), 4)[3] ===
-            '1'
-        },
-        charge: parseFloat(parsedData[5]) > 5,
-        state: null
-      },
-      azimuth: parsedData[10] !== '' ? parseFloat(parsedData[10]) : null,
-      altitude: parsedData[11] !== '' ? parseFloat(parsedData[11]) : null,
-      datetime: parsedData[14] !== '' ? utils.parseDate(parsedData[14]) : null,
-      voltage: {
-        battery: null, // percentage
-        inputCharge:
-          parsedData[5] !== '' ? parseFloat(parsedData[5]) / 1000 : null
-      },
-      mcc: parsedData[15] !== '' ? parseInt(parsedData[15], 10) : null,
-      mnc: parsedData[16] !== '' ? parseInt(parsedData[16], 10) : null,
-      lac: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
-      cid: parsedData[18] !== '' ? parseInt(parsedData[18], 16) : null,
-      satellites:
-        satelliteInfo && parsedData[index] !== ''
-          ? parseInt(parsedData[index], 10)
-          : null,
-      odometer:
-        parsedData[index + 1] !== '' ? parseFloat(parsedData[index + 1]) : null,
-      hourmeter:
-        parsedData[index + 2] !== ''
-          ? utils.getHoursForHourmeter(parsedData[index + 2])
-          : null
-    })
   } else if (
     command[1] === 'GTPNA' ||
     command[1] === 'GTPFA' ||
@@ -756,24 +674,7 @@ const parse = raw => {
     // Power on/off reason
     data = Object.assign(data, {
       alarm: utils.getAlarm(command[1], parsedData[4]),
-      loc: null,
-      speed: null,
-      gpsStatus: null,
-      hdop: null,
-      status: null,
-      azimuth: null,
-      altitude: null,
-      datetime: parsedData[9] !== '' ? utils.parseDate(parsedData[9]) : null,
-      voltage: {
-        battery: null,
-        inputCharge: null
-      },
-      mcc: null,
-      mnc: null,
-      lac: null,
-      cid: null,
-      odometer: null,
-      hourmeter: null
+      datetime: parsedData[9] !== '' ? utils.parseDate(parsedData[9]) : null
     })
   } else if (
     command[1] === 'GTMPN' ||
@@ -864,9 +765,7 @@ const parse = raw => {
     command[1] === 'GTRMD' ||
     command[1] === 'GTCRA' ||
     command[1] === 'GTBPL' ||
-    command[1] === 'GTSTT' ||
-    command[1] === 'GTAVC' ||
-    command[1] === 'GTWPB'
+    command[1] === 'GTSTT'
   ) {
     let index = 16 // position append mask
     let satelliteInfo = false
@@ -1746,28 +1645,7 @@ const parse = raw => {
     // Short format
     if (parsedData.length === 7) {
       data = Object.assign(data, {
-        loc: null,
-        speed: null,
-        gpsStatus: null,
-        hdop: null,
-        status: null,
-        azimuth: null,
-        altitude: null,
-        datetime: null,
-        voltage: {
-          battery: null,
-          inputCharge: null,
-          ada: null,
-          adb: null,
-          adc: null
-        },
-        mcc: null,
-        mnc: null,
-        lac: null,
-        cid: null,
-        satellites: null,
-        odometer: null,
-        hourmeter: null
+        datetime: parsedData[5] !== '' ? utils.parseDate(parsedData[5]) : null
       })
     } else {
       dataIndex = 7
@@ -1816,147 +1694,9 @@ const parse = raw => {
       })
     }
 
-    // Checks if its a temperature GTDAT -> DT
-    if (/^>DT/.test(parsedData[7])) {
-      const parsedSerialData =
-        parsedData[7] !== '' ? parsedData[7].split('|') : ''
-      let externalData = {
-        eriMask: {
-          raw: '00000000',
-          digitFuelSensor: false,
-          AC100: false,
-          reserved: false,
-          fuelLevelPercentage: false,
-          fuelVolume: false
-        },
-        uartDeviceType: 'Camaleon',
-        fuelSensorData: null
-      }
-      let AC100Devices = [
-        {
-          deviceNumber: `${parsedData[2]}|1`,
-          deviceType: '1',
-          deviceData:
-            parsedSerialData[3] !== '' ? parseFloat(parsedSerialData[3]) : null
-        }
-      ]
-      if (parsedSerialData[4] !== '') {
-        AC100Devices.push({
-          deviceNumber: `${parsedData[2]}|2`,
-          deviceType: '1',
-          deviceData:
-            parsedSerialData[4] !== '' ? parseFloat(parsedSerialData[4]) : null
-        })
-      }
-      externalData = Object.assign(externalData, {
-        AC100Devices: AC100Devices
-      })
-      data = Object.assign(data, {
-        alarm: utils.getAlarm('GTERI', null),
-        externalData: externalData
-      })
-    } else if (/^>ET/.test(parsedData[7])) {
-      // Temp Alarms
-      // GTTMP
-      const parsedSerialData =
-        parsedData[7] !== '' ? parsedData[7].split('|') : ''
-      const alarm = utils.getAlarm('GTTMP', `${parsedSerialData[2]}0`, [
-        `${parsedData[2]}|${parsedSerialData[2]}`,
-        parsedSerialData[4]
-      ])
-      data = Object.assign(data, {
-        alarm: alarm
-      })
-    } else if (/^>ID/.test(parsedData[7])) {
-      // Checks if its a iButton GTDAT -> DT
-      const parsedSerialData =
-        parsedData[7] !== '' ? parsedData[7].split('|') : ''
-      const driverID = parsedSerialData[2] ? parsedSerialData[2] : ''
-      const alarm = utils.getAlarm('GTIDA', `${driverID},1`)
-      data = Object.assign(data, {
-        alarm: alarm
-      })
-    } else {
-      // Normal GTDAT
-      data = Object.assign(data, {
-        alarm: utils.getAlarm(command[1], parsedData[dataIndex])
-      })
-    }
-  } else if (command[1] === 'GTDTT') {
-    // short format
-    if (parsedData.length === 11) {
-      data = Object.assign(data, {
-        alarm: utils.getAlarm(command[1], parsedData[8], parsedData[6]),
-        loc: null,
-        speed: null,
-        gpsStatus: null,
-        hdop: null,
-        status: null,
-        azimuth: null,
-        altitude: null,
-        datetime: null,
-        voltage: {
-          battery: null,
-          inputCharge: null,
-          ada: null,
-          adb: null,
-          adc: null
-        },
-        mcc: null,
-        mnc: null,
-        lac: null,
-        cid: null,
-        satellites: null,
-        odometer: null,
-        hourmeter: null
-      })
-    } else {
-      // Long format
-      let index = 20 // position append mask
-      let satelliteInfo = false
-
-      // If get satellites is configured
-      if (utils.includeSatellites(parsedData[index])) {
-        index += 1
-        satelliteInfo = true
-      }
-
-      data = Object.assign(data, {
-        alarm: utils.getAlarm(command[1], parsedData[8], parsedData[6]),
-        loc: {
-          type: 'Point',
-          coordinates: [parseFloat(parsedData[13]), parseFloat(parsedData[14])]
-        },
-        speed: parsedData[10] !== '' ? parseFloat(parsedData[10]) : null,
-        gpsStatus: utils.checkGps(
-          parseFloat(parsedData[13]),
-          parseFloat(parsedData[14])
-        ),
-        hdop: parsedData[9] !== '' ? parseFloat(parsedData[9]) : null,
-        status: null,
-        azimuth: parsedData[11] !== '' ? parseFloat(parsedData[11]) : null,
-        altitude: parsedData[12] !== '' ? parseFloat(parsedData[12]) : null,
-        datetime:
-          parsedData[15] !== '' ? utils.parseDate(parsedData[15]) : null,
-        voltage: {
-          battery: null,
-          inputCharge: null,
-          ada: null,
-          adb: null,
-          adc: null
-        },
-        mcc: parsedData[16] !== '' ? parseInt(parsedData[16], 10) : null,
-        mnc: parsedData[17] !== '' ? parseInt(parsedData[17], 10) : null,
-        lac: parsedData[18] !== '' ? parseInt(parsedData[18], 16) : null,
-        cid: parsedData[19] !== '' ? parseInt(parsedData[19], 16) : null,
-        satellites:
-          satelliteInfo && parsedData[index] !== ''
-            ? parseInt(parsedData[index], 10)
-            : null,
-        odometer: null,
-        hourmeter: null
-      })
-    }
+    data = Object.assign(data, {
+      alarm: utils.getAlarm(command[1], parsedData[dataIndex])
+    })
   } else if (command[1] === 'GTDOS') {
     let index = 17 // position append mask
     let satelliteInfo = false
@@ -3253,48 +2993,6 @@ const parse = raw => {
         svrInfo: parsedData[6] !== '' ? parsedData[6] : null
       }
     })
-  } else if (command[1] === 'GTLBA') {
-    // Low Battery for FR433 devices
-    let index = 17 // possition append mask
-    let satelliteInfo = false
-
-    // If get satellites is configured
-    if (utils.includeSatellites(parsedData[index])) {
-      index += 1
-      satelliteInfo = true
-    }
-
-    data = Object.assign(data, {
-      alarm: utils.getAlarm(command[1], [parsedData[4], parsedData[5]]),
-      loc: {
-        type: 'Point',
-        coordinates: [parseFloat(parsedData[10]), parseFloat(parsedData[11])]
-      },
-      speed: parsedData[7] !== '' ? parseFloat(parsedData[7]) : null,
-      gpsStatus: utils.checkGps(
-        parseFloat(parsedData[10]),
-        parseFloat(parsedData[11])
-      ),
-      hdop: parsedData[6] !== '' ? parseFloat(parsedData[6]) : null,
-      status: null,
-      azimuth: parsedData[8] !== '' ? parseFloat(parsedData[8]) : null,
-      altitude: parsedData[9] !== '' ? parseFloat(parsedData[9]) : null,
-      datetime: parsedData[12] !== '' ? utils.parseDate(parsedData[12]) : null,
-      voltage: {
-        battery: null,
-        inputCharge: null
-      },
-      mcc: parsedData[13] !== '' ? parseInt(parsedData[13], 10) : null,
-      mnc: parsedData[14] !== '' ? parseInt(parsedData[14], 10) : null,
-      lac: parsedData[15] !== '' ? parseInt(parsedData[15], 16) : null,
-      cid: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
-      satellites:
-        satelliteInfo && parsedData[index] !== ''
-          ? parseInt(parsedData[index])
-          : null,
-      odometer: null,
-      hourmeter: null
-    })
   } else if (command[1] === 'GTASC') {
     // Calibrarion data for XYZ-axis acceleration sensor
     let index = 24 // possition append mask
@@ -3513,53 +3211,6 @@ const parse = raw => {
         : parsedData[index + 4] !== ''
           ? parseFloat(parsedData[index + 4])
           : null,
-      hourmeter: null
-    })
-  } else if (command[1] === 'GTAUR') {
-    // Result of AU100 Configuration
-    // Not verified yet (possible error in documentation)
-    let index = 21 // possition append mask
-    let satelliteInfo = false
-
-    // If get satellites is configured
-    if (utils.includeSatellites(parsedData[index])) {
-      index += 1
-      satelliteInfo = true
-    }
-
-    data = Object.assign(data, {
-      alarm: utils.getAlarm(command[1], [
-        parsedData[4],
-        parsedData[5],
-        parsedData[6]
-      ]),
-      loc: {
-        type: 'Point',
-        coordinates: [parseFloat(parsedData[14]), parseFloat(parsedData[15])]
-      },
-      speed: parsedData[11] !== '' ? parseFloat(parsedData[11]) : null,
-      gpsStatus: utils.checkGps(
-        parseFloat(parsedData[14]),
-        parseFloat(parsedData[15])
-      ),
-      hdop: parsedData[10] !== '' ? parseFloat(parsedData[10]) : null,
-      status: null,
-      azimuth: parsedData[12] !== '' ? parseFloat(parsedData[12]) : null,
-      altitude: parsedData[13] !== '' ? parseFloat(parsedData[13]) : null,
-      datetime: parsedData[16] !== '' ? utils.parseDate(parsedData[16]) : null,
-      voltage: {
-        battery: null,
-        inputCharge: null
-      },
-      mcc: parsedData[17] !== '' ? parseInt(parsedData[17], 10) : null,
-      mnc: parsedData[18] !== '' ? parseInt(parsedData[18], 10) : null,
-      lac: parsedData[19] !== '' ? parseInt(parsedData[19], 16) : null,
-      cid: parsedData[20] !== '' ? parseInt(parsedData[20], 16) : null,
-      satellites:
-        satelliteInfo && parsedData[index] !== ''
-          ? parseInt(parsedData[index])
-          : null,
-      odometer: null,
       hourmeter: null
     })
   } else {
