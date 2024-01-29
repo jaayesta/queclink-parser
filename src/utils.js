@@ -895,7 +895,8 @@ const getAlarm = (command, report, extra = false) => {
     let y = getAccelerationMagnitude(extra[0].substring(4, 8), 4)
     let z = getAccelerationMagnitude(extra[0].substring(8, 12), 4)
     return {
-      type: 'Harsh_Behavior_Data',
+      type: 'Harsh_Behavior',
+      status: parseInt(report[1], 10),
       calibration: report[0] === '2',
       duration: extra[1],
       magnitude: Number(
