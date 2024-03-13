@@ -500,7 +500,7 @@ const parse = raw => {
     data = Object.assign(data, {
       externalData: externalData
     })
-    
+
     // More than 1 GNSS report in data
     if (number > 1) {
       let moreData = []
@@ -562,7 +562,6 @@ const parse = raw => {
 
       data = Object.assign(data, { moreData: moreData })
     }
-
   } else if (command[1] === 'GTHBD') {
     // Heartbeat. It must response an ACK command
     data = Object.assign(data, {

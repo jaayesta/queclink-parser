@@ -685,15 +685,15 @@ const getAlarm = (command, report, extra = false) => {
       message: messages[command]
     }
   } else if (command === 'GTJDR') {
+    const jammingNetwork = jammingNetworkTypes[report] || null
     return {
       type: 'Jamming',
       status: true,
       gps: false,
-      jammingNetwork: jammingNetworkTypes[report],
-      message:
-        report !== ''
-          ? `${messages[command]}: ${jammingNetworkTypes[report]}`
-          : messages[command]
+      jammingNetwork: jammingNetwork,
+      message: jammingNetwork
+        ? `${messages[command]}: ${jammingNetworkTypes[report]}`
+        : messages[command]
     }
   } else if (command === 'GTJDS') {
     return {

@@ -765,7 +765,7 @@ describe('queclink-parzer', () => {
       const data = queclink.parse(raw)
       expect(data.alarm.type).to.eq('Jamming')
       expect(data.alarm.status).to.equal(true)
-      expect(data.alarm.message).to.eq('Vehículo Jammeado')
+      expect(data.alarm.message).to.eq('Jamming detectado')
     })
     it('should return GTEPS alarm', () => {
       const raw = Buffer.from(
