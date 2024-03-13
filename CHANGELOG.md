@@ -1,3 +1,30 @@
+#### 1.8.6 (2024-03-13)
+
+##### New Features
+
+* **gv300w:**  added field moreData when number > 1 ([389bb1ba](https://github.com/jaayesta/queclink-parser/commit/389bb1ba2cd48806635600a9964f09581fbb8f22))
+* **moreData:**  new field in case that number > 1 ([c507ec67](https://github.com/jaayesta/queclink-parser/commit/c507ec677ce3c79c77d1f7c5ea712d530398cddb))
+* **clean:**  cleaned unused reports ([8e395f0d](https://github.com/jaayesta/queclink-parser/commit/8e395f0d97a90d3bbe005e356f04144b87ce6452))
+* **ble-info:**  added info for BID and ERI reports ([8288af44](https://github.com/jaayesta/queclink-parser/commit/8288af44b00cc9e268f6191132f6e56d47ebe7bf))
+* **bluetooth:**  added some bluetooth functions ([25468239](https://github.com/jaayesta/queclink-parser/commit/25468239b46185179e0c3f1f6551bbb72ed50bfa))
+* **events:**  added support to common events and notificartions ([3dfe8a35](https://github.com/jaayesta/queclink-parser/commit/3dfe8a35eb603df48bd77d75f7b7e43aac7f544d))
+* **resp:**  added  FRI messages (incomplete ERI) ([3af3c01c](https://github.com/jaayesta/queclink-parser/commit/3af3c01c2cc048b7d41d504a3cbf7e610f158636))
+* **gv58lau:**  added position related report ([4c84715d](https://github.com/jaayesta/queclink-parser/commit/4c84715d9d5404502d8020f8a1983a2f98653281))
+* **new-device:**  added GV58LAU ([66a97c78](https://github.com/jaayesta/queclink-parser/commit/66a97c789cefbc5ea9facc0830269d271953cf14))
+
+##### Bug Fixes
+
+* **test:**  fix jamming test ([c41ac059](https://github.com/jaayesta/queclink-parser/commit/c41ac059ddffa19bea1768af0e6e349041d789f5))
+* **HBE:**  added status and modified type ([48debc9b](https://github.com/jaayesta/queclink-parser/commit/48debc9b79ba571fd81bc09d38591dc2bfda7c66))
+* **bluetooth-id:**  correction in data ([ac4f3585](https://github.com/jaayesta/queclink-parser/commit/ac4f3585ed009c4dd90ebf6cc8a9c0263d37b4df))
+* **position:**  added support for multiple points ([aeb4617f](https://github.com/jaayesta/queclink-parser/commit/aeb4617f1c7dd4eb30e572039fd09b5dcbc5ef8e))
+* **messages:**
+  *  corrected PNR and PFR texts ([f4af5d6f](https://github.com/jaayesta/queclink-parser/commit/f4af5d6f8bd7d4c8ae117ed57edd8689055be74b))
+  *  understandable messages for PNR and PFR ([630a381e](https://github.com/jaayesta/queclink-parser/commit/630a381e94bfdfbb066c5f170feb4529d7b34741))
+* **GV310LAU:**  some corrections ([52dde926](https://github.com/jaayesta/queclink-parser/commit/52dde92661c49a1d1a9b1803fbd0bcc8287a7632))
+* **bluetooth:**  added BT data to main bluetooth info for BAA ([24b6c236](https://github.com/jaayesta/queclink-parser/commit/24b6c236bf5d23feae763101a11c7234e0a26eb6))
+* **gv310lau:**  correction in coordinates for BCS and BDS messages ([386e634c](https://github.com/jaayesta/queclink-parser/commit/386e634c37ec4b8f61c0ad0f596532dbffb3aa7a))
+
 #### 1.8.5 (2024-01-11)
 
 #### 1.8.4 (2024-01-11)
