@@ -100,7 +100,7 @@
     "2": "Botón SOS presionado"
   },
   "GTEPS": "Batería de Fuente de Poder Baja",
-  "GTJDR": "Vehículo Jammeado",
+  "GTJDR": "Jamming detectado",
   "GTJDS": {
     "1": "Cese de Jammer",
     "2": "Vehículo Jammeado"
@@ -130,8 +130,8 @@
     "0": "Entrada digital 1 desactivada"
   },
   "GTVGL": {
-    "1": "Entrada virtual 1 activada mode",
-    "0": "Entrada virtual 1 desactivada mode"
+    "1": "Entrada virtual 1 activada",
+    "0": "Entrada virtual 1 desactivada"
   },
   "GTVGN": {
     "0": "Entrada virtual 1 activada por motivo desconocido",
