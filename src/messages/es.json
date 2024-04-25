@@ -243,7 +243,7 @@
     "12": "Se ha detectado un accesorio bluetooth",
     "13": "Puerta abierta",
     "14": "Puerta cerrada",
-    "15": "Evento de relé"
+    "15": "Cambio de estado en Relé BT"
   },
   "GTBID": "Se ha detectado baliza bluetooth",
   "GTLBA": {
@@ -322,7 +322,8 @@
       "ATI": "Solicitud: información básica de AVL",
       "CAN100 Operation": "Solicitud: vehículo vía CANbus",
       "SCS": "Solicitud: estado de calibración 3-ejes",
-      "DELBUF": "Se han eliminado los reportes almacenados"
+      "DELBUF": "Se han eliminado los reportes almacenados",
+      "RLY": "Acción sobre Relé BT"
     }
   }
 }
