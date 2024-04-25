@@ -231,7 +231,7 @@ const parse = raw => {
 
     // If get satellites is configured
     if (utils.includeSatellites(parsedData[19])) {
-      index = 6 + 13 * number
+      index = 7 + 13 * number
       satelliteInfo = true
     }
 
