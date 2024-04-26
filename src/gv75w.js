@@ -967,32 +967,33 @@ const parse = raw => {
       parsedData[26] !== ''
         ? utils.nHexDigit(utils.hex2bin(parsedData[26]), 8)
         : null
+
     data = Object.assign(data, {
       alarm: utils.getAlarm(command[1], parsedData[4]),
       loc: {
         type: 'Point',
-        coordinates: [parseFloat(parsedData[59]), parseFloat(parsedData[60])]
+        coordinates: [parseFloat(parsedData[35]), parseFloat(parsedData[36])]
       },
-      speed: parsedData[56] !== '' ? parseFloat(parsedData[56]) : null,
+      speed: parsedData[32] !== '' ? parseFloat(parsedData[32]) : null,
       gpsStatus: utils.checkGps(
-        parseFloat(parsedData[59]),
-        parseFloat(parsedData[60])
+        parseFloat(parsedData[35]),
+        parseFloat(parsedData[36])
       ),
-      hdop: parsedData[55] !== '' ? parseFloat(parsedData[55]) : null,
+      hdop: parsedData[31] !== '' ? parseFloat(parsedData[31]) : null,
       status: null,
-      azimuth: parsedData[57] !== '' ? parseFloat(parsedData[57]) : null,
-      altitude: parsedData[58] !== '' ? parseFloat(parsedData[58]) : null,
-      datetime: parsedData[61] !== '' ? utils.parseDate(parsedData[61]) : null,
+      azimuth: parsedData[33] !== '' ? parseFloat(parsedData[33]) : null,
+      altitude: parsedData[34] !== '' ? parseFloat(parsedData[34]) : null,
+      datetime: parsedData[37] !== '' ? utils.parseDate(parsedData[37]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
         ada: null,
         adb: null
       },
-      mcc: parsedData[62] !== '' ? parseInt(parsedData[62], 10) : null,
-      mnc: parsedData[63] !== '' ? parseInt(parsedData[63], 10) : null,
-      lac: parsedData[64] !== '' ? parseInt(parsedData[64], 16) : null,
-      cid: parsedData[65] !== '' ? parseInt(parsedData[65], 16) : null,
+      mcc: parsedData[38] !== '' ? parseInt(parsedData[38], 10) : null,
+      mnc: parsedData[39] !== '' ? parseInt(parsedData[39], 10) : null,
+      lac: parsedData[40] !== '' ? parseInt(parsedData[40], 16) : null,
+      cid: parsedData[41] !== '' ? parseInt(parsedData[41], 16) : null,
       odometer: null,
       hourmeter: null,
       can: {
