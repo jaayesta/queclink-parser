@@ -1,3 +1,13 @@
+#### 1.9.2 (2024-04-26)
+
+##### Bug Fixes
+
+* **replace:**  fix some event parse ([35b00fb2](https://github.com/jaayesta/queclink-parser/commit/35b00fb29f461e88f0337584067732962e24e252))
+* **gv310lau:**
+  *  change elements in BT relay info for ERI report ([1ee49db7](https://github.com/jaayesta/queclink-parser/commit/1ee49db79e9d4bb97dda8feb388d886432d3f91b))
+  *  fix message for bt relay in BAA report ([09f9c33e](https://github.com/jaayesta/queclink-parser/commit/09f9c33e8b2817fbc5ee3868a8d441c1f5865a37))
+  *  change in index offset when raw includes satellites count. ([cbae5db9](https://github.com/jaayesta/queclink-parser/commit/cbae5db981859654210b713ffdcf27a8496ce68a))
+
 #### 1.9.1 (2024-03-13)
 
 #### 1.8.6 (2024-03-13)
