@@ -231,7 +231,7 @@ const parse = raw => {
 
     // If get satellites is configured
     if (utils.includeSatellites(parsedData[19])) {
-      index = 6 + 13 * number
+      index = 7 + 13 * number
       satelliteInfo = true
     }
 
@@ -626,13 +626,9 @@ const parse = raw => {
                   : null
             },
             relay: {
-              configResult:
+              state:
                 parsedData[relIx] !== '' && appendMask[1] === '1'
                   ? parseInt(parsedData[relIx])
-                  : null,
-              state:
-                parsedData[relIx + 1] !== '' && appendMask[1] === '1'
-                  ? parseInt(parsedData[relIx + 1])
                   : null
             }
           }
