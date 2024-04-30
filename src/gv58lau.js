@@ -249,8 +249,8 @@ const parse = raw => {
       datetime: parsedData[14] !== '' ? utils.parseDate(parsedData[14]) : null,
       voltage: {
         battery:
-          parsedData[index + 6] !== ''
-            ? parseFloat(parsedData[index + 6])
+          parsedData[index + 5] !== ''
+            ? parseFloat(parsedData[index + 5])
             : null, // percentage
         inputCharge:
           parsedData[5] !== '' ? parseFloat(parsedData[5]) / 1000 : null
@@ -451,13 +451,9 @@ const parse = raw => {
                   : null
             },
             relay: {
-              configResult:
+              state:
                 parsedData[relIx] !== '' && appendMask[1] === '1'
                   ? parseInt(parsedData[relIx])
-                  : null,
-              state:
-                parsedData[relIx + 1] !== '' && appendMask[1] === '1'
-                  ? parseInt(parsedData[relIx + 1])
                   : null
             }
           }
