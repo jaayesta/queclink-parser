@@ -1,3 +1,9 @@
+#### 1.9.5 (2024-05-02)
+
+##### Bug Fixes
+
+* **gv58lau:**  device battery and bt relay status fixed ([2d54419d](https://github.com/jaayesta/queclink-parser/commit/2d54419d7569854bcf2acb691377e188799bc701))
+
 #### 1.9.4 (2024-04-26)
 
 #### 1.9.3 (2024-04-26)
