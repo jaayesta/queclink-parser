@@ -801,6 +801,32 @@ const parse = raw => {
       odometer: null,
       hourmeter: null
     })
+  } else if (command[1] === 'GTPNR' || command[1] === 'GTPFR') {
+    // Power on/off reason
+    data = Object.assign(data, {
+      alarm: utils.getAlarm(command[1], parsedData[4]),
+      loc: null,
+      speed: null,
+      gpsStatus: null,
+      hdop: null,
+      status: null,
+      azimuth: null,
+      altitude: null,
+      datetime: parsedData[9] !== '' ? utils.parseDate(parsedData[9]) : null,
+      voltage: {
+        battery: null,
+        inputCharge: null,
+        ada: null,
+        adb: null,
+        adc: null
+      },
+      mcc: null,
+      mnc: null,
+      lac: null,
+      cid: null,
+      odometer: null,
+      hourmeter: null
+    })
   } else if (
     command[1] === 'GTMPN' ||
     command[1] === 'GTMPF' ||
