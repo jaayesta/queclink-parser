@@ -56,7 +56,7 @@ const parse = raw => {
         inputCharge: false
       },
       mcc: parsedData[16] !== '' ? utils.latamMcc[parseInt(parsedData[16], 10)] : null,
-      mnc: parsedData[17] !== '' ? parseInt(parsedData[17], 10) : null,
+      mnc: parsedData[17] !== '' ? utils.getMNC(parsedData[16], parsedData[17]) : null,
       lac: parsedData[18] !== '' ? parseInt(parsedData[18], 16) : null,
       cid: parsedData[19] !== '' ? parseInt(parsedData[19], 16) : null,
       odometer: null,
@@ -92,7 +92,7 @@ const parse = raw => {
         inputCharge: false
       },
       mcc: parsedData[16] !== '' ? utils.latamMcc[parseInt(parsedData[16], 10)] : null,
-      mnc: parsedData[17] !== '' ? parseInt(parsedData[17], 10) : null,
+      mnc: parsedData[17] !== '' ? utils.getMNC(parsedData[16], parsedData[17]) : null,
       lac: parsedData[18] !== '' ? parseInt(parsedData[18], 16) : null,
       cid: parsedData[19] !== '' ? parseInt(parsedData[19], 16) : null,
       odometer: null,
@@ -128,7 +128,7 @@ const parse = raw => {
         inputCharge: null
       },
       mcc: parsedData[14] !== '' ? utils.latamMcc[parseInt(parsedData[14], 10)] : null,
-      mnc: parsedData[15] !== '' ? parseInt(parsedData[15], 10) : null,
+      mnc: parsedData[15] !== '' ? utils.getMNC(parsedData[14], parsedData[15]) : null,
       lac: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
       cid: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
       odometer: null,
@@ -186,7 +186,7 @@ const parse = raw => {
         inputCharge: false
       },
       mcc: parsedData[14] !== '' ? utils.latamMcc[parseInt(parsedData[14], 10)] : null,
-      mnc: parsedData[15] !== '' ? parseInt(parsedData[15], 10) : null,
+      mnc: parsedData[15] !== '' ? utils.getMNC(parsedData[14], parsedData[15]) : null,
       lac: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
       cid: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
       odometer: null,
