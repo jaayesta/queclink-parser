@@ -98,7 +98,7 @@ const parse = raw => {
           inputCharge:
             parsedData[4] !== '' ? parseFloat(parsedData[4]) / 1000 : null
         },
-        mcc: parsedData[14] !== '' ? parseInt(parsedData[14], 10) : null,
+        mcc: parsedData[14] !== '' ? utils.latamMcc[parseInt(parsedData[14], 10)] : null,
         mnc: parsedData[15] !== '' ? parseInt(parsedData[15], 10) : null,
         lac: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
         cid: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
@@ -255,7 +255,7 @@ const parse = raw => {
         inputCharge:
           parsedData[5] !== '' ? parseFloat(parsedData[5]) / 1000 : null
       },
-      mcc: parsedData[15] !== '' ? parseInt(parsedData[15], 10) : null,
+      mcc: parsedData[15] !== '' ? utils.latamMcc[parseInt(parsedData[15], 10)] : null,
       mnc: parsedData[16] !== '' ? parseInt(parsedData[16], 10) : null,
       lac: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
       cid: parsedData[18] !== '' ? parseInt(parsedData[18], 16) : null,
@@ -649,7 +649,7 @@ const parse = raw => {
         battery: null,
         inputCharge: null
       },
-      mcc: parsedData[14] !== '' ? parseInt(parsedData[14], 10) : null,
+      mcc: parsedData[14] !== '' ? utils.latamMcc[parseInt(parsedData[14], 10)] : null,
       mnc: parsedData[15] !== '' ? parseInt(parsedData[15], 10) : null,
       lac: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
       cid: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
@@ -735,7 +735,7 @@ const parse = raw => {
         battery: parsedData[4] !== '' ? parseFloat(parsedData[4]) / 1000 : null,
         inputCharge: null
       },
-      mcc: parsedData[14] !== '' ? parseInt(parsedData[14], 10) : null,
+      mcc: parsedData[14] !== '' ? utils.latamMcc[parseInt(parsedData[14], 10)] : null,
       mnc: parsedData[15] !== '' ? parseInt(parsedData[15], 10) : null,
       lac: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
       cid: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
@@ -815,7 +815,7 @@ const parse = raw => {
         battery: null,
         inputCharge: null
       },
-      mcc: parsedData[11] !== '' ? parseInt(parsedData[11], 10) : null,
+      mcc: parsedData[11] !== '' ? utils.latamMcc[parseInt(parsedData[11], 10)] : null,
       mnc: parsedData[12] !== '' ? parseInt(parsedData[12], 10) : null,
       lac: parsedData[13] !== '' ? parseInt(parsedData[13], 16) : null,
       cid: parsedData[14] !== '' ? parseInt(parsedData[14], 16) : null,
@@ -901,7 +901,7 @@ const parse = raw => {
         battery: null,
         inputCharge: null
       },
-      mcc: parsedData[12] !== '' ? parseInt(parsedData[12], 10) : null,
+      mcc: parsedData[12] !== '' ? utils.latamMcc[parseInt(parsedData[12], 10)] : null,
       mnc: parsedData[13] !== '' ? parseInt(parsedData[13], 10) : null,
       lac: parsedData[14] !== '' ? parseInt(parsedData[14], 16) : null,
       cid: parsedData[15] !== '' ? parseInt(parsedData[15], 16) : null,
@@ -1034,7 +1034,7 @@ const parse = raw => {
         battery: null,
         inputCharge: null
       },
-      mcc: parsedData[13] !== '' ? parseInt(parsedData[13], 10) : null,
+      mcc: parsedData[13] !== '' ? utils.latamMcc[parseInt(parsedData[13], 10)] : null,
       mnc: parsedData[14] !== '' ? parseInt(parsedData[14], 10) : null,
       lac: parsedData[15] !== '' ? parseInt(parsedData[15], 16) : null,
       cid: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
@@ -1113,7 +1113,7 @@ const parse = raw => {
         battery: null,
         inputCharge: null
       },
-      mcc: parsedData[12] !== '' ? parseInt(parsedData[12], 10) : null,
+      mcc: parsedData[12] !== '' ? utils.latamMcc[parseInt(parsedData[12], 10)] : null,
       mnc: parsedData[13] !== '' ? parseInt(parsedData[13], 10) : null,
       lac: parsedData[14] !== '' ? parseInt(parsedData[14], 16) : null,
       cid: parsedData[15] !== '' ? parseInt(parsedData[15], 16) : null,
@@ -1204,7 +1204,7 @@ const parse = raw => {
         battery: null,
         inputCharge: null
       },
-      mcc: parsedData[13] !== '' ? parseInt(parsedData[13], 10) : null,
+      mcc: parsedData[13] !== '' ? utils.latamMcc[parseInt(parsedData[13], 10)] : null,
       mnc: parsedData[14] !== '' ? parseInt(parsedData[14], 10) : null,
       lac: parsedData[15] !== '' ? parseInt(parsedData[15], 16) : null,
       cid: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
@@ -1293,7 +1293,7 @@ const parse = raw => {
         battery: null,
         inputCharge: null
       },
-      mcc: parsedData[13] !== '' ? parseInt(parsedData[13], 10) : null,
+      mcc: parsedData[13] !== '' ? utils.latamMcc[parseInt(parsedData[13], 10)] : null,
       mnc: parsedData[14] !== '' ? parseInt(parsedData[14], 10) : null,
       lac: parsedData[15] !== '' ? parseInt(parsedData[15], 16) : null,
       cid: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
@@ -1379,7 +1379,7 @@ const parse = raw => {
         battery: null,
         inputCharge: null
       },
-      mcc: parsedData[15] !== '' ? parseInt(parsedData[15], 10) : null,
+      mcc: parsedData[15] !== '' ? utils.latamMcc[parseInt(parsedData[15], 10)] : null,
       mnc: parsedData[16] !== '' ? parseInt(parsedData[16], 10) : null,
       lac: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
       cid: parsedData[18] !== '' ? parseInt(parsedData[18], 16) : null,
@@ -1460,7 +1460,7 @@ const parse = raw => {
         battery: null,
         inputCharge: null
       },
-      mcc: parsedData[15] !== '' ? parseInt(parsedData[15], 10) : null,
+      mcc: parsedData[15] !== '' ? utils.latamMcc[parseInt(parsedData[15], 10)] : null,
       mnc: parsedData[16] !== '' ? parseInt(parsedData[16], 10) : null,
       lac: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
       cid: parsedData[18] !== '' ? parseInt(parsedData[18], 16) : null,
@@ -1539,7 +1539,7 @@ const parse = raw => {
         battery: null,
         inputCharge: null
       },
-      mcc: parsedData[63] !== '' ? parseInt(parsedData[63], 10) : null,
+      mcc: parsedData[63] !== '' ? utils.latamMcc[parseInt(parsedData[63], 10)] : null,
       mnc: parsedData[64] !== '' ? parseInt(parsedData[64], 10) : null,
       lac: parsedData[65] !== '' ? parseInt(parsedData[65], 16) : null,
       cid: parsedData[66] !== '' ? parseInt(parsedData[66], 16) : null,
@@ -1785,7 +1785,7 @@ const parse = raw => {
           adb: null,
           adc: null
         },
-        mcc: parsedData[15] !== '' ? parseInt(parsedData[15], 10) : null,
+        mcc: parsedData[15] !== '' ? utils.latamMcc[parseInt(parsedData[15], 10)] : null,
         mnc: parsedData[16] !== '' ? parseInt(parsedData[16], 10) : null,
         lac: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
         cid: parsedData[18] !== '' ? parseInt(parsedData[18], 16) : null,
@@ -1832,7 +1832,7 @@ const parse = raw => {
         battery: null,
         inputCharge: null
       },
-      mcc: parsedData[13] !== '' ? parseInt(parsedData[13], 10) : null,
+      mcc: parsedData[13] !== '' ? utils.latamMcc[parseInt(parsedData[13], 10)] : null,
       mnc: parsedData[14] !== '' ? parseInt(parsedData[14], 10) : null,
       lac: parsedData[15] !== '' ? parseInt(parsedData[15], 16) : null,
       cid: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
@@ -1912,7 +1912,7 @@ const parse = raw => {
         battery: null,
         inputCharge: null
       },
-      mcc: parsedData[14] !== '' ? parseInt(parsedData[14], 10) : null,
+      mcc: parsedData[14] !== '' ? utils.latamMcc[parseInt(parsedData[14], 10)] : null,
       mnc: parsedData[15] !== '' ? parseInt(parsedData[15], 10) : null,
       lac: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
       cid: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
@@ -2000,7 +2000,7 @@ const parse = raw => {
         battery: null,
         inputCharge: null
       },
-      mcc: parsedData[12] !== '' ? parseInt(parsedData[12], 10) : null,
+      mcc: parsedData[12] !== '' ? utils.latamMcc[parseInt(parsedData[12], 10)] : null,
       mnc: parsedData[13] !== '' ? parseInt(parsedData[13], 10) : null,
       lac: parsedData[14] !== '' ? parseInt(parsedData[14], 16) : null,
       cid: parsedData[15] !== '' ? parseInt(parsedData[15], 16) : null,
@@ -2525,7 +2525,7 @@ const parse = raw => {
         battery: null,
         inputCharge: null
       },
-      mcc: parsedData[14] !== '' ? parseInt(parsedData[14], 10) : null,
+      mcc: parsedData[14] !== '' ? utils.latamMcc[parseInt(parsedData[14], 10)] : null,
       mnc: parsedData[15] !== '' ? parseInt(parsedData[15], 10) : null,
       lac: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
       cid: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
@@ -2745,7 +2745,7 @@ const parse = raw => {
       azimuth: parsedData[62] !== '' ? parseFloat(parsedData[62]) : null,
       altitude: parsedData[63] !== '' ? parseFloat(parsedData[63]) : null,
       datetime: parsedData[66] !== '' ? utils.parseDate(parsedData[66]) : null,
-      mcc: parsedData[67] !== '' ? parseInt(parsedData[67], 10) : null,
+      mcc: parsedData[67] !== '' ? utils.latamMcc[parseInt(parsedData[67], 10)] : null,
       mnc: parsedData[68] !== '' ? parseInt(parsedData[68], 10) : null,
       lac: parsedData[69] !== '' ? parseInt(parsedData[69], 16) : null,
       cid: parsedData[70] !== '' ? parseInt(parsedData[70], 16) : null,
@@ -3081,7 +3081,7 @@ const parse = raw => {
         battery: null,
         inputCharge: null
       },
-      mcc: parsedData[15] !== '' ? parseInt(parsedData[15], 10) : null,
+      mcc: parsedData[15] !== '' ? utils.latamMcc[parseInt(parsedData[15], 10)] : null,
       mnc: parsedData[16] !== '' ? parseInt(parsedData[16], 10) : null,
       lac: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
       cid: parsedData[18] !== '' ? parseInt(parsedData[18], 16) : null,
@@ -3130,7 +3130,7 @@ const parse = raw => {
         battery: null,
         inputCharge: null
       },
-      mcc: parsedData[20] !== '' ? parseInt(parsedData[20], 10) : null,
+      mcc: parsedData[20] !== '' ? utils.latamMcc[parseInt(parsedData[20], 10)] : null,
       mnc: parsedData[21] !== '' ? parseInt(parsedData[21], 10) : null,
       lac: parsedData[22] !== '' ? parseInt(parsedData[22], 16) : null,
       cid: parsedData[23] !== '' ? parseInt(parsedData[23], 16) : null,
@@ -3236,7 +3236,7 @@ const parse = raw => {
         battery: null,
         inputCharge: null
       },
-      mcc: parsedData[14] !== '' ? parseInt(parsedData[14], 10) : null,
+      mcc: parsedData[14] !== '' ? utils.latamMcc[parseInt(parsedData[14], 10)] : null,
       mnc: parsedData[15] !== '' ? parseInt(parsedData[15], 10) : null,
       lac: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
       cid: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,

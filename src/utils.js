@@ -281,6 +281,21 @@ const gnssTriggerTypes = {
 }
 
 /*
+  MCC List
+*/
+const latamMcc = {
+  716: 'Perú',
+  722: 'Argentina',
+  724: 'Brasil',
+  730: 'Chile',
+  732: 'Colombia',
+  736: 'Bolivia',
+  740: 'Ecuador',
+  744: 'Paraguay',
+  748: 'Uruguay'
+}
+
+/*
   Gets the Queclink Device Type
 */
 const getDevice = raw => {
@@ -1141,6 +1156,7 @@ module.exports = {
   dTimeStates: dTimeStates,
   dWorkingStates: dWorkingStates,
   gnssTriggerTypes: gnssTriggerTypes,
+  latamMcc: latamMcc,
   getDevice: getDevice,
   getProtocolVersion: getProtocolVersion,
   checkGps: checkGps,
