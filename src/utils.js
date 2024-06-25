@@ -281,6 +281,21 @@ const gnssTriggerTypes = {
 }
 
 /*
+  MCC List
+*/
+const latamMcc = {
+  716: 'Perú',
+  722: 'Argentina',
+  724: 'Brasil',
+  730: 'Chile',
+  732: 'Colombia',
+  736: 'Bolivia',
+  740: 'Ecuador',
+  744: 'Paraguay',
+  748: 'Uruguay'
+}
+
+/*
   Gets the Queclink Device Type
 */
 const getDevice = raw => {
@@ -491,6 +506,80 @@ const getSignalPercentage = (networkType, value) => {
   }
 
   return Math.round((perc + Number.EPSILON) * 100) / 100
+}
+
+/*
+  Returns the cellphone operator (MNC)
+  font: https://es.wikipedia.org/wiki/MCC/MNC
+*/
+const getMNC = (countryData, opData) => {
+  let mcc = parseInt(countryData, 10)
+  let mnc = parseInt(opData, 10)
+  let operator
+  if (mcc === 716) {
+     operator = (mnc === 6) ? 'Movistar' :
+                (mnc === 7) ? 'Nextel' :
+                (mnc === 10) ? 'Claro' :
+                (mnc === 15) ? 'Viettel' :
+                (mnc === 17) ? 'Entel' :
+                (mnc === 20) ? 'Cuy Mobile (Claro)' :
+                'Desconocido'
+  } else if (mcc === 722) {
+    operator = (mnc === 1) ? 'Tuenti' :
+               (mnc === 10) ? 'Movicom' :
+               (mnc === 20) ? 'Nextel' :
+               (mnc === 34) ? 'Telecom Personal' :
+               ([310, 320, 330].includes(mnc)) ? 'Claro' :
+               'Desconocido'
+  } else if (mcc === 724) {
+    // Incomplete
+    operator = ([2, 3, 4].includes(mnc)) ? 'TIM' :
+               ([5, 6, 12].includes(mnc)) ? 'Claro' :
+               'Otra'
+  } else if (mcc === 730) {
+    operator = ([1, 10].includes(mnc)) ? 'Entel' :
+               ([2, 7].includes(mnc)) ? 'Movistar' :
+               ([3, 23].includes(mnc)) ? 'Claro' :
+               (mnc === 8) ? 'VTR (Claro)' :
+               (mnc === 9) ? 'WOM' :
+               ([14, 20, 21, 28].includes(mnc)) ? 'Otro' : 
+               'Desconocido'
+  } else if (mcc === 732) {
+    operator = (mnc === 1) ? 'Telecom' :
+               (mnc === 2) ? 'Edatel' :
+               (mnc === 101) ? 'Claro' :
+               (mnc === 103) ? 'Colombia Móvil' :
+               ([102, 123].includes(mnc)) ? 'Movistar' :
+               (mnc === 360) ? 'WOM' : 
+               'Desconocido'
+  } else if (mcc === 736) {
+    operator = (mnc === 1) ? 'Viva Bolivia' :
+               (mnc === 2) ? 'Entel' :
+               (mnc === 3) ? 'Telecel' :
+               (mnc === 4) ? 'Cotas' :
+               (mnc === 5) ? 'Comteco' :
+               'Desconocido'
+  } else if (mcc === 740) {
+    operator = (mnc === 1) ? 'Otecel (Movistar)' :
+               (mnc === 2) ? 'Conecel (Claro)' :
+               (mnc === 0) ? 'Telecsa (CNT' :
+               'Desconocido'
+  } else if (mcc === 744) {
+    operator = (mnc === 1) ? 'Hola Paraguay' :
+               (mnc === 2) ? 'AMX Paraguay' :
+               (mnc === 3) ? 'Comunicaciones Privadas' :
+               (mnc === 4) ? 'Telefónica Celular del Paraguay' :
+               (mnc === 5) ? 'Núcleo' :
+               'Desconocido'
+  } else if (mcc === 748) {
+    operator = ([0, 1].includes(mnc)) ? 'Ancel' :
+               (mnc === 7) ? 'Movistar' :
+               (mnc === 0) ? 'AMX Wireless' :
+               'Desconocido'
+  } else {
+    operator = 'Desconocido'
+  }
+  return operator
 }
 
 /*
@@ -1141,6 +1230,7 @@ module.exports = {
   dTimeStates: dTimeStates,
   dWorkingStates: dWorkingStates,
   gnssTriggerTypes: gnssTriggerTypes,
+  latamMcc: latamMcc,
   getDevice: getDevice,
   getProtocolVersion: getProtocolVersion,
   checkGps: checkGps,
@@ -1163,5 +1253,6 @@ module.exports = {
   hex2dec: hex2dec,
   nHexDigit: nHexDigit,
   sumOnes: sumOnes,
-  parseDate: parseDate
+  parseDate: parseDate,
+  getMNC: getMNC
 }
