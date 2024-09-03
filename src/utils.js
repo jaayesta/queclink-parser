@@ -761,6 +761,8 @@ const getAlarm = (command, report, extra = false) => {
     return { type: 'Charge', status: false, message: messages[command] }
   } else if (command === 'GTBTC') {
     return { type: 'Charging', status: true, message: messages[command] }
+  } else if (command === 'GTDRM') {
+    return { type: 'Device_Removal', message: messages[command] }
   } else if (command === 'GTSTC') {
     return { type: 'Charging', status: false, message: messages[command] }
   } else if (command === 'GTBPL') {
