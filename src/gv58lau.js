@@ -88,12 +88,8 @@ const parse = raw => {
         datetime:
           parsedData[13] !== '' ? utils.parseDate(parsedData[13]) : null,
         voltage: {
-          battery: gnssInfo
-            ? parsedData[index + 7] !== ''
-              ? parseFloat(parsedData[index + 7])
-              : null
-            : parsedData[index + 6] !== ''
-              ? parseFloat(parsedData[index + 6])
+          battery: parsedData[index + 5] !== ''
+              ? parseFloat(parsedData[index + 5])
               : null,
           inputCharge:
             parsedData[4] !== '' ? parseFloat(parsedData[4]) / 1000 : null
