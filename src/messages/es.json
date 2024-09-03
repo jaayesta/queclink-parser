@@ -206,7 +206,7 @@
     "2": "Dispositivo reiniciado por ignición",
     "3": "Dispositivo reiniciado por entrada digital",
     "4": "Dispositivo reiniciado por estar sin señal GSM",
-    "5": "Dispositivo reiniciado por estar sin señal GPRS",
+    "5": "Dispositivo reiniciado por estar sin internet móvil",
     "6": "Dispositivo reiniciado por error en comunicación"
   },
   "GTGSM": "Reporte de antenas GSM",
