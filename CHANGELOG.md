@@ -1,3 +1,21 @@
+#### 1.9.7 (2024-09-09)
+
+##### New Features
+
+* **gv57cg:**
+  *  deleted support for bluetooth and other unsed reports ([5b42255b](https://github.com/jaayesta/queclink-parser/commit/5b42255b0d9b13814f442e713f96598b01ddceb8))
+  *  added support for all reports previously created for other devices. ([4fdc9f0b](https://github.com/jaayesta/queclink-parser/commit/4fdc9f0ba74a86e8fb1905a95beef3f859d3b302))
+  *  added support for generic reports and FRI ([45239633](https://github.com/jaayesta/queclink-parser/commit/45239633da47e066a6df834e0041bf7045381daf))
+  *  added support for GV57CG ([065353d8](https://github.com/jaayesta/queclink-parser/commit/065353d8fb5b6aa94b15f90e2671bd0dc45f5a99))
+* **mnc:**  decoded mnc data for latam countries ([90cf46b9](https://github.com/jaayesta/queclink-parser/commit/90cf46b9579d059cb511ed588be28b550095ea85))
+* **mcc:**  decoded mcc data for latam countries ([11c68559](https://github.com/jaayesta/queclink-parser/commit/11c68559b6359e9095bbf039e8c1e46364e2be30))
+
+##### Bug Fixes
+
+* **gv58lau:**  correction in battery for FRI report ([5de53a5c](https://github.com/jaayesta/queclink-parser/commit/5de53a5c36fcc0d57ccc2d7f8cce6dc7c781a6ee))
+* **messages:**  change message for DOG report ([4d3fe156](https://github.com/jaayesta/queclink-parser/commit/4d3fe156ee1ca663f873fb93e4ff01f607791aab))
+* **gv300w:**  added PNR and PFR alarms ([5e6e7e91](https://github.com/jaayesta/queclink-parser/commit/5e6e7e91f25b4d009b0168bb25fb8ef8ed3e6c29))
+
 #### 1.9.6 (2024-05-02)
 
 #### 1.9.5 (2024-05-02)
