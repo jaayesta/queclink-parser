@@ -44,7 +44,8 @@ const devices = {
   '41': 'GV75W',
   FC: 'GV600W',
   '6E': 'GV310LAU',
-  '802004': 'GV58LAU'
+  '802004': 'GV58LAU',
+  '802006': 'GV57CG'
 }
 
 /*
@@ -311,7 +312,7 @@ const getDevice = raw => {
 const getProtocolVersion = protocol => {
   let deviceType
   let deviceVersion
-  if (protocol.substring(0, 6) === '802004') {
+  if (['802004', '802006'].includes(protocol.substring(0, 6))) {
     deviceType = devices.hasOwnProperty(protocol.substring(0, 6))
       ? devices[protocol.substring(0, 6)]
       : null
@@ -510,7 +511,7 @@ const getSignalPercentage = (networkType, value) => {
 
 /*
   Returns the cellphone operator (MNC)
-  font: https://es.wikipedia.org/wiki/MCC/MNC
+  source: https://es.wikipedia.org/wiki/MCC/MNC
 */
 const getMNC = (countryData, opData) => {
   let mcc = parseInt(countryData, 10)
@@ -579,7 +580,8 @@ const getMNC = (countryData, opData) => {
   } else {
     operator = 'Desconocido'
   }
-  return operator
+  return {country: latamMcc[mcc], mnc: mnc, operator: operator
+  }
 }
 
 /*
@@ -759,6 +761,8 @@ const getAlarm = (command, report, extra = false) => {
     return { type: 'Charge', status: false, message: messages[command] }
   } else if (command === 'GTBTC') {
     return { type: 'Charging', status: true, message: messages[command] }
+  } else if (command === 'GTDRM') {
+    return { type: 'Device_Removal', message: messages[command] }
   } else if (command === 'GTSTC') {
     return { type: 'Charging', status: false, message: messages[command] }
   } else if (command === 'GTBPL') {
@@ -952,22 +956,10 @@ const getAlarm = (command, report, extra = false) => {
         4: acceleration turning
         5: unknown harsh behavior
       */
-    let reportID = parseInt(report[0], 16)
-    let vel
-    if (reportID === 1) {
-      vel = 'baja'
-    } else if (reportID === 2) {
-      vel = 'media'
-    } else if (reportID === 3) {
-      vel = 'alta'
-    } else {
-      vel = ''
-    }
     const reportType = report[1]
     return {
       type: 'Harsh_Behavior',
       status: parseInt(reportType, 10),
-      velocity: vel !== '' ? vel : null,
       message: messages[command][reportType]
     }
   } else if (command === 'GTHBE') {
