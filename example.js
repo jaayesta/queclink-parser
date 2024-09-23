@@ -57,6 +57,36 @@ var cra = '+RESP:GTCRA,8020060402,867488060596284,GV57CG,06,1,1.0,0,222.0,117.12
 var asc = '+RESP:GTASC,8020060402,867488060595542,GV57CG,0.86,0.52,0.01,0.52,-0.86,0.01,0.01,0.00,-1.00,1,12.6,267,39.7,117.115453,31.827255,20230523055431,0460,0001,DF5C,05F7B315,01,10,20230523135432,03BC$'
 var hbe = '+RESP:GTHBE,8020060402,866775051515393,GV57CG,,2,0,1,42.5,0,42.6,117.101321,31.827725,20231221034214,0460,0001,DF5C,05F7B40B,01,1,002500040054,FFE2FFFF0051,10,19.8,20231221034215,006B$'
 
-const raw = new Buffer(hbe)
-console.log(queclink.parse(raw))
+var data = {
+    "imei": 864696060046190,
+    "datetime": "2024-09-23T22:02:36.639Z",
+    "instruction": "1_on",
+    "action": "Cortar Corriente",
+    "device": "queclink",
+    "password": "gv300w",
+    "device_serie": "GV",
+    "previousOutput": {
+      "1": false,
+      "2": false,
+      "3": false
+    },
+    "previousToggle": {
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0
+    },
+    "previousDuration": {
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0
+    }
+  }
+
+console.log(queclink.parseCommand(data))
+// const raw = new Buffer(hbe)
+// console.log(queclink.parse(raw))
 // queclink.parse(raw)
