@@ -29,6 +29,7 @@ const parse = raw => {
   }
 
   // Gps
+  // "+RESP:GTFRI,8020060402,864696060060852,GV57CG,,10,1,0,,,,,,,0730,0001,13EE,0032A502,03,0,0,0.0,0000000:00:00,,,,0,210100,,,,20240925144523,0011$"
   if (command[1] === 'GTFRI') {
     try {
       let number = parsedData[6] !== '' ? parseInt(parsedData[6], 10) : 1
@@ -56,12 +57,12 @@ const parse = raw => {
               utils.nHexDigit(
                 utils.hex2bin(parsedData[index + 6].substring(2, 4)),
                 8
-              )[7] === '1',
+              )[6] === '1',
             '1':
               utils.nHexDigit(
                 utils.hex2bin(parsedData[index + 6].substring(2, 4)),
                 8
-              )[6] === '1'
+              )[7] === '1'
           },
           output: {
             '3':
@@ -88,14 +89,21 @@ const parse = raw => {
         datetime:
           parsedData[13] !== '' ? utils.parseDate(parsedData[13]) : null,
         voltage: {
-          battery: parsedData[index + 5] !== ''
-          ? parseFloat(parsedData[index + 5])
-          : null,
+          battery:
+            parsedData[index + 5] !== ''
+              ? parseFloat(parsedData[index + 5])
+              : null,
           inputCharge:
             parsedData[4] !== '' ? parseFloat(parsedData[4]) / 1000 : null
         },
-        mcc: parsedData[14] !== '' ? utils.latamMcc[parseInt(parsedData[14], 10)] : null,
-        mnc: parsedData[15] !== '' ? utils.getMNC(parsedData[14], parsedData[15]) : null,
+        mcc:
+          parsedData[14] !== ''
+            ? utils.latamMcc[parseInt(parsedData[14], 10)]
+            : null,
+        mnc:
+          parsedData[15] !== ''
+            ? utils.getMNC(parsedData[14], parsedData[15])
+            : null,
         lac: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
         cid: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
         satellites:
@@ -251,8 +259,14 @@ const parse = raw => {
         inputCharge:
           parsedData[5] !== '' ? parseFloat(parsedData[5]) / 1000 : null
       },
-      mcc: parsedData[15] !== '' ? utils.latamMcc[parseInt(parsedData[15], 10)] : null,
-      mnc: parsedData[16] !== '' ? utils.getMNC(parsedData[15], parsedData[16]) : null,
+      mcc:
+        parsedData[15] !== ''
+          ? utils.latamMcc[parseInt(parsedData[15], 10)]
+          : null,
+      mnc:
+        parsedData[16] !== ''
+          ? utils.getMNC(parsedData[15], parsedData[16])
+          : null,
       lac: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
       cid: parsedData[18] !== '' ? parseInt(parsedData[18], 16) : null,
       satellites:
@@ -271,7 +285,8 @@ const parse = raw => {
     })
     // External Data
     const canData = utils.nHexDigit(utils.hex2bin(parsedData[4]), 32)[8] === '1'
-    const bandData = utils.nHexDigit(utils.hex2bin(parsedData[4]), 32)[16] === '1'
+    const bandData =
+      utils.nHexDigit(utils.hex2bin(parsedData[4]), 32)[16] === '1'
 
     let externalData = {
       eriMask: {
@@ -643,8 +658,14 @@ const parse = raw => {
       //   battery: null,
       //   inputCharge: null
       // },
-      mcc: parsedData[14] !== '' ? utils.latamMcc[parseInt(parsedData[14], 10)] : null,
-      mnc: parsedData[15] !== '' ? utils.getMNC(parsedData[14], parsedData[15]) : null,
+      mcc:
+        parsedData[14] !== ''
+          ? utils.latamMcc[parseInt(parsedData[14], 10)]
+          : null,
+      mnc:
+        parsedData[15] !== ''
+          ? utils.getMNC(parsedData[14], parsedData[15])
+          : null,
       lac: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
       cid: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
       satellites:
@@ -684,13 +705,12 @@ const parse = raw => {
       //             8
       //           )[7] === '1'
       //     },
-        //   charge: null,
-        //   state: utils.states[parsedData[index + 1].substring(0, 2)]
-        // }
-        // : null,
-      odometer: parsedData[index + 1] !== ''
-          ? parseFloat(parsedData[index + 1])
-          : null,
+      //   charge: null,
+      //   state: utils.states[parsedData[index + 1].substring(0, 2)]
+      // }
+      // : null,
+      odometer:
+        parsedData[index + 1] !== '' ? parseFloat(parsedData[index + 1]) : null
       // hourmeter: null
     })
   } else if (command[1] === 'GTEPS' || command[1] === 'GTAIS') {
@@ -725,8 +745,14 @@ const parse = raw => {
         battery: parsedData[4] !== '' ? parseFloat(parsedData[4]) / 1000 : null,
         inputCharge: null
       },
-      mcc: parsedData[14] !== '' ? utils.latamMcc[parseInt(parsedData[14], 10)] : null,
-      mnc: parsedData[15] !== '' ? utils.getMNC(parsedData[14], parsedData[15]) : null,
+      mcc:
+        parsedData[14] !== ''
+          ? utils.latamMcc[parseInt(parsedData[14], 10)]
+          : null,
+      mnc:
+        parsedData[15] !== ''
+          ? utils.getMNC(parsedData[14], parsedData[15])
+          : null,
       lac: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
       cid: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
       satellites:
@@ -734,7 +760,7 @@ const parse = raw => {
           ? parseInt(parsedData[index])
           : null,
       odometer:
-        parsedData[index + 1] !== '' ? parseFloat(parsedData[index + 1]) : null,
+        parsedData[index + 1] !== '' ? parseFloat(parsedData[index + 1]) : null
       // hourmeter: null
     })
   } else if (
@@ -752,7 +778,7 @@ const parse = raw => {
       // status: null,
       // azimuth: null,
       // altitude: null,
-      datetime: parsedData[4] !== '' ? utils.parseDate(parsedData[4]) : null,
+      datetime: parsedData[4] !== '' ? utils.parseDate(parsedData[4]) : null
       // voltage: {
       //   battery: null,
       //   inputCharge: null
@@ -806,14 +832,20 @@ const parse = raw => {
       //   battery: null,
       //   inputCharge: null
       // },
-      mcc: parsedData[11] !== '' ? utils.latamMcc[parseInt(parsedData[11], 10)] : null,
-      mnc: parsedData[12] !== '' ? utils.getMNC(parsedData[11], parsedData[12]) : null,
+      mcc:
+        parsedData[11] !== ''
+          ? utils.latamMcc[parseInt(parsedData[11], 10)]
+          : null,
+      mnc:
+        parsedData[12] !== ''
+          ? utils.getMNC(parsedData[11], parsedData[12])
+          : null,
       lac: parsedData[13] !== '' ? parseInt(parsedData[13], 16) : null,
       cid: parsedData[14] !== '' ? parseInt(parsedData[14], 16) : null,
       satellites:
         satelliteInfo && parsedData[index] !== ''
           ? parseInt(parsedData[index])
-          : null,
+          : null
       // status: includeStatus
       //   ? {
       //     raw: parsedData[index + 1],
@@ -892,14 +924,20 @@ const parse = raw => {
       //   battery: null,
       //   inputCharge: null
       // },
-      mcc: parsedData[12] !== '' ? utils.latamMcc[parseInt(parsedData[12], 10)] : null,
-      mnc: parsedData[13] !== '' ? utils.getMNC(parsedData[12], parsedData[13]) : null,
+      mcc:
+        parsedData[12] !== ''
+          ? utils.latamMcc[parseInt(parsedData[12], 10)]
+          : null,
+      mnc:
+        parsedData[13] !== ''
+          ? utils.getMNC(parsedData[12], parsedData[13])
+          : null,
       lac: parsedData[14] !== '' ? parseInt(parsedData[14], 16) : null,
       cid: parsedData[15] !== '' ? parseInt(parsedData[15], 16) : null,
       satellites:
         satelliteInfo && parsedData[index] !== ''
           ? parseInt(parsedData[index])
-          : null,
+          : null
       // status: includeStatus
       //   ? {
       //     raw: parsedData[index + 1],
@@ -971,14 +1009,20 @@ const parse = raw => {
       //   battery: null,
       //   inputCharge: null
       // },
-      mcc: parsedData[13] !== '' ? utils.latamMcc[parseInt(parsedData[13], 10)] : null,
-      mnc: parsedData[14] !== '' ? utils.getMNC(parsedData[13], parsedData[14]) : null,
+      mcc:
+        parsedData[13] !== ''
+          ? utils.latamMcc[parseInt(parsedData[13], 10)]
+          : null,
+      mnc:
+        parsedData[14] !== ''
+          ? utils.getMNC(parsedData[13], parsedData[14])
+          : null,
       lac: parsedData[15] !== '' ? parseInt(parsedData[15], 16) : null,
       cid: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
       satellites:
         satelliteInfo && parsedData[index] !== ''
           ? parseInt(parsedData[index], 10)
-          : null,
+          : null
       // status: includeStatus
       //   ? {
       //     raw: parsedData[index + 1],
@@ -1050,8 +1094,14 @@ const parse = raw => {
         battery: null,
         inputCharge: null
       },
-      mcc: parsedData[12] !== '' ? utils.latamMcc[parseInt(parsedData[12], 10)] : null,
-      mnc: parsedData[13] !== '' ? utils.getMNC(parsedData[12], parsedData[13]) : null,
+      mcc:
+        parsedData[12] !== ''
+          ? utils.latamMcc[parseInt(parsedData[12], 10)]
+          : null,
+      mnc:
+        parsedData[13] !== ''
+          ? utils.getMNC(parsedData[12], parsedData[13])
+          : null,
       lac: parsedData[14] !== '' ? parseInt(parsedData[14], 16) : null,
       cid: parsedData[15] !== '' ? parseInt(parsedData[15], 16) : null,
       satellites:
@@ -1141,8 +1191,14 @@ const parse = raw => {
       //   battery: null,
       //   inputCharge: null
       // },
-      mcc: parsedData[13] !== '' ? utils.latamMcc[parseInt(parsedData[13], 10)] : null,
-      mnc: parsedData[14] !== '' ? utils.getMNC(parsedData[13], parsedData[14]) : null,
+      mcc:
+        parsedData[13] !== ''
+          ? utils.latamMcc[parseInt(parsedData[13], 10)]
+          : null,
+      mnc:
+        parsedData[14] !== ''
+          ? utils.getMNC(parsedData[13], parsedData[14])
+          : null,
       lac: parsedData[15] !== '' ? parseInt(parsedData[15], 16) : null,
       cid: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
       satellites:
@@ -1186,9 +1242,8 @@ const parse = raw => {
       //     state: utils.states[parsedData[index + 1].substring(0, 2)]
       //   }
       //   : null,
-      odometer: parsedData[index + 1] !== ''
-          ? parseFloat(parsedData[index + 1])
-          : null,
+      odometer:
+        parsedData[index + 1] !== '' ? parseFloat(parsedData[index + 1]) : null
       // hourmeter: null
     })
   } else if (
@@ -1226,8 +1281,14 @@ const parse = raw => {
       //   battery: null,
       //   inputCharge: null
       // },
-      mcc: parsedData[13] !== '' ? utils.latamMcc[parseInt(parsedData[13], 10)] : null,
-      mnc: parsedData[14] !== '' ? utils.getMNC(parsedData[13], parsedData[14]) : null,
+      mcc:
+        parsedData[13] !== ''
+          ? utils.latamMcc[parseInt(parsedData[13], 10)]
+          : null,
+      mnc:
+        parsedData[14] !== ''
+          ? utils.getMNC(parsedData[13], parsedData[14])
+          : null,
       lac: parsedData[15] !== '' ? parseInt(parsedData[15], 16) : null,
       cid: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
       satellites:
@@ -1271,9 +1332,8 @@ const parse = raw => {
       //     state: utils.states[parsedData[index + 1].substring(0, 2)]
       //   }
       //   : null,
-      odometer: parsedData[index + 1] !== ''
-          ? parseFloat(parsedData[index + 1])
-          : null,
+      odometer:
+        parsedData[index + 1] !== '' ? parseFloat(parsedData[index + 1]) : null
       // hourmeter: null
     })
   } else if (command[1] === 'GTGSS') {
@@ -1308,15 +1368,21 @@ const parse = raw => {
       //   battery: null,
       //   inputCharge: null
       // },
-      mcc: parsedData[15] !== '' ? utils.latamMcc[parseInt(parsedData[15], 10)] : null,
-      mnc: parsedData[16] !== '' ? utils.getMNC(parsedData[15], parsedData[16]) : null,
+      mcc:
+        parsedData[15] !== ''
+          ? utils.latamMcc[parseInt(parsedData[15], 10)]
+          : null,
+      mnc:
+        parsedData[16] !== ''
+          ? utils.getMNC(parsedData[15], parsedData[16])
+          : null,
       lac: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
       cid: parsedData[18] !== '' ? parseInt(parsedData[18], 16) : null,
       usedSatellites: parsedData[5] !== '' ? parseInt(parsedData[5], 16) : null,
       satellites:
         satelliteInfo && parsedData[index] !== ''
           ? parseInt(parsedData[index], 10)
-          : null,
+          : null
       // status: includeStatus
       //   ? {
       //     raw: parsedData[index + 1],
@@ -1357,50 +1423,50 @@ const parse = raw => {
       // odometer: null,
       // hourmeter: null
     })
-  // } else if (command[1] === 'GTIDA') {
-  //   // bluetooth identification
-  //   let number = parsedData[7] !== '' ? parseInt(parsedData[7], 10) : 1
-  //   let index = 7 + 12 * number // position append mask
-  //   let satelliteInfo = false
+    // } else if (command[1] === 'GTIDA') {
+    //   // bluetooth identification
+    //   let number = parsedData[7] !== '' ? parseInt(parsedData[7], 10) : 1
+    //   let index = 7 + 12 * number // position append mask
+    //   let satelliteInfo = false
 
-  //   // If get satellites is configured
-  //   if (utils.includeSatellites(parsedData[index])) {
-  //     index += 1
-  //     satelliteInfo = true
-  //   }
+    //   // If get satellites is configured
+    //   if (utils.includeSatellites(parsedData[index])) {
+    //     index += 1
+    //     satelliteInfo = true
+    //   }
 
-  //   data = Object.assign(data, {
-  //     alarm: utils.getAlarm(command[1], `${parsedData[5]},${parsedData[6]}`),
-  //     loc: {
-  //       type: 'Point',
-  //       coordinates: [parseFloat(parsedData[12]), parseFloat(parsedData[13])]
-  //     },
-  //     speed: parsedData[9] !== '' ? parseFloat(parsedData[9]) : null,
-  //     gpsStatus: utils.checkGps(
-  //       parseFloat(parsedData[12]),
-  //       parseFloat(parsedData[13])
-  //     ),
-  //     hdop: parsedData[8] !== '' ? parseFloat(parsedData[8]) : null,
-  //     status: null,
-  //     azimuth: parsedData[10] !== '' ? parseFloat(parsedData[10]) : null,
-  //     altitude: parsedData[11] !== '' ? parseFloat(parsedData[11]) : null,
-  //     datetime: parsedData[14] !== '' ? utils.parseDate(parsedData[14]) : null,
-  //     voltage: {
-  //       battery: null,
-  //       inputCharge: null
-  //     },
-  //     mcc: parsedData[15] !== '' ? utils.latamMcc[parseInt(parsedData[15], 10)] : null,
-  //     mnc: parsedData[16] !== '' ? utils.getMNC(parsedData[15], parsedData[16]) : null,
-  //     lac: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
-  //     cid: parsedData[18] !== '' ? parseInt(parsedData[18], 16) : null,
-  //     satellites:
-  //       satelliteInfo && parsedData[index] !== ''
-  //         ? parseInt(parsedData[index], 10)
-  //         : null,
-  //     odometer:
-  //       parsedData[index + 1] !== '' ? parseFloat(parsedData[index + 1]) : null,
-  //     hourmeter: null
-  //   })
+    //   data = Object.assign(data, {
+    //     alarm: utils.getAlarm(command[1], `${parsedData[5]},${parsedData[6]}`),
+    //     loc: {
+    //       type: 'Point',
+    //       coordinates: [parseFloat(parsedData[12]), parseFloat(parsedData[13])]
+    //     },
+    //     speed: parsedData[9] !== '' ? parseFloat(parsedData[9]) : null,
+    //     gpsStatus: utils.checkGps(
+    //       parseFloat(parsedData[12]),
+    //       parseFloat(parsedData[13])
+    //     ),
+    //     hdop: parsedData[8] !== '' ? parseFloat(parsedData[8]) : null,
+    //     status: null,
+    //     azimuth: parsedData[10] !== '' ? parseFloat(parsedData[10]) : null,
+    //     altitude: parsedData[11] !== '' ? parseFloat(parsedData[11]) : null,
+    //     datetime: parsedData[14] !== '' ? utils.parseDate(parsedData[14]) : null,
+    //     voltage: {
+    //       battery: null,
+    //       inputCharge: null
+    //     },
+    //     mcc: parsedData[15] !== '' ? utils.latamMcc[parseInt(parsedData[15], 10)] : null,
+    //     mnc: parsedData[16] !== '' ? utils.getMNC(parsedData[15], parsedData[16]) : null,
+    //     lac: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
+    //     cid: parsedData[18] !== '' ? parseInt(parsedData[18], 16) : null,
+    //     satellites:
+    //       satelliteInfo && parsedData[index] !== ''
+    //         ? parseInt(parsedData[index], 10)
+    //         : null,
+    //     odometer:
+    //       parsedData[index + 1] !== '' ? parseFloat(parsedData[index + 1]) : null,
+    //     hourmeter: null
+    //   })
   } else if (command[1] === 'GTDAT') {
     let dataIndex = 4
     // Short format
@@ -1442,8 +1508,14 @@ const parse = raw => {
           adb: null,
           adc: null
         },
-        mcc: parsedData[15] !== '' ? utils.latamMcc[parseInt(parsedData[15], 10)] : null,
-        mnc: parsedData[16] !== '' ? utils.getMNC(parsedData[15], parsedData[16]) : null,
+        mcc:
+          parsedData[15] !== ''
+            ? utils.latamMcc[parseInt(parsedData[15], 10)]
+            : null,
+        mnc:
+          parsedData[16] !== ''
+            ? utils.getMNC(parsedData[15], parsedData[16])
+            : null,
         lac: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
         cid: parsedData[18] !== '' ? parseInt(parsedData[18], 16) : null,
         satellites:
@@ -1489,14 +1561,20 @@ const parse = raw => {
       //   battery: null,
       //   inputCharge: null
       // },
-      mcc: parsedData[13] !== '' ? utils.latamMcc[parseInt(parsedData[13], 10)] : null,
-      mnc: parsedData[14] !== '' ? utils.getMNC(parsedData[13], parsedData[14]) : null,
+      mcc:
+        parsedData[13] !== ''
+          ? utils.latamMcc[parseInt(parsedData[13], 10)]
+          : null,
+      mnc:
+        parsedData[14] !== ''
+          ? utils.getMNC(parsedData[13], parsedData[14])
+          : null,
       lac: parsedData[15] !== '' ? parseInt(parsedData[15], 16) : null,
       cid: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
       satellites:
         satelliteInfo && parsedData[index] !== ''
           ? parseInt(parsedData[index], 10)
-          : null,
+          : null
       // status: includeStatus
       //   ? {
       //     raw: parsedData[index + 1],
@@ -1569,14 +1647,20 @@ const parse = raw => {
       //   battery: null,
       //   inputCharge: null
       // },
-      mcc: parsedData[14] !== '' ? utils.latamMcc[parseInt(parsedData[14], 10)] : null,
-      mnc: parsedData[15] !== '' ? utils.getMNC(parsedData[14], parsedData[15]) : null,
+      mcc:
+        parsedData[14] !== ''
+          ? utils.latamMcc[parseInt(parsedData[14], 10)]
+          : null,
+      mnc:
+        parsedData[15] !== ''
+          ? utils.getMNC(parsedData[14], parsedData[15])
+          : null,
       lac: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
       cid: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
       satellites:
         satelliteInfo && parsedData[index] !== ''
           ? parseInt(parsedData[index], 10)
-          : null,
+          : null
       // status: includeStatus
       //   ? {
       //     raw: parsedData[index + 1],
@@ -1657,8 +1741,14 @@ const parse = raw => {
         battery: null,
         inputCharge: null
       },
-      mcc: parsedData[14] !== '' ? utils.latamMcc[parseInt(parsedData[14], 10)] : null,
-      mnc: parsedData[15] !== '' ? utils.getMNC(parsedData[14], parsedData[15]) : null,
+      mcc:
+        parsedData[14] !== ''
+          ? utils.latamMcc[parseInt(parsedData[14], 10)]
+          : null,
+      mnc:
+        parsedData[15] !== ''
+          ? utils.getMNC(parsedData[14], parsedData[15])
+          : null,
       lac: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
       cid: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
       satellites:
@@ -1877,8 +1967,14 @@ const parse = raw => {
       azimuth: parsedData[62] !== '' ? parseFloat(parsedData[62]) : null,
       altitude: parsedData[63] !== '' ? parseFloat(parsedData[63]) : null,
       datetime: parsedData[66] !== '' ? utils.parseDate(parsedData[66]) : null,
-      mcc: parsedData[67] !== '' ? utils.latamMcc[parseInt(parsedData[67], 10)] : null,
-      mnc: parsedData[68] !== '' ? utils.getMNC(parsedData[67], parsedData[68]) : null,
+      mcc:
+        parsedData[67] !== ''
+          ? utils.latamMcc[parseInt(parsedData[67], 10)]
+          : null,
+      mnc:
+        parsedData[68] !== ''
+          ? utils.getMNC(parsedData[67], parsedData[68])
+          : null,
       lac: parsedData[69] !== '' ? parseInt(parsedData[69], 16) : null,
       cid: parsedData[70] !== '' ? parseInt(parsedData[70], 16) : null,
       satellites:
@@ -2213,8 +2309,14 @@ const parse = raw => {
         battery: null,
         inputCharge: null
       },
-      mcc: parsedData[15] !== '' ? utils.latamMcc[parseInt(parsedData[15], 10)] : null,
-      mnc: parsedData[16] !== '' ? utils.getMNC(parsedData[15], parsedData[16]) : null,
+      mcc:
+        parsedData[15] !== ''
+          ? utils.latamMcc[parseInt(parsedData[15], 10)]
+          : null,
+      mnc:
+        parsedData[16] !== ''
+          ? utils.getMNC(parsedData[15], parsedData[16])
+          : null,
       lac: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
       cid: parsedData[18] !== '' ? parseInt(parsedData[18], 16) : null,
       satellites:
@@ -2262,8 +2364,14 @@ const parse = raw => {
       //   battery: null,
       //   inputCharge: null
       // },
-      mcc: parsedData[20] !== '' ? utils.latamMcc[parseInt(parsedData[20], 10)] : null,
-      mnc: parsedData[21] !== '' ? utils.getMNC(parsedData[20], parsedData[21]) : null,
+      mcc:
+        parsedData[20] !== ''
+          ? utils.latamMcc[parseInt(parsedData[20], 10)]
+          : null,
+      mnc:
+        parsedData[21] !== ''
+          ? utils.getMNC(parsedData[20], parsedData[21])
+          : null,
       lac: parsedData[22] !== '' ? parseInt(parsedData[22], 16) : null,
       cid: parsedData[23] !== '' ? parseInt(parsedData[23], 16) : null,
       satellites:
@@ -2317,7 +2425,7 @@ const parse = raw => {
         xVertical: parsedData[10] !== '' ? parseFloat(parsedData[10]) : null,
         yVertical: parsedData[11] !== '' ? parseFloat(parsedData[11]) : null,
         zVertical: parsedData[12] !== '' ? parseFloat(parsedData[12]) : null
-      },
+      }
       // odometer: null,
       // hourmeter: null
     })
@@ -2337,7 +2445,8 @@ const parse = raw => {
 
     let maxAcc = parsedData[index + 1] !== '' ? parsedData[index + 1] : null
     let avgAcc = parsedData[index + 2] !== '' ? parsedData[index + 2] : null
-    let duration = parsedData[index + 3] !== '' ? parseFloat(parsedData[index + 3]) : null
+    let duration =
+      parsedData[index + 3] !== '' ? parseFloat(parsedData[index + 3]) : null
 
     data = Object.assign(data, {
       alarm: utils.getAlarm(
@@ -2362,8 +2471,14 @@ const parse = raw => {
       //   battery: null,
       //   inputCharge: null
       // },
-      mcc: parsedData[14] !== '' ? utils.latamMcc[parseInt(parsedData[14], 10)] : null,
-      mnc: parsedData[15] !== '' ? utils.getMNC(parsedData[14], parsedData[15]) : null,
+      mcc:
+        parsedData[14] !== ''
+          ? utils.latamMcc[parseInt(parsedData[14], 10)]
+          : null,
+      mnc:
+        parsedData[15] !== ''
+          ? utils.getMNC(parsedData[14], parsedData[15])
+          : null,
       lac: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
       cid: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
       satellites:
@@ -2434,9 +2549,8 @@ const parse = raw => {
           : null
       },
       duration: duration,
-      odometer: parsedData[index + 4] !== ''
-          ? parseFloat(parsedData[index + 4])
-          : null,
+      odometer:
+        parsedData[index + 4] !== '' ? parseFloat(parsedData[index + 4]) : null
       // hourmeter: null
     })
   } else {

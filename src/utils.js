@@ -983,6 +983,7 @@ const getAlarm = (command, report, extra = false) => {
       magnitude: Number(
         Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2)).toFixed(2)
       ).toString(),
+      xyz: {x: x, y: y, z: z},
       message: messages[command][report[1]]
     }
   } else if (command === 'GTCRA') {
