@@ -1,3 +1,14 @@
+#### 1.9.8 (2024-10-04)
+
+##### New Features
+
+* **hbe:**  added xyz report for Harsh_Behavior alarm. ([403e0d10](https://github.com/jaayesta/queclink-parser/commit/403e0d10c5868fbb359f923b758951693dfceb78))
+* **gv57cg:**  added support for AT+GTDOS command (digital output) ([1137fd31](https://github.com/jaayesta/queclink-parser/commit/1137fd31278ec91bce38d75fb67ae2f74fc4ada1))
+
+##### Bug Fixes
+
+* **gv57cg:**  digital input bit fix in fri command ([d00ec669](https://github.com/jaayesta/queclink-parser/commit/d00ec669c6ec24a115049a1568f1a2c18c3efced))
+
 #### 1.9.7 (2024-09-09)
 
 ##### New Features
