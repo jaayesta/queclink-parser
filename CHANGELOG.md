@@ -1,3 +1,9 @@
+#### 1.9.9 (2024-10-04)
+
+##### Bug Fixes
+
+* **input:**  fix gv57cg input bits ([35d4199e](https://github.com/jaayesta/queclink-parser/commit/35d4199e1ff7236cdf48ccf8ad965c08df6599a7))
+
 #### 1.9.8 (2024-10-04)
 
 ##### New Features
