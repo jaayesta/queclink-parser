@@ -221,12 +221,12 @@ const parse = raw => {
             utils.nHexDigit(
               utils.hex2bin(parsedData[index + 6].substring(2, 4)),
               8
-            )[7] === '1',
+            )[6] === '1',
           '1':
             utils.nHexDigit(
               utils.hex2bin(parsedData[index + 6].substring(2, 4)),
               8
-            )[6] === '1'
+            )[7] === '1'
         },
         output: {
           '3':
@@ -594,8 +594,8 @@ const parse = raw => {
         raw: `${parsedData[21]}${parsedData[22]}`,
         sos: false,
         input: {
-          '2': utils.nHexDigit(utils.hex2bin(parsedData[21]), 8)[7] === '1',
-          '1': utils.nHexDigit(utils.hex2bin(parsedData[21]), 8)[6] === '1'
+          '2': utils.nHexDigit(utils.hex2bin(parsedData[21]), 8)[6] === '1',
+          '1': utils.nHexDigit(utils.hex2bin(parsedData[21]), 8)[7] === '1'
         },
         output: {
           '3': utils.nHexDigit(utils.hex2bin(parsedData[22]), 8)[5] === '1',
@@ -1117,12 +1117,12 @@ const parse = raw => {
                 utils.nHexDigit(
                   utils.hex2bin(parsedData[index + 1].substring(2, 4)),
                   8
-                )[7] === '1',
+                )[6] === '1',
             '1':
                 utils.nHexDigit(
                   utils.hex2bin(parsedData[index + 1].substring(2, 4)),
                   8
-                )[6] === '1'
+                )[7] === '1'
           },
           output: {
             '3':
@@ -1764,12 +1764,12 @@ const parse = raw => {
                 utils.nHexDigit(
                   utils.hex2bin(parsedData[index + 1].substring(2, 4)),
                   8
-                )[7] === '1',
+                )[6] === '1',
             '1':
                 utils.nHexDigit(
                   utils.hex2bin(parsedData[index + 1].substring(2, 4)),
                   8
-                )[6] === '1'
+                )[7] === '1'
           },
           output: {
             '3':
@@ -1990,12 +1990,12 @@ const parse = raw => {
                 utils.nHexDigit(
                   utils.hex2bin(parsedData[index + 1].substring(2, 4)),
                   8
-                )[7] === '1',
+                )[6] === '1',
             '1':
                 utils.nHexDigit(
                   utils.hex2bin(parsedData[index + 1].substring(2, 4)),
                   8
-                )[6] === '1'
+                )[7] === '1'
           },
           output: {
             '3':
