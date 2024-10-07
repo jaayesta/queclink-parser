@@ -240,24 +240,24 @@ const beaconTypes = {
   Possible Driving Time Related States
 */
 const dTimeStates = {
-  0: 'Sin límites alcanzados',
-  1: 'Conducción sobre 4 horas y 15 minutos',
-  2: 'Conducción sobre 4 horas y 30 minutos',
-  3: 'Conducción sobre 8 horas y 45 minutos',
-  4: 'Conducción sobre 9 horas',
-  5: 'Conducción sobre 15 horas y 45 minutos (con descanso menor a 8 horas en las últimas 24 horas)',
-  6: 'Conducción sobre 16 horas',
-  7: 'Otro límite'
+  0: 'normal',
+  1: '04h_15min',
+  2: '04h_30min',
+  3: '08h_45min',
+  4: '09h_00min',
+  5: '15h_45min',
+  6: '16h_00min',
+  7: 'other'
 }
 
 /*
   Possible Driving Working States
 */
 const dWorkingStates = {
-  0: 'Normal',
-  1: 'En descanso - Durmiendo',
-  2: 'Conductor disponible - Descanso corto',
-  3: 'Conduciendo - En el volante'
+  0: 'normal',
+  1: 'rest',
+  2: 'work',
+  3: 'driving'
 }
 
 /*
@@ -491,6 +491,353 @@ const getSignalPercentage = (networkType, value) => {
   }
 
   return Math.round((perc + Number.EPSILON) * 100) / 100
+}
+
+/*
+  Returns the cellphone operator (MNC)
+  source: https://es.wikipedia.org/wiki/MCC/MNC
+*/
+const getMNC = (countryData, opData) => {
+  let mcc = parseInt(countryData, 10)
+  let mnc = parseInt(opData, 10)
+  let operator
+  if (mcc === 716) {
+    operator = (mnc === 6) ? 'Movistar' :
+      (mnc === 7) ? 'Nextel' :
+        (mnc === 10) ? 'Claro' :
+          (mnc === 15) ? 'Viettel' :
+            (mnc === 17) ? 'Entel' :
+              (mnc === 20) ? 'Cuy Mobile (Claro)' :
+                'Desconocido'
+  } else if (mcc === 722) {
+    operator = (mnc === 1) ? 'Tuenti' :
+      (mnc === 10) ? 'Movicom' :
+        (mnc === 20) ? 'Nextel' :
+          (mnc === 34) ? 'Telecom Personal' :
+            ([310, 320, 330].includes(mnc)) ? 'Claro' :
+              'Desconocido'
+  } else if (mcc === 724) {
+    // Incomplete
+    operator = ([2, 3, 4].includes(mnc)) ? 'TIM' :
+      ([5, 6, 12].includes(mnc)) ? 'Claro' :
+        'Otra'
+  } else if (mcc === 730) {
+    operator = ([1, 10].includes(mnc)) ? 'Entel' :
+      ([2, 7].includes(mnc)) ? 'Movistar' :
+        ([3, 23].includes(mnc)) ? 'Claro' :
+          (mnc === 8) ? 'VTR (Claro)' :
+            (mnc === 9) ? 'WOM' :
+              ([14, 20, 21, 28].includes(mnc)) ? 'Otro' :
+                'Desconocido'
+  } else if (mcc === 732) {
+    operator = (mnc === 1) ? 'Telecom' :
+      (mnc === 2) ? 'Edatel' :
+        (mnc === 101) ? 'Claro' :
+          (mnc === 103) ? 'Colombia Móvil' :
+            ([102, 123].includes(mnc)) ? 'Movistar' :
+              (mnc === 360) ? 'WOM' :
+                'Desconocido'
+  } else if (mcc === 736) {
+    operator = (mnc === 1) ? 'Viva Bolivia' :
+      (mnc === 2) ? 'Entel' :
+        (mnc === 3) ? 'Telecel' :
+          (mnc === 4) ? 'Cotas' :
+            (mnc === 5) ? 'Comteco' :
+              'Desconocido'
+  } else if (mcc === 740) {
+    operator = (mnc === 1) ? 'Otecel (Movistar)' :
+      (mnc === 2) ? 'Conecel (Claro)' :
+        (mnc === 0) ? 'Telecsa (CNT' :
+          'Desconocido'
+  } else if (mcc === 744) {
+    operator = (mnc === 1) ? 'Hola Paraguay' :
+      (mnc === 2) ? 'AMX Paraguay' :
+        (mnc === 3) ? 'Comunicaciones Privadas' :
+          (mnc === 4) ? 'Telefónica Celular del Paraguay' :
+            (mnc === 5) ? 'Núcleo' :
+              'Desconocido'
+  } else if (mcc === 748) {
+    operator = ([0, 1].includes(mnc)) ? 'Ancel' :
+      (mnc === 7) ? 'Movistar' :
+        (mnc === 0) ? 'AMX Wireless' :
+          'Desconocido'
+  } else {
+    operator = 'Desconocido'
+  }
+  return {
+    country: latamMcc[mcc], mnc: mnc, operator: operator
+  }
+}
+
+/*
+  Hectometer to Kilometer
+*/
+const hToKm = (data) => {
+  let h = parseFloat(data.slice(1))
+  return parseFloat((h * 0.1).toFixed(2))
+}
+
+/*
+  Parse CAN100 data
+*/
+const parseCanData = (data, key) => {
+  switch (key) {
+    case 'ignitionKey':
+      return (data === '0' ? 'ignition_off' : data === '1' ? 'ignition_on' : data === '2' ? 'engine_on' : null)
+    case 'totalDistance':
+      if (data[0] === 'H') {
+        return hToKm(data)
+      } else {
+        return data
+      }
+    case 'range':
+      return hToKm(data)
+    case 'fuelConsumption':
+      if (data[0] === 'H') {
+        return hToKm(data) * 1000
+      } else if (data[0] === 'L') {
+        return parseFloat(parseFloat(data.slice(1)).toFixed(2))
+      } else {
+        return data
+      }
+    case 'tachographDrivingDirection':
+      return data === '0' ? 'forward' : 'backward'
+    default:
+      return data
+  }
+}
+
+/*
+  Get CANbus data
+*/
+const getCanData = (parsedData, ix) => {
+  let inicatorsBin =
+    parsedData[ix + 19] !== ''
+      ? nHexDigit(hex2bin(parsedData[ix + 19]), 16)
+      : null
+  let lights =
+    parsedData[ix + 20] !== ''
+      ? nHexDigit(hex2bin(parsedData[ix + 20]), 8)
+      : null
+  let doors =
+    parsedData[ix + 21] !== ''
+      ? nHexDigit(hex2bin(parsedData[ix + 21]), 8)
+      : null
+  let canExpansionMask =
+    parsedData[ix + 24] !== ''
+      ? nHexDigit(hex2bin(parsedData[ix + 24]), 32)
+        .split('')
+        .reverse()
+        .join('')
+      : null
+  let expansionBin =
+    parsedData[ix + 45] !== ''
+      ? nHexDigit(hex2bin(parsedData[ix + 45]), 16)
+        .split('')
+        .reverse()
+        .join('')
+      : null
+  let tachographBin =
+    parsedData[ix + 18] !== ''
+      ? nHexDigit(hex2bin(parsedData[ix + 18]), 8)
+        .split('')
+        .reverse()
+        .join('')
+      : null
+
+  return {
+    comunicationOk: parsedData[ix] ? parsedData[ix] === '1' : null,
+    vin: parsedData[ix + 2] !== '' ? parsedData[ix + 2] : null,
+    ignitionKey: parsedData[ix + 3] !== '' ? parseCanData(parsedData[ix + 3], 'ignitionKey') : null,
+    totalDistance: parsedData[ix + 4] !== '' ? parseCanData(parsedData[ix + 4], 'totalDistance') : null,
+    fuelUsed: parsedData[ix + 5] !== '' ? parseFloat(parsedData[ix + 5]) : null, // float
+    rpm: parsedData[ix + 6] !== '' ? parseInt(parsedData[ix + 6], 10) : null, // int
+    speed: parsedData[ix + 7] !== '' ? parseFloat(parsedData[ix + 7]) : null,
+    engineCoolantTemp:
+      parsedData[ix + 8] !== '' ? parseInt(parsedData[ix + 8], 10) : null,
+    fuelConsumption: parsedData[ix + 9] !== '' ? parseCanData(parsedData[ix + 9], 'fuelConsumption') : null,
+    fuelLevel: parsedData[ix + 10] !== '' ? parsedData[ix + 10] : null,
+    range: parsedData[ix + 11] !== '' ? parseCanData(parsedData[ix + 11], 'range') : null,
+    acceleratorPressure:
+      parsedData[ix + 12] !== '' ? parseFloat(parsedData[ix + 12]) : null,
+    engineHours: parsedData[ix + 13] !== '' ? parseFloat(parsedData[ix + 13]) : null,
+    drivingTime: parsedData[ix + 14] !== '' ? parseFloat(parsedData[ix + 14]) : null,
+    idleTime: parsedData[ix + 15] !== '' ? parseFloat(parsedData[ix + 15]) : null,
+    idleFuelUsed: parsedData[ix + 16] !== '' ? parseFloat(parsedData[ix + 16]) : null,
+    axleWight: parsedData[ix + 17] !== '' ? parseFloat(parsedData[ix + 17]) : null,
+    tachograph: {
+      raw: parsedData[ix + 18] !== '' ? parsedData[ix + 18] : null,
+      validDriverData: tachographBin ? tachographBin[7] === '1' : null,
+      insertedDriverCard: tachographBin ? tachographBin[5] === '1' : null,
+      driverWorkingState: tachographBin
+        ? dWorkingStates[parseInt(tachographBin.substring(3, 5), 2)]
+        : null,
+      drivingTimeState: tachographBin
+        ? dTimeStates[parseInt(tachographBin.substring(5, 8), 2)]
+        : null
+    },
+    indicators: inicatorsBin ? {
+      raw: inicatorsBin !== '' ? parsedData[ix + 19] : null,
+      lowFuel: inicatorsBin ? inicatorsBin[0] === '1' : null,
+      driverSeatbelt: inicatorsBin ? inicatorsBin[1] === '1' : null,
+      airConditioning: inicatorsBin ? inicatorsBin[2] === '1' : null,
+      cruiseControl: inicatorsBin ? inicatorsBin[3] === '1' : null,
+      brakePedal: inicatorsBin ? inicatorsBin[4] === '1' : null,
+      clutchPedal: inicatorsBin ? inicatorsBin[5] === '1' : null,
+      handbrake: inicatorsBin ? inicatorsBin[6] === '1' : null,
+      centralLock: inicatorsBin ? inicatorsBin[7] === '1' : null,
+      reverseGear: inicatorsBin ? inicatorsBin[8] === '1' : null,
+      runningLights: inicatorsBin ? inicatorsBin[9] === '1' : null,
+      lowBeams: inicatorsBin ? inicatorsBin[10] === '1' : null,
+      highBeams: inicatorsBin ? inicatorsBin[11] === '1' : null,
+      rearFogLights: inicatorsBin ? inicatorsBin[12] === '1' : null,
+      frontFogLights: inicatorsBin ? inicatorsBin[13] === '1' : null,
+      doors: inicatorsBin ? inicatorsBin[14] === '1' : null,
+      trunk: inicatorsBin ? inicatorsBin[15] === '1' : null
+    } : null,
+    lights: lights ? {
+      raw: lights !== '' ? parsedData[ix + 20] : null,
+      running: lights ? lights[0] === '1' : null,
+      lowBeams: lights ? lights[1] === '1' : null,
+      frontFog: lights ? lights[2] === '1' : null,
+      rearFog: lights ? lights[3] === '1' : null,
+      hazard: lights ? lights[4] === '1' : null
+    } : null,
+    doors: doors ? {
+      raw: doors !== '' ? parsedData[ix + 21] : null,
+      driver: doors ? doors[0] === '1' : null,
+      passenger: doors ? doors[1] === '1' : null,
+      rearLeft: doors ? doors[2] === '1' : null,
+      rearRight: doors ? doors[3] === '1' : null,
+      trunk: doors ? doors[4] === '1' : null,
+      hood: doors ? doors[5] === '1' : null
+    } : null,
+    overSpeedTime: parsedData[ix + 22] !== '' ? parseFloat(parsedData[ix + 22]) : null,
+    overSpeedEngineTime: parsedData[ix + 23] !== '' ? parseFloat(parsedData[ix + 23]) : null,
+    canExpanded: {
+      canReportExpansionMask: {
+        raw: parsedData[ix + 24] !== '' ? parsedData[ix + 24] : null,
+        engineTorque: canExpansionMask ? canExpansionMask[23] === '1' : null,
+        rapidAccelerations: canExpansionMask
+          ? canExpansionMask[22] === '1'
+          : null,
+        rapidBrakings: canExpansionMask ? canExpansionMask[21] === '1' : null,
+        expansionInformation: canExpansionMask
+          ? canExpansionMask[20] === '1'
+          : null,
+        registrationNumber: canExpansionMask
+          ? canExpansionMask[19] === '1'
+          : null,
+        tachographDriver2Name: canExpansionMask
+          ? canExpansionMask[18] === '1'
+          : null,
+        tachographDriver1Name: canExpansionMask
+          ? canExpansionMask[17] === '1'
+          : null,
+        tachographDriver2Card: canExpansionMask
+          ? canExpansionMask[16] === '1'
+          : null,
+        tachographDriver1Card: canExpansionMask
+          ? canExpansionMask[15] === '1'
+          : null,
+        totalBrakeApplications: canExpansionMask
+          ? canExpansionMask[14] === '1'
+          : null,
+        totalAcceleratorKickDownTime: canExpansionMask
+          ? canExpansionMask[13] === '1'
+          : null,
+        totalCruiseControlTime: canExpansionMask
+          ? canExpansionMask[12] === '1'
+          : null,
+        totalEffectiveEngineSpeedTime: canExpansionMask
+          ? canExpansionMask[11] === '1'
+          : null,
+        totalAcceleratorKickDown: canExpansionMask
+          ? canExpansionMask[10] === '1'
+          : null,
+        pedalBrakingFactor: canExpansionMask
+          ? canExpansionMask[9] === '1'
+          : null,
+        engineBrakingFactor: canExpansionMask
+          ? canExpansionMask[8] === '1'
+          : null,
+        analogInputValue: canExpansionMask
+          ? canExpansionMask[7] === '1'
+          : null,
+        tachographDrivingDirection: canExpansionMask
+          ? canExpansionMask[6] === '1'
+          : null,
+        tachographVehicleMotionSignal: canExpansionMask
+          ? canExpansionMask[5] === '1'
+          : null,
+        tachographOverspeedSignal: canExpansionMask
+          ? canExpansionMask[4] === '1'
+          : null,
+        AxleWeight4: canExpansionMask ? canExpansionMask[3] === '1' : null,
+        AxleWeight3: canExpansionMask ? canExpansionMask[2] === '1' : null,
+        AxleWeight1: canExpansionMask ? canExpansionMask[1] === '1' : null,
+        adBlueLevel: canExpansionMask ? canExpansionMask[0] === '1' : null
+      },
+      adBlueLevel:
+        parsedData[ix + 25] !== '' ? parseFloat(parsedData[ix + 25]) : null,
+      axleWeight1: parsedData[ix + 26] !== '' ? parseInt(parsedData[ix + 26]) : null,
+      axleWeight3: parsedData[ix + 27] !== '' ? parseInt(parsedData[ix + 27]) : null,
+      axleWeight4: parsedData[ix + 28] !== '' ? parseInt(parsedData[ix + 28]) : null,
+      tachographOverspeedSignal:
+        parsedData[ix + 29] !== '' ? (parsedData[ix + 29] === '1') : null,
+      tachographVehicleMotionSignal:
+        parsedData[ix + 30] !== '' ? (parsedData[ix + 30] === '1') : null,
+      tachographDrivingDirection:
+        parsedData[ix + 31] !== '' ? parseCanData(parsedData[ix + 31], 'tachographDrivingDirection') : null,
+      analogInputValue:
+        parsedData[ix + 32] !== '' ? parseFloat(parsedData[ix + 32]) * 1000 : null,
+      engineBrakingFactor:
+        parsedData[ix + 33] !== '' ? parseInt(parsedData[ix + 33]) : null,
+      pedalBrakingFactor:
+        parsedData[ix + 34] !== '' ? parseInt(parsedData[ix + 34]) : null,
+      totalAcceleratorKickDown:
+        parsedData[ix + 35] !== '' ? parseInt(parsedData[ix + 35]) : null,
+      totalEffectiveEngineSpeedTime:
+        parsedData[ix + 36] !== '' ? parseFloat(parsedData[ix + 36]) : null,
+      totalCruiseControlTime:
+        parsedData[ix + 37] !== '' ? parseFloat(parsedData[ix + 37]) : null,
+      totalAcceleratorKickDownTime:
+        parsedData[ix + 38] !== '' ? parseFloat(parsedData[ix + 38]) : null,
+      totalBrakeApplications:
+        parsedData[ix + 39] !== '' ? parseInt(parsedData[ix + 39]) : null,
+      tachographDriver1Card: parsedData[ix + 40] !== '' ? parsedData[ix + 40] : null,
+      tachographDriver2Card: parsedData[ix + 41] !== '' ? parsedData[ix + 41] : null,
+      tachographDriver1Name: parsedData[ix + 42] !== '' ? parsedData[ix + 42] : null,
+      tachographDriver2Name: parsedData[ix + 43] !== '' ? parsedData[ix + 43] : null,
+      registrationNumber: parsedData[ix + 44] !== '' ? parsedData[ix + 44] : null,
+      expansionInformation: {
+        raw: parsedData[ix + 45] !== '' ? parsedData[ix + 45] : null,
+        webasto: expansionBin ? expansionBin[0] === '1' : null,
+        brakeFluidLowIndicator: expansionBin
+          ? expansionBin[1] === '1'
+          : null,
+        coolantLevelLowIndicator: expansionBin
+          ? expansionBin[2] === '1'
+          : null,
+        batteryIndicator: expansionBin ? expansionBin[3] === '1' : null,
+        brakeSystemaFailureIndicator: expansionBin
+          ? expansionBin[4] === '1'
+          : null,
+        oilPressureIndicator: expansionBin ? expansionBin[5] === '1' : null,
+        engineHotIndicator: expansionBin ? expansionBin[6] === '1' : null,
+        ABSFailureIndicator: expansionBin ? expansionBin[7] === '1' : null,
+        checkEngineIndicator: expansionBin ? expansionBin[9] === '1' : null,
+        aribagsIndicator: expansionBin ? expansionBin[10] === '1' : null,
+        serviceCallIndicator: expansionBin
+          ? expansionBin[11] === '1'
+          : null,
+        oilLevelLowIndicator: expansionBin ? expansionBin[12] === '1' : null
+      },
+      rapidBrakings: parsedData[ix + 46] !== '' ? parseInt(parsedData[ix + 46]) : null,
+      rapidAccelerations: parsedData[ix + 47] !== '' ? parseInt(parsedData[ix + 47]) : null,
+      engineTorque: parsedData[ix + 48] !== '' ? parseFloat(parsedData[ix + 48]) : null,
+    }
+  }
 }
 
 /*
@@ -902,6 +1249,7 @@ const getAlarm = (command, report, extra = false) => {
       magnitude: Number(
         Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2)).toFixed(2)
       ).toString(),
+      xyz: {x: x, y: y, z: z},
       message: messages[command][report[1]]
     }
   } else if (command === 'GTCRA') {
@@ -1154,6 +1502,7 @@ module.exports = {
   getHoursForHourmeter: getHoursForHourmeter,
   getSignalStrength: getSignalStrength,
   getSignalPercentage: getSignalPercentage,
+  getCanData: getCanData,
   getAlarm: getAlarm,
   bin2dec: bin2dec,
   bin2hex: bin2hex,
