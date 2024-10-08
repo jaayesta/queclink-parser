@@ -1,3 +1,9 @@
+#### 1.9.10 (2024-10-08)
+
+##### New Features
+
+* **canbus:**  can data from ERI report and others ([8f590b6b](https://github.com/jaayesta/queclink-parser/commit/8f590b6bf35588a01c703c93a71f78b37b4cb1ac))
+
 #### 1.9.9 (2024-10-04)
 
 ##### Bug Fixes
