@@ -15,6 +15,7 @@ const gl50 = require('./gl50.js')
 const gv50p = require('./gv50p.js')
 const gv310lau = require('./gv310lau.js')
 const gv58lau = require('./gv58lau.js')
+const gv57cg = require('./gv57cg.js')
 
 /*
   Checks if raw comes from a Queclink device
@@ -104,6 +105,8 @@ const parse = (raw, options) => {
       result = gv310lau.parse(raw.toString())
     } else if (device === 'GV58LAU') {
       result = gv58lau.parse(raw.toString())
+    } else if (device === 'GV57CG') {
+      result = gv57cg.parse(raw.toString())
     } else if (device === 'GV75W') {
       result = gv75w.parse(raw.toString())
     } else if (device === 'GV300') {
@@ -247,7 +250,9 @@ const parseCommand = data => {
     const do5 = `${outputs[4]},${prevDurations['5']},${prevToggles['5']}`
     const longOperation = data.longOperation || false ? '1' : '0'
     const dosReport = data.dosReport || false ? '1' : '0'
-    if (data.device_serie === 'GV') {
+    if (data.device_serie === 'GV' && data.password === 'gv57cg') {
+      command = `AT+GTDOS=${password},,,1,${do1},,,${dosReport},0,5,,,,${serialId}$`
+    } else if (data.device_serie === 'GV') {
       command = `AT+GTOUT=${password},${do1},${do2},${do3},${do4},${longOperation},${dosReport},,,${serialId}$`
     } else if (data.device_serie === 'GMT') {
       command = `AT+GTOUT=${password},${do1},${do2},,,,,,,,${serialId}$`

@@ -1,3 +1,46 @@
+#### 1.9.9 (2024-10-04)
+
+##### Bug Fixes
+
+* **input:**  fix gv57cg input bits ([35d4199e](https://github.com/jaayesta/queclink-parser/commit/35d4199e1ff7236cdf48ccf8ad965c08df6599a7))
+
+#### 1.9.8 (2024-10-04)
+
+##### New Features
+
+* **hbe:**  added xyz report for Harsh_Behavior alarm. ([403e0d10](https://github.com/jaayesta/queclink-parser/commit/403e0d10c5868fbb359f923b758951693dfceb78))
+* **gv57cg:**  added support for AT+GTDOS command (digital output) ([1137fd31](https://github.com/jaayesta/queclink-parser/commit/1137fd31278ec91bce38d75fb67ae2f74fc4ada1))
+
+##### Bug Fixes
+
+* **gv57cg:**  digital input bit fix in fri command ([d00ec669](https://github.com/jaayesta/queclink-parser/commit/d00ec669c6ec24a115049a1568f1a2c18c3efced))
+
+#### 1.9.7 (2024-09-09)
+
+##### New Features
+
+* **gv57cg:**
+  *  deleted support for bluetooth and other unsed reports ([5b42255b](https://github.com/jaayesta/queclink-parser/commit/5b42255b0d9b13814f442e713f96598b01ddceb8))
+  *  added support for all reports previously created for other devices. ([4fdc9f0b](https://github.com/jaayesta/queclink-parser/commit/4fdc9f0ba74a86e8fb1905a95beef3f859d3b302))
+  *  added support for generic reports and FRI ([45239633](https://github.com/jaayesta/queclink-parser/commit/45239633da47e066a6df834e0041bf7045381daf))
+  *  added support for GV57CG ([065353d8](https://github.com/jaayesta/queclink-parser/commit/065353d8fb5b6aa94b15f90e2671bd0dc45f5a99))
+* **mnc:**  decoded mnc data for latam countries ([90cf46b9](https://github.com/jaayesta/queclink-parser/commit/90cf46b9579d059cb511ed588be28b550095ea85))
+* **mcc:**  decoded mcc data for latam countries ([11c68559](https://github.com/jaayesta/queclink-parser/commit/11c68559b6359e9095bbf039e8c1e46364e2be30))
+
+##### Bug Fixes
+
+* **gv58lau:**  correction in battery for FRI report ([5de53a5c](https://github.com/jaayesta/queclink-parser/commit/5de53a5c36fcc0d57ccc2d7f8cce6dc7c781a6ee))
+* **messages:**  change message for DOG report ([4d3fe156](https://github.com/jaayesta/queclink-parser/commit/4d3fe156ee1ca663f873fb93e4ff01f607791aab))
+* **gv300w:**  added PNR and PFR alarms ([5e6e7e91](https://github.com/jaayesta/queclink-parser/commit/5e6e7e91f25b4d009b0168bb25fb8ef8ed3e6c29))
+
+#### 1.9.6 (2024-05-02)
+
+#### 1.9.5 (2024-05-02)
+
+##### Bug Fixes
+
+* **gv58lau:**  device battery and bt relay status fixed ([2d54419d](https://github.com/jaayesta/queclink-parser/commit/2d54419d7569854bcf2acb691377e188799bc701))
+
 #### 1.9.4 (2024-04-26)
 
 #### 1.9.3 (2024-04-26)
