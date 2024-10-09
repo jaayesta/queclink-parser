@@ -1,3 +1,13 @@
+#### 1.9.11 (2024-10-09)
+
+##### New Features
+
+* **can:**  added units of measurement ([7ff59418](https://github.com/jaayesta/queclink-parser/commit/7ff594187491dcaf8c5f2aa690218363ebbba2c6))
+
+##### Bug Fixes
+
+* **can:**  fix index error for externalData in ERI ([f71b874c](https://github.com/jaayesta/queclink-parser/commit/f71b874cd0c2ead80d9cdeae5be3c5408fb6c99b))
+
 #### 1.9.10 (2024-10-08)
 
 ##### New Features
