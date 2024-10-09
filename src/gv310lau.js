@@ -242,12 +242,6 @@ const parse = raw => {
     const bluetoothAccessory =
       utils.nHexDigit(utils.hex2bin(parsedData[4]), 11)[2] === '1'
 
-    const fuelSensorData = digitFuelSensor ? parsedData[index + 9] : null
-    const ac100DevicesConnected =
-      AC100 && digitFuelSensor
-        ? parseInt(parsedData[index + 10], 10)
-        : AC100 && !digitFuelSensor ? parseInt(parsedData[index + 9], 10) : 0
-
     // If get satellites is configured
     if (utils.includeSatellites(parsedData[19])) {
       index = 7 + 13 * number
@@ -370,6 +364,12 @@ const parse = raw => {
           : null,
     })
 
+    const fuelSensorData = digitFuelSensor ? parsedData[index + 9] : null
+    const ac100DevicesConnected =
+      AC100 && digitFuelSensor
+        ? parseInt(parsedData[index + 10], 10)
+        : AC100 && !digitFuelSensor ? parseInt(parsedData[index + 9], 10) : 0
+    
     if (canData) {
       let canInfo = utils.getCanData(parsedData, index + 9)
       data = Object.assign(data, { can: canInfo })
