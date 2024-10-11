@@ -90,7 +90,73 @@ var data = {
   }
 
 // console.log(queclink.parseCommand(data))
-const raw = new Buffer(eribad)
-console.log(queclink.parse(raw))
-queclink.parse(raw)
+const raw = new Buffer(caneri)
+// console.log(queclink.parse(raw))
+// queclink.parse(raw)
 
+data = queclink.parse(raw)
+// console.log(data)
+if (data.can) {
+  const {
+    comunicationOk,
+    vin,
+    ignitionKey,
+    totalDistance,
+    totalDistanceUnit,
+    rpm,
+    speed,
+    engineCoolantTemp,
+    fuelConsumption,
+    fuelLevel,
+    fuelLevelUnit,
+    range,
+    acceleratorPressure,
+    engineHours,
+    drivingTime,
+    idleTime,
+    idleFuelUsed,
+    axleWeight,
+    tachograph,
+    indicators,
+    lights,
+    doors,
+    overSpeedTime,
+    overSpeedEngineTime
+  } = data.can
+
+  const canData = {
+    raw: data.raw,
+    imei: data.imei,
+    datetime: data.datetime,
+    point: data.point,
+    comunicationOk,
+    vin,
+    ignitionKey,
+    totalDistance,
+    totalDistanceUnit,
+    rpm,
+    speed,
+    engineCoolantTemp,
+    fuelConsumption,
+    fuelLevel,
+    fuelLevelUnit,
+    range,
+    acceleratorPressure,
+    engineHours,
+    drivingTime,
+    idleTime,
+    idleFuelUsed,
+    axleWeight,
+    tachograph,
+    indicators,
+    lights,
+    doors,
+    overSpeedTime,
+    overSpeedEngineTime,
+    ...data.can.canExpanded
+  }
+
+  canData.canReportExpansionMask = canData.canReportExpansionMask.raw
+  console.log(canData)
+  delete data.can
+}
