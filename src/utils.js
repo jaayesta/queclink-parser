@@ -663,28 +663,28 @@ const getCanData = (parsedData, ix) => {
 
   return {
     comunicationOk: parsedData[ix] ? parsedData[ix] === '1' : null,
-    vin: parsedData[ix + 2] !== '' ? parsedData[ix + 2] : null,
-    ignitionKey: parsedData[ix + 3] !== '' ? parseCanData(parsedData[ix + 3], 'ignitionKey') : null,
-    totalDistance: parsedData[ix + 4] !== '' ? parseCanData(parsedData[ix + 4], 'totalDistance') : null,
+    vin: parsedData[ix + 2] ? parsedData[ix + 2] : null,
+    ignitionKey: parsedData[ix + 3] ? parseCanData(parsedData[ix + 3], 'ignitionKey') : null,
+    totalDistance: parsedData[ix + 4] ? parseCanData(parsedData[ix + 4], 'totalDistance') : null,
     totalDistanceUnit: parsedData[ix + 4] ? parsedData[ix + 4].slice(0,1) === 'H' ? 'km' : 'I' : null,
-    fuelUsed: parsedData[ix + 5] !== '' ? parseFloat(parsedData[ix + 5]) : null, // float
-    rpm: parsedData[ix + 6] !== '' ? parseInt(parsedData[ix + 6], 10) : null, // int
-    speed: parsedData[ix + 7] !== '' ? parseFloat(parsedData[ix + 7]) : null,
+    fuelUsed: parsedData[ix + 5] ? parseFloat(parsedData[ix + 5]) : null, // float
+    rpm: parsedData[ix + 6] ? parseInt(parsedData[ix + 6], 10) : null, // int
+    speed: parsedData[ix + 7] ? parseFloat(parsedData[ix + 7]) : null,
     engineCoolantTemp:
-      parsedData[ix + 8] !== '' ? parseInt(parsedData[ix + 8], 10) : null,
-    fuelConsumption: parsedData[ix + 9] !== '' ? parseCanData(parsedData[ix + 9], 'fuelConsumption') : null,
-    fuelLevel: parsedData[ix + 10] !== '' ? parseFloat(parsedData[ix + 10].slice(1)) : null,
+      parsedData[ix + 8] ? parseInt(parsedData[ix + 8], 10) : null,
+    fuelConsumption: parsedData[ix + 9] ? parseCanData(parsedData[ix + 9], 'fuelConsumption') : null,
+    fuelLevel: parsedData[ix + 10] ? parseFloat(parsedData[ix + 10].slice(1)) : null,
     fuelLevelUnit: parsedData[ix + 10] ? parsedData[ix + 10].slice(0,1) === 'P' ? '%' : 'L' : null,
-    range: parsedData[ix + 11] !== '' ? parseCanData(parsedData[ix + 11], 'range') : null,
+    range: parsedData[ix + 11] ? parseCanData(parsedData[ix + 11], 'range') : null,
     acceleratorPressure:
-      parsedData[ix + 12] !== '' ? parseFloat(parsedData[ix + 12]) : null,
-    engineHours: parsedData[ix + 13] !== '' ? parseFloat(parsedData[ix + 13]) : null,
-    drivingTime: parsedData[ix + 14] !== '' ? parseFloat(parsedData[ix + 14]) : null,
-    idleTime: parsedData[ix + 15] !== '' ? parseFloat(parsedData[ix + 15]) : null,
-    idleFuelUsed: parsedData[ix + 16] !== '' ? parseFloat(parsedData[ix + 16]) : null,
-    axleWeight: parsedData[ix + 17] !== '' ? parseFloat(parsedData[ix + 17]) : null,
-    tachograph: {
-      raw: parsedData[ix + 18] !== '' ? parsedData[ix + 18] : null,
+      parsedData[ix + 12] ? parseFloat(parsedData[ix + 12]) : null,
+    engineHours: parsedData[ix + 13] ? parseFloat(parsedData[ix + 13]) : null,
+    drivingTime: parsedData[ix + 14] ? parseFloat(parsedData[ix + 14]) : null,
+    idleTime: parsedData[ix + 15] ? parseFloat(parsedData[ix + 15]) : null,
+    idleFuelUsed: parsedData[ix + 16] ? parseFloat(parsedData[ix + 16]) : null,
+    axleWeight: parsedData[ix + 17] ? parseFloat(parsedData[ix + 17]) : null,
+    tachograph: parsedData[ix + 18] ? {
+      raw: parsedData[ix + 18] ? parsedData[ix + 18] : null,
       validDriverData: tachographBin ? tachographBin[7] === '1' : null,
       insertedDriverCard: tachographBin ? tachographBin[5] === '1' : null,
       driverWorkingState: tachographBin
@@ -693,9 +693,9 @@ const getCanData = (parsedData, ix) => {
       drivingTimeState: tachographBin
         ? dTimeStates[parseInt(tachographBin.substring(5, 8), 2)]
         : null
-    },
+    } : null,
     indicators: inicatorsBin ? {
-      raw: inicatorsBin !== '' ? parsedData[ix + 19] : null,
+      raw: inicatorsBin ? parsedData[ix + 19] : null,
       lowFuel: inicatorsBin ? inicatorsBin[0] === '1' : null,
       driverSeatbelt: inicatorsBin ? inicatorsBin[1] === '1' : null,
       airConditioning: inicatorsBin ? inicatorsBin[2] === '1' : null,
@@ -714,7 +714,7 @@ const getCanData = (parsedData, ix) => {
       trunk: inicatorsBin ? inicatorsBin[15] === '1' : null
     } : null,
     lights: lights ? {
-      raw: lights !== '' ? parsedData[ix + 20] : null,
+      raw: lights ? parsedData[ix + 20] : null,
       running: lights ? lights[0] === '1' : null,
       lowBeams: lights ? lights[1] === '1' : null,
       frontFog: lights ? lights[2] === '1' : null,
@@ -722,7 +722,7 @@ const getCanData = (parsedData, ix) => {
       hazard: lights ? lights[4] === '1' : null
     } : null,
     doors: doors ? {
-      raw: doors !== '' ? parsedData[ix + 21] : null,
+      raw: doors ? parsedData[ix + 21] : null,
       driver: doors ? doors[0] === '1' : null,
       passenger: doors ? doors[1] === '1' : null,
       rearLeft: doors ? doors[2] === '1' : null,
@@ -730,11 +730,11 @@ const getCanData = (parsedData, ix) => {
       trunk: doors ? doors[4] === '1' : null,
       hood: doors ? doors[5] === '1' : null
     } : null,
-    overSpeedTime: parsedData[ix + 22] !== '' ? parseFloat(parsedData[ix + 22]) : null,
-    overSpeedEngineTime: parsedData[ix + 23] !== '' ? parseFloat(parsedData[ix + 23]) : null,
+    overSpeedTime: parsedData[ix + 22] ? parseFloat(parsedData[ix + 22]) : null,
+    overSpeedEngineTime: parsedData[ix + 23] ? parseFloat(parsedData[ix + 23]) : null,
     canExpanded: {
       canReportExpansionMask: {
-        raw: parsedData[ix + 24] !== '' ? parsedData[ix + 24] : null,
+        raw: parsedData[ix + 24] ? parsedData[ix + 24] : null,
         engineTorque: canExpansionMask ? canExpansionMask[23] === '1' : null,
         rapidAccelerations: canExpansionMask
           ? canExpansionMask[22] === '1'
@@ -797,40 +797,40 @@ const getCanData = (parsedData, ix) => {
         adBlueLevel: canExpansionMask ? canExpansionMask[0] === '1' : null
       },
       adBlueLevel:
-        parsedData[ix + 25] !== '' ? parseFloat(parsedData[ix + 25]) : null,
+        parsedData[ix + 25] ? parseFloat(parsedData[ix + 25]) : null,
       // adBlueLevelUnit: parsedData[ix + 25] ? parsedData[ix + 25].slice(0,1) === 'P' ? '%' : 'L' : null,
-      axleWeight1: parsedData[ix + 26] !== '' ? parseInt(parsedData[ix + 26]) : null,
-      axleWeight3: parsedData[ix + 27] !== '' ? parseInt(parsedData[ix + 27]) : null,
-      axleWeight4: parsedData[ix + 28] !== '' ? parseInt(parsedData[ix + 28]) : null,
+      axleWeight1: parsedData[ix + 26] ? parseInt(parsedData[ix + 26]) : null,
+      axleWeight3: parsedData[ix + 27] ? parseInt(parsedData[ix + 27]) : null,
+      axleWeight4: parsedData[ix + 28] ? parseInt(parsedData[ix + 28]) : null,
       tachographOverspeedSignal:
-        parsedData[ix + 29] !== '' ? (parsedData[ix + 29] === '1') : null,
+        parsedData[ix + 29] ? (parsedData[ix + 29] === '1') : null,
       tachographVehicleMotionSignal:
-        parsedData[ix + 30] !== '' ? (parsedData[ix + 30] === '1') : null,
+        parsedData[ix + 30] ? (parsedData[ix + 30] === '1') : null,
       tachographDrivingDirection:
-        parsedData[ix + 31] !== '' ? parseCanData(parsedData[ix + 31], 'tachographDrivingDirection') : null,
+        parsedData[ix + 31] ? parseCanData(parsedData[ix + 31], 'tachographDrivingDirection') : null,
       analogInputValue:
-        parsedData[ix + 32] !== '' ? parseFloat(parsedData[ix + 32]) * 1000 : null,
+        parsedData[ix + 32] ? parseFloat(parsedData[ix + 32]) * 1000 : null,
       engineBrakingFactor:
-        parsedData[ix + 33] !== '' ? parseInt(parsedData[ix + 33]) : null,
+        parsedData[ix + 33] ? parseInt(parsedData[ix + 33]) : null,
       pedalBrakingFactor:
-        parsedData[ix + 34] !== '' ? parseInt(parsedData[ix + 34]) : null,
+        parsedData[ix + 34] ? parseInt(parsedData[ix + 34]) : null,
       totalAcceleratorKickDown:
-        parsedData[ix + 35] !== '' ? parseInt(parsedData[ix + 35]) : null,
+        parsedData[ix + 35] ? parseInt(parsedData[ix + 35]) : null,
       totalEffectiveEngineSpeedTime:
-        parsedData[ix + 36] !== '' ? parseFloat(parsedData[ix + 36]) : null,
+        parsedData[ix + 36] ? parseFloat(parsedData[ix + 36]) : null,
       totalCruiseControlTime:
-        parsedData[ix + 37] !== '' ? parseFloat(parsedData[ix + 37]) : null,
+        parsedData[ix + 37] ? parseFloat(parsedData[ix + 37]) : null,
       totalAcceleratorKickDownTime:
-        parsedData[ix + 38] !== '' ? parseFloat(parsedData[ix + 38]) : null,
+        parsedData[ix + 38] ? parseFloat(parsedData[ix + 38]) : null,
       totalBrakeApplications:
-        parsedData[ix + 39] !== '' ? parseInt(parsedData[ix + 39]) : null,
-      tachographDriver1Card: parsedData[ix + 40] !== '' ? parsedData[ix + 40] : null,
-      tachographDriver2Card: parsedData[ix + 41] !== '' ? parsedData[ix + 41] : null,
-      tachographDriver1Name: parsedData[ix + 42] !== '' ? parsedData[ix + 42] : null,
-      tachographDriver2Name: parsedData[ix + 43] !== '' ? parsedData[ix + 43] : null,
-      registrationNumber: parsedData[ix + 44] !== '' ? parsedData[ix + 44] : null,
+        parsedData[ix + 39] ? parseInt(parsedData[ix + 39]) : null,
+      tachographDriver1Card: parsedData[ix + 40] ? parsedData[ix + 40] : null,
+      tachographDriver2Card: parsedData[ix + 41] ? parsedData[ix + 41] : null,
+      tachographDriver1Name: parsedData[ix + 42] ? parsedData[ix + 42] : null,
+      tachographDriver2Name: parsedData[ix + 43] ? parsedData[ix + 43] : null,
+      registrationNumber: parsedData[ix + 44] ? parsedData[ix + 44] : null,
       expansionInformation: {
-        raw: parsedData[ix + 45] !== '' ? parsedData[ix + 45] : null,
+        raw: parsedData[ix + 45] ? parsedData[ix + 45] : null,
         webasto: expansionBin ? expansionBin[0] === '1' : null,
         brakeFluidLowIndicator: expansionBin
           ? expansionBin[1] === '1'
@@ -852,9 +852,9 @@ const getCanData = (parsedData, ix) => {
           : null,
         oilLevelLowIndicator: expansionBin ? expansionBin[12] === '1' : null
       },
-      rapidBrakings: parsedData[ix + 46] !== '' ? parseInt(parsedData[ix + 46]) : null,
-      rapidAccelerations: parsedData[ix + 47] !== '' ? parseInt(parsedData[ix + 47]) : null,
-      engineTorque: parsedData[ix + 48] !== '' ? parseFloat(parsedData[ix + 48]) : null,
+      rapidBrakings: parsedData[ix + 46] ? parseInt(parsedData[ix + 46]) : null,
+      rapidAccelerations: parsedData[ix + 47] ? parseInt(parsedData[ix + 47]) : null,
+      engineTorque: parsedData[ix + 48] ? parseFloat(parsedData[ix + 48]) : null,
     }
   }
 }
