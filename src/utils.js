@@ -666,7 +666,7 @@ const getCanData = (parsedData, ix) => {
     vin: parsedData[ix + 2] !== '' ? parsedData[ix + 2] : null,
     ignitionKey: parsedData[ix + 3] !== '' ? parseCanData(parsedData[ix + 3], 'ignitionKey') : null,
     totalDistance: parsedData[ix + 4] !== '' ? parseCanData(parsedData[ix + 4], 'totalDistance') : null,
-    totalDistanceUnit: parsedData[ix + 4] ? parsedData[ix + 4].slice(0,1) === 'H' ? 'Km' : 'I' : null,
+    totalDistanceUnit: parsedData[ix + 4] ? parsedData[ix + 4].slice(0,1) === 'H' ? 'km' : 'I' : null,
     fuelUsed: parsedData[ix + 5] !== '' ? parseFloat(parsedData[ix + 5]) : null, // float
     rpm: parsedData[ix + 6] !== '' ? parseInt(parsedData[ix + 6], 10) : null, // int
     speed: parsedData[ix + 7] !== '' ? parseFloat(parsedData[ix + 7]) : null,
@@ -682,7 +682,7 @@ const getCanData = (parsedData, ix) => {
     drivingTime: parsedData[ix + 14] !== '' ? parseFloat(parsedData[ix + 14]) : null,
     idleTime: parsedData[ix + 15] !== '' ? parseFloat(parsedData[ix + 15]) : null,
     idleFuelUsed: parsedData[ix + 16] !== '' ? parseFloat(parsedData[ix + 16]) : null,
-    axleWight: parsedData[ix + 17] !== '' ? parseFloat(parsedData[ix + 17]) : null,
+    axleWeight: parsedData[ix + 17] !== '' ? parseFloat(parsedData[ix + 17]) : null,
     tachograph: {
       raw: parsedData[ix + 18] !== '' ? parsedData[ix + 18] : null,
       validDriverData: tachographBin ? tachographBin[7] === '1' : null,
