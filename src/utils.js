@@ -618,6 +618,12 @@ const parseCanData = (data, key) => {
       }
     case 'tachographDrivingDirection':
       return data === '0' ? 'forward' : 'backward'
+    case 'adBlueLevel':
+      if(['P','L'].includes(data.slice(0,1))) {
+        return parseFloat(parseFloat(data.slice(1)).toFixed(2))
+      } else {
+        return parseFloat(parseFloat(data).toFixed(2))
+      }
     default:
       return data
   }
@@ -797,8 +803,8 @@ const getCanData = (parsedData, ix) => {
         adBlueLevel: canExpansionMask ? canExpansionMask[0] === '1' : null
       },
       adBlueLevel:
-        parsedData[ix + 25] ? parseFloat(parsedData[ix + 25]) : null,
-      // adBlueLevelUnit: parsedData[ix + 25] ? parsedData[ix + 25].slice(0,1) === 'P' ? '%' : 'L' : null,
+        parsedData[ix + 25] ? parseCanData(parsedData[ix + 25], 'adBlueLevel') : null,
+      adBlueLevelUnit: parsedData[ix + 25] ? parsedData[ix + 25].slice(0,1) === 'P' ? '%' : 'L' ? 'L': 'L' : null,
       axleWeight1: parsedData[ix + 26] ? parseInt(parsedData[ix + 26]) : null,
       axleWeight3: parsedData[ix + 27] ? parseInt(parsedData[ix + 27]) : null,
       axleWeight4: parsedData[ix + 28] ? parseInt(parsedData[ix + 28]) : null,
