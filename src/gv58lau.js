@@ -56,12 +56,12 @@ const parse = raw => {
               utils.nHexDigit(
                 utils.hex2bin(parsedData[index + 6].substring(2, 4)),
                 8
-              )[7] === '1',
+              )[6] === '1',
             '1':
               utils.nHexDigit(
                 utils.hex2bin(parsedData[index + 6].substring(2, 4)),
                 8
-              )[6] === '1'
+              )[7] === '1'
           },
           output: {
             '3':
