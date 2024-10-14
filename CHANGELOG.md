@@ -1,3 +1,21 @@
+#### 1.9.12 (2024-10-14)
+
+##### New Features
+
+* **can:**  added adBlueLevelUnit ([cfc663c8](https://github.com/jaayesta/queclink-parser/commit/cfc663c8339dadc6e36750019c7d881007942a45))
+
+##### Bug Fixes
+
+* **gv58lau:**  digital inputs ([bb78b299](https://github.com/jaayesta/queclink-parser/commit/bb78b29970fa016571d93fd9c1959c73804d294a))
+* **canbus:**  new can index consider ac100 or digitFuelSensor data ([b0e9d23e](https://github.com/jaayesta/queclink-parser/commit/b0e9d23e69e9ffacddf0b76cc3a4d04523598ebe))
+* **can:**
+  *  evaluation for parsedData ([3427d98f](https://github.com/jaayesta/queclink-parser/commit/3427d98f85d273a262dc076c4b36cb88e51c3b54))
+  *  typo ([08408de4](https://github.com/jaayesta/queclink-parser/commit/08408de4d52d38f8cd280736ff7d821303c5e756))
+
+##### Tests
+
+* **can:**  test for database when can data exists ([424e28c6](https://github.com/jaayesta/queclink-parser/commit/424e28c63c39d6d3e6a4335d9f9b79c83d574b68))
+
 #### 1.9.11 (2024-10-09)
 
 ##### New Features
