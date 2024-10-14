@@ -229,6 +229,12 @@ const parse = raw => {
     let index = 7 + 12 * number // position append mask
     let satelliteInfo = false
 
+    // If get satellites is configured
+    if (utils.includeSatellites(parsedData[19])) {
+      index = 7 + 13 * number
+      satelliteInfo = true
+    }
+
     // External Data
     const digitFuelSensor =
       utils.nHexDigit(utils.hex2bin(parsedData[4]), 11)[10] === '1'
@@ -241,12 +247,6 @@ const parse = raw => {
       utils.nHexDigit(utils.hex2bin(parsedData[4]), 11)[6] === '1'
     const bluetoothAccessory =
       utils.nHexDigit(utils.hex2bin(parsedData[4]), 11)[2] === '1'
-
-    // If get satellites is configured
-    if (utils.includeSatellites(parsedData[19])) {
-      index = 7 + 13 * number
-      satelliteInfo = true
-    }
 
     data = Object.assign(data, {
       alarm: utils.getAlarm(command[1], null),
@@ -369,27 +369,6 @@ const parse = raw => {
       AC100 && digitFuelSensor
         ? parseInt(parsedData[index + 10], 10)
         : AC100 && !digitFuelSensor ? parseInt(parsedData[index + 9], 10) : 0
-    
-    if (canData) {
-      let canInfo = utils.getCanData(parsedData, index + 9)
-      data = Object.assign(data, { can: canInfo })
-      index = index + 49
-
-      if (canInfo?.totalDistance) {
-        data.gpsOdometer = data.odometer
-        data.odometer = canInfo.totalDistance
-      }
-
-      if (canInfo?.engineHours) {
-        data.gpsHourmeter = data.hourmeter
-        data.hourmeter = canInfo.engineHours
-      }
-
-      if (canInfo?.speed) {
-        data.gpsSpeed = data.speed
-        data.speed = canInfo.speed
-      }
-    }
 
     let externalData = {
       eriMask: {
@@ -442,6 +421,7 @@ const parse = raw => {
           })
           count += 3
         }
+
         externalData = Object.assign(externalData, {
           fuelSensorData: null,
           AC100Devices: ac100Devices
@@ -533,6 +513,28 @@ const parse = raw => {
           },
           AC100Devices: ac100Devices
         })
+      }
+    }
+
+    if (canData) {
+      let newIndex = digitFuelSensor && !AC100 ? index + 9 + 1 : !digitFuelSensor && AC100 ? index + 9 + 4 : digitFuelSensor && AC100 ? index + 9 + 5 : index + 9
+      let canInfo = utils.getCanData(parsedData, newIndex)
+      data = Object.assign(data, { can: canInfo })
+      index = index + 49
+
+      if (canInfo?.totalDistance) {
+        data.gpsOdometer = data.odometer
+        data.odometer = canInfo.totalDistance
+      }
+
+      if (canInfo?.engineHours) {
+        data.gpsHourmeter = data.hourmeter
+        data.hourmeter = canInfo.engineHours
+      }
+
+      if (canInfo?.speed) {
+        data.gpsSpeed = data.speed
+        data.speed = canInfo.speed
       }
     }
 
