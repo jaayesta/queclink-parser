@@ -863,14 +863,12 @@ const parse = raw => {
   ) {
     // Common Alarms
     let number = parsedData[6] !== '' ? parseInt(parsedData[6], 10) : 1
-    let index = 6 + 12 * number // position append mask
-    let satelliteInfo = false
+    let posAppendMask = parsedData[18] ? utils
+      .nHexDigit(utils.hex2bin(parsedData[18]), 8) : null
 
-    // If get satellites is configured
-    if (utils.includeSatellites(parsedData[18])) {
-      index += 1
-      satelliteInfo = true
-    }
+    let satelliteInfo = posAppendMask && posAppendMask[7] === '1' ? 1 : 0
+    let accuracyInfo = posAppendMask && posAppendMask[4] === '1' ? 3 : 0
+    let index = 6 + (12 + satelliteInfo + accuracyInfo) * number
 
     data = Object.assign(data, {
       alarm: utils.getAlarm(command[1], parsedData[5], 'gv310lau'),
@@ -900,8 +898,20 @@ const parse = raw => {
       lac: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
       cid: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
       satellites:
-        satelliteInfo && parsedData[index] !== ''
-          ? parseInt(parsedData[index])
+        satelliteInfo && parsedData[index - (satelliteInfo + accuracyInfo) + 1] !== ''
+          ? parseInt(parsedData[index - (satelliteInfo + accuracyInfo) + 1])
+          : null,
+      hAccuracy:
+        accuracyInfo && parsedData[index - accuracyInfo + 1] !== ''
+          ? parseFloat(parsedData[index - accuracyInfo + 1], 10)
+          : null,
+      vAccuracy:
+        accuracyInfo && parsedData[index - accuracyInfo + 2] !== ''
+          ? parseFloat(parsedData[index - accuracyInfo + 2], 10)
+          : null,
+      fullAccuracy:
+        accuracyInfo && parsedData[index] !== ''
+          ? parseFloat(parsedData[index], 10)
           : null,
       odometer:
         parsedData[index + 1] !== '' ? parseFloat(parsedData[index + 1]) : null,
