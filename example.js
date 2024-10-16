@@ -57,7 +57,11 @@ var cra = '+RESP:GTCRA,8020060402,867488060596284,GV57CG,06,1,1.0,0,222.0,117.12
 var asc = '+RESP:GTASC,8020060402,867488060595542,GV57CG,0.86,0.52,0.01,0.52,-0.86,0.01,0.01,0.00,-1.00,1,12.6,267,39.7,117.115453,31.827255,20230523055431,0460,0001,DF5C,05F7B315,01,10,20230523135432,03BC$'
 var hbe = '+RESP:GTHBE,8020060402,866775051515393,GV57CG,,2,0,1,42.5,0,42.6,117.101321,31.827725,20231221034214,0460,0001,DF5C,05F7B40B,01,1,002500040054,FFE2FFFF0051,10,19.8,20231221034215,006B$'
 var caneri = '+RESP:GTERI,6E0802,868589060350066,,00000104,28696,10,1,1,0.0,344,17.6,-71.604231,-33.043113,20241001170305,0730,0001,13F0,004E2212,01,6 ,10496.6,0000273:06:37,,,,98,210500,0,1,203FFFFF,,2,H4168131,5859.88,513,0,71,H2.4,P92.00,,,386.89,308.11,78.78,173.25,,FFFF,0000,,00,0.00,0.00,FFFFFF,62,,,,,,,,226631,181383,,386.89,79.35,,10178,,,,,,0000,0,0,,1,00,13,0,00000000,4007,,78054133C69C,1,0,20241001170312,26B5$'
-var eribad = "+RESP:GTERI,6E0802,868589060669374,,00000002,28594,10,1,1,18.9,210,542.2,-70.693347,-33.537067,20241009121749,0730,0001,3341,008AF201,01,12,6.9,0000004:57:46,,,,100,220100,2,1,28FF05762863EA12,1,00B1,20241009121755,09BE$"
+var eribad = "+RESP:GTERI,6E0802,868589060350066,,00000104,25679,10,1,1,0.0,32,253.2,-71.392831,-33.331111,20241014154647,0730,0001,16A9,003B9F01,01,12,12764.1,0000328:45:11,,,,100,110400,0,1,203FFFFF,,0,H4192249,6705.24,0,,,,P18.80,,,442.13,355.19,86.94,192.10,,FFFF,0000,,00,0.00,0.00,FFFFFF,,,,,,,,,264102,205034,,442.12,83.00,,11637,,,,,,0000,0,0,,1,00,13,0,00000000,4007,,78054133C69C,1,0,20241014154910,8DD8$"
+var frifri = '+RESP:GTFRI,8020040701,866314060333158,,11955,10,1,0,,,,,,,0730,0001,13EE,0032A502,01,0,4.9,,,,,100,210104,,,,20241011185828,2D70$'
+var newfri = '+RESP:GTFRI,6E0902,868589060064048,,12173,10,1,1,0.0,69,61.6,-71.543860,-32.972718,20241016183918,0730,0001,13EE,0032A502,09,12,0.90,1.47,1.73,2.6,0000024:51:00,,,,100,210100,,,,20241016183920,7201$'
+var neweri = '+RESP:GTERI,6E0902,868589060064048,,00000100,12173,10,1,1,0.0,69,61.6,-71.543860,-32.972718,20241016184003,0730,0001,13EE,0032A502,09,12,0.99,1.38,1.70,2.6,0000024:51:45,,,,100,210100,0,1,00,13,0,,4007,,ED0E093811F8,0,,20241016184005,7205$'
+var neweri2 = '+RESP:GTERI,6E0902,868589060064048,,00000100,12173,10,2,1,0.0,69,61.6,-71.543860,-32.972718,20241016192411,0730,0001,13EE,0032A502,09,12,0.80,1.46,1.67,1,0.0,69,61.6,-71.543860,-32.972718,20241016192421,0730,0001,13EE,0032A502,09,12,1.17,1.56,1.95,2.6,0000025:36:01,,,,100,210100,0,1,00,13,0,,4007,,ED0E093811F8,0,,20241016192423,72BB$'
 
 
 var data = {
@@ -90,73 +94,10 @@ var data = {
   }
 
 // console.log(queclink.parseCommand(data))
-const raw = new Buffer(caneri)
+const raw = new Buffer.from(neweri2)
+console.log(JSON.stringify(queclink.parse(raw), null, 2))
 // console.log(queclink.parse(raw))
 // queclink.parse(raw)
 
-data = queclink.parse(raw)
+// data = queclink.parse(raw)
 // console.log(data)
-if (data.can) {
-  const {
-    comunicationOk,
-    vin,
-    ignitionKey,
-    totalDistance,
-    totalDistanceUnit,
-    rpm,
-    speed,
-    engineCoolantTemp,
-    fuelConsumption,
-    fuelLevel,
-    fuelLevelUnit,
-    range,
-    acceleratorPressure,
-    engineHours,
-    drivingTime,
-    idleTime,
-    idleFuelUsed,
-    axleWeight,
-    tachograph,
-    indicators,
-    lights,
-    doors,
-    overSpeedTime,
-    overSpeedEngineTime
-  } = data.can
-
-  const canData = {
-    raw: data.raw,
-    imei: data.imei,
-    datetime: data.datetime,
-    point: data.point,
-    comunicationOk,
-    vin,
-    ignitionKey,
-    totalDistance,
-    totalDistanceUnit,
-    rpm,
-    speed,
-    engineCoolantTemp,
-    fuelConsumption,
-    fuelLevel,
-    fuelLevelUnit,
-    range,
-    acceleratorPressure,
-    engineHours,
-    drivingTime,
-    idleTime,
-    idleFuelUsed,
-    axleWeight,
-    tachograph,
-    indicators,
-    lights,
-    doors,
-    overSpeedTime,
-    overSpeedEngineTime,
-    ...data.can.canExpanded
-  }
-
-  canData.canReportExpansionMask = canData.canReportExpansionMask.raw
-  console.log(canData)
-  delete data.can
-}
