@@ -148,15 +148,15 @@ const parse = raw => {
           satelliteInfo && parsedData[index - (satelliteInfo + accuracyInfo) + 1] !== ''
             ? parseInt(parsedData[index - (satelliteInfo + accuracyInfo) + 1], 10)
             : null,
-        hAccuracy:
+        Hdop:
           accuracyInfo && parsedData[index - accuracyInfo + 1] !== ''
             ? parseFloat(parsedData[index - accuracyInfo + 1], 10)
             : null,
-        vAccuracy:
+        Vdop:
           accuracyInfo && parsedData[index - accuracyInfo + 2] !== ''
             ? parseFloat(parsedData[index - accuracyInfo + 2], 10)
             : null,
-        fullAccuracy:
+        Ddop:
           accuracyInfo && parsedData[index] !== ''
             ? parseFloat(parsedData[index], 10)
             : null,
@@ -226,15 +226,15 @@ const parse = raw => {
               satelliteInfo && parsedData[gnssIx + 12] !== ''
                 ? parseInt(parsedData[gnssIx + 12], 10)
                 : null,
-            hAccuracy:
+            Hdop:
               accuracyInfo && parsedData[gnssIx + 13] !== ''
                 ? parseFloat(parsedData[gnssIx + 13], 10)
                 : null,
-            vAccuracy:
+            Vdop:
               accuracyInfo && parsedData[gnssIx + 14] !== ''
                 ? parseFloat(parsedData[gnssIx + 14], 10)
                 : null,
-            fullAccuracy:
+            Ddop:
               accuracyInfo && parsedData[gnssIx + 15] !== ''
                 ? parseFloat(parsedData[gnssIx + 15], 10)
                 : null
@@ -379,15 +379,15 @@ const parse = raw => {
         satelliteInfo && parsedData[index - (satelliteInfo + accuracyInfo) + 1] !== ''
           ? parseInt(parsedData[index - (satelliteInfo + accuracyInfo) + 1])
           : null,
-      hAccuracy:
+      Hdop:
         accuracyInfo && parsedData[index - accuracyInfo + 1] !== ''
           ? parseFloat(parsedData[index - accuracyInfo + 1])
           : null,
-      vAccuracy:
+      Vdop:
         accuracyInfo && parsedData[index - accuracyInfo + 2] !== ''
           ? parseFloat(parsedData[index - accuracyInfo + 2])
           : null,
-      fullAccuracy:
+      Ddop:
         accuracyInfo && parsedData[index] !== ''
           ? parseFloat(parsedData[index])
           : null,
@@ -760,15 +760,15 @@ const parse = raw => {
             satelliteInfo && parsedData[gnssIx + 12] !== ''
               ? parseInt(parsedData[gnssIx + 12], 10)
               : null,
-          hAccuracy:
+          Hdop:
             accuracyInfo && parsedData[gnssIx + 13] !== ''
               ? parseFloat(parsedData[gnssIx + 13], 10)
               : null,
-          vAccuracy:
+          Vdop:
             accuracyInfo && parsedData[gnssIx + 14] !== ''
               ? parseFloat(parsedData[gnssIx + 14], 10)
               : null,
-          fullAccuracy:
+          Ddop:
             accuracyInfo && parsedData[gnssIx + 15] !== ''
               ? parseFloat(parsedData[gnssIx + 15], 10)
               : null,
@@ -901,15 +901,15 @@ const parse = raw => {
         satelliteInfo && parsedData[index - (satelliteInfo + accuracyInfo) + 1] !== ''
           ? parseInt(parsedData[index - (satelliteInfo + accuracyInfo) + 1])
           : null,
-      hAccuracy:
+      Hdop:
         accuracyInfo && parsedData[index - accuracyInfo + 1] !== ''
           ? parseFloat(parsedData[index - accuracyInfo + 1], 10)
           : null,
-      vAccuracy:
+      Vdop:
         accuracyInfo && parsedData[index - accuracyInfo + 2] !== ''
           ? parseFloat(parsedData[index - accuracyInfo + 2], 10)
           : null,
-      fullAccuracy:
+      Ddop:
         accuracyInfo && parsedData[index] !== ''
           ? parseFloat(parsedData[index], 10)
           : null,
