@@ -70,7 +70,7 @@ var data = {
     "instruction": "1_on",
     "action": "Cortar Corriente",
     "device": "queclink",
-    "password": "gv300w",
+    "password": "gv58lau",
     "device_serie": "GV",
     "previousOutput": {
       "1": false,
@@ -93,9 +93,9 @@ var data = {
     }
   }
 
-// console.log(queclink.parseCommand(data))
-const raw = new Buffer.from(neweri2)
-console.log(JSON.stringify(queclink.parse(raw), null, 2))
+console.log(queclink.parseCommand(data))
+// const raw = new Buffer.from(neweri2)
+// console.log(JSON.stringify(queclink.parse(raw), null, 2))
 // console.log(queclink.parse(raw))
 // queclink.parse(raw)
 
