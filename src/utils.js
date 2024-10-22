@@ -804,7 +804,7 @@ const getCanData = (parsedData, ix) => {
       },
       adBlueLevel:
         parsedData[ix + 25] ? parseCanData(parsedData[ix + 25], 'adBlueLevel') : null,
-      adBlueLevelUnit: parsedData[ix + 25] ? parsedData[ix + 25].slice(0,1) === 'P' ? '%' : 'L' ? 'L': 'L' : null,
+      adBlueLevelUnit: parsedData[ix + 25] ? parsedData[ix + 25].slice(0,1) === 'P' ? '%' : 'L' ? 'L': '%' : null,
       axleWeight1: parsedData[ix + 26] ? parseInt(parsedData[ix + 26]) : null,
       axleWeight3: parsedData[ix + 27] ? parseInt(parsedData[ix + 27]) : null,
       axleWeight4: parsedData[ix + 28] ? parseInt(parsedData[ix + 28]) : null,
