@@ -293,8 +293,10 @@ const latamMcc = {
   736: 'Bolivia',
   740: 'Ecuador',
   744: 'Paraguay',
-  748: 'Uruguay'
+  748: 'Uruguay',
+  default: 'Desconocido'
 }
+
 
 /*
   Gets the Queclink Device Type
