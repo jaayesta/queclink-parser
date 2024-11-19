@@ -583,7 +583,7 @@ const getMNC = (countryData, opData) => {
     operator = 'Desconocido'
   }
   return {
-    country: latamMcc[mcc], mnc: mnc, operator: operator
+    country: latamMcc[mcc] || latamMcc.default, mnc: mnc, operator: operator
   }
 }
 

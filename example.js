@@ -1,10 +1,10 @@
 const queclink = require('.');
 
-var tow = '+RESP:GTTOW,8020060402,867488060596284,GV57CG,,00,1,3,0.0,0,180.6,117.129144,31.838861,20230524034505,0460,0001,DF5C,027A4F1F,01,7,0.2,20230524034505,01B8$'
-var dis = '+RESP:GTDIS,8020060402,867488060596284,GV57CG,,60,1,1,0.0,0,138.5,117.129051,31.839786,20230519083404,0460,0001,DF5C,05FE6667,01,4,0.0,20230519083405,04BD$'
+var tow = '+RESP:GTTOW,8020040703,866314060000229,GV58LAU,,00,1,1,0.0,0,136.4,117.129290,31.840318,20231207085329,0460,0000,550B,085BE2AA,01,10,0.0,20231207085330,006A$'
+var dis = '+RESP:GTDIS,8020040703,866314060000229,GV58LAU,,10,1,1,0.0,0,119.1,117.129559,31.839368,20231207085255,0460,0000,550B,085BE2AA,01,11,0.0,20231207085256,0068$'
 var iob = '+RESP:GTIOB,8020060402,867488060596284,GV57CG,,10,1,1,0.0,182,85.3,117.129200,31.839163,20230523025618,0460,0001,DF5C,05FE6667,01,6,0.4,20230522192619,0218$'
-var spd = '+RESP:GTSPD,8020060402,867488060596284,GV57CG,,00,1,1,0.4,0,220.2,117.129759,31.839433,20230523062932,0460,0001,DF5C,027A4F1F,01,4,0.0,20230523160033,0B6A$'
-var sos = '+RESP:GTSOS,8020060402,867488060596284,GV57CG,,60,1,0,0.0,351,67.3,117.129029,31.840100,20230524034859,0460,0001,DF5C,05FE6667,01,2,0.0,20230524035256,01D2$'
+var spd = '+RESP:GTSPD,8020040703,866314060000229,GV58LAU,,01,1,2,0.0,0,171.2,117.130121,31.838945,20231207085516,0460,0000,550B,085BE2AA,01,11,0.0,20231207085517,0078$'
+var sos = '+RESP:GTSOS,8020040703,866314060000229,GV58LAU,,10,1,1,0.0,0,87.8,117.129751,31.838892,20231207085541,0460,0000,550B,085BE2AA,01,11,0.0,20231207085542,007A$'
 var rtl = '+RESP:GTRTL,8020060402,867488060596284,GV57CG,,00,1,2,263.8,351,67.3,117.129029,31.840100,20230524034844,0460,0001,DF5C,05FE6667,01,6,0.0,20230524034845,01C8$'
 var dog = '+RESP:GTDOG,8020060402,867488060596284,GV57CG,,63,1,2,0.0,171,104.6,117.129097,31.839252,20230524035637,0460,0001,DF5C,05FE6667,01,10,0.3,20230524035638,01E5$'
 var igl = '+RESP:GTIGL,8020060402,867488060596284,GV57CG,,01,1,1,0.0,0,48.6,117.129292,31.839412,20230524035846,0460,0001,DF5C,05FE6667,01,10,0.4,20230524035847,0201$'
@@ -58,6 +58,7 @@ var asc = '+RESP:GTASC,8020060402,867488060595542,GV57CG,0.86,0.52,0.01,0.52,-0.
 var hbe = '+RESP:GTHBE,8020060402,866775051515393,GV57CG,,2,0,1,42.5,0,42.6,117.101321,31.827725,20231221034214,0460,0001,DF5C,05F7B40B,01,1,002500040054,FFE2FFFF0051,10,19.8,20231221034215,006B$'
 var caneri = '+RESP:GTERI,6E0802,868589060350066,,00000104,28696,10,1,1,0.0,344,17.6,-71.604231,-33.043113,20241001170305,0730,0001,13F0,004E2212,01,6 ,10496.6,0000273:06:37,,,,98,210500,0,1,203FFFFF,,2,H4168131,5859.88,513,0,71,H2.4,P92.00,,,386.89,308.11,78.78,173.25,,FFFF,0000,,00,0.00,0.00,FFFFFF,62,,,,,,,,226631,181383,,386.89,79.35,,10178,,,,,,0000,0,0,,1,00,13,0,00000000,4007,,78054133C69C,1,0,20241001170312,26B5$'
 var eribad = "+RESP:GTERI,6E0802,868589060669374,,00000002,28594,10,1,1,18.9,210,542.2,-70.693347,-33.537067,20241009121749,0730,0001,3341,008AF201,01,12,6.9,0000004:57:46,,,,100,220100,2,1,28FF05762863EA12,1,00B1,20241009121755,09BE$"
+var test = "+RESP:GTERI,8020040703,866314061860720,,00000100,12048,10,1,1,0.0,23,464.5,-70.772572,-33.396485,20241119191121,0730,0003,9C4E,0003FD0B,01,12,0.1,0000134:01:21,,,,100,220100,,1,00,13,0,00000000,4007,,78054141ADDF,1,0,20241119191124,41A8$"
 
 
 var data = {
@@ -90,73 +91,73 @@ var data = {
   }
 
 // console.log(queclink.parseCommand(data))
-const raw = new Buffer(caneri)
-// console.log(queclink.parse(raw))
+const raw = new Buffer(sos)
+console.log(queclink.parse(raw))
 // queclink.parse(raw)
 
-data = queclink.parse(raw)
+// data = queclink.parse(raw)
 // console.log(data)
-if (data.can) {
-  const {
-    comunicationOk,
-    vin,
-    ignitionKey,
-    totalDistance,
-    totalDistanceUnit,
-    rpm,
-    speed,
-    engineCoolantTemp,
-    fuelConsumption,
-    fuelLevel,
-    fuelLevelUnit,
-    range,
-    acceleratorPressure,
-    engineHours,
-    drivingTime,
-    idleTime,
-    idleFuelUsed,
-    axleWeight,
-    tachograph,
-    indicators,
-    lights,
-    doors,
-    overSpeedTime,
-    overSpeedEngineTime
-  } = data.can
+// if (data.can) {
+//   const {
+//     comunicationOk,
+//     vin,
+//     ignitionKey,
+//     totalDistance,
+//     totalDistanceUnit,
+//     rpm,
+//     speed,
+//     engineCoolantTemp,
+//     fuelConsumption,
+//     fuelLevel,
+//     fuelLevelUnit,
+//     range,
+//     acceleratorPressure,
+//     engineHours,
+//     drivingTime,
+//     idleTime,
+//     idleFuelUsed,
+//     axleWeight,
+//     tachograph,
+//     indicators,
+//     lights,
+//     doors,
+//     overSpeedTime,
+//     overSpeedEngineTime
+//   } = data.can
 
-  const canData = {
-    raw: data.raw,
-    imei: data.imei,
-    datetime: data.datetime,
-    point: data.point,
-    comunicationOk,
-    vin,
-    ignitionKey,
-    totalDistance,
-    totalDistanceUnit,
-    rpm,
-    speed,
-    engineCoolantTemp,
-    fuelConsumption,
-    fuelLevel,
-    fuelLevelUnit,
-    range,
-    acceleratorPressure,
-    engineHours,
-    drivingTime,
-    idleTime,
-    idleFuelUsed,
-    axleWeight,
-    tachograph,
-    indicators,
-    lights,
-    doors,
-    overSpeedTime,
-    overSpeedEngineTime,
-    ...data.can.canExpanded
-  }
+//   const canData = {
+//     raw: data.raw,
+//     imei: data.imei,
+//     datetime: data.datetime,
+//     point: data.point,
+//     comunicationOk,
+//     vin,
+//     ignitionKey,
+//     totalDistance,
+//     totalDistanceUnit,
+//     rpm,
+//     speed,
+//     engineCoolantTemp,
+//     fuelConsumption,
+//     fuelLevel,
+//     fuelLevelUnit,
+//     range,
+//     acceleratorPressure,
+//     engineHours,
+//     drivingTime,
+//     idleTime,
+//     idleFuelUsed,
+//     axleWeight,
+//     tachograph,
+//     indicators,
+//     lights,
+//     doors,
+//     overSpeedTime,
+//     overSpeedEngineTime,
+//     ...data.can.canExpanded
+//   }
 
-  canData.canReportExpansionMask = canData.canReportExpansionMask.raw
-  console.log(canData)
-  delete data.can
-}
+//   canData.canReportExpansionMask = canData.canReportExpansionMask.raw
+//   console.log(canData)
+//   delete data.can
+// }
