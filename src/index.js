@@ -250,8 +250,10 @@ const parseCommand = data => {
     const do5 = `${outputs[4]},${prevDurations['5']},${prevToggles['5']}`
     const longOperation = data.longOperation || false ? '1' : '0'
     const dosReport = data.dosReport || false ? '1' : '0'
-    if (data.device_serie === 'GV' && data.password === 'gv57cg') {
+    if (data.device_serie === 'GV' && password === 'gv57cg') {
       command = `AT+GTDOS=${password},,,1,${do1},,,${dosReport},0,5,,,,${serialId}$`
+    } else if (data.device_serie === 'GV' && password === 'gv58lau') {
+      command = `AT+GTDOS=${password},0,3,1,${do1},0,,2,${do2},0,,3,${do3},0,,0,,,0${dosReport},,,FFFF$`
     } else if (data.device_serie === 'GV') {
       command = `AT+GTOUT=${password},${do1},${do2},${do3},${do4},${longOperation},${dosReport},,,${serialId}$`
     } else if (data.device_serie === 'GMT') {
