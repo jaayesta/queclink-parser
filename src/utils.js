@@ -603,7 +603,7 @@ const parseCanData = (data, key) => {
     case 'ignitionKey':
       return (data === '0' ? 'ignition_off' : data === '1' ? 'ignition_on' : data === '2' ? 'engine_on' : null)
     case 'totalDistance':
-      if (data.slice(0,1) === 'H') {
+      if (data.slice(0, 1) === 'H') {
         return hToKm(data)
       } else {
         return data
@@ -621,7 +621,7 @@ const parseCanData = (data, key) => {
     case 'tachographDrivingDirection':
       return data === '0' ? 'forward' : 'backward'
     case 'adBlueLevel':
-      if(['P','L'].includes(data.slice(0,1))) {
+      if (['P', 'L'].includes(data.slice(0, 1))) {
         return parseFloat(parseFloat(data.slice(1)).toFixed(2))
       } else {
         return parseFloat(parseFloat(data).toFixed(2))
@@ -674,7 +674,7 @@ const getCanData = (parsedData, ix) => {
     vin: parsedData[ix + 2] ? parsedData[ix + 2] : null,
     ignitionKey: parsedData[ix + 3] ? parseCanData(parsedData[ix + 3], 'ignitionKey') : null,
     totalDistance: parsedData[ix + 4] ? parseCanData(parsedData[ix + 4], 'totalDistance') : null,
-    totalDistanceUnit: parsedData[ix + 4] ? parsedData[ix + 4].slice(0,1) === 'H' ? 'km' : 'I' : null,
+    totalDistanceUnit: parsedData[ix + 4] ? parsedData[ix + 4].slice(0, 1) === 'H' ? 'km' : 'I' : null,
     fuelUsed: parsedData[ix + 5] ? parseFloat(parsedData[ix + 5]) : null, // float
     rpm: parsedData[ix + 6] ? parseInt(parsedData[ix + 6], 10) : null, // int
     speed: parsedData[ix + 7] ? parseFloat(parsedData[ix + 7]) : null,
@@ -682,7 +682,7 @@ const getCanData = (parsedData, ix) => {
       parsedData[ix + 8] ? parseInt(parsedData[ix + 8], 10) : null,
     fuelConsumption: parsedData[ix + 9] ? parseCanData(parsedData[ix + 9], 'fuelConsumption') : null,
     fuelLevel: parsedData[ix + 10] ? parseFloat(parsedData[ix + 10].slice(1)) : null,
-    fuelLevelUnit: parsedData[ix + 10] ? parsedData[ix + 10].slice(0,1) === 'P' ? '%' : 'L' : null,
+    fuelLevelUnit: parsedData[ix + 10] ? parsedData[ix + 10].slice(0, 1) === 'P' ? '%' : 'L' : null,
     range: parsedData[ix + 11] ? parseCanData(parsedData[ix + 11], 'range') : null,
     acceleratorPressure:
       parsedData[ix + 12] ? parseFloat(parsedData[ix + 12]) : null,
@@ -806,7 +806,7 @@ const getCanData = (parsedData, ix) => {
       },
       adBlueLevel:
         parsedData[ix + 25] ? parseCanData(parsedData[ix + 25], 'adBlueLevel') : null,
-      adBlueLevelUnit: parsedData[ix + 25] ? parsedData[ix + 25].slice(0,1) === 'P' ? '%' : 'L' ? 'L': 'L' : null,
+      adBlueLevelUnit: parsedData[ix + 25] ? parsedData[ix + 25].slice(0, 1) === 'P' ? '%' : 'L' ? 'L' : '%' : null,
       axleWeight1: parsedData[ix + 26] ? parseInt(parsedData[ix + 26]) : null,
       axleWeight3: parsedData[ix + 27] ? parseInt(parsedData[ix + 27]) : null,
       axleWeight4: parsedData[ix + 28] ? parseInt(parsedData[ix + 28]) : null,
@@ -1266,7 +1266,7 @@ const getAlarm = (command, report, extra = false) => {
       magnitude: Number(
         Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2)).toFixed(2)
       ).toString(),
-      xyz: {x: x, y: y, z: z},
+      xyz: { x: x, y: y, z: z },
       message: messages[command][report[1]]
     }
   } else if (command === 'GTCRA') {
