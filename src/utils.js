@@ -365,7 +365,7 @@ const checkGps = (lng, lat) => {
   included in the report
 */
 const includeSatellites = positionAppendMask => {
-  return ['01', '03', '05', '07'].includes(positionAppendMask)
+  return nHexDigit(hex2bin(positionAppendMask), 4)[3] == '1'
 }
 
 /*
@@ -373,19 +373,23 @@ const includeSatellites = positionAppendMask => {
   included in the report
 */
 const includeGnssTrigger = positionAppendMask => {
-  return ['02', '03', '06', '07'].includes(positionAppendMask)
+  return nHexDigit(hex2bin(positionAppendMask), 4)[2] == '1'
 }
 
 /*
-  Returns if Possition Append Mask includes
-  more information in the report
+  Returns if the Status is
+  included in the report
 */
-const appendMaskData = positionAppendMask => {
-  let satelliteInfo = ['01', '03', '05', '07'].includes(positionAppendMask)
-  let gnssTrigger = ['02', '03', '06', '07'].includes(positionAppendMask)
-  let statusInfo = parseInt(positionAppendMask) > 3
+const includeStatus = positionAppendMask => {
+  return nHexDigit(hex2bin(positionAppendMask), 4)[1] == '1'
+}
 
-  return satelliteInfo + gnssTrigger + statusInfo
+/*
+  Returns if the GNNS Accuracy is
+  included in the report
+*/
+const includeGnnsAccuracy = positionAppendMask => {
+  return nHexDigit(hex2bin(positionAppendMask), 4)[0] == '1'
 }
 
 /*
@@ -1512,7 +1516,8 @@ module.exports = {
   checkGps: checkGps,
   includeSatellites: includeSatellites,
   includeGnssTrigger: includeGnssTrigger,
-  appendMaskData: appendMaskData,
+  includeStatus: includeStatus,
+  includeGnnsAccuracy: includeGnnsAccuracy,
   getAccelerationMagnitude: getAccelerationMagnitude,
   getTempInCelciousDegrees: getTempInCelciousDegrees,
   getBtTempHumData: getBtTempHumData,

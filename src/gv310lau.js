@@ -149,15 +149,15 @@ const parse = raw => {
             : null,
         Hdop:
           accuracyInfo && parsedData[index - accuracyInfo + 1] !== ''
-            ? parseFloat(parsedData[index - accuracyInfo + 1], 10)
+            ? parseFloat(parsedData[index - accuracyInfo + 1])
             : null,
         Vdop:
           accuracyInfo && parsedData[index - accuracyInfo + 2] !== ''
-            ? parseFloat(parsedData[index - accuracyInfo + 2], 10)
+            ? parseFloat(parsedData[index - accuracyInfo + 2])
             : null,
         Ddop:
           accuracyInfo && parsedData[index] !== ''
-            ? parseFloat(parsedData[index], 10)
+            ? parseFloat(parsedData[index])
             : null,
         odometer:
           parsedData[index + 1] !== ''
@@ -1586,7 +1586,7 @@ const parse = raw => {
           : null,
       odometer: null,
       hourmeter: null,
-      can: utils.getCanData(parsedData, 5),
+      can: utils.getCanData(parsedData, 5)
     }
     )
   } else if (command[1] === 'GTDAT') {
