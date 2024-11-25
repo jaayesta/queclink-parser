@@ -32,11 +32,8 @@ const parse = raw => {
   if (command[1] === 'GTFRI') {
     try {
       let number = parsedData[6] !== '' ? parseInt(parsedData[6], 10) : 1
-      let posAppendMask = parsedData[18] ? utils
-        .nHexDigit(utils.hex2bin(parsedData[18]), 8) : null
-
-      let satelliteInfo = posAppendMask && posAppendMask[7] === '1' ? 1 : 0
-      let accuracyInfo = posAppendMask && posAppendMask[4] === '1' ? 3 : 0
+      let satelliteInfo = utils.includeSatellites(parsedData[18])
+      let accuracyInfo = utils.includeGnnsAccuracy(parsedData[18]) ? 3 : 0
       let index = 6 + (12 + satelliteInfo + accuracyInfo) * number
 
       data = Object.assign(data, {
@@ -248,11 +245,8 @@ const parse = raw => {
   } else if (command[1] === 'GTERI') {
     // GPS with AC100 and/or Bluetoth Devices Connected
     let number = parsedData[7] !== '' ? parseInt(parsedData[7], 10) : 1
-    let posAppendMask = parsedData[19] ? utils
-      .nHexDigit(utils.hex2bin(parsedData[19]), 8) : null
-
-    let satelliteInfo = posAppendMask && posAppendMask[7] === '1' ? 1 : 0
-    let accuracyInfo = posAppendMask && posAppendMask[4] === '1' ? 3 : 0
+    let satelliteInfo = utils.includeSatellites(parsedData[19])
+    let accuracyInfo = utils.includeGnnsAccuracy(parsedData[19]) ? 3 : 0
     let index = 7 + (12 + satelliteInfo + accuracyInfo) * number
 
     // External Data
