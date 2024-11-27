@@ -283,6 +283,7 @@
     "GTJDC": "Config: detección de jamming",
     "GTASC": "Config: autocalibración de acelerómetro",
     "GTOUT": "Config: salidas digitales",
+    "GTDOS": "Config: salidas digitales",
     "GTDIS": "Config: entradas digitales",
     "GTGDO": "Config: salidas digitales graduales",
     "GTROS": "Config: restricción de salidas",
