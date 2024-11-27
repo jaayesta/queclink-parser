@@ -1,3 +1,23 @@
+#### 1.9.13 (2024-11-27)
+
+##### New Features
+
+* **dos:**  se agrega comando para salidas digitales GV58LAU y GV57CG ([d0cf801b](https://github.com/jaayesta/queclink-parser/commit/d0cf801bd0bdc90da29c94d7341b72249b0d006d))
+* **gv310lau:**  se agrega Hdop, Vdop y Ddop ([23fa674c](https://github.com/jaayesta/queclink-parser/commit/23fa674c1c6cb41a9f6bc978d69ec58a7e5b3a83))
+
+##### Bug Fixes
+
+* **options:**
+  *  se incluye llamada a nuevos verificadores de <position append mask> ([c9277a89](https://github.com/jaayesta/queclink-parser/commit/c9277a89e9bcb8aa87315d4a70310a088d1da6a1))
+  *  se modifica la lógica para <position append mask> ([2e493c2a](https://github.com/jaayesta/queclink-parser/commit/2e493c2a0b21a971027fa44a4f94dbea5e733795))
+* **canbus:**  medida de adblueLevel ([ae0e6c4b](https://github.com/jaayesta/queclink-parser/commit/ae0e6c4bbfada75f30eb87cad7b9b68335c0a6aa))
+* **mcc:**  se agrega default ([346ddbd4](https://github.com/jaayesta/queclink-parser/commit/346ddbd4a9a42e53aae7a7ee30564d4be1fd42da))
+* **input:**  cambio de indice binario. ([b10bc367](https://github.com/jaayesta/queclink-parser/commit/b10bc367987af77c5fed2e1c0b51c7832dba0901))
+
+##### Tests
+
+* **gv58lau:**  pruebas ([1ad0a8c0](https://github.com/jaayesta/queclink-parser/commit/1ad0a8c04e3c6297eae8840f58992e375310cb9b))
+
 #### 1.9.12 (2024-10-14)
 
 ##### New Features
