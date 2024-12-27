@@ -2199,7 +2199,7 @@ const parse = raw => {
             : null
       }
     }
-    console.log(utils.getAlarm(command[1], parsedData[7], [parsedData[4], bleInfo.mac, bleData]))
+
     data = Object.assign(data, {
       alarm: utils.getAlarm(command[1], parsedData[7], [parsedData[4], bleInfo.mac, bleData]),
       loc: {
