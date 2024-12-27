@@ -238,6 +238,17 @@ const beaconTypes = {
 }
 
 /*
+  Possible Relay BLE config results
+*/
+const relayBLEResults = {
+  0: 'Success',
+  1: 'Error connecting',
+  2: 'Incorrect BLE password',
+  3: 'Error updating BLE password',
+  4: 'Error'
+}
+
+/*
   Possible Driving Time Related States
 */
 const dTimeStates = {
@@ -1375,10 +1386,67 @@ const getAlarm = (command, report, extra = false) => {
   } else if (command === 'GTBDS') {
     return { type: 'Bluetooth_Disonnected', message: messages[command] }
   } else if (command === 'GTBAA') {
-    return {
-      type: 'Bluetooth_Alarm',
-      message: messages[command][report]
+    if (['01', '02', '03'].includes(report)) {
+      const number = parseInt(extra[0])
+      const mac = extra[1]
+      const temperature = extra[2].enhancedTemperature ? extra[2].enhancedTemperature : extra[2].temperature
+      const status = report !== '03' // 01 & 02 means outside range, 03 means inside range
+      return {
+        type: 'Outside_Temperature',
+        number: number,
+        deviceID: mac,
+        status: status,
+        temperature: temperature,
+        message: messages[command][report].replace('()', `(${temperature}°C)`)
+      }
+    } else if (['07', '08', '09'].includes(report)) {
+      const number = parseInt(extra[0])
+      const mac = extra[1]
+      const humidity = extra[2].humidity ? extra[2].humidity : null
+      const status = report !== '09' // 07 & 08 means outside range, 09 means inside range
+      return {
+        type: 'Outside_Humidity',
+        number: number,
+        deviceID: mac,
+        status: status,
+        humidity: humidity,
+        message: messages[command][report].replace('()', `(${humidity}%)`)
+      }
+    } else if (['0E', '0F', '10'].includes(report)) {
+      const number = parseInt(extra[0])
+      const mac = extra[1]
+      const pressure = extra[2].tirePresure ? extra[2].tirePresure : null
+      const status = report !== '10' // 0E & 0F means outside range, 10 means inside range
+      return {
+        type: 'Outside_Tire_Pressure',
+        number: number,
+        deviceID: mac,
+        status: status,
+        pressure: pressure,
+        message: messages[command][report].replace('()', `(${pressure}kPa)`)
+      }
+    } else if (report === '15') {
+      const number = parseInt(extra[0])
+      const mac = extra[1]
+      const status = extra[2].relay.state === 1
+      const humanStatus = status ? 'activado' : 'desactivado'
+      const configResult = extra[2].relay.configResult ? extra[2].relay.configResult : null
+      return {
+        type: 'Relay_BLE',
+        number: number,
+        deviceID: mac,
+        status: status,
+        configResult: configResult,
+        message: messages[command][report].replace('__', `${humanStatus}`)
+      }
+    } else {
+      return {
+        type: 'Bluetooth_Alarm',
+        message: messages[command][report]
+      }
     }
+
+
   } else {
     return {
       type: command,
@@ -1507,6 +1575,7 @@ module.exports = {
   bluetoothModels: bluetoothModels,
   beaconModels: beaconModels,
   beaconTypes: beaconTypes,
+  relayBLEResults: relayBLEResults,
   dTimeStates: dTimeStates,
   dWorkingStates: dWorkingStates,
   gnssTriggerTypes: gnssTriggerTypes,
