@@ -218,6 +218,19 @@ const bluetoothModels = {
   }
 }
 
+
+/*
+  BLE Temp & Hum sensors
+*/
+const bleTempHumSensors = {
+  'AC100': '0',
+  'WTH300': '2',
+  'RHT ELA': '3',
+  'WMS301': '4',
+  'WTH301': '5'
+}
+
+
 /*
   Possible Beacon ID Models
 */
@@ -862,14 +875,14 @@ const getCanData = (parsedData, ix) => {
           ? expansionBin[2] === '1'
           : null,
         batteryIndicator: expansionBin ? expansionBin[3] === '1' : null,
-        brakeSystemaFailureIndicator: expansionBin
+        brakeSystemFailureIndicator: expansionBin
           ? expansionBin[4] === '1'
           : null,
         oilPressureIndicator: expansionBin ? expansionBin[5] === '1' : null,
         engineHotIndicator: expansionBin ? expansionBin[6] === '1' : null,
         ABSFailureIndicator: expansionBin ? expansionBin[7] === '1' : null,
         checkEngineIndicator: expansionBin ? expansionBin[9] === '1' : null,
-        aribagsIndicator: expansionBin ? expansionBin[10] === '1' : null,
+        airbagsIndicator: expansionBin ? expansionBin[10] === '1' : null,
         serviceCallIndicator: expansionBin
           ? expansionBin[11] === '1'
           : null,
@@ -880,6 +893,133 @@ const getCanData = (parsedData, ix) => {
       engineTorque: parsedData[ix + 48] ? parseFloat(parsedData[ix + 48]) : null,
     }
   }
+}
+
+
+/*
+  Get Bluetooth data
+*/
+const getBleData = (parsedData, btIndex) => {
+  let btDevices = []
+  let cnt = btIndex + 1
+  let btNum = parsedData[btIndex] !== '' ? parseInt(parsedData[btIndex]) : 1
+  for (let c = 0; c < btNum; c++) {
+    let appendMask = nHexDigit(hex2bin(parsedData[cnt + 4]), 16)
+
+    let aNameIx = cnt + 4 + parseInt(appendMask[15])
+    let aMacIx = aNameIx + parseInt(appendMask[14])
+    let aStatIx = aMacIx + parseInt(appendMask[13])
+    let aBatIx = aStatIx + parseInt(appendMask[12])
+    let aTmpIx = aBatIx + parseInt(appendMask[11])
+    let aHumIx = aTmpIx + parseInt(appendMask[10])
+    let ioIx = aHumIx + parseInt(appendMask[8])
+    let modeIx =
+      appendMask[8] === '1' ? ioIx + 2 + parseInt(appendMask[7]) : ioIx
+    let aEvIx = appendMask[7] === '1' ? modeIx + 1 : modeIx
+    let pressIx = aEvIx + parseInt(appendMask[6])
+    let timeIx = pressIx + parseInt(appendMask[5])
+    let eTmpIx = timeIx + parseInt(appendMask[4])
+    let magIx = eTmpIx + parseInt(appendMask[3])
+    let aBatpIx =
+      appendMask[3] === '1' ? magIx + 2 + parseInt(appendMask[2]) : magIx + parseInt(appendMask[2])
+    let relIx = aBatpIx + parseInt(appendMask[1])
+
+    btDevices.push({
+      index: parsedData[cnt],
+      type: bluetoothAccessories[parsedData[cnt + 1]],
+      model:
+        parsedData[cnt + 2] !== ''
+          ? bluetoothModels[parsedData[cnt + 1]][parsedData[cnt + 2]]
+          : bluetoothAccessories[parsedData[cnt + 1]],
+      appendMask: parsedData[cnt + 4],
+      name:
+        parsedData[aNameIx] !== '' && appendMask[15] === '1'
+          ? parsedData[aNameIx]
+          : null,
+      mac:
+        parsedData[aMacIx] !== '' && appendMask[14] === '1'
+          ? parsedData[aMacIx]
+          : null,
+      status:
+        parsedData[aStatIx] !== '' && appendMask[13] === '1'
+          ? parseInt(parsedData[aStatIx])
+          : null,
+      batteryLevel:
+        parsedData[aBatIx] !== '' && appendMask[12] === '1'
+          ? parseInt(parsedData[aBatIx])
+          : null,
+      batteryPercentage:
+        parsedData[aBatpIx] !== '' && appendMask[2] === '1'
+          ? parseFloat(parsedData[aBatpIx])
+          : null,
+      accessoryData: {
+        rawData: parsedData[cnt + 3] !== '' ? parsedData[cnt + 3] : null,
+        temperature:
+          parsedData[aTmpIx] !== '' && appendMask[11] === '1'
+            ? parseInt(parsedData[aTmpIx])
+            : null,
+        humidity:
+          parsedData[aHumIx] !== '' && appendMask[10] === '1'
+            ? parseInt(parsedData[aHumIx])
+            : null,
+        outputStatus:
+          parsedData[ioIx] !== '' && appendMask[8] === '1'
+            ? parsedData[ioIx]
+            : null,
+        inputStatus:
+          parsedData[ioIx + 1] !== '' && appendMask[8] === '1'
+            ? parsedData[ioIx + 1]
+            : null,
+        analogInputStatus:
+          parsedData[ioIx + 2] !== '' && appendMask[8] === '1'
+            ? parsedData[ioIx + 2]
+            : null,
+        mode:
+          parsedData[modeIx] !== '' && appendMask[7] === '1'
+            ? parseInt(parsedData[modeIx])
+            : null,
+        event:
+          parsedData[aEvIx] !== '' && appendMask[7] === '1'
+            ? parseInt(parsedData[aEvIx])
+            : null,
+        tirePresure:
+          parsedData[pressIx] !== '' && appendMask[6] === '1'
+            ? parseInt(parsedData[pressIx])
+            : null,
+        timestamp:
+          parsedData[timeIx] !== '' && appendMask[5] === '1'
+            ? parseDate(parsedData[timeIx])
+            : null,
+        enhancedTemperature:
+          parsedData[eTmpIx] !== '' && appendMask[4] === '1'
+            ? parseFloat(parsedData[eTmpIx])
+            : null,
+        magDevice: {
+          id:
+            parsedData[magIx] !== '' && appendMask[3] === '1'
+              ? parsedData[magIx]
+              : null,
+          eventCounter:
+            parsedData[magIx + 1] !== '' && appendMask[3] === '1'
+              ? parseInt(parsedData[magIx + 1])
+              : null,
+          magnetState:
+            parsedData[magIx + 2] !== '' && appendMask[3] === '1'
+              ? parseInt(parsedData[magIx + 2])
+              : null
+        },
+        relay: {
+          state:
+            parsedData[relIx] !== '' && appendMask[1] === '1'
+              ? parseInt(parsedData[relIx])
+              : null
+        }
+      }
+    })
+    cnt = appendMask[1] === '1' ? relIx + 1 : relIx + 2
+    // cnt = parsedData[cnt + 3] !== '' ? cnt - 1 : cnt
+  }
+  return btDevices
 }
 
 /*
@@ -1573,6 +1713,7 @@ module.exports = {
   disconnectionReasons: disconnectionReasons,
   bluetoothAccessories: bluetoothAccessories,
   bluetoothModels: bluetoothModels,
+  bleTempHumSensors: bleTempHumSensors,
   beaconModels: beaconModels,
   beaconTypes: beaconTypes,
   relayBLEResults: relayBLEResults,
@@ -1595,6 +1736,7 @@ module.exports = {
   getSignalStrength: getSignalStrength,
   getSignalPercentage: getSignalPercentage,
   getCanData: getCanData,
+  getBleData: getBleData,
   getAlarm: getAlarm,
   bin2dec: bin2dec,
   bin2hex: bin2hex,
