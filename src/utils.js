@@ -904,11 +904,8 @@ const getBleData = (parsedData, btIndex) => {
   let btNum = parsedData[btIndex] !== '' ? parseInt(parsedData[btIndex]) : 1
 
   for (let c = 0; c < btNum; c++) {
-    console.log(parsedData[cnt])
     if (!['FE', 'FF'].includes(parsedData[cnt])) {
       let appendMask = nHexDigit(hex2bin(parsedData[cnt + 4]), 16)
-      console.log(appendMask)
-
       let aNameIx = cnt + 4 + parseInt(appendMask[15])
       let aMacIx = aNameIx + parseInt(appendMask[14])
       let aStatIx = aMacIx + parseInt(appendMask[13])
@@ -1015,10 +1012,9 @@ const getBleData = (parsedData, btIndex) => {
           }
         }
       })
-      cnt = appendMask[1] === '1' ? relIx + 2 : relIx + 1
+      cnt = relIx + 1
     } else {
       let appendMask = nHexDigit(hex2bin(parsedData[cnt + 3]), 8)
-
       let aMacIx = cnt + 3 + parseInt(appendMask[6])
       let aBatIx = aMacIx + parseInt(appendMask[4])
       let aSigIx = aBatIx + parseInt(appendMask[1])
@@ -1052,7 +1048,7 @@ const getBleData = (parsedData, btIndex) => {
             ? parseInt(parsedData[bTypeIx + 1])
             : null,
       })
-      cnt = appendMask[0] === '1' ? bTypeIx + 2 : bTypeIx + 3
+      cnt = bTypeIx + 1 + parseInt(appendMask[1])
     }
   }
   return btDevices
