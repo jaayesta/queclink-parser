@@ -1980,18 +1980,18 @@ const parse = raw => {
     let aTmpIx = aBatIx + parseInt(appendMask[11])
     let aHumIx = aTmpIx + parseInt(appendMask[10])
     let ioIx = aHumIx + parseInt(appendMask[8])
-    let modeIx =
-      appendMask[8] === '1' ? ioIx + 2 + parseInt(appendMask[7]) : ioIx
-    let aEvIx = appendMask[7] === '1' ? modeIx + 1 : modeIx
-    let pressIx = aEvIx + parseInt(appendMask[6])
+    let aEvIx = appendMask[8] === '1' && appendMask[7] === '1'
+      ? ioIx + 3 : ioIx + parseInt(appendMask[7])
+    let pressIx = appendMask[7] === '1' && appendMask[6] === '1'
+      ? aEvIx + 2 : aEvIx + parseInt(appendMask[6])
     let timeIx = pressIx + parseInt(appendMask[5])
     let eTmpIx = timeIx + parseInt(appendMask[4])
     let magIx = eTmpIx + parseInt(appendMask[3])
-    let aBatpIx =
-      appendMask[3] === '1' ? magIx + 2 + parseInt(appendMask[2]) : eTmpIx
+    let aBatpIx = appendMask[3] === '1' && appendMask[2] === '1'
+      ? magIx + 3 : magIx + parseInt(appendMask[2])
     let relIx = aBatpIx + parseInt(appendMask[1])
 
-    let newIndex = appendMask[1] === '1' ? relIx + 2 : relIx + 1
+    let newIndex = relIx + 1 + parseInt(appendMask[1])
     let satIndex = newIndex + 11
 
     // If get satellites is configured
@@ -2036,10 +2036,6 @@ const parse = raw => {
       humidity:
         parsedData[aHumIx] !== '' && appendMask[10] === '1'
           ? parseInt(parsedData[aHumIx])
-          : null,
-      mode:
-        parsedData[modeIx] !== '' && appendMask[7] === '1'
-          ? parseInt(parsedData[modeIx])
           : null,
       event:
         parsedData[aEvIx] !== '' && appendMask[7] === '1'
