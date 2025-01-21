@@ -904,8 +904,10 @@ const getBleData = (parsedData, btIndex) => {
   let btNum = parsedData[btIndex] !== '' ? parseInt(parsedData[btIndex]) : 1
 
   for (let c = 0; c < btNum; c++) {
+    console.log(parsedData[cnt])
     if (!['FE', 'FF'].includes(parsedData[cnt])) {
       let appendMask = nHexDigit(hex2bin(parsedData[cnt + 4]), 16)
+      console.log(appendMask)
 
       let aNameIx = cnt + 4 + parseInt(appendMask[15])
       let aMacIx = aNameIx + parseInt(appendMask[14])
@@ -914,15 +916,15 @@ const getBleData = (parsedData, btIndex) => {
       let aTmpIx = aBatIx + parseInt(appendMask[11])
       let aHumIx = aTmpIx + parseInt(appendMask[10])
       let ioIx = aHumIx + parseInt(appendMask[8])
-      let modeIx =
-        appendMask[8] === '1' ? ioIx + 2 + parseInt(appendMask[7]) : ioIx
-      let aEvIx = appendMask[7] === '1' ? modeIx + 1 : modeIx
-      let pressIx = aEvIx + parseInt(appendMask[6])
+      let aEvIx = appendMask[8] === '1' && appendMask[7] === '1'
+        ? ioIx + 3 : ioIx + parseInt(appendMask[7])
+      let pressIx = appendMask[7] === '1' && appendMask[6] === '1'
+        ? aEvIx + 2 : aEvIx + parseInt(appendMask[6])
       let timeIx = pressIx + parseInt(appendMask[5])
       let eTmpIx = timeIx + parseInt(appendMask[4])
       let magIx = eTmpIx + parseInt(appendMask[3])
-      let aBatpIx =
-        appendMask[3] === '1' ? magIx + 2 + parseInt(appendMask[2]) : magIx + parseInt(appendMask[2])
+      let aBatpIx = appendMask[3] === '1' && appendMask[2] === '1'
+        ? magIx + 3 : magIx + parseInt(appendMask[2])
       let relIx = aBatpIx + parseInt(appendMask[1])
 
       btDevices.push({
@@ -931,7 +933,7 @@ const getBleData = (parsedData, btIndex) => {
         model:
           parsedData[cnt + 2] !== ''
             ? bluetoothModels[parsedData[cnt + 1]][parsedData[cnt + 2]]
-            : bluetoothAccessories[parsedData[cnt + 1]],
+            : null,
         appendMask: parsedData[cnt + 4],
         name:
           parsedData[aNameIx] !== '' && appendMask[15] === '1'
@@ -975,10 +977,6 @@ const getBleData = (parsedData, btIndex) => {
             parsedData[ioIx + 2] !== '' && appendMask[8] === '1'
               ? parsedData[ioIx + 2]
               : null,
-          mode:
-            parsedData[modeIx] !== '' && appendMask[7] === '1'
-              ? parseInt(parsedData[modeIx])
-              : null,
           event:
             parsedData[aEvIx] !== '' && appendMask[7] === '1'
               ? parseInt(parsedData[aEvIx])
@@ -1017,7 +1015,7 @@ const getBleData = (parsedData, btIndex) => {
           }
         }
       })
-      cnt = appendMask[1] === '1' ? relIx + 1 : relIx + 2
+      cnt = appendMask[1] === '1' ? relIx + 2 : relIx + 1
     } else {
       let appendMask = nHexDigit(hex2bin(parsedData[cnt + 3]), 8)
 
@@ -1026,7 +1024,6 @@ const getBleData = (parsedData, btIndex) => {
       let aSigIx = aBatIx + parseInt(appendMask[1])
       let bTypeIx = aSigIx + parseInt(appendMask[0])
 
-      console.log(appendMask)
       btDevices.push({
         index: parsedData[cnt],
         type: beaconTypes[parsedData[cnt + 1]],
@@ -1055,6 +1052,7 @@ const getBleData = (parsedData, btIndex) => {
             ? parseInt(parsedData[bTypeIx + 1])
             : null,
       })
+      cnt = appendMask[0] === '1' ? bTypeIx + 2 : bTypeIx + 3
     }
   }
   return btDevices
