@@ -2025,12 +2025,12 @@ const parse = raw => {
           raw: parsedData[5] !== '' ? parsedData[5] : null,
           oilLevelLowIndicator: alarmMask1 ? alarmMask1[28] === '1' : null,
           serviceCallIndicator: alarmMask1 ? alarmMask1[27] === '1' : null,
-          aribagsIndicator: alarmMask1 ? alarmMask1[26] === '1' : null,
+          airbagsIndicator: alarmMask1 ? alarmMask1[26] === '1' : null,
           checkEngineIndicator: alarmMask1 ? alarmMask1[25] === '1' : null,
           ABSFailureIndicator: alarmMask1 ? alarmMask1[23] === '1' : null,
           engineHotIndicator: alarmMask1 ? alarmMask1[22] === '1' : null,
           oilPressureIndicator: alarmMask1 ? alarmMask1[21] === '1' : null,
-          brakeSystemaFailureIndicator: alarmMask1
+          brakeSystemFailureIndicator: alarmMask1
             ? alarmMask1[20] === '1'
             : null,
           batteryIndicator: alarmMask1 ? alarmMask1[19] === '1' : null,
@@ -2255,14 +2255,14 @@ const parse = raw => {
               ? expansionBin[2] === '1'
               : null,
             batteryIndicator: expansionBin ? expansionBin[3] === '1' : null,
-            brakeSystemaFailureIndicator: expansionBin
+            brakeSystemFailureIndicator: expansionBin
               ? expansionBin[4] === '1'
               : null,
             oilPressureIndicator: expansionBin ? expansionBin[5] === '1' : null,
             engineHotIndicator: expansionBin ? expansionBin[6] === '1' : null,
             ABSFailureIndicator: expansionBin ? expansionBin[7] === '1' : null,
             checkEngineIndicator: expansionBin ? expansionBin[9] === '1' : null,
-            aribagsIndicator: expansionBin ? expansionBin[10] === '1' : null,
+            airbagsIndicator: expansionBin ? expansionBin[10] === '1' : null,
             serviceCallIndicator: expansionBin
               ? expansionBin[11] === '1'
               : null,

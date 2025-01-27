@@ -219,6 +219,17 @@ const bluetoothModels = {
 }
 
 /*
+  BLE Temp & Hum sensors
+*/
+const bleTempHumSensors = {
+  'AC100': '0',
+  'WTH300': '2',
+  'RHT ELA': '3',
+  'WMS301': '4',
+  'WTH301': '5'
+}
+
+/*
   Possible Beacon ID Models
 */
 const beaconModels = {
@@ -234,7 +245,19 @@ const beaconModels = {
 const beaconTypes = {
   '0': 'ID',
   '1': 'iBeacon',
-  '2': 'Eddystone'
+  '2': 'Eddystone',
+  '3': 'Queclink'
+}
+
+/*
+  Possible Relay BLE config results
+*/
+const relayBLEResults = {
+  0: 'Success',
+  1: 'Error connecting',
+  2: 'Incorrect BLE password',
+  3: 'Error updating BLE password',
+  4: 'Error'
 }
 
 /*
@@ -851,14 +874,14 @@ const getCanData = (parsedData, ix) => {
           ? expansionBin[2] === '1'
           : null,
         batteryIndicator: expansionBin ? expansionBin[3] === '1' : null,
-        brakeSystemaFailureIndicator: expansionBin
+        brakeSystemFailureIndicator: expansionBin
           ? expansionBin[4] === '1'
           : null,
         oilPressureIndicator: expansionBin ? expansionBin[5] === '1' : null,
         engineHotIndicator: expansionBin ? expansionBin[6] === '1' : null,
         ABSFailureIndicator: expansionBin ? expansionBin[7] === '1' : null,
         checkEngineIndicator: expansionBin ? expansionBin[9] === '1' : null,
-        aribagsIndicator: expansionBin ? expansionBin[10] === '1' : null,
+        airbagsIndicator: expansionBin ? expansionBin[10] === '1' : null,
         serviceCallIndicator: expansionBin
           ? expansionBin[11] === '1'
           : null,
@@ -869,6 +892,166 @@ const getCanData = (parsedData, ix) => {
       engineTorque: parsedData[ix + 48] ? parseFloat(parsedData[ix + 48]) : null,
     }
   }
+}
+
+
+/*
+  Get Bluetooth data
+*/
+const getBleData = (parsedData, btIndex) => {
+  let btDevices = []
+  let cnt = btIndex + 1
+  let btNum = parsedData[btIndex] !== '' ? parseInt(parsedData[btIndex]) : 1
+
+  for (let c = 0; c < btNum; c++) {
+    if (!['FE', 'FF'].includes(parsedData[cnt])) {
+      let appendMask = nHexDigit(hex2bin(parsedData[cnt + 4]), 16)
+      let aNameIx = cnt + 4 + parseInt(appendMask[15])
+      let aMacIx = aNameIx + parseInt(appendMask[14])
+      let aStatIx = aMacIx + parseInt(appendMask[13])
+      let aBatIx = aStatIx + parseInt(appendMask[12])
+      let aTmpIx = aBatIx + parseInt(appendMask[11])
+      let aHumIx = aTmpIx + parseInt(appendMask[10])
+      let ioIx = aHumIx + parseInt(appendMask[8])
+      let aEvIx = appendMask[8] === '1' && appendMask[7] === '1'
+        ? ioIx + 3 : ioIx + parseInt(appendMask[7])
+      let pressIx = appendMask[7] === '1' && appendMask[6] === '1'
+        ? aEvIx + 2 : aEvIx + parseInt(appendMask[6])
+      let timeIx = pressIx + parseInt(appendMask[5])
+      let eTmpIx = timeIx + parseInt(appendMask[4])
+      let magIx = eTmpIx + parseInt(appendMask[3])
+      let aBatpIx = appendMask[3] === '1' && appendMask[2] === '1'
+        ? magIx + 3 : magIx + parseInt(appendMask[2])
+      let relIx = aBatpIx + parseInt(appendMask[1])
+
+      btDevices.push({
+        index: parsedData[cnt],
+        type: bluetoothAccessories[parsedData[cnt + 1]],
+        model:
+          parsedData[cnt + 2] !== ''
+            ? bluetoothModels[parsedData[cnt + 1]][parsedData[cnt + 2]]
+            : null,
+        appendMask: parsedData[cnt + 4],
+        name:
+          parsedData[aNameIx] !== '' && appendMask[15] === '1'
+            ? parsedData[aNameIx]
+            : null,
+        mac:
+          parsedData[aMacIx] !== '' && appendMask[14] === '1'
+            ? parsedData[aMacIx]
+            : null,
+        status:
+          parsedData[aStatIx] !== '' && appendMask[13] === '1'
+            ? parseInt(parsedData[aStatIx])
+            : null,
+        batteryLevel:
+          parsedData[aBatIx] !== '' && appendMask[12] === '1'
+            ? parseInt(parsedData[aBatIx])
+            : null,
+        batteryPercentage:
+          parsedData[aBatpIx] !== '' && appendMask[2] === '1'
+            ? parseFloat(parsedData[aBatpIx])
+            : null,
+        accessoryData: {
+          rawData: parsedData[cnt + 3] !== '' ? parsedData[cnt + 3] : null,
+          temperature:
+            parsedData[aTmpIx] !== '' && appendMask[11] === '1'
+              ? parseInt(parsedData[aTmpIx])
+              : null,
+          humidity:
+            parsedData[aHumIx] !== '' && appendMask[10] === '1'
+              ? parseInt(parsedData[aHumIx])
+              : null,
+          outputStatus:
+            parsedData[ioIx] !== '' && appendMask[8] === '1'
+              ? parsedData[ioIx]
+              : null,
+          inputStatus:
+            parsedData[ioIx + 1] !== '' && appendMask[8] === '1'
+              ? parsedData[ioIx + 1]
+              : null,
+          analogInputStatus:
+            parsedData[ioIx + 2] !== '' && appendMask[8] === '1'
+              ? parsedData[ioIx + 2]
+              : null,
+          event:
+            parsedData[aEvIx] !== '' && appendMask[7] === '1'
+              ? parseInt(parsedData[aEvIx])
+              : null,
+          tirePresure:
+            parsedData[pressIx] !== '' && appendMask[6] === '1'
+              ? parseInt(parsedData[pressIx])
+              : null,
+          timestamp:
+            parsedData[timeIx] !== '' && appendMask[5] === '1'
+              ? parseDate(parsedData[timeIx])
+              : null,
+          enhancedTemperature:
+            parsedData[eTmpIx] !== '' && appendMask[4] === '1'
+              ? parseFloat(parsedData[eTmpIx])
+              : null,
+          magDevice: {
+            id:
+              parsedData[magIx] !== '' && appendMask[3] === '1'
+                ? parsedData[magIx]
+                : null,
+            eventCounter:
+              parsedData[magIx + 1] !== '' && appendMask[3] === '1'
+                ? parseInt(parsedData[magIx + 1])
+                : null,
+            magnetState:
+              parsedData[magIx + 2] !== '' && appendMask[3] === '1'
+                ? parseInt(parsedData[magIx + 2])
+                : null
+          },
+          relay: {
+            state:
+              parsedData[relIx] !== '' && appendMask[1] === '1'
+                ? parseInt(parsedData[relIx])
+                : null
+          }
+        }
+      })
+      cnt = relIx + 1
+    } else {
+      let appendMask = nHexDigit(hex2bin(parsedData[cnt + 3]), 8)
+      let aMacIx = cnt + 3 + parseInt(appendMask[6])
+      let aBatIx = aMacIx + parseInt(appendMask[4])
+      let aSigIx = aBatIx + parseInt(appendMask[1])
+      let bTypeIx = aSigIx + parseInt(appendMask[0])
+
+      btDevices.push({
+        index: parsedData[cnt],
+        type: beaconTypes[parsedData[cnt + 1]],
+        model: parsedData[cnt + 2] !== ''
+          ? beaconModels[parsedData[cnt + 2]]
+          : null,
+        appendMask: parsedData[cnt + 3],
+        mac:
+          parsedData[aMacIx] !== '' && appendMask[6] === '1'
+            ? parsedData[aMacIx]
+            : null,
+        batteryLevel:
+          parsedData[aBatIx] !== '' && appendMask[4] === '1'
+            ? parseInt(parsedData[aBatIx])
+            : null,
+        SignalStrength:
+          parsedData[aSigIx] !== '' && appendMask[1] === '1'
+            ? parseInt(parsedData[aSigIx])
+            : null,
+        beaconType:
+          parsedData[bTypeIx] !== '' && appendMask[0] === '1'
+            ? parseInt(parsedData[bTypeIx])
+            : null,
+        beaconData:
+          parsedData[bTypeIx + 1] !== '' && appendMask[0] === '1'
+            ? parseInt(parsedData[bTypeIx + 1])
+            : null,
+      })
+      cnt = bTypeIx + 1 + parseInt(appendMask[1])
+    }
+  }
+  return btDevices
 }
 
 /*
@@ -1375,10 +1558,67 @@ const getAlarm = (command, report, extra = false) => {
   } else if (command === 'GTBDS') {
     return { type: 'Bluetooth_Disonnected', message: messages[command] }
   } else if (command === 'GTBAA') {
-    return {
-      type: 'Bluetooth_Alarm',
-      message: messages[command][report]
+    if (['01', '02', '03'].includes(report)) {
+      const number = parseInt(extra[0])
+      const mac = extra[1]
+      const temperature = extra[2].enhancedTemperature ? extra[2].enhancedTemperature : extra[2].temperature
+      const status = report !== '03' // 01 & 02 means outside range, 03 means inside range
+      return {
+        type: 'Outside_Temperature',
+        number: number,
+        deviceID: mac,
+        status: status,
+        temperature: temperature,
+        message: messages[command][report].replace('()', `(${temperature}°C)`)
+      }
+    } else if (['07', '08', '09'].includes(report)) {
+      const number = parseInt(extra[0])
+      const mac = extra[1]
+      const humidity = extra[2].humidity ? extra[2].humidity : null
+      const status = report !== '09' // 07 & 08 means outside range, 09 means inside range
+      return {
+        type: 'Outside_Humidity',
+        number: number,
+        deviceID: mac,
+        status: status,
+        humidity: humidity,
+        message: messages[command][report].replace('()', `(${humidity}%)`)
+      }
+    } else if (['0E', '0F', '10'].includes(report)) {
+      const number = parseInt(extra[0])
+      const mac = extra[1]
+      const pressure = extra[2].tirePresure ? extra[2].tirePresure : null
+      const status = report !== '10' // 0E & 0F means outside range, 10 means inside range
+      return {
+        type: 'Outside_Tire_Pressure',
+        number: number,
+        deviceID: mac,
+        status: status,
+        pressure: pressure,
+        message: messages[command][report].replace('()', `(${pressure}kPa)`)
+      }
+    } else if (report === '15') {
+      const number = parseInt(extra[0])
+      const mac = extra[1]
+      const status = extra[2].relay.state === 1
+      const humanStatus = status ? 'activado' : 'desactivado'
+      const configResult = extra[2].relay.configResult ? extra[2].relay.configResult : null
+      return {
+        type: 'Relay_BLE',
+        number: number,
+        deviceID: mac,
+        status: status,
+        configResult: configResult,
+        message: messages[command][report].replace('__', `${humanStatus}`)
+      }
+    } else {
+      return {
+        type: 'Bluetooth_Alarm',
+        message: messages[command][report]
+      }
     }
+
+
   } else {
     return {
       type: command,
@@ -1505,8 +1745,10 @@ module.exports = {
   disconnectionReasons: disconnectionReasons,
   bluetoothAccessories: bluetoothAccessories,
   bluetoothModels: bluetoothModels,
+  bleTempHumSensors: bleTempHumSensors,
   beaconModels: beaconModels,
   beaconTypes: beaconTypes,
+  relayBLEResults: relayBLEResults,
   dTimeStates: dTimeStates,
   dWorkingStates: dWorkingStates,
   gnssTriggerTypes: gnssTriggerTypes,
@@ -1526,6 +1768,7 @@ module.exports = {
   getSignalStrength: getSignalStrength,
   getSignalPercentage: getSignalPercentage,
   getCanData: getCanData,
+  getBleData: getBleData,
   getAlarm: getAlarm,
   bin2dec: bin2dec,
   bin2hex: bin2hex,

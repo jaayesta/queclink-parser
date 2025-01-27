@@ -309,9 +309,16 @@ const parseCommand = data => {
     mode = /on(E)?/.test(state) ? 3 : 0
     const alarmId = data.alarmId || 0
     const sensorId = data.sensorId || '0000000000000000'
+    const index = data.sensor_index || 2
+    const sensorType = utils.bleTempHumSensors[data.sensor_type]
     const minTemp = data.minTemp || 0
     const maxTemp = data.maxTemp || 0
-    command = `AT+GTTMP=${password},${alarmId},${mode},${sensorId},,,${minTemp},${maxTemp},,,2,10,,,0,0,0,0,,,,,${serialId}$`
+    if (sensorType === '0') {
+      command = `AT+GTTMP=${password},${alarmId},${mode},${sensorId},,,${minTemp},${maxTemp},,,2,10,,,0,0,0,0,,,,,${serialId}$`
+    } else {
+      command = `AT+GTBAS=${password},${index},6,${sensorType},,${sensorId},83F,,2400,,${mode},${minTemp},${maxTemp},2,,,,,,,,0,0,0,0,,,${serialId}$`
+    }
+    
   } else if (/^copiloto_temp_alarm_(on|off)(E)?$/.test(data.instruction)) {
     // AT+GTDAT=gv300w,2,,>CMD3005,60,18,0,5,-3<,0,,,,FFFF$
     // Temperature Alarm
