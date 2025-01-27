@@ -1,3 +1,22 @@
+#### 1.9.14 (2025-01-27)
+
+##### New Features
+
+* **WID310:**  se agrega soporte para WID310 en reporte ERI ([1631319c](https://github.com/jaayesta/queclink-parser/commit/1631319c827f633cbb1ef61298f5f83ac19098b8))
+* **temp:**  se agrega alarma de temperatura para dispositivos BLE ([d45f73b9](https://github.com/jaayesta/queclink-parser/commit/d45f73b996e8e861be9e8f10a36b886a03e38d66))
+* **bleData:**  se cambia la forma de obtener datos de bluetooth por ERI ([f6ef1f22](https://github.com/jaayesta/queclink-parser/commit/f6ef1f2258b2562dde79974e306b35d1728a9b8c))
+* **bleAlarms:**  se agregan alarmas BLE ([abfc04a4](https://github.com/jaayesta/queclink-parser/commit/abfc04a464980a5580b982af252f338b4dde2625))
+
+##### Bug Fixes
+
+* **eri:**
+  *  se corrigen problemas de indexación pendientes BLE para reporte ERI ([460a53bd](https://github.com/jaayesta/queclink-parser/commit/460a53bd6b2fd3f4439534f5d1620fbeccff9ce7))
+  *  se corrigen problemas de indexación BLE para reporte ERI ([a2b978f8](https://github.com/jaayesta/queclink-parser/commit/a2b978f8e0de62fbfe5076bf5a2a675e1f2b0412))
+* **BAA:**
+  *  se corrige error en el indexado de reporte GTBAA para GV310LAU ([344fb52f](https://github.com/jaayesta/queclink-parser/commit/344fb52f90317f2e3f73ecdb59564a2a30d6dc80))
+  *  se corrige error en el indexado de reporte GTBAA para GV58LAU ([8aac88c1](https://github.com/jaayesta/queclink-parser/commit/8aac88c11e676e6a9c6c3fe7c97f7fc4860f9463))
+* **log:**  se elimina console log del código ([3ee79e0a](https://github.com/jaayesta/queclink-parser/commit/3ee79e0a915c59aef42e486c2eff61eba876b608))
+
 #### 1.9.13 (2024-11-27)
 
 ##### New Features
