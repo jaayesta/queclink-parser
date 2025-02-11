@@ -27,7 +27,6 @@ const parse = raw => {
     sentTime: utils.parseDate(parsedData[parsedData.length - 2]),
     serialId: parseInt(parsedData[parsedData.length - 1], 16)
   }
-
   // Gps
   if (command[1] === 'GTFRI') {
     try {
@@ -395,6 +394,8 @@ const parse = raw => {
       AC100 && digitFuelSensor
         ? parseInt(parsedData[index + 10], 10)
         : AC100 && !digitFuelSensor ? parseInt(parsedData[index + 9], 10) : 0
+    // Review when RF433 devices are implemented
+    const rf433DevicesConnected = parsedData[index + 8] === '7' ? parseInt(parsedData[index + 9]) : 0
 
     let externalData = {
       eriMask: {
@@ -540,6 +541,27 @@ const parse = raw => {
           AC100Devices: ac100Devices
         })
       }
+    } else if (parsedData[index + 8] === '7') {
+      index += 1
+      // RF433 Devices
+      let rf433Devices = []
+        // Review when RF433 devices are implemented
+        let count = index + 9
+        for (var l = 0; l < rf433DevicesConnected; l++) {
+          rf433Devices.push({
+            // deviceNumber: parsedData[count],
+            // deviceType: parsedData[count + 1],
+            // deviceData: parsedData[count + 2]
+            //   ? utils.getTempInCelciousDegrees(parsedData[count + 2])
+            //   : null
+            deviceData: parsedData[count]
+          })
+          count += 1
+          // count += 3
+        }
+        externalData = Object.assign(externalData, {
+          rf433Devices: rf433Devices
+        })
     }
 
     if (canData) {
