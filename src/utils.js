@@ -211,7 +211,7 @@ const bluetoothModels = {
     '0': 'MAG ELA (Door Sensor)'
   },
   '12': {
-    '0': 'MLD BLE TPMS (ATP100/ATP102)'
+    '0': 'ATP100/ATP102'
   },
   '13': {
     '0': 'WRL300 (Bluetooth Relay)'
@@ -431,12 +431,47 @@ const getTempInCelciousDegrees = hexTemp => {
 }
 
 /*
-  Gets the temperature and humidity from bluetooth device
+  Gets the temperature from BLE devices in celcious degrees
 */
-const getBtTempHumData = hexTemp => {
-  var int = parseInt(hexTemp.substring(0, 2), 16)
-  var dec = parseInt(hexTemp.substring(2, 4), 16)
-  return int + dec / 256
+const getBleTempInCelciousDegrees = (device, hexData) => {
+  if (device === 'WTH300') {
+    let intTemp = parseInt(hexData.substring(0, 2), 16)
+    let decTemp = parseInt(hexData.substring(2, 4), 16)
+    return intTemp + decTemp / 256
+  } else if (['WTH301', 'WMS301'].includes(device)) {
+    let intTemp = parseInt(hexData.substring(0, 2), 16)
+    let decTemp = parseInt(hexData.substring(2, 4), 16)
+    return intTemp + decTemp / 100
+  } else if (device === 'ATP100/ATP102') {
+    let temp = parseInt(hexData.substring(4, 6), 16)
+    return temp - 40
+  } else {
+    return null
+  }
+}
+
+/*
+  Gets the humidity from BLE devices in rh
+*/
+const getBleHumidityInRH = (device, hexData) => {
+  let intHum = parseInt(hexData.substring(4, 6), 16)
+  let decHum = parseInt(hexData.substring(6, 8), 16)
+  if (device === 'WTH300') {
+    return intHum + decHum / 256
+  } else if (['WTH301', 'WMS301'].includes(device)) {
+    return intHum + decHum / 100
+  } else {
+    return null
+  }
+}
+
+/*
+  Gets the humidity from BLE devices in rh
+*/
+const getTirePressureInPSI = hexData => {
+  let tirePress = parseInt(hexData.substring(2, 4), 16) * 2.5 // In kPa
+  console.log(tirePress)
+  return tirePress / 6.895 // In PSI
 }
 
 /*
@@ -924,14 +959,17 @@ const getBleData = (parsedData, btIndex) => {
         ? magIx + 3 : magIx + parseInt(appendMask[2])
       let relIx = aBatpIx + parseInt(appendMask[1])
 
+      let bleType = bluetoothAccessories[parsedData[cnt + 1]]
+      let bleModel = parsedData[cnt + 2] !== ''
+        ? bluetoothModels[parsedData[cnt + 1]][parsedData[cnt + 2]]
+        : null
+      let rawAppendMask = parsedData[cnt + 4]
+
       btDevices.push({
         index: parsedData[cnt],
-        type: bluetoothAccessories[parsedData[cnt + 1]],
-        model:
-          parsedData[cnt + 2] !== ''
-            ? bluetoothModels[parsedData[cnt + 1]][parsedData[cnt + 2]]
-            : null,
-        appendMask: parsedData[cnt + 4],
+        type: bleType,
+        model: bleModel,
+        appendMask: rawAppendMask,
         name:
           parsedData[aNameIx] !== '' && appendMask[15] === '1'
             ? parsedData[aNameIx]
@@ -953,7 +991,15 @@ const getBleData = (parsedData, btIndex) => {
             ? parseFloat(parsedData[aBatpIx])
             : null,
         accessoryData: {
-          rawData: parsedData[cnt + 3] !== '' ? parsedData[cnt + 3] : null,
+          data: parsedData[cnt + 3] !== '' ? {
+            raw: parsedData[cnt + 3],
+            temperature: getBleTempInCelciousDegrees(bleModel, parsedData[cnt + 3]),
+            humidity: getBleHumidityInRH(bleModel, parsedData[cnt + 3]),
+            relayState: bleModel === 'WRL300' ? parseInt(parsedData[cnt + 3]) === 1 ? 'Connected' : 'Disconnected' : null,
+            tirePresure: getTirePressureInPSI(parsedData[cnt + 3]),
+            productModel: bleModel === 'ATP100/ATP102' ? parsedData[cnt + 3].substring(6, 7) : null,
+            fwVersion: bleModel === 'ATP100/ATP102' ? parsedData[cnt + 3].substring(7, 8) : null,
+          } : null,
           temperature:
             parsedData[aTmpIx] !== '' && appendMask[11] === '1'
               ? parseInt(parsedData[aTmpIx])
@@ -980,7 +1026,7 @@ const getBleData = (parsedData, btIndex) => {
               : null,
           tirePresure:
             parsedData[pressIx] !== '' && appendMask[6] === '1'
-              ? parseInt(parsedData[pressIx])
+              ? parseInt(parsedData[pressIx]) / 6.895
               : null,
           timestamp:
             parsedData[timeIx] !== '' && appendMask[5] === '1'
@@ -1762,7 +1808,6 @@ module.exports = {
   includeGnnsAccuracy: includeGnnsAccuracy,
   getAccelerationMagnitude: getAccelerationMagnitude,
   getTempInCelciousDegrees: getTempInCelciousDegrees,
-  getBtTempHumData: getBtTempHumData,
   getFuelConsumption: getFuelConsumption,
   getHoursForHourmeter: getHoursForHourmeter,
   getSignalStrength: getSignalStrength,
