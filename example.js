@@ -97,10 +97,10 @@ var data = {
   "maxTemp": 29 || null
 }
 
-console.log(queclink.parseCommand(data))
-// const raw = new Buffer.from(tpms)
-// console.log(JSON.stringify(queclink.parse(raw), null, 2))
-// queclink.parse(raw)
+// console.log(queclink.parseCommand(data))
+const raw = new Buffer.from(tpms)
+console.log(JSON.stringify(queclink.parse(raw), null, 2))
+queclink.parse(raw)
 
 // if (data.can) {
 //   const {

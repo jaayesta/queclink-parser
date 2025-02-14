@@ -541,27 +541,27 @@ const parse = raw => {
           AC100Devices: ac100Devices
         })
       }
-    } else if (parsedData[index + 8] === '7') {
-      index += 1
-      // RF433 Devices
-      let rf433Devices = []
-        // Review when RF433 devices are implemented
-        let count = index + 9
-        for (var l = 0; l < rf433DevicesConnected; l++) {
-          rf433Devices.push({
-            // deviceNumber: parsedData[count],
-            // deviceType: parsedData[count + 1],
-            // deviceData: parsedData[count + 2]
-            //   ? utils.getTempInCelciousDegrees(parsedData[count + 2])
-            //   : null
-            deviceData: parsedData[count]
-          })
-          count += 1
-          // count += 3
-        }
-        externalData = Object.assign(externalData, {
-          rf433Devices: rf433Devices
-        })
+    // } else if (parsedData[index + 8] === '7') {
+    //   index += 1
+    //   // RF433 Devices
+    //   let rf433Devices = []
+    //     // Review when RF433 devices are implemented
+    //     let count = index + 9
+    //     for (var l = 0; l < rf433DevicesConnected; l++) {
+    //       rf433Devices.push({
+    //         // deviceNumber: parsedData[count],
+    //         // deviceType: parsedData[count + 1],
+    //         // deviceData: parsedData[count + 2]
+    //         //   ? utils.getTempInCelciousDegrees(parsedData[count + 2])
+    //         //   : null
+    //         deviceData: parsedData[count]
+    //       })
+    //       count += 1
+    //       // count += 3
+    //     }
+    //     externalData = Object.assign(externalData, {
+    //       rf433Devices: rf433Devices
+    //     })
     }
 
     if (canData) {
@@ -2065,7 +2065,7 @@ const parse = raw => {
           : null,
       tirePresure:
         parsedData[pressIx] !== '' && appendMask[6] === '1'
-          ? parseInt(parsedData[pressIx])
+          ? parseInt(parsedData[pressIx]) / 6.895
           : null,
       timestamp:
         parsedData[timeIx] !== '' && appendMask[5] === '1'
