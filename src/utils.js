@@ -470,7 +470,6 @@ const getBleHumidityInRH = (device, hexData) => {
 */
 const getTirePressureInPSI = hexData => {
   let tirePress = parseInt(hexData.substring(2, 4), 16) * 2.5 // In kPa
-  console.log(tirePress)
   return tirePress / 6.895 // In PSI
 }
 
