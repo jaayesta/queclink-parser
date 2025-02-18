@@ -300,7 +300,7 @@
     "GTVVS": "Config: ignición virtual",
     "GTAVS": "Config: ignición por acelerómetro",
     "GTVMS": "Config: modo de ignición",
-    "GTBTS": "Config: protocolo bluetooth",
+    "GTBTS": "Config: general bluetooth",
     "GTBAS": "Config: accesorio bluetooth",
     "GTBID": "Config: baliza bluetooth", 
     "GTHMC": "Config: horómetro",
