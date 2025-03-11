@@ -1780,7 +1780,7 @@ const parse = raw => {
           : null,
       tirePresure:
         parsedData[pressIx] !== '' && appendMask[6] === '1'
-          ? parseInt(parsedData[pressIx])
+          ? parseInt(parsedData[pressIx]) / 6.895
           : null,
       timestamp:
         parsedData[timeIx] !== '' && appendMask[5] === '1'
