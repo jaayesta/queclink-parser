@@ -1,3 +1,17 @@
+#### 1.9.15 (2025-03-11)
+
+##### New Features
+
+* **tirepressure:**  se incorpora presión de ntco en PSI e interpretación de rawData BLE ([a263d70f](https://github.com/jaayesta/queclink-parser/commit/a263d70f1b2a358ed2cdcd414ad445e5f158f16c))
+* **rf433:**  started support for RF433 devices ([2f4f5d9b](https://github.com/jaayesta/queclink-parser/commit/2f4f5d9bf680be49e52c7f931430bae80a905d74))
+
+##### Bug Fixes
+
+* **messages:**  se actualiza mensaje en ACK BTS ([1307d12f](https://github.com/jaayesta/queclink-parser/commit/1307d12f07922d1dfc4870b348126adaf92bb2d8))
+* **tirepressure:**
+  *  se quita linea de debug ([91794b17](https://github.com/jaayesta/queclink-parser/commit/91794b17672298ec754ff22ab7d78425aaf5a801))
+  *  alarma de presión en PSI ([3f7262c1](https://github.com/jaayesta/queclink-parser/commit/3f7262c1b984b4899fb612b3d8c3498341191a95))
+
 #### 1.9.14 (2025-01-27)
 
 ##### New Features
