@@ -1333,9 +1333,9 @@ const getAlarm = (command, report, extra = false) => {
   } else if (command === 'GTAIS' || command === 'GTMAI') {
     const reportID = parseInt(report[0], 10)
     const reportType = parseInt(report[1], 10)
-    if (reportID === 2) {
-      return { type: 'SOS_Button', message: messages[command][reportID] }
-    }
+    // if (reportID === 2) {
+    //   return { type: 'SOS_Button', message: messages[command][reportID] }
+    // }
     return { type: 'AI', number: reportID, status: reportType === '0' }
   } else if (command === 'GTANT') {
     return {
