@@ -822,7 +822,7 @@ const parse = raw => {
       hourmeter: null
     })
   } else if (command[1] === 'GTEPS' || command[1] === 'GTAIS') {
-    // External low battery and Low voltage for analog input
+    // External low battery and voltage for analog input
     let number = parsedData[6] !== '' ? parseInt(parsedData[6], 10) : 1
     let index = 6 + 12 * number // position append mask
     let satelliteInfo = false
