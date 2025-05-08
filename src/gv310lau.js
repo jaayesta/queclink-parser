@@ -1659,14 +1659,14 @@ const parse = raw => {
       })
     } else {
       // Long format
-      let index = 20 // position append mask
-      let satelliteInfo = false
-
-      // If get satellites is configured
-      if (utils.includeSatellites(parsedData[index])) {
-        index += 1
-        satelliteInfo = true
-      }
+      // let index = 20 // position append mask
+      console.log(parsedData[20])
+      let satelliteInfo = utils.includeSatellites(parsedData[20])
+      let accuracyInfo = utils.includeGnnsAccuracy(parsedData[20]) ? 3 : 0
+      console.log(satelliteInfo)
+      console.log(accuracyInfo)
+      let index = 20 + satelliteInfo + accuracyInfo
+      
 
       data = Object.assign(data, {
         alarm: utils.getAlarm(command[1], parsedData[8], parsedData[6]),
@@ -1697,10 +1697,25 @@ const parse = raw => {
         lac: parsedData[18] !== '' ? parseInt(parsedData[18], 16) : null,
         cid: parsedData[19] !== '' ? parseInt(parsedData[19], 16) : null,
         satellites:
-          satelliteInfo && parsedData[index] !== ''
-            ? parseInt(parsedData[index], 10)
+          satelliteInfo && parsedData[index - (satelliteInfo + accuracyInfo) + 1] !== ''
+            ? parseInt(parsedData[index - (satelliteInfo + accuracyInfo) + 1], 10)
             : null,
-        odometer: null,
+        Hdop:
+          accuracyInfo && parsedData[index - accuracyInfo + 1] !== ''
+            ? parseFloat(parsedData[index - accuracyInfo + 1])
+            : null,
+        Vdop:
+          accuracyInfo && parsedData[index - accuracyInfo + 2] !== ''
+            ? parseFloat(parsedData[index - accuracyInfo + 2])
+            : null,
+        Ddop:
+          accuracyInfo && parsedData[index] !== ''
+            ? parseFloat(parsedData[index])
+            : null,
+        odometer:
+          parsedData[index + 1] !== ''
+            ? parseFloat(parsedData[index + 1])
+            : null,
         hourmeter: null
       })
     }
