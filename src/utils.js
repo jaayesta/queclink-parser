@@ -1163,7 +1163,7 @@ const getAlarm = (command, report, extra = false) => {
     if (extra === true && reportID === 1) {
       reportID = 2
     } else if (
-      ['gv800w', 'gv600w', 'gv300w', 'gv310lau', 'gv75w', 'GMT100'].includes(
+      ['gv800w', 'gv600w', 'gv300w', 'gv310lau', 'gv58lau', 'gv75w', 'GMT100'].includes(
         extra
       )
     ) {
