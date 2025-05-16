@@ -1660,11 +1660,8 @@ const parse = raw => {
     } else {
       // Long format
       // let index = 20 // position append mask
-      console.log(parsedData[20])
       let satelliteInfo = utils.includeSatellites(parsedData[20])
       let accuracyInfo = utils.includeGnnsAccuracy(parsedData[20]) ? 3 : 0
-      console.log(satelliteInfo)
-      console.log(accuracyInfo)
       let index = 20 + satelliteInfo + accuracyInfo
       
 
