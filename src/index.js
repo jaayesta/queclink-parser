@@ -212,9 +212,9 @@ const parseCommand = data => {
     let _data = data.instruction.split('_')
     port = parseInt(_data[0], 10)
     state = _data[1]
-    prevOutputs = data.previousOutput || utils.createDefaultObject(5, false)
-    prevDurations = data.previousDuration || utils.createDefaultObject(5, 0)
-    prevToggles = data.previousToggle || utils.createDefaultObject(5, 0)
+    prevOutputs = data.previousOutput || utils.createDefaultOut(5, false)
+    prevDurations = data.previousDuration || utils.createDefaultOut(5, 0)
+    prevToggles = data.previousToggle || utils.createDefaultOut(5, 0)
 
     const outputs = Object.keys(prevOutputs).map(
       key => (prevOutputs[key] === true ? 1 : 0)

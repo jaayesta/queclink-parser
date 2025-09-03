@@ -1409,7 +1409,7 @@ const getAlarm = (command, report, extra = false) => {
     }
   } else if (command === 'GTIDA') {
     const status =
-      report.split(',')[1] !== null ? parseInt(report.split(',')[1], 10) : null
+      report.split(',')[1] ? parseInt(report.split(',')[1], 10) : null
     const driverID = report.split(',')[0] !== null ? report.split(',')[0] : null
     return {
       type: 'Driver_Identification',
@@ -1673,6 +1673,15 @@ const getAlarm = (command, report, extra = false) => {
 }
 
 /*
+  Creates default object
+*/
+const createDefaultOut = (size, defaultValue) => {
+  return Object.fromEntries(
+    Array.from({ length: size }, (_, i) => [i + 1, defaultValue])
+  );
+}
+
+/*
   Converst num to base number
 */
 const ConvertBase = num => {
@@ -1814,6 +1823,7 @@ module.exports = {
   getCanData: getCanData,
   getBleData: getBleData,
   getAlarm: getAlarm,
+  createDefaultOut: createDefaultOut,
   bin2dec: bin2dec,
   bin2hex: bin2hex,
   dec2bin: dec2bin,

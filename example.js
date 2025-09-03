@@ -85,6 +85,8 @@ var tpms = '+RESP:GTERI,6E0802,868589060612317,,00000104,14134,10,1,1,0.0,160,53
 var newdtt = '+RESP:GTDTT,6E1102,866775051622785,GV310LAU,,,0,9,1134122,0,0.0,173,72.7,117.129363,31.839142,20221201085356,0460,0000,550B,085BE2AA,01,6,,,,,20221201085357,2E9E$'
 var dis58 = '+RESP:GTDIS,8020040803,866314061861249,,,10,1,1,0.0,349,399.7,-70.770383,-33.474911,20250516154520,0730,0001,333F,003D0711,01,11,55.2,20250516154521,B08D$'
 
+var test = '+RESP:GTERI,6E0C03,868589060367102,,00000104,13621,10,1,1,0.0,5,190.7,-71.541291,-33.576625,20250829142314,0730,0001,16A9,00305D03,01,12,31513.0,0002500:06:38,,,,100,110000,0,0,0,1,00,13,0,,4007,,FFFFFFFFFFFF,0,,20250829142315,D3AF$'
+var test2 ="+RESP:GTERI,6E0C03,868589060839548,,00000104,27841,10,1,1,0.0,1,195.5,-71.541562,-33.576687,20250903005133,0730,0001,16A9,00305D03,01,12,21626.9,0000531:51:33,,,,100,210900,0,1,203A2B9F,,2,H7241302,243017.00,0,H4.5,P91.60,,37.09,10.33,0040,00,0.00,0.00,A2BAFF,62,,,,,,,,11910,37.09,1.50,2.20,,,0,, 1,00,13,0,00000000,4007,,78054143F0A5,1,0,20250903005134,C7A3$"
 var data = {
   "imei": 868589060039404,
   "instruction": "temp_alarm_off",
@@ -108,114 +110,68 @@ var data = {
 //   "user": user
 // }
 
-// action = {
-//   "imei": 866314061861249,
-//   "user": {
-//       "email": "fvergara@drivetech.pro",
-//       "ip": "10.10.3.83",
-//       "device": "Web"
-//   },
-//   "datetime": "2025-05-15T17:04:08.038Z",
-//   "instruction": "2_on",
-//   "action": "Abrir",
-//   "loc": {
-//       "type": "Point",
-//       "coordinates": [
-//           -70.770404,
-//           -33.474744
-//       ]
-//   },
-//   "device": "queclink",
-//   "password": "gv58lau",
-//   "command": null,
-//   "device_serie": "GV",
-//   "previousOutput": {
-//       "1": false,
-//       "2": false,
-//       "3": false
-//   },
-//   "previousToggle": {
-//       "1": 0,
-//       "2": 1,
-//       "3": 0,
-//       "4": 0,
-//       "5": 0
-//   },
-//   "previousDuration": {
-//       "1": 0,
-//       "2": 15,
-//       "3": 0,
-//       "4": 0,
-//       "5": 0
-//   }
-// }
+action = {
+  "imei": 868589060708180,
+  "user": {
+      "email": "fvergara@drivetech.pro",
+      "ip": "10.10.2.48",
+      "device": "Web"
+  },
+  "datetime": "2025-05-16T20:34:14.591Z",
+  "instruction": "2_on",
+  "action": "Abrir",
+  "loc": {
+      "type": "Point",
+      "coordinates": [
+          -71.543499,
+          -32.97255
+      ]
+  },
+  "device": "queclink",
+  "password": "gv310lau",
+  "dosReport": 2,
+  "command": null,
+  "device_serie": "GV",
+  "previousOutput": null,
+  "previousToggle": {
+      "1": 0,
+      "2": 1,
+      "3": 0,
+      "4": 0,
+      "5": 0
+  },
+  "previousDuration": {
+      "1": 0,
+      "2": 1,
+      "3": 0,
+      "4": 0,
+      "5": 0
+  }
+}
 
+
+spd = {
+  "imei": 866314061767966,
+  "user": {
+    "email": "fvergara@drivetech.pro",
+    "ip": "10.10.2.175",
+    "device": "Web"
+  },
+  "datetime": "2025-07-22T19:15:00.902Z",
+  "instruction": "set_speed_onE",
+  "action": "Configurar velocidad máxima",
+  "loc": null,
+  "device": "queclink",
+  "password": "gv58lau",
+  "device_serie": "GV",
+  "speed": "85",
+  "times": "30"
+}
 // console.log(queclink.parseCommand(action))
-const raw = new Buffer.from(dis58)
+const raw = new Buffer.from(test)
 console.log(JSON.stringify(queclink.parse(raw), null, 2))
-// queclink.parse(raw)
+queclink.parse(raw)
 
-// if (data.can) {
-//   const {
-//     comunicationOk,
-//     vin,
-//     ignitionKey,
-//     totalDistance,
-//     totalDistanceUnit,
-//     rpm,
-//     speed,
-//     engineCoolantTemp,
-//     fuelConsumption,
-//     fuelLevel,
-//     fuelLevelUnit,
-//     range,
-//     acceleratorPressure,
-//     engineHours,
-//     drivingTime,
-//     idleTime,
-//     idleFuelUsed,
-//     axleWeight,
-//     tachograph,
-//     indicators,
-//     lights,
-//     doors,
-//     overSpeedTime,
-//     overSpeedEngineTime
-//   } = data.can
 
-//   const canData = {
-//     raw: data.raw,
-//     imei: data.imei,
-//     datetime: data.datetime,
-//     point: data.point,
-//     comunicationOk,
-//     vin,
-//     ignitionKey,
-//     totalDistance,
-//     totalDistanceUnit,
-//     rpm,
-//     speed,
-//     engineCoolantTemp,
-//     fuelConsumption,
-//     fuelLevel,
-//     fuelLevelUnit,
-//     range,
-//     acceleratorPressure,
-//     engineHours,
-//     drivingTime,
-//     idleTime,
-//     idleFuelUsed,
-//     axleWeight,
-//     tachograph,
-//     indicators,
-//     lights,
-//     doors,
-//     overSpeedTime,
-//     overSpeedEngineTime,
-//     ...data.can.canExpanded
-//   }
-
-//   canData.canReportExpansionMask = canData.canReportExpansionMask.raw
-//   console.log(canData)
-//   delete data.can
-// }
+// AT+GTSPD=gv58lau,1,0,0,60,300,0,0,0,0,,,,,,,,,,,,0000$
+// AT+GTSPD=gv58lau,4,0,85,30,300,0,0,0,0,,,,,,,,,,,,0000$
