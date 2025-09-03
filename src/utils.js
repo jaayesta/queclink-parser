@@ -696,20 +696,27 @@ const parseCanData = (data, key) => {
   Get CANbus data
 */
 const getCanData = (parsedData, ix) => {
+  let canAppendMask = parsedData[ix + 1] !== ''
+      ? nHexDigit(hex2bin(parsedData[ix + 1]), 32)
+      : null
+  if (canAppendMask == 0) {
+    return {}
+  }
+
   let inicatorsBin =
-    parsedData[ix + 19] !== ''
+    canAppendMask[14] && parsedData[ix + 19] !== ''
       ? nHexDigit(hex2bin(parsedData[ix + 19]), 16)
       : null
   let lights =
-    parsedData[ix + 20] !== ''
+    canAppendMask[13] && parsedData[ix + 20] !== ''
       ? nHexDigit(hex2bin(parsedData[ix + 20]), 8)
       : null
   let doors =
-    parsedData[ix + 21] !== ''
+    canAppendMask[12] && parsedData[ix + 21] !== ''
       ? nHexDigit(hex2bin(parsedData[ix + 21]), 8)
       : null
   let canExpansionMask =
-    parsedData[ix + 24] !== ''
+    canAppendMask[2] && parsedData[ix + 24] !== ''
       ? nHexDigit(hex2bin(parsedData[ix + 24]), 32)
         .split('')
         .reverse()
@@ -723,7 +730,7 @@ const getCanData = (parsedData, ix) => {
         .join('')
       : null
   let tachographBin =
-    parsedData[ix + 18] !== ''
+    canAppendMask[15] && parsedData[ix + 18] !== ''
       ? nHexDigit(hex2bin(parsedData[ix + 18]), 8)
         .split('')
         .reverse()
@@ -732,26 +739,26 @@ const getCanData = (parsedData, ix) => {
 
   return {
     comunicationOk: parsedData[ix] ? parsedData[ix] === '1' : null,
-    vin: parsedData[ix + 2] ? parsedData[ix + 2] : null,
-    ignitionKey: parsedData[ix + 3] ? parseCanData(parsedData[ix + 3], 'ignitionKey') : null,
-    totalDistance: parsedData[ix + 4] ? parseCanData(parsedData[ix + 4], 'totalDistance') : null,
-    totalDistanceUnit: parsedData[ix + 4] ? parsedData[ix + 4].slice(0, 1) === 'H' ? 'km' : 'I' : null,
-    fuelUsed: parsedData[ix + 5] ? parseFloat(parsedData[ix + 5]) : null, // float
-    rpm: parsedData[ix + 6] ? parseInt(parsedData[ix + 6], 10) : null, // int
-    speed: parsedData[ix + 7] ? parseFloat(parsedData[ix + 7]) : null,
+    vin: canAppendMask[31] && parsedData[ix + 2] ? parsedData[ix + 2] : null,
+    ignitionKey: canAppendMask[30] && parsedData[ix + 3] ? parseCanData(parsedData[ix + 3], 'ignitionKey') : null,
+    totalDistance: canAppendMask[29] && parsedData[ix + 4] ? parseCanData(parsedData[ix + 4], 'totalDistance') : null,
+    totalDistanceUnit: canAppendMask[29] && parsedData[ix + 4] ? parsedData[ix + 4].slice(0, 1) === 'H' ? 'km' : 'I' : null,
+    fuelUsed: canAppendMask[28] && parsedData[ix + 5] ? parseFloat(parsedData[ix + 5]) : null, // float
+    rpm: canAppendMask[26] && parsedData[ix + 6] ? parseInt(parsedData[ix + 6], 10) : null, // int
+    speed: canAppendMask[27] && parsedData[ix + 7] ? parseFloat(parsedData[ix + 7]) : null,
     engineCoolantTemp:
-      parsedData[ix + 8] ? parseInt(parsedData[ix + 8], 10) : null,
-    fuelConsumption: parsedData[ix + 9] ? parseCanData(parsedData[ix + 9], 'fuelConsumption') : null,
-    fuelLevel: parsedData[ix + 10] ? parseFloat(parsedData[ix + 10].slice(1)) : null,
-    fuelLevelUnit: parsedData[ix + 10] ? parsedData[ix + 10].slice(0, 1) === 'P' ? '%' : 'L' : null,
-    range: parsedData[ix + 11] ? parseCanData(parsedData[ix + 11], 'range') : null,
+      canAppendMask[25] && parsedData[ix + 8] ? parseInt(parsedData[ix + 8], 10) : null,
+    fuelConsumption: canAppendMask[24] && parsedData[ix + 9] ? parseCanData(parsedData[ix + 9], 'fuelConsumption') : null,
+    fuelLevel: canAppendMask[23] && parsedData[ix + 10] ? parseFloat(parsedData[ix + 10].slice(1)) : null,
+    fuelLevelUnit: canAppendMask[23] && parsedData[ix + 10] ? parsedData[ix + 10].slice(0, 1) === 'P' ? '%' : 'L' : null,
+    range: canAppendMask[22] && parsedData[ix + 11] ? parseCanData(parsedData[ix + 11], 'range') : null,
     acceleratorPressure:
-      parsedData[ix + 12] ? parseFloat(parsedData[ix + 12]) : null,
-    engineHours: parsedData[ix + 13] ? parseFloat(parsedData[ix + 13]) : null,
-    drivingTime: parsedData[ix + 14] ? parseFloat(parsedData[ix + 14]) : null,
-    idleTime: parsedData[ix + 15] ? parseFloat(parsedData[ix + 15]) : null,
-    idleFuelUsed: parsedData[ix + 16] ? parseFloat(parsedData[ix + 16]) : null,
-    axleWeight: parsedData[ix + 17] ? parseFloat(parsedData[ix + 17]) : null,
+      canAppendMask[21] && parsedData[ix + 12] ? parseFloat(parsedData[ix + 12]) : null,
+    engineHours: canAppendMask[20] && parsedData[ix + 13] ? parseFloat(parsedData[ix + 13]) : null,
+    drivingTime: canAppendMask[19] && parsedData[ix + 14] ? parseFloat(parsedData[ix + 14]) : null,
+    idleTime: canAppendMask[18] && parsedData[ix + 15] ? parseFloat(parsedData[ix + 15]) : null,
+    idleFuelUsed: canAppendMask[17] && parsedData[ix + 16] ? parseFloat(parsedData[ix + 16]) : null,
+    axleWeight: canAppendMask[16] && parsedData[ix + 17] ? parseFloat(parsedData[ix + 17]) : null,
     tachograph: parsedData[ix + 18] ? {
       raw: parsedData[ix + 18] ? parsedData[ix + 18] : null,
       validDriverData: tachographBin ? tachographBin[7] === '1' : null,
@@ -799,8 +806,8 @@ const getCanData = (parsedData, ix) => {
       trunk: doors ? doors[4] === '1' : null,
       hood: doors ? doors[5] === '1' : null
     } : null,
-    overSpeedTime: parsedData[ix + 22] ? parseFloat(parsedData[ix + 22]) : null,
-    overSpeedEngineTime: parsedData[ix + 23] ? parseFloat(parsedData[ix + 23]) : null,
+    overSpeedTime: canAppendMask[11] && parsedData[ix + 22] ? parseFloat(parsedData[ix + 22]) : null,
+    overSpeedEngineTime: canAppendMask[10] && parsedData[ix + 23] ? parseFloat(parsedData[ix + 23]) : null,
     canExpanded: {
       canReportExpansionMask: {
         raw: parsedData[ix + 24] ? parsedData[ix + 24] : null,
@@ -1673,7 +1680,7 @@ const getAlarm = (command, report, extra = false) => {
 }
 
 /*
-  Creates default object
+  Creates default output
 */
 const createDefaultOut = (size, defaultValue) => {
   return Object.fromEntries(
