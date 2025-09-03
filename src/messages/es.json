@@ -157,6 +157,7 @@
     "1": "Dispositivo reiniciado por Actualización de Firmware",
     "2": "Dispositivo operando nuevamente",
     "3": "Dispositivo operando nuevamente",
+    "5": "Dispositivo reiniciado por protocolo watchdog",
     "6": "Reinicio por actualización de configuración"
   },
   "GTPFR": {

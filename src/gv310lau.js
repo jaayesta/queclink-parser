@@ -564,31 +564,40 @@ const parse = raw => {
     //     })
     }
 
+    var isValidCanData = true
     if (canData) {
       let newIndex = digitFuelSensor && !AC100 ? index + 9 + 1 : !digitFuelSensor && AC100 ? index + 9 + 4 : digitFuelSensor && AC100 ? index + 9 + 5 : index + 9
       let canInfo = utils.getCanData(parsedData, newIndex)
-      data = Object.assign(data, { can: canInfo })
-      index = index + 49
+      if (Object.keys(canInfo).length > 0) {
+        data = Object.assign(data, { can: canInfo })
+        index = index + 49
 
-      if (canInfo?.totalDistance) {
-        data.gpsOdometer = data.odometer
-        data.odometer = canInfo.totalDistance
-      }
+        if (canInfo?.totalDistance) {
+          data.gpsOdometer = data.odometer
+          data.odometer = canInfo.totalDistance
+        }
 
-      if (canInfo?.engineHours) {
-        data.gpsHourmeter = data.hourmeter
-        data.hourmeter = canInfo.engineHours
-      }
+        if (canInfo?.engineHours) {
+          data.gpsHourmeter = data.hourmeter
+          data.hourmeter = canInfo.engineHours
+        }
 
-      if (canInfo?.speed) {
-        data.gpsSpeed = data.speed
-        data.speed = canInfo.speed
+        if (canInfo?.speed) {
+          data.gpsSpeed = data.speed
+          data.speed = canInfo.speed
+        }
+      } else {
+        isValidCanData = false
       }
     }
 
     // Bluetooth Accessories
     if (bluetoothAccessory) {
       let btIndex = digitFuelSensor ? index + 10 : index + 9
+      if (canData) {
+        btIndex = isValidCanData? btIndex : btIndex + 2
+      }
+
       let btDevices = utils.getBleData(parsedData, btIndex)
       externalData = Object.assign(externalData, {
         btDevices: btDevices
@@ -822,7 +831,7 @@ const parse = raw => {
       hourmeter: null
     })
   } else if (command[1] === 'GTEPS' || command[1] === 'GTAIS') {
-    // External low battery and Low voltage for analog input
+    // External low battery and voltage for analog input
     let number = parsedData[6] !== '' ? parseInt(parsedData[6], 10) : 1
     let index = 6 + 12 * number // position append mask
     let satelliteInfo = false
@@ -1659,14 +1668,11 @@ const parse = raw => {
       })
     } else {
       // Long format
-      let index = 20 // position append mask
-      let satelliteInfo = false
-
-      // If get satellites is configured
-      if (utils.includeSatellites(parsedData[index])) {
-        index += 1
-        satelliteInfo = true
-      }
+      // let index = 20 // position append mask
+      let satelliteInfo = utils.includeSatellites(parsedData[20])
+      let accuracyInfo = utils.includeGnnsAccuracy(parsedData[20]) ? 3 : 0
+      let index = 20 + satelliteInfo + accuracyInfo
+      
 
       data = Object.assign(data, {
         alarm: utils.getAlarm(command[1], parsedData[8], parsedData[6]),
@@ -1697,10 +1703,25 @@ const parse = raw => {
         lac: parsedData[18] !== '' ? parseInt(parsedData[18], 16) : null,
         cid: parsedData[19] !== '' ? parseInt(parsedData[19], 16) : null,
         satellites:
-          satelliteInfo && parsedData[index] !== ''
-            ? parseInt(parsedData[index], 10)
+          satelliteInfo && parsedData[index - (satelliteInfo + accuracyInfo) + 1] !== ''
+            ? parseInt(parsedData[index - (satelliteInfo + accuracyInfo) + 1], 10)
             : null,
-        odometer: null,
+        Hdop:
+          accuracyInfo && parsedData[index - accuracyInfo + 1] !== ''
+            ? parseFloat(parsedData[index - accuracyInfo + 1])
+            : null,
+        Vdop:
+          accuracyInfo && parsedData[index - accuracyInfo + 2] !== ''
+            ? parseFloat(parsedData[index - accuracyInfo + 2])
+            : null,
+        Ddop:
+          accuracyInfo && parsedData[index] !== ''
+            ? parseFloat(parsedData[index])
+            : null,
+        odometer:
+          parsedData[index + 1] !== ''
+            ? parseFloat(parsedData[index + 1])
+            : null,
         hourmeter: null
       })
     }

@@ -80,9 +80,13 @@ var test2 = '+RESP:GTERI,8020040802,866314061760094,,00000100,12217,10,1,0,0.0,1
 var test3 = '+RESP:GTERI,8020040802,866314061760094,,00000100,12217,10,1,0,0.0,114,89.4,-71.542946,-32.972462,20250117083107,0730,0003,EA6F,00070B34,01,0,12.0,0000100:49:34,,,,100,210100,,2,01,6,4,17C608B8,283F,,78054133CB9F,1,3443,22,60,22.32,100,00,13,0,00000000,4007,,78054143F00B,1,0,20250121174252,7B18$'
 var test4 = '+RESP:GTERI,6E0B00,868589060064048,,00000100,12141,10,1,1,0.0,0,2.5,-71.543408,-32.972433,20250121211122,0730,0001,13EE,0032A502,01,12,2.6,0000014:48:01,,,,100,210100,0,3,FE,3,4,000A,780541416165,3260,00,13,0,00000000,4006,78054143F00B,1,0,02,6,4,156A0A3E,283F,,78054133CB9F,1,3449,26,54,26.22,100,20250121211125,340A$'
 var juego = "+RESP:GTERI,6E0802,868589060659029,,00000006,14064,10,1,1,32.4,71,471.3,-70.748220,-33.494213,20250123150132,0730,0001,3344,003D0601,01,12,9150.7,0000381:44:02,,,,100,220100,2,1,28FFB007286384D2,1,FF4C,1,203FFFFF,,2,,1190.32,1626,32,90,,,,0,371.38,193.02,178.36,128.66,,FFFF,0010,,00,0.06,0.00,FFFFFF,,,,,,,,,576370,434493,1719,371.38,,1.42,23731,,,,,,0000,56,0,,20250123150133,FAD9$"
-var tpms = '+RESP:GTERI,6E1003,864696060004173,GV310LAU,00000100,,10,1,1,0.0,0,115.8,117.129356,31.839248,20230808061540,0460,0001,DF5C,05FE6667,03,15,4.0,0000102:34:33,0,15259,10680,100,210000,7,1,1,06,12,0,001A42A2,0617,TMPS,08351B00043C,1,26,65,20231030085704,20231030085704,0017$'
 var newdtt = '+RESP:GTDTT,6E0802,868589060722215,,,,0,264,�Q4���,OzJ(��(��(��(��(��(��(��(��(��(��(��(���	N�K�4����.�]�f�v(�)sFisFisFh�����f�њ3I�3Mi���ܹ��QEQEQEQEQEQEQEQEQEQEQEQEQE(<Q��u.�7��}/�K��]��Jo���F�]�n�u��u.�i7Rn��I��Ԍ�6M%QEQEQEQEQEQEQEQEQEQEQEQEQEQEQE.h���q��h�h�)][yB,1,24.6,322,2730.3,-68.802404,-23.413967,20250210162544,0730,0002,00CA,09B38E71,01,11,,,,,20250210162545,A522$'
+var tpms = '+RESP:GTERI,6E0802,868589060612317,,00000104,14134,10,1,1,0.0,160,536.2,-70.676717,-33.422117,20250331211305,0730,0001,3345,003B3901,01,12,5809.4,0000132:27:33,,,,98,110000,0,0,203FFFFF,,,,,,,,,,,,,,,,,,,,,,,FFFFFF,,,,,,,,,,,,,,,,,,,,,,,,,6,00,13,0,00000000,4007,,780541484188,1,0,02,6,5,0DAD092E,083F,,7805413E6D0D,1,3423,23,35,23.50,06,12,0,005E4EB3,0617,RF,08351B002230,1,38,235,20250331211239,07,12,0,005F50B3,0617,LF,08351B00234E,1,40,237,20250331211221,08,12,0,005F4CB3,0617,RR,08351B00222D,1,36,237,20250331211215,09,12,0,00624CB3,0617,LR,08351B002247,1,36,245,20250331211209,20250331211306,AD50$'
+var newdtt = '+RESP:GTDTT,6E1102,866775051622785,GV310LAU,,,0,9,1134122,0,0.0,173,72.7,117.129363,31.839142,20221201085356,0460,0000,550B,085BE2AA,01,6,,,,,20221201085357,2E9E$'
+var dis58 = '+RESP:GTDIS,8020040803,866314061861249,,,10,1,1,0.0,349,399.7,-70.770383,-33.474911,20250516154520,0730,0001,333F,003D0711,01,11,55.2,20250516154521,B08D$'
 
+var test = '+RESP:GTERI,6E0C03,868589060367102,,00000104,13621,10,1,1,0.0,5,190.7,-71.541291,-33.576625,20250829142314,0730,0001,16A9,00305D03,01,12,31513.0,0002500:06:38,,,,100,110000,0,0,0,1,00,13,0,,4007,,FFFFFFFFFFFF,0,,20250829142315,D3AF$'
+var test2 ="+RESP:GTERI,6E0C03,868589060839548,,00000104,27841,10,1,1,0.0,1,195.5,-71.541562,-33.576687,20250903005133,0730,0001,16A9,00305D03,01,12,21626.9,0000531:51:33,,,,100,210900,0,1,203A2B9F,,2,H7241302,243017.00,0,H4.5,P91.60,,37.09,10.33,0040,00,0.00,0.00,A2BAFF,62,,,,,,,,11910,37.09,1.50,2.20,,,0,, 1,00,13,0,00000000,4007,,78054143F0A5,1,0,20250903005134,C7A3$"
 var data = {
   "imei": 868589060039404,
   "instruction": "temp_alarm_off",
@@ -97,72 +101,77 @@ var data = {
   "maxTemp": 29 || null
 }
 
-// console.log(queclink.parseCommand(data))
-const raw = new Buffer.from(tpms)
+// data = {
+//   "imei": 868589060064048,
+//   "instruction": "1_on",
+//   "datetime": "2025-03-06T20:12:00.000Z",
+//   "password": "gv57cg",
+//   "device_serie": "GV",
+//   "user": user
+// }
+
+action = {
+  "imei": 868589060708180,
+  "user": {
+      "email": "fvergara@drivetech.pro",
+      "ip": "10.10.2.48",
+      "device": "Web"
+  },
+  "datetime": "2025-05-16T20:34:14.591Z",
+  "instruction": "2_on",
+  "action": "Abrir",
+  "loc": {
+      "type": "Point",
+      "coordinates": [
+          -71.543499,
+          -32.97255
+      ]
+  },
+  "device": "queclink",
+  "password": "gv310lau",
+  "dosReport": 2,
+  "command": null,
+  "device_serie": "GV",
+  "previousOutput": null,
+  "previousToggle": {
+      "1": 0,
+      "2": 1,
+      "3": 0,
+      "4": 0,
+      "5": 0
+  },
+  "previousDuration": {
+      "1": 0,
+      "2": 1,
+      "3": 0,
+      "4": 0,
+      "5": 0
+  }
+}
+
+
+spd = {
+  "imei": 866314061767966,
+  "user": {
+    "email": "fvergara@drivetech.pro",
+    "ip": "10.10.2.175",
+    "device": "Web"
+  },
+  "datetime": "2025-07-22T19:15:00.902Z",
+  "instruction": "set_speed_onE",
+  "action": "Configurar velocidad máxima",
+  "loc": null,
+  "device": "queclink",
+  "password": "gv58lau",
+  "device_serie": "GV",
+  "speed": "85",
+  "times": "30"
+}
+// console.log(queclink.parseCommand(action))
+const raw = new Buffer.from(test)
 console.log(JSON.stringify(queclink.parse(raw), null, 2))
 queclink.parse(raw)
 
-// if (data.can) {
-//   const {
-//     comunicationOk,
-//     vin,
-//     ignitionKey,
-//     totalDistance,
-//     totalDistanceUnit,
-//     rpm,
-//     speed,
-//     engineCoolantTemp,
-//     fuelConsumption,
-//     fuelLevel,
-//     fuelLevelUnit,
-//     range,
-//     acceleratorPressure,
-//     engineHours,
-//     drivingTime,
-//     idleTime,
-//     idleFuelUsed,
-//     axleWeight,
-//     tachograph,
-//     indicators,
-//     lights,
-//     doors,
-//     overSpeedTime,
-//     overSpeedEngineTime
-//   } = data.can
 
-//   const canData = {
-//     raw: data.raw,
-//     imei: data.imei,
-//     datetime: data.datetime,
-//     point: data.point,
-//     comunicationOk,
-//     vin,
-//     ignitionKey,
-//     totalDistance,
-//     totalDistanceUnit,
-//     rpm,
-//     speed,
-//     engineCoolantTemp,
-//     fuelConsumption,
-//     fuelLevel,
-//     fuelLevelUnit,
-//     range,
-//     acceleratorPressure,
-//     engineHours,
-//     drivingTime,
-//     idleTime,
-//     idleFuelUsed,
-//     axleWeight,
-//     tachograph,
-//     indicators,
-//     lights,
-//     doors,
-//     overSpeedTime,
-//     overSpeedEngineTime,
-//     ...data.can.canExpanded
-//   }
-
-//   canData.canReportExpansionMask = canData.canReportExpansionMask.raw
-//   console.log(canData)
-//   delete data.can
-// }
+// AT+GTSPD=gv58lau,1,0,0,60,300,0,0,0,0,,,,,,,,,,,,0000$
+// AT+GTSPD=gv58lau,4,0,85,30,300,0,0,0,0,,,,,,,,,,,,0000$
