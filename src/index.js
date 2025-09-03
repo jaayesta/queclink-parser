@@ -212,27 +212,10 @@ const parseCommand = data => {
     let _data = data.instruction.split('_')
     port = parseInt(_data[0], 10)
     state = _data[1]
-    prevOutputs = data.previousOutput || {
-      '1': false,
-      '2': false,
-      '3': false,
-      '4': false,
-      '5': false
-    }
-    prevDurations = data.previousDuration || {
-      '1': 0,
-      '2': 0,
-      '3': 0,
-      '4': 0,
-      '5': 0
-    }
-    prevToggles = data.previousToggle || {
-      '1': 0,
-      '2': 0,
-      '3': 0,
-      '4': 0,
-      '5': 0
-    }
+    prevOutputs = data.previousOutput || utils.createDefaultObject(5, false)
+    prevDurations = data.previousDuration || utils.createDefaultObject(5, 0)
+    prevToggles = data.previousToggle || utils.createDefaultObject(5, 0)
+
     const outputs = Object.keys(prevOutputs).map(
       key => (prevOutputs[key] === true ? 1 : 0)
     )
@@ -248,14 +231,19 @@ const parseCommand = data => {
     const do3 = `${outputs[2]},${prevDurations['3']},${prevToggles['3']}`
     const do4 = `${outputs[3]},${prevDurations['4']},${prevToggles['4']}`
     const do5 = `${outputs[4]},${prevDurations['5']},${prevToggles['5']}`
-    const longOperation = data.longOperation || false ? '1' : '0'
-    const dosReport = data.dosReport || false ? '1' : '0'
+    const longOperation = data.longOperation || false ? '1' : ''
+    const dosReport = data.dosReport || false ? data.dosReport : 0
+    const dos = `${outputs[port - 1]},${prevDurations[_data[0]]},${prevToggles[_data[0]]}`.split(',')
+    // const wave5 = dosReport ? 
     if (data.device_serie === 'GV' && password === 'gv57cg') {
       command = `AT+GTDOS=${password},,,1,${do1},,,${dosReport},0,5,,,,${serialId}$`
     } else if (data.device_serie === 'GV' && password === 'gv58lau') {
-      command = `AT+GTDOS=${password},0,3,1,${do1},0,,2,${do2},0,,3,${do3},0,,0,,,0${dosReport},,,FFFF$`
-    } else if (data.device_serie === 'GV') {
+      command = `AT+GTDOS=${password},0,3,1,${do1},0,,2,${do2},0,,3,${do3},0,,0,,,${dosReport},,,${serialId}$`
+    } else if (data.device.serie === 'GV' && password.includes('lau')) {
       command = `AT+GTOUT=${password},${do1},${do2},${do3},${do4},${longOperation},${dosReport},,,${serialId}$`
+    } else if (data.device_serie === 'GV') {
+      // command = `AT+GTOUT=${password},${do1},${do2},${do3},${do4},${longOperation},${dosReport},,,${serialId}$`
+      command = `AT+GTOUT=${password},${do1},${do2},${do3},,,,${longOperation},${dosReport},,,${serialId}$`
     } else if (data.device_serie === 'GMT') {
       command = `AT+GTOUT=${password},${do1},${do2},,,,,,,,${serialId}$`
     } else if (data.device_serie === 'GV800') {
