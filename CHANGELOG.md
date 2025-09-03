@@ -1,3 +1,19 @@
+#### 1.9.16 (2025-09-03)
+
+##### New Features
+
+* **createDefaultOut:**  se agrega función para componer GTOUT de forma eficiente. ([b65bcc61](https://github.com/jaayesta/queclink-parser/commit/b65bcc6188f78ab7156e67f00c636c9504296b4d))
+* **dosReport:**  se agrega soporte a reporte DOS en GTOUT. ([158d2e4b](https://github.com/jaayesta/queclink-parser/commit/158d2e4b79acdae6407fc214e48f95c12d57b657))
+* **fw11:**  se agrega soporte a FW 11 ([3b91541d](https://github.com/jaayesta/queclink-parser/commit/3b91541dbe53803eb91c1512e51250714e5cd109))
+
+##### Bug Fixes
+
+* **can:**  se corrige parseo de GTERI cuando <CANbus report mask> es 0. ([b817fa2f](https://github.com/jaayesta/queclink-parser/commit/b817fa2f533575e7b6b4bfa487cf0bd2c1e439b4))
+* **logs:**  se eliminan logs no requeridos. ([34cb15a7](https://github.com/jaayesta/queclink-parser/commit/34cb15a750fd99e2fbd62216cdf079f5de3b0e5e))
+* **dis:**  se agrega gv58lau en soporte para cambio de entradas digitales ([c0c43a99](https://github.com/jaayesta/queclink-parser/commit/c0c43a991c3817f7a25e22ae5c46d86d6a0cd4d1))
+* **310lau:**  cambios menores en comentarios y ejemplos ([aeacc58a](https://github.com/jaayesta/queclink-parser/commit/aeacc58aa6c58d98347b73c15cf78cfd1ab0fba0))
+* **alarm:**  se quita SOS de entrada análoga 2 ([f4cd28f3](https://github.com/jaayesta/queclink-parser/commit/f4cd28f3b4a735d66e34a8904518ef10da801c2f))
+
 #### 1.9.15 (2025-03-11)
 
 ##### New Features
