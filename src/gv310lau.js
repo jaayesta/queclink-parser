@@ -572,19 +572,23 @@ const parse = raw => {
         data = Object.assign(data, { can: canInfo })
         index = index + 49
 
-        if (canInfo?.totalDistance) {
-          data.gpsOdometer = data.odometer
-          data.odometer = canInfo.totalDistance
-        }
+        if (canInfo?.comunicationOk) {
+          if (canInfo?.totalDistance) {
+            data.gpsOdometer = data.odometer
+            data.odometer = canInfo.totalDistance
+          }
 
-        if (canInfo?.engineHours) {
-          data.gpsHourmeter = data.hourmeter
-          data.hourmeter = canInfo.engineHours
-        }
+          if (canInfo?.engineHours) {
+            data.gpsHourmeter = data.hourmeter
+            data.hourmeter = canInfo.engineHours
+          }
 
-        if (canInfo?.speed) {
-          data.gpsSpeed = data.speed
-          data.speed = canInfo.speed
+          if (canInfo?.speed) {
+            data.gpsSpeed = data.speed
+            data.speed = canInfo.speed
+          }
+        } else {
+          isValidCanData = false
         }
       } else {
         isValidCanData = false
