@@ -1,3 +1,9 @@
+#### 1.9.17 (2025-09-22)
+
+##### New Features
+
+* **getAlarm:**  add handling for SOS button press event ([b39d687d](https://github.com/jaayesta/queclink-parser/commit/b39d687df059e467fa71bae887ac195e3189c6aa))
+
 #### 1.9.16 (2025-09-03)
 
 ##### New Features
