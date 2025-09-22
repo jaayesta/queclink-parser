@@ -1623,6 +1623,17 @@ const getAlarm = (command, report, extra = false) => {
         temperature: temperature,
         message: messages[command][report].replace('()', `(${temperature}°C)`)
       }
+    } else if (report === '20') {
+      // Button pressed
+      const number = parseInt(extra[0])
+      const mac = extra[1]
+      return {
+        type: 'SOS_Button',
+        number: number,
+        deviceID: mac,
+        voltage: extra[2].voltage ? extra[2].voltage : null,
+        message: messages[command][report]
+      }
     } else if (['07', '08', '09'].includes(report)) {
       const number = parseInt(extra[0])
       const mac = extra[1]
