@@ -1,3 +1,58 @@
+#### 1.9.17 (2025-09-22)
+
+##### New Features
+
+* **getAlarm:**  add handling for SOS button press event ([b39d687d](https://github.com/jaayesta/queclink-parser/commit/b39d687df059e467fa71bae887ac195e3189c6aa))
+
+#### 1.9.16 (2025-09-03)
+
+##### New Features
+
+* **createDefaultOut:**  se agrega función para componer GTOUT de forma eficiente. ([b65bcc61](https://github.com/jaayesta/queclink-parser/commit/b65bcc6188f78ab7156e67f00c636c9504296b4d))
+* **dosReport:**  se agrega soporte a reporte DOS en GTOUT. ([158d2e4b](https://github.com/jaayesta/queclink-parser/commit/158d2e4b79acdae6407fc214e48f95c12d57b657))
+* **fw11:**  se agrega soporte a FW 11 ([3b91541d](https://github.com/jaayesta/queclink-parser/commit/3b91541dbe53803eb91c1512e51250714e5cd109))
+
+##### Bug Fixes
+
+* **can:**  se corrige parseo de GTERI cuando <CANbus report mask> es 0. ([b817fa2f](https://github.com/jaayesta/queclink-parser/commit/b817fa2f533575e7b6b4bfa487cf0bd2c1e439b4))
+* **logs:**  se eliminan logs no requeridos. ([34cb15a7](https://github.com/jaayesta/queclink-parser/commit/34cb15a750fd99e2fbd62216cdf079f5de3b0e5e))
+* **dis:**  se agrega gv58lau en soporte para cambio de entradas digitales ([c0c43a99](https://github.com/jaayesta/queclink-parser/commit/c0c43a991c3817f7a25e22ae5c46d86d6a0cd4d1))
+* **310lau:**  cambios menores en comentarios y ejemplos ([aeacc58a](https://github.com/jaayesta/queclink-parser/commit/aeacc58aa6c58d98347b73c15cf78cfd1ab0fba0))
+* **alarm:**  se quita SOS de entrada análoga 2 ([f4cd28f3](https://github.com/jaayesta/queclink-parser/commit/f4cd28f3b4a735d66e34a8904518ef10da801c2f))
+
+#### 1.9.15 (2025-03-11)
+
+##### New Features
+
+* **tirepressure:**  se incorpora presión de ntco en PSI e interpretación de rawData BLE ([a263d70f](https://github.com/jaayesta/queclink-parser/commit/a263d70f1b2a358ed2cdcd414ad445e5f158f16c))
+* **rf433:**  started support for RF433 devices ([2f4f5d9b](https://github.com/jaayesta/queclink-parser/commit/2f4f5d9bf680be49e52c7f931430bae80a905d74))
+
+##### Bug Fixes
+
+* **messages:**  se actualiza mensaje en ACK BTS ([1307d12f](https://github.com/jaayesta/queclink-parser/commit/1307d12f07922d1dfc4870b348126adaf92bb2d8))
+* **tirepressure:**
+  *  se quita linea de debug ([91794b17](https://github.com/jaayesta/queclink-parser/commit/91794b17672298ec754ff22ab7d78425aaf5a801))
+  *  alarma de presión en PSI ([3f7262c1](https://github.com/jaayesta/queclink-parser/commit/3f7262c1b984b4899fb612b3d8c3498341191a95))
+
+#### 1.9.14 (2025-01-27)
+
+##### New Features
+
+* **WID310:**  se agrega soporte para WID310 en reporte ERI ([1631319c](https://github.com/jaayesta/queclink-parser/commit/1631319c827f633cbb1ef61298f5f83ac19098b8))
+* **temp:**  se agrega alarma de temperatura para dispositivos BLE ([d45f73b9](https://github.com/jaayesta/queclink-parser/commit/d45f73b996e8e861be9e8f10a36b886a03e38d66))
+* **bleData:**  se cambia la forma de obtener datos de bluetooth por ERI ([f6ef1f22](https://github.com/jaayesta/queclink-parser/commit/f6ef1f2258b2562dde79974e306b35d1728a9b8c))
+* **bleAlarms:**  se agregan alarmas BLE ([abfc04a4](https://github.com/jaayesta/queclink-parser/commit/abfc04a464980a5580b982af252f338b4dde2625))
+
+##### Bug Fixes
+
+* **eri:**
+  *  se corrigen problemas de indexación pendientes BLE para reporte ERI ([460a53bd](https://github.com/jaayesta/queclink-parser/commit/460a53bd6b2fd3f4439534f5d1620fbeccff9ce7))
+  *  se corrigen problemas de indexación BLE para reporte ERI ([a2b978f8](https://github.com/jaayesta/queclink-parser/commit/a2b978f8e0de62fbfe5076bf5a2a675e1f2b0412))
+* **BAA:**
+  *  se corrige error en el indexado de reporte GTBAA para GV310LAU ([344fb52f](https://github.com/jaayesta/queclink-parser/commit/344fb52f90317f2e3f73ecdb59564a2a30d6dc80))
+  *  se corrige error en el indexado de reporte GTBAA para GV58LAU ([8aac88c1](https://github.com/jaayesta/queclink-parser/commit/8aac88c11e676e6a9c6c3fe7c97f7fc4860f9463))
+* **log:**  se elimina console log del código ([3ee79e0a](https://github.com/jaayesta/queclink-parser/commit/3ee79e0a915c59aef42e486c2eff61eba876b608))
+
 #### 1.9.13 (2024-11-27)
 
 ##### New Features
