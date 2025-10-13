@@ -251,7 +251,8 @@ const parse = raw => {
     // External Data
     const digitFuelSensor =
       utils.nHexDigit(utils.hex2bin(parsedData[4]), 11)[10] === '1'
-    const AC100 = utils.nHexDigit(utils.hex2bin(parsedData[4]), 11)[9] === '1'
+    const AC100 =
+      utils.nHexDigit(utils.hex2bin(parsedData[4]), 11)[9] === '1'
     const canData =
       utils.nHexDigit(utils.hex2bin(parsedData[4]), 11)[8] === '1'
     const fuelLevelPercentage =
@@ -541,63 +542,61 @@ const parse = raw => {
           AC100Devices: ac100Devices
         })
       }
-    // } else if (parsedData[index + 8] === '7') {
-    //   index += 1
-    //   // RF433 Devices
-    //   let rf433Devices = []
-    //     // Review when RF433 devices are implemented
-    //     let count = index + 9
-    //     for (var l = 0; l < rf433DevicesConnected; l++) {
-    //       rf433Devices.push({
-    //         // deviceNumber: parsedData[count],
-    //         // deviceType: parsedData[count + 1],
-    //         // deviceData: parsedData[count + 2]
-    //         //   ? utils.getTempInCelciousDegrees(parsedData[count + 2])
-    //         //   : null
-    //         deviceData: parsedData[count]
-    //       })
-    //       count += 1
-    //       // count += 3
-    //     }
-    //     externalData = Object.assign(externalData, {
-    //       rf433Devices: rf433Devices
-    //     })
+      // } else if (parsedData[index + 8] === '7') {
+      //   index += 1
+      //   // RF433 Devices
+      //   let rf433Devices = []
+      //     // Review when RF433 devices are implemented
+      //     let count = index + 9
+      //     for (var l = 0; l < rf433DevicesConnected; l++) {
+      //       rf433Devices.push({
+      //         // deviceNumber: parsedData[count],
+      //         // deviceType: parsedData[count + 1],
+      //         // deviceData: parsedData[count + 2]
+      //         //   ? utils.getTempInCelciousDegrees(parsedData[count + 2])
+      //         //   : null
+      //         deviceData: parsedData[count]
+      //       })
+      //       count += 1
+      //       // count += 3
+      //     }
+      //     externalData = Object.assign(externalData, {
+      //       rf433Devices: rf433Devices
+      //     })
     }
 
-    var isValidCanData = true
     if (canData) {
       let newIndex = digitFuelSensor && !AC100 ? index + 9 + 1 : !digitFuelSensor && AC100 ? index + 9 + 4 : digitFuelSensor && AC100 ? index + 9 + 5 : index + 9
-      let canInfo = utils.getCanData(parsedData, newIndex)
+      let parsedCanData = utils.getCanData(parsedData, newIndex, command[1])
+      let canInfo = parsedCanData[3]
+      index = parsedCanData[0]
       if (Object.keys(canInfo).length > 0) {
         data = Object.assign(data, { can: canInfo })
-        index = index + 49
+        // index = parsedCanData[0]
 
-        if (canInfo?.totalDistance) {
-          data.gpsOdometer = data.odometer
-          data.odometer = canInfo.totalDistance
-        }
+        if (canInfo?.comunicationOk) {
+          if (typeof canInfo?.totalDistance === 'number') {
+            data.gpsOdometer = data.odometer
+            data.odometer = canInfo.totalDistance
+          }
 
-        if (canInfo?.engineHours) {
-          data.gpsHourmeter = data.hourmeter
-          data.hourmeter = canInfo.engineHours
-        }
+          if (typeof canInfo?.engineHours === 'number') {
+            data.gpsHourmeter = data.hourmeter
+            data.hourmeter = canInfo.engineHours
+          }
 
-        if (canInfo?.speed) {
-          data.gpsSpeed = data.speed
-          data.speed = canInfo.speed
+          if (typeof canInfo?.speed === 'number') {
+            data.gpsSpeed = data.speed;
+            data.speed = canInfo.speed;
+          }
         }
-      } else {
-        isValidCanData = false
       }
     }
 
     // Bluetooth Accessories
     if (bluetoothAccessory) {
-      let btIndex = digitFuelSensor ? index + 10 : index + 9
-      if (canData) {
-        btIndex = isValidCanData? btIndex : btIndex + 2
-      }
-
+      // let btIndex = digitFuelSensor ? index + 1 : index
+      let btIndex = canData ? index : index + 9
       let btDevices = utils.getBleData(parsedData, btIndex)
       externalData = Object.assign(externalData, {
         btDevices: btDevices
@@ -1452,7 +1451,8 @@ const parse = raw => {
       hourmeter: null
     })
   } else if (command[1] === 'GTCAN') {
-    let index = 67 // position append mask
+    let canData = utils.getCanData(parsedData, 5, command[1])
+    let index = canData[0] // position append mask
     let satelliteInfo = false
 
     // If get satellites is configured
@@ -1463,20 +1463,7 @@ const parse = raw => {
 
     data = Object.assign(data, {
       alarm: utils.getAlarm(command[1], parsedData[4]),
-      loc: {
-        type: 'Point',
-        coordinates: [parseFloat(parsedData[60]), parseFloat(parsedData[61])]
-      },
-      speed: parsedData[57] !== '' ? parseFloat(parsedData[57]) : null,
-      gpsStatus: utils.checkGps(
-        parseFloat(parsedData[60]),
-        parseFloat(parsedData[61])
-      ),
-      hdop: parsedData[56] !== '' ? parseFloat(parsedData[56]) : null,
       status: null,
-      azimuth: parsedData[58] !== '' ? parseFloat(parsedData[58]) : null,
-      altitude: parsedData[59] !== '' ? parseFloat(parsedData[59]) : null,
-      datetime: parsedData[62] !== '' ? utils.parseDate(parsedData[62]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -1484,19 +1471,20 @@ const parse = raw => {
         adb: null,
         adc: null
       },
-      mcc: parsedData[63] !== '' ? utils.latamMcc[parseInt(parsedData[63], 10)] : null,
-      mnc: parsedData[64] !== '' ? utils.getMNC(parsedData[63], parsedData[64]) : null,
-      lac: parsedData[65] !== '' ? parseInt(parsedData[65], 16) : null,
-      cid: parsedData[66] !== '' ? parseInt(parsedData[66], 16) : null,
       satellites:
         satelliteInfo && parsedData[index]
           ? parseInt(parsedData[index], 10)
           : null,
       odometer: null,
       hourmeter: null,
-      can: utils.getCanData(parsedData, 5)
+      can: canData[3]
+    })
+
+    data = {
+      ...data,
+      ...canData[1], // gnnsData
+      ...canData[2]  // gsmData
     }
-    )
   } else if (command[1] === 'GTDAT') {
     let dataIndex = 4
     // Short format
@@ -1672,7 +1660,7 @@ const parse = raw => {
       let satelliteInfo = utils.includeSatellites(parsedData[20])
       let accuracyInfo = utils.includeGnnsAccuracy(parsedData[20]) ? 3 : 0
       let index = 20 + satelliteInfo + accuracyInfo
-      
+
 
       data = Object.assign(data, {
         alarm: utils.getAlarm(command[1], parsedData[8], parsedData[6]),

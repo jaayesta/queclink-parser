@@ -310,7 +310,8 @@ const parse = raw => {
     // External Data
     const bluetoothAccessory =
       utils.nHexDigit(utils.hex2bin(parsedData[4]), 11)[2] === '1'
-    const canData = utils.nHexDigit(utils.hex2bin(parsedData[4]), 11)[8] === '1'
+    const canData = 
+      utils.nHexDigit(utils.hex2bin(parsedData[4]), 11)[8] === '1'
 
     let externalData = {
       eriMask: {
@@ -320,18 +321,36 @@ const parse = raw => {
       }
     }
 
+    // CANBUS data
+    if (canData) {
+      let parsedCanData = utils.getCanData(parsedData, newIndex, command[1])
+      let canInfo = parsedCanData[3]
+      index = parsedCanData[0]
+      if (Object.keys(canInfo).length > 0) {
+        data = Object.assign(data, { can: canInfo })
+        if (canInfo?.comunicationOk) {
+          if (typeof canInfo?.totalDistance === 'number') {
+            data.gpsOdometer = data.odometer
+            data.odometer = canInfo.totalDistance
+          }
+
+          if (typeof canInfo?.engineHours === 'number') {
+            data.gpsHourmeter = data.hourmeter
+            data.hourmeter = canInfo.engineHours
+          }
+
+          if (typeof canInfo?.speed === 'number') {
+            data.gpsSpeed = data.speed;
+            data.speed = canInfo.speed;
+          }
+        }
+      }
+    }
+
     // Bluetooth Accessories
     if (bluetoothAccessory) {
-      let btIndex
-
-      if (canData) {
-        btIndex = index + 58
-      } else {
-        btIndex = index + 9
-      }
-
+      let btIndex = canData ? index : index + 9
       let btDevices = utils.getBleData(parsedData, btIndex)
-
       externalData = Object.assign(externalData, {
         btDevices: btDevices
       })
@@ -1270,34 +1289,36 @@ const parse = raw => {
       hourmeter: null
     })
   } else if (command[1] === 'GTCAN') {
-    let satelliteInfo = utils.includeSatellites(parsedData[67])
-    let accuracyInfo = utils.includeGnnsAccuracy(parsedData[67]) ? 3 : 0
-    let index = 67 + (satelliteInfo + accuracyInfo)
+    let canData = utils.getCanData(parsedData, 5, command[1])
+    let index = canData[0] // position append mask
+    let satelliteInfo = utils.includeSatellites(parsedData[index])
+    let accuracyInfo = utils.includeGnnsAccuracy(parsedData[index]) ? 3 : 0
+    index = index + (satelliteInfo + accuracyInfo)
 
     data = Object.assign(data, {
       alarm: utils.getAlarm(command[1], parsedData[4]),
-      loc: {
-        type: 'Point',
-        coordinates: [parseFloat(parsedData[60]), parseFloat(parsedData[61])]
-      },
-      speed: parsedData[57] !== '' ? parseFloat(parsedData[57]) : null,
-      gpsStatus: utils.checkGps(
-        parseFloat(parsedData[60]),
-        parseFloat(parsedData[61])
-      ),
-      hdop: parsedData[56] !== '' ? parseFloat(parsedData[56]) : null,
-      status: null,
-      azimuth: parsedData[58] !== '' ? parseFloat(parsedData[58]) : null,
-      altitude: parsedData[59] !== '' ? parseFloat(parsedData[59]) : null,
-      datetime: parsedData[62] !== '' ? utils.parseDate(parsedData[62]) : null,
-      voltage: {
-        battery: null,
-        inputCharge: null
-      },
-      mcc: parsedData[63] !== '' ? utils.latamMcc[parseInt(parsedData[63], 10)] || utils.latamMcc.default : null,
-      mnc: parsedData[64] !== '' ? utils.getMNC(parsedData[63], parsedData[64]) : null,
-      lac: parsedData[65] !== '' ? parseInt(parsedData[65], 16) : null,
-      cid: parsedData[66] !== '' ? parseInt(parsedData[66], 16) : null,
+      // loc: {
+      //   type: 'Point',
+      //   coordinates: [parseFloat(parsedData[60]), parseFloat(parsedData[61])]
+      // },
+      // speed: parsedData[57] !== '' ? parseFloat(parsedData[57]) : null,
+      // gpsStatus: utils.checkGps(
+      //   parseFloat(parsedData[60]),
+      //   parseFloat(parsedData[61])
+      // ),
+      // hdop: parsedData[56] !== '' ? parseFloat(parsedData[56]) : null,
+      // status: null,
+      // azimuth: parsedData[58] !== '' ? parseFloat(parsedData[58]) : null,
+      // altitude: parsedData[59] !== '' ? parseFloat(parsedData[59]) : null,
+      // datetime: parsedData[62] !== '' ? utils.parseDate(parsedData[62]) : null,
+      // voltage: {
+      //   battery: null,
+      //   inputCharge: null
+      // },
+      // mcc: parsedData[63] !== '' ? utils.latamMcc[parseInt(parsedData[63], 10)] || utils.latamMcc.default : null,
+      // mnc: parsedData[64] !== '' ? utils.getMNC(parsedData[63], parsedData[64]) : null,
+      // lac: parsedData[65] !== '' ? parseInt(parsedData[65], 16) : null,
+      // cid: parsedData[66] !== '' ? parseInt(parsedData[66], 16) : null,
       satellites:
         satelliteInfo && parsedData[index - (satelliteInfo + accuracyInfo) + 1] !== ''
           ? parseInt(parsedData[index - (satelliteInfo + accuracyInfo) + 1], 10)
@@ -1316,8 +1337,14 @@ const parse = raw => {
           : null,
       odometer: null,
       hourmeter: null,
-      can: utils.getCanData(parsedData, 5),
+      can: canData[3],
     })
+
+    data = {
+      ...data,
+      ...canData[1],  // gnnsData
+      ...canData[2]   // gsmData
+    }
   } else if (command[1] === 'GTDAT') {
     let dataIndex = 4
     // Short format
