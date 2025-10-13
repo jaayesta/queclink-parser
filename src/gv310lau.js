@@ -573,6 +573,7 @@ const parse = raw => {
       index = parsedCanData[0]
       if (Object.keys(canInfo).length > 0) {
         data = Object.assign(data, { can: canInfo })
+        // index = parsedCanData[0]
 
         if (canInfo?.comunicationOk) {
           if (typeof canInfo?.totalDistance === 'number') {
