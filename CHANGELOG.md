@@ -1,3 +1,14 @@
+#### 1.9.18 (2025-10-13)
+
+##### Bug Fixes
+
+* **can:**
+  *  se corrige indexación para GTERI sin datos CANbus ([2f80889d](https://github.com/jaayesta/queclink-parser/commit/2f80889de3d2d0adf77989ad37d9f336eb72a316))
+  *  se adapta parser de GTERI con CANbus para FW12 ([20c6deee](https://github.com/jaayesta/queclink-parser/commit/20c6deeea2a688d0d1902eea69d448eb17bb064c))
+  *  se corrige parser para GTERI con CANbus. ([a4aa7e68](https://github.com/jaayesta/queclink-parser/commit/a4aa7e689a9a36cae14c327568387dcded7c9ed3))
+  *  se corrige parser para GTCAN. ([d1c72161](https://github.com/jaayesta/queclink-parser/commit/d1c721615f313d5fab1aaaff3766a37ac334dde0))
+* **canbus:**  asignación de odometro, horometro y velocidad dependen de comunicationOk ([6749610b](https://github.com/jaayesta/queclink-parser/commit/6749610beda92e671629a5b7b2f909c0a3a980b7))
+
 #### 1.9.17 (2025-09-22)
 
 ##### New Features
