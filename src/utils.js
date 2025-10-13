@@ -703,13 +703,22 @@ const getCanData = (parsedData, ix, type) => {
     return {}
   }
 
+  let spdIx
+  let rpmIx
+  let engcIx
   let vinIx = ix + 1 + parseInt(canAppendMask[31])
   let ignIx = vinIx + parseInt(canAppendMask[30])
   let disIx = ignIx + parseInt(canAppendMask[29])
   let fuelIx = disIx + parseInt(canAppendMask[28])
-  let rpmIx = fuelIx + parseInt(canAppendMask[27])
-  let spdIx = rpmIx + parseInt(canAppendMask[26])
-  let engcIx = spdIx + parseInt(canAppendMask[25])
+  if (type === 'GTCAN') {
+    spdIx = fuelIx + parseInt(canAppendMask[27])
+    rpmIx = spdIx + parseInt(canAppendMask[26])
+    engcIx = rpmIx + parseInt(canAppendMask[25])
+  } else {
+    rpmIx = fuelIx + parseInt(canAppendMask[27])
+    spdIx = rpmIx + parseInt(canAppendMask[26])
+    engcIx = spdIx + parseInt(canAppendMask[25])
+  }
   let fuelcIx = engcIx + parseInt(canAppendMask[24])
   let fuellIx = fuelcIx + parseInt(canAppendMask[23])
   let rngIx = fuellIx + parseInt(canAppendMask[22])
@@ -735,7 +744,7 @@ const getCanData = (parsedData, ix, type) => {
         .reverse()
         .join('')
       : '00000000000000000000000000000000'
-  
+
   let repExpMask = canAppendMask[2] === '1' ? {
     raw: parsedData[canxIx] ? parsedData[canxIx] : null,
     adBlueLevel: canExpansionMask[0] === '1',
@@ -792,12 +801,12 @@ const getCanData = (parsedData, ix, type) => {
   // Logic for CAN data
   let gnnsIx = etqIx + 2 + parseInt(canAppendMask[1])
   let gsmIx = canAppendMask[1] === '1' ? gnnsIx + parseInt(canAppendMask[0]) + 6 : gnnsIx + parseInt(canAppendMask[0])
-  let moreIx = canAppendMask[0] === '1' ? gsmIx + 4 : gsmIx
-  console.log(moreIx)
-  console.log(parsedData[moreIx])
+
+  let moreIx
   let gnnsData = null
   let gsmData = null
   if (type === 'GTCAN') {
+    moreIx = canAppendMask[0] === '1' ? gsmIx + 4 : gsmIx
     gnnsData = canAppendMask[1] === '1' ? {
       hdop: parsedData[gnnsIx] ? parseFloat(parsedData[gnnsIx]) : null,
       speed: parsedData[gnnsIx + 1] ? parseFloat(parsedData[gnnsIx + 1]) : null,
@@ -820,6 +829,8 @@ const getCanData = (parsedData, ix, type) => {
       lac: parsedData[gsmIx + 2] !== '' ? parseInt(parsedData[gsmIx + 2], 16) : null,
       cid: parsedData[gsmIx + 3] !== '' ? parseInt(parsedData[gsmIx + 3], 16) : null
     } : null
+  } else {
+    moreIx = etqIx + 1
   }
 
   let inicatorsBin =
@@ -850,22 +861,50 @@ const getCanData = (parsedData, ix, type) => {
       : null
 
   return [
-    moreIx -1,
+    moreIx,
     gnnsData,
     gsmData,
     {
       comunicationOk: parsedData[ix] ? parsedData[ix] === '1' : null,
       canAppendMask: {
+        hex: parsedData[ix + 1] !== '' ? parsedData[ix + 1] : null,
         bin: canAppendMask,
-        hex: parsedData[ix + 1] !== '' ? parsedData[ix + 1] : null
+        vin: canAppendMask[31] === '1',
+        ignitionKey: canAppendMask[30] === '1',
+        totalDistance: canAppendMask[29] === '1',
+        totalFuelUsed: canAppendMask[28] === '1',
+        speed: type === 'GTCAN' ? canAppendMask[27] === '1' : canAppendMask[26] === '1',
+        rpm: type === 'GTCAN' ? canAppendMask[26] === '1' : canAppendMask[27] === '1',
+        engineCoolantTemp: canAppendMask[25] === '1',
+        fuelConsumption: canAppendMask[24] === '1',
+        fuelLevel: canAppendMask[23] === '1',
+        range: canAppendMask[22] === '1',
+        acceleratorPressure: canAppendMask[21] === '1',
+        engineHours: canAppendMask[20] === '1',
+        drivingTime: canAppendMask[19] === '1',
+        idleTime: canAppendMask[18] === '1',
+        idleFuelUsed: canAppendMask[17] === '1',
+        axleWeight2: canAppendMask[16] === '1',
+        tachograph: canAppendMask[15] === '1',
+        indicators: canAppendMask[14] === '1',
+        lights: canAppendMask[13] === '1',
+        doors: canAppendMask[12] === '1',
+        overSpeedTime: canAppendMask[11] === '1',
+        overSpeedEngineTime: canAppendMask[10] === '1',
+        totalDistanceImpulses: canAppendMask[9] === '1',
+        canExpanded: canAppendMask[2] === '1',
+        gnssInformation: canAppendMask[1] === '1',
+        gsmInformation: canAppendMask[0] === '1'
       },
       vin: canAppendMask[31] === '1' && parsedData[vinIx] ? parsedData[vinIx] : null,
       ignitionKey: canAppendMask[30] === '1' && parsedData[ignIx] ? parseCanData(parsedData[ignIx], 'ignitionKey') : null,
       totalDistance: canAppendMask[29] === '1' && parsedData[disIx] ? parseCanData(parsedData[disIx], 'totalDistance') : null,
       totalDistanceUnit: canAppendMask[29] === '1' && parsedData[disIx] ? parsedData[disIx].slice(0, 1) === 'H' ? 'km' : 'I' : null,
       fuelUsed: canAppendMask[28] === '1' && parsedData[fuelIx] ? parseFloat(parsedData[fuelIx]) : null, // float
-      rpm: canAppendMask[27] === '1' && parsedData[spdIx] ? parseInt(parsedData[spdIx], 10) : null, // int
-      speed: canAppendMask[26] === '1' && parsedData[rpmIx] ? parseFloat(parsedData[rpmIx]) : null,
+      speed: type === 'GTCAN' ? (canAppendMask[27] === '1' && parsedData[spdIx] ? parseFloat(parsedData[spdIx]) : null) :
+        type === 'GTERI' ? (canAppendMask[26] === '1' && parsedData[spdIx] ? parseFloat(parsedData[spdIx]) : null) : null,
+      rpm: type === 'GTCAN' ? (canAppendMask[26] === '1' && parsedData[rpmIx] ? parseInt(parsedData[rpmIx], 10) : null) :
+      type === 'GTERI' ? (canAppendMask[27] === '1' && parsedData[rpmIx] ? parseInt(parsedData[rpmIx], 10) : null) : null,
       engineCoolantTemp:
         canAppendMask[25] === '1' && parsedData[engcIx] ? parseInt(parsedData[engcIx], 10) : null,
       fuelConsumption: canAppendMask[24] === '1' && parsedData[fuelcIx] ? parseCanData(parsedData[fuelcIx], 'fuelConsumption') : null,
