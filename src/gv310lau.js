@@ -565,7 +565,6 @@ const parse = raw => {
       //     })
     }
 
-    var isValidCanData = true
     if (canData) {
       let newIndex = digitFuelSensor && !AC100 ? index + 9 + 1 : !digitFuelSensor && AC100 ? index + 9 + 4 : digitFuelSensor && AC100 ? index + 9 + 5 : index + 9
       let parsedCanData = utils.getCanData(parsedData, newIndex, command[1])
@@ -590,18 +589,14 @@ const parse = raw => {
             data.gpsSpeed = data.speed;
             data.speed = canInfo.speed;
           }
-        } else {
-          isValidCanData = false
         }
-      } else {
-        isValidCanData = false
       }
     }
 
     // Bluetooth Accessories
     if (bluetoothAccessory) {
       // let btIndex = digitFuelSensor ? index + 1 : index
-      let btIndex = isValidCanData ? index : index + 2
+      let btIndex = canData ? index : index + 9
       let btDevices = utils.getBleData(parsedData, btIndex)
       externalData = Object.assign(externalData, {
         btDevices: btDevices

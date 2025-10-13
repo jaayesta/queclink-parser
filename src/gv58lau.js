@@ -322,7 +322,6 @@ const parse = raw => {
     }
 
     // CANBUS data
-    var isValidCanData = true
     if (canData) {
       let parsedCanData = utils.getCanData(parsedData, newIndex, command[1])
       let canInfo = parsedCanData[3]
@@ -344,17 +343,13 @@ const parse = raw => {
             data.gpsSpeed = data.speed;
             data.speed = canInfo.speed;
           }
-        } else {
-          isValidCanData = false
         }
-      } else {
-        isValidCanData = false
       }
     }
 
     // Bluetooth Accessories
     if (bluetoothAccessory) {
-      let btIndex = isValidCanData ? index : index + 2
+      let btIndex = canData ? index : index + 9
       let btDevices = utils.getBleData(parsedData, btIndex)
       externalData = Object.assign(externalData, {
         btDevices: btDevices
