@@ -703,22 +703,14 @@ const getCanData = (parsedData, ix, type) => {
     return {}
   }
 
-  let spdIx
-  let rpmIx
-  let engcIx
   let vinIx = ix + 1 + parseInt(canAppendMask[31])
   let ignIx = vinIx + parseInt(canAppendMask[30])
   let disIx = ignIx + parseInt(canAppendMask[29])
   let fuelIx = disIx + parseInt(canAppendMask[28])
-  // if (type === 'GTCAN') {
-  spdIx = fuelIx + parseInt(canAppendMask[27])
-  rpmIx = spdIx + parseInt(canAppendMask[26])
-  engcIx = rpmIx + parseInt(canAppendMask[25])
-  // } else {
-  //   rpmIx = fuelIx + parseInt(canAppendMask[27])
-  //   spdIx = rpmIx + parseInt(canAppendMask[26])
-  //   engcIx = spdIx + parseInt(canAppendMask[25])
-  // }
+  // Inverted speed and rpm because of inconsistence in documentation
+  let rpmIx = fuelIx + parseInt(canAppendMask[26])
+  let spdIx = rpmIx + parseInt(canAppendMask[27])
+  let engcIx = spdIx + parseInt(canAppendMask[25])
   let fuelcIx = engcIx + parseInt(canAppendMask[24])
   let fuellIx = fuelcIx + parseInt(canAppendMask[23])
   let rngIx = fuellIx + parseInt(canAppendMask[22])
@@ -873,8 +865,6 @@ const getCanData = (parsedData, ix, type) => {
         ignitionKey: canAppendMask[30] === '1',
         totalDistance: canAppendMask[29] === '1',
         totalFuelUsed: canAppendMask[28] === '1',
-        // speed: type === 'GTCAN' ? canAppendMask[27] === '1' : canAppendMask[26] === '1',
-        // rpm: type === 'GTCAN' ? canAppendMask[26] === '1' : canAppendMask[27] === '1',
         speed: canAppendMask[27] === '1',
         rpm: canAppendMask[26] === '1',
         engineCoolantTemp: canAppendMask[25] === '1',
@@ -902,13 +892,9 @@ const getCanData = (parsedData, ix, type) => {
       ignitionKey: canAppendMask[30] === '1' && parsedData[ignIx] ? parseCanData(parsedData[ignIx], 'ignitionKey') : null,
       totalDistance: canAppendMask[29] === '1' && parsedData[disIx] ? parseCanData(parsedData[disIx], 'totalDistance') : null,
       totalDistanceUnit: canAppendMask[29] === '1' && parsedData[disIx] ? parsedData[disIx].slice(0, 1) === 'H' ? 'km' : 'I' : null,
-      fuelUsed: canAppendMask[28] === '1' && parsedData[fuelIx] ? parseFloat(parsedData[fuelIx]) : null, // float
+      fuelUsed: canAppendMask[28] === '1' && parsedData[fuelIx] ? parseFloat(parsedData[fuelIx]) : null,
       speed: canAppendMask[27] === '1' && parsedData[spdIx] ? parseFloat(parsedData[spdIx]) : null,
       rpm: canAppendMask[26] === '1' && parsedData[rpmIx] ? parseInt(parsedData[rpmIx], 10) : null,
-      // speed: type === 'GTCAN' ? (canAppendMask[27] === '1' && parsedData[spdIx] ? parseFloat(parsedData[spdIx]) : null) :
-      //   type === 'GTERI' ? (canAppendMask[26] === '1' && parsedData[spdIx] ? parseFloat(parsedData[spdIx]) : null) : null,
-      // rpm: type === 'GTCAN' ? (canAppendMask[26] === '1' && parsedData[rpmIx] ? parseInt(parsedData[rpmIx], 10) : null) :
-      // type === 'GTERI' ? (canAppendMask[27] === '1' && parsedData[rpmIx] ? parseInt(parsedData[rpmIx], 10) : null) : null,
       engineCoolantTemp:
         canAppendMask[25] === '1' && parsedData[engcIx] ? parseInt(parsedData[engcIx], 10) : null,
       fuelConsumption: canAppendMask[24] === '1' && parsedData[fuelcIx] ? parseCanData(parsedData[fuelcIx], 'fuelConsumption') : null,
