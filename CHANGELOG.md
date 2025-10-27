@@ -1,3 +1,15 @@
+#### 1.9.19 (2025-10-27)
+
+##### Bug Fixes
+
+* **GTBID:**
+  *  se corrige dato sin precencia de <beacon Data> en GV58LAU ([fa52eba0](https://github.com/jaayesta/queclink-parser/commit/fa52eba014c77564f38c170923984646773f1854))
+  *  se corrige dato sin precencia de <beacon Data> ([c8b2344a](https://github.com/jaayesta/queclink-parser/commit/c8b2344a74199fefe6b1c8bce06b94e01081b95e))
+* **canbus:**
+  *  se verifica para GTCAN y GTERI ([af7ea88b](https://github.com/jaayesta/queclink-parser/commit/af7ea88b41167aaab4fcf6eb9ccbcaf05c71cdab))
+  *  se corrige lógica para obtención de velocidad en GTERI con CAN100 ([9a6971b7](https://github.com/jaayesta/queclink-parser/commit/9a6971b71576a6e0b59b29ff869ed09b954d799c))
+  *  se corrige indexación para speed y rpm ([81995527](https://github.com/jaayesta/queclink-parser/commit/8199552714975aefd7137fb57e4897995b36ab7a))
+
 #### 1.9.18 (2025-10-13)
 
 ##### Bug Fixes
