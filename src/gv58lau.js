@@ -1970,17 +1970,28 @@ const parse = raw => {
     // Bluetooth beacon detection
     let number = parsedData[4] !== '' ? parseInt(parsedData[4]) : 1
     let index = 4
+
+    let binAppendMask = utils.nHexDigit(utils.hex2bin(parsedData[index + 2]), 8)
+    let appendMask = {
+      accessoryMac: binAppendMask[6] == '1',
+      batteryLevel: binAppendMask[4] == '1',
+      signalStrength: binAppendMask[1] == '1',
+      beaconType: binAppendMask[0] == '1'
+    }
+
     let appMk, extra
     for (let i = 1; i <= number; i++) {
       appMk = utils.sumOnes(parsedData[index + 2])
-      extra =
+      extra = appendMask.beaconType ?
         parsedData[index + 5] === '0'
           ? 1
           : parsedData[index + 5] === '1'
             ? 3
             : parsedData[index + 5] === '2' ? 2 : 0
+            : 0
       index += 2 + appMk + extra
     }
+    
     let satelliteInfo = false
     let satIndex = number * index + 12
 
