@@ -585,7 +585,7 @@ const parse = raw => {
             data.hourmeter = canInfo.engineHours
           }
 
-          if (typeof canInfo?.speed === 'number') {
+          if (typeof canInfo?.speed === 'number' && canInfo?.speed > 0) {
             data.gpsSpeed = data.speed;
             data.speed = canInfo.speed;
           }
