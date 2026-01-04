@@ -917,5 +917,14 @@ describe('queclink-parzer', () => {
       const date = utils.parseDate('20160811170821')
       expect(date).to.eql(new Date('2016-08-11T17:08:21+00:00'))
     })
+
+    it('should return UNKNOWN if partial buffer GV200 data', () => {
+      const raw = Buffer.from(
+        '+BUFF:GTERI,350502,862364030180787,,00000002,13894,10,1,1,0.0,233,6.1,-73.078174,-36.803140,2021120809470'
+      )
+      const data = queclink.parse(raw)
+      expect(data.raw).to.eql(raw.toString())
+      expect(data.type).to.eql('UNKNOWN')
+    })
   })
 })
