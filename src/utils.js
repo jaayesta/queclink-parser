@@ -236,7 +236,8 @@ const beaconModels = {
   '0': 'WKF300',
   '1': 'iBeacon E6',
   '2': 'ID ELA',
-  '4': 'WID310'
+  '4': 'WID310',
+  '10': 'WID330'
 }
 
 /*
