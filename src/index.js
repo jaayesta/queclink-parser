@@ -16,18 +16,42 @@ const gv50p = require('./gv50p.js')
 const gv310lau = require('./gv310lau.js')
 const gv58lau = require('./gv58lau.js')
 const gv57cg = require('./gv57cg.js')
+const gl533cg = require('./gl533cg.js')
+
+/*
+  Sets the value of isHex to true if raw is a GL533CG (hex) message
+*/
+const setIsHex = (value) => {
+  const isHex = value
+  return isHex
+}
+
+/*
+  Gets the value of isHex
+*/
+const getIsHex = () => {
+  return isHex
+} 
 
 /*
   Checks if raw comes from a Queclink device
 */
 const isQueclink = raw => {
-  if (
+  if (  // Normal Queclink devices
     utils.patterns.message.test(raw.toString()) ||
     utils.patterns.ack.test(raw.toString()) ||
     utils.patterns.buffer.test(raw.toString())
   ) {
+    setIsHex(false)
+    return true
+  } else if ( // GL533CG (hex)
+    (Buffer.isBuffer(raw) && (raw[0] === 0x2b || raw[0] === 0x2d) && raw[raw.length - 1] === 0x24) ||
+    (typeof raw === 'string' && /^\+.*[\$]$/.test(raw))
+  ) {
+    setIsHex(true)
     return true
   }
+  setIsHex(false)
   return false
 }
 
@@ -129,6 +153,8 @@ const parse = (raw, options) => {
       result = gl50.parse(raw.toString())
     } else if (device === 'GV50P') {
       result = gv50p.parse(raw.toString())
+    } else if (device === 'GL533CG') {
+      result = gl533cg.parse(raw, getIsHex())
     }
   }
   return result
@@ -158,7 +184,7 @@ const getAckCommand = (raw, lang) => {
       parsedData[parsedData.length - 2] !== ''
         ? utils.parseDate(parsedData[parsedData.length - 2])
         : null,
-    message: messages['+ACK'][command[1]] || messages.default
+    message: messages['+ACK'][command[1]] |src/gl50.js| messages.default
   }
 
   if (command[1] === 'GTSPD') {
@@ -306,7 +332,7 @@ const parseCommand = data => {
     } else {
       command = `AT+GTBAS=${password},${index},6,${sensorType},,${sensorId},83F,,2400,,${mode},${minTemp},${maxTemp},2,,,,,,,,0,0,0,0,,,${serialId}$`
     }
-    
+
   } else if (/^copiloto_temp_alarm_(on|off)(E)?$/.test(data.instruction)) {
     // AT+GTDAT=gv300w,2,,>CMD3005,60,18,0,5,-3<,0,,,,FFFF$
     // Temperature Alarm
