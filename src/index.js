@@ -19,19 +19,12 @@ const gv57cg = require('./gv57cg.js')
 const gl533cg = require('./gl533cg.js')
 
 /*
-  Sets the value of isHex to true if raw is a GL533CG (hex) message
+  Checks if raw is a GL533CG (hex) message
 */
-const setIsHex = (value) => {
-  const isHex = value
-  return isHex
+const isHex = raw => {
+  return (Buffer.isBuffer(raw) && (raw[0] === 0x2b || raw[0] === 0x2d) && raw[raw.length - 1] === 0x24) ||
+    (typeof raw === 'string' && /^\+.*[\$]$/.test(raw))
 }
-
-/*
-  Gets the value of isHex
-*/
-const getIsHex = () => {
-  return isHex
-} 
 
 /*
   Checks if raw comes from a Queclink device
@@ -42,16 +35,12 @@ const isQueclink = raw => {
     utils.patterns.ack.test(raw.toString()) ||
     utils.patterns.buffer.test(raw.toString())
   ) {
-    setIsHex(false)
     return true
   } else if ( // GL533CG (hex)
-    (Buffer.isBuffer(raw) && (raw[0] === 0x2b || raw[0] === 0x2d) && raw[raw.length - 1] === 0x24) ||
-    (typeof raw === 'string' && /^\+.*[\$]$/.test(raw))
+    isHex(raw)
   ) {
-    setIsHex(true)
     return true
   }
-  setIsHex(false)
   return false
 }
 
@@ -115,9 +104,10 @@ const parse = (raw, options) => {
   if (
     utils.patterns.message.test(raw.toString()) ||
     utils.patterns.ack.test(raw.toString()) ||
-    utils.patterns.buffer.test(raw.toString())
+    utils.patterns.buffer.test(raw.toString()) ||
+    isHex(raw)
   ) {
-    const device = utils.getDevice(raw.toString())
+    const device = isHex(raw) ? 'GL533CG' : utils.getDevice(raw.toString())
     if (
       utils.patterns.ack.test(raw.toString()) &&
       !utils.patterns.heartbeat.test(raw.toString())
@@ -154,7 +144,8 @@ const parse = (raw, options) => {
     } else if (device === 'GV50P') {
       result = gv50p.parse(raw.toString())
     } else if (device === 'GL533CG') {
-      result = gl533cg.parse(raw, getIsHex())
+      console.log(isHex(raw))
+      result = gl533cg.parse(raw, isHex(raw))
     }
   }
   return result
