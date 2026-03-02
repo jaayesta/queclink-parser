@@ -14,7 +14,8 @@
   "GTSVR": {
     "0": "Se perdió conexión con el dispositivo",
     "1": "Se volvió a conectar el dispositivo",
-    "2": "Falló la conexión del dispositivo durante la instalación"
+    "2": "Falló la primera conexión del dispositivo",
+    "3": "Se estableció la primera conexión con el dispositivo"
   },
   "GTFLA": "Combustible reducido en consumption%",
   "GTTMP": {
@@ -255,6 +256,12 @@
     "2": "Batería baja en el WTH100",
     "3": "Batería baja en el botón SOS bluetooth"
   },
+  "GSENSOR": {
+    "0": "Dispositivo en reposo",
+    "1": "Dispositivo en movimiento",
+    "2": "Estado de movimiento desconocido"
+  },
+  "LIGHT": "Dispositivo removido (fotosensor)",
   "+ACK": {
     "GTBSI": "Config: APN",
     "GTSRI": "Config: servidor backend",

@@ -144,7 +144,6 @@ const parse = (raw, options) => {
     } else if (device === 'GV50P') {
       result = gv50p.parse(raw.toString())
     } else if (device === 'GL533CG') {
-      console.log(isHex(raw))
       result = gl533cg.parse(raw, isHex(raw))
     }
   }
