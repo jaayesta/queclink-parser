@@ -2,7 +2,8 @@
 
 const langEs = require('./messages/es.json')
 const langEn = require('./messages/en.json')
-const langs = { es: langEs, en: langEn }
+const langPt = require('./messages/pt.json')
+const langs = { es: langEs, en: langEn, pt: langPt }
 
 /*
   Data patterns
