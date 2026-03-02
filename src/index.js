@@ -33,7 +33,8 @@ const isQueclink = raw => {
   if (  // Normal Queclink devices
     utils.patterns.message.test(raw.toString()) ||
     utils.patterns.ack.test(raw.toString()) ||
-    utils.patterns.buffer.test(raw.toString())
+    utils.patterns.buffer.test(raw.toString()) ||
+    utils.patterns.nack.test(raw.toString())
   ) {
     return true
   } else if ( // GL533CG (hex)
@@ -104,6 +105,7 @@ const parse = (raw, options) => {
   if (
     utils.patterns.message.test(raw.toString()) ||
     utils.patterns.ack.test(raw.toString()) ||
+    utils.patterns.nack.test(raw.toString()) ||
     utils.patterns.buffer.test(raw.toString()) ||
     isHex(raw)
   ) {
@@ -113,6 +115,8 @@ const parse = (raw, options) => {
       !utils.patterns.heartbeat.test(raw.toString())
     ) {
       result = getAckCommand(raw.toString(), options.lang)
+    } else if (utils.patterns.nack.test(raw.toString())) {
+      result = getNackCommand(raw.toString(), options.lang)
     } else if (device === 'GV300W') {
       result = gv300w.parse(raw.toString())
     } else if (device === 'GV310LAU') {
@@ -197,6 +201,36 @@ const getAckCommand = (raw, lang) => {
   } else {
     data.command = 'CONFIG'
   }
+  return data
+}
+
+/*
+  Returns the Nack command
+*/
+const getNackCommand = (raw, lang) => {
+  const rawData = raw.substr(0, raw.length - 1)
+  const parsedData = rawData.split(',')
+  const command = parsedData[0].split(':')
+  const nackCause = utils.nackCauses[utils.hex2dec(parsedData[parsedData.length - 4]).toString()] || 'Unknown'
+
+  let data = {
+    raw: rawData,
+    rawCommand: command[1],
+    manufacturer: 'queclink',
+    device: 'Queclink-COMMAND-NOT-OK',
+    type: 'notok',
+    serial:
+      parsedData[parsedData.length - 3] !== ''
+        ? parseInt(utils.hex2dec(parsedData[parsedData.length - 3]), 10)
+        : null,
+    counter: parseInt(utils.hex2dec(parsedData[parsedData.length - 1]), 10),
+    datetime:
+      parsedData[parsedData.length - 2] !== ''
+        ? utils.parseDate(parsedData[parsedData.length - 2])
+        : null,
+    message: `${nackCause} en instrucción ${command[1]}`
+  }
+
   return data
 }
 

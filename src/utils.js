@@ -11,7 +11,17 @@ const patterns = {
   message: /^\+RESP.+\$$/,
   buffer: /^\+BUFF/,
   ack: /^\+ACK.+\$$/,
+  nack: /^\+NACK.+\$$/,
   heartbeat: /^\+ACK:GTHBD.+\$$/
+}
+
+/*
+  Possible NACK Causes
+*/
+const nackCauses = {
+  '0': 'Clave o parámetros incorrectos',
+  '1': 'Comando no soportado',
+  '2': 'Comando no permitido en este momento'
 }
 
 /*
@@ -1918,6 +1928,7 @@ const parseDate = date => {
 module.exports = {
   langs: langs,
   patterns: patterns,
+  nackCauses: nackCauses,
   OBDIIProtocols: OBDIIProtocols,
   states: states,
   uartDeviceTypes: uartDeviceTypes,
