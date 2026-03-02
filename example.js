@@ -176,7 +176,7 @@ spd = {
   "times": "30"
 }
 // console.log(queclink.parseCommand(action))
-const raw = new Buffer.from(nack)
+const raw = new Buffer.from(cantest)
 console.log(JSON.stringify(queclink.parse(raw), null, 2))
 queclink.parse(raw)
 
