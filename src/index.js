@@ -22,7 +22,7 @@ const gl533cg = require('./gl533cg.js')
   Checks if raw is a GL533CG (hex) message
 */
 const isHex = raw => {
-  return (Buffer.isBuffer(raw) && (raw[0] === 0x2b || raw[0] === 0x2d) && raw[raw.length - 1] === 0x24) ||
+  return (Buffer.isBuffer(raw) && (raw[0] === 0x2b || raw[0] === 0x2d) && raw[1] === 0x00 && raw[raw.length - 1] === 0x24) ||
     (typeof raw === 'string' && /^\+.*[\$]$/.test(raw))
 }
 
