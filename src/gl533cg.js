@@ -401,6 +401,11 @@ const parse = raw => {
     }
   }
 
+  data.status = data.status || null
+  data.odometer = data.odometer || null
+  data.hourmeter = data.hourmeter || null
+  data.gpsStatus = data.gpsStatus || false
+
   return data
 }
 

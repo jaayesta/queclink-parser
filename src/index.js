@@ -158,6 +158,7 @@ const getAckCommand = (raw, lang) => {
   const rawData = raw.substr(0, raw.length - 1)
   const parsedData = rawData.split(',')
   const command = parsedData[0].split(':')
+  const isGT = command[1].startsWith('GT')
 
   let data = {
     raw: rawData,
@@ -174,7 +175,7 @@ const getAckCommand = (raw, lang) => {
       parsedData[parsedData.length - 2] !== ''
         ? utils.parseDate(parsedData[parsedData.length - 2])
         : null,
-    message: messages['+ACK'][command[1]] |src/gl50.js| messages.default
+    message: isGT ? messages['+ACK'][command[1]] : messages['+ACK'][`GT${command[1]}`] || messages.default
   }
 
   if (command[1] === 'GTSPD') {
