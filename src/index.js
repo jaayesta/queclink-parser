@@ -16,15 +16,36 @@ const gv50p = require('./gv50p.js')
 const gv310lau = require('./gv310lau.js')
 const gv58lau = require('./gv58lau.js')
 const gv57cg = require('./gv57cg.js')
+const gl533cg = require('./gl533cg.js')
+
+/*
+  Checks if raw is a GL533CG (hex) message
+*/
+const isHex = raw => {
+  return (
+    (Buffer.isBuffer(raw) &&
+      (raw[0] === 0x2b || raw[0] === 0x2d) &&
+      raw[1] === 0x00 &&
+      raw[raw.length - 1] === 0x24) ||
+    (typeof raw === 'string' && /^\+.*[$]$/.test(raw))
+  )
+}
 
 /*
   Checks if raw comes from a Queclink device
 */
 const isQueclink = raw => {
   if (
+    // Normal Queclink devices
     utils.patterns.message.test(raw.toString()) ||
     utils.patterns.ack.test(raw.toString()) ||
-    utils.patterns.buffer.test(raw.toString())
+    utils.patterns.buffer.test(raw.toString()) ||
+    utils.patterns.nack.test(raw.toString())
+  ) {
+    return true
+  } else if (
+    // GL533CG (hex)
+    isHex(raw)
   ) {
     return true
   }
@@ -91,14 +112,18 @@ const parse = (raw, options) => {
   if (
     utils.patterns.message.test(raw.toString()) ||
     utils.patterns.ack.test(raw.toString()) ||
-    utils.patterns.buffer.test(raw.toString())
+    utils.patterns.nack.test(raw.toString()) ||
+    utils.patterns.buffer.test(raw.toString()) ||
+    isHex(raw)
   ) {
-    const device = utils.getDevice(raw.toString())
+    const device = isHex(raw) ? 'GL533CG' : utils.getDevice(raw.toString())
     if (
       utils.patterns.ack.test(raw.toString()) &&
       !utils.patterns.heartbeat.test(raw.toString())
     ) {
       result = getAckCommand(raw.toString(), options.lang)
+    } else if (utils.patterns.nack.test(raw.toString())) {
+      result = getNackCommand(raw.toString(), options.lang)
     } else if (device === 'GV300W') {
       result = gv300w.parse(raw.toString())
     } else if (device === 'GV310LAU') {
@@ -129,6 +154,8 @@ const parse = (raw, options) => {
       result = gl50.parse(raw.toString())
     } else if (device === 'GV50P') {
       result = gv50p.parse(raw.toString())
+    } else if (device === 'GL533CG') {
+      result = gl533cg.parse(raw)
     }
   }
   return result
@@ -142,6 +169,7 @@ const getAckCommand = (raw, lang) => {
   const rawData = raw.substr(0, raw.length - 1)
   const parsedData = rawData.split(',')
   const command = parsedData[0].split(':')
+  const isGT = command[1].startsWith('GT')
 
   let data = {
     raw: rawData,
@@ -158,7 +186,9 @@ const getAckCommand = (raw, lang) => {
       parsedData[parsedData.length - 2] !== ''
         ? utils.parseDate(parsedData[parsedData.length - 2])
         : null,
-    message: messages['+ACK'][command[1]] || messages.default
+    message: isGT
+      ? messages['+ACK'][command[1]]
+      : messages['+ACK'][`GT${command[1]}`] || messages.default
   }
 
   if (command[1] === 'GTSPD') {
@@ -180,6 +210,39 @@ const getAckCommand = (raw, lang) => {
   } else {
     data.command = 'CONFIG'
   }
+  return data
+}
+
+/*
+  Returns the Nack command
+*/
+const getNackCommand = (raw, lang) => {
+  const rawData = raw.substr(0, raw.length - 1)
+  const parsedData = rawData.split(',')
+  const command = parsedData[0].split(':')
+  const nackCause =
+    utils.nackCauses[
+      utils.hex2dec(parsedData[parsedData.length - 4]).toString()
+    ] || 'Unknown'
+
+  let data = {
+    raw: rawData,
+    rawCommand: command[1],
+    manufacturer: 'queclink',
+    device: 'Queclink-COMMAND-NOT-OK',
+    type: 'notok',
+    serial:
+      parsedData[parsedData.length - 3] !== ''
+        ? parseInt(utils.hex2dec(parsedData[parsedData.length - 3]), 10)
+        : null,
+    counter: parseInt(utils.hex2dec(parsedData[parsedData.length - 1]), 10),
+    datetime:
+      parsedData[parsedData.length - 2] !== ''
+        ? utils.parseDate(parsedData[parsedData.length - 2])
+        : null,
+    message: `${nackCause} en instrucción ${command[1]}`
+  }
+
   return data
 }
 
@@ -233,13 +296,17 @@ const parseCommand = data => {
     const do5 = `${outputs[4]},${prevDurations['5']},${prevToggles['5']}`
     const longOperation = data.longOperation || false ? '1' : ''
     const dosReport = data.dosReport || false ? data.dosReport : 0
-    const dos = `${outputs[port - 1]},${prevDurations[_data[0]]},${prevToggles[_data[0]]}`.split(',')
-    // const wave5 = dosReport ? 
+    // const dos = `${outputs[port - 1]},${prevDurations[_data[0]]},${prevToggles[_data[0]]}`.split(',')
+    // const wave5 = dosReport ?
     if (data.device_serie === 'GV' && password === 'gv57cg') {
       command = `AT+GTDOS=${password},,,1,${do1},,,${dosReport},0,5,,,,${serialId}$`
     } else if (data.device_serie === 'GV' && password === 'gv58lau') {
       command = `AT+GTDOS=${password},0,3,1,${do1},0,,2,${do2},0,,3,${do3},0,,0,,,${dosReport},,,${serialId}$`
-    } else if (data.device.serie === 'GV' && password.includes('lau')) {
+    } else if (
+      data.device &&
+      data.device.serie === 'GV' &&
+      password.includes('lau')
+    ) {
       command = `AT+GTOUT=${password},${do1},${do2},${do3},${do4},${longOperation},${dosReport},,,${serialId}$`
     } else if (data.device_serie === 'GV') {
       // command = `AT+GTOUT=${password},${do1},${do2},${do3},${do4},${longOperation},${dosReport},,,${serialId}$`
@@ -306,7 +373,6 @@ const parseCommand = data => {
     } else {
       command = `AT+GTBAS=${password},${index},6,${sensorType},,${sensorId},83F,,2400,,${mode},${minTemp},${maxTemp},2,,,,,,,,0,0,0,0,,,${serialId}$`
     }
-    
   } else if (/^copiloto_temp_alarm_(on|off)(E)?$/.test(data.instruction)) {
     // AT+GTDAT=gv300w,2,,>CMD3005,60,18,0,5,-3<,0,,,,FFFF$
     // Temperature Alarm

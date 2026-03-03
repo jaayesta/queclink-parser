@@ -14,7 +14,8 @@
   "GTSVR": {
     "0": "Se perdió conexión con el dispositivo",
     "1": "Se volvió a conectar el dispositivo",
-    "2": "Falló la conexión del dispositivo durante la instalación"
+    "2": "Falló la primera conexión del dispositivo",
+    "3": "Se estableció la primera conexión con el dispositivo"
   },
   "GTFLA": "Combustible reducido en consumption%",
   "GTTMP": {
@@ -255,9 +256,18 @@
     "2": "Batería baja en el WTH100",
     "3": "Batería baja en el botón SOS bluetooth"
   },
+  "GSENSOR": {
+    "0": "Dispositivo en reposo",
+    "1": "Dispositivo en movimiento",
+    "2": "Estado de movimiento desconocido"
+  },
+  "LIGHT": "Dispositivo removido (fotosensor)",
   "+ACK": {
     "GTBSI": "Config: APN",
+    "GTAPN": "Config: APN",
+    "GTNET": "Config: tecnología de red",
     "GTSRI": "Config: servidor backend",
+    "GTBSS": "Config: servidor backend",
     "GTQSS": "Config: APN y servidor backend",
     "GTMQT": "Config: servidor MQTT",
     "GTTLS": "Config: encritado de datos",
@@ -269,7 +279,11 @@
     "GTPDS": "Config: preservar estados",
     "GTUPC": "Actualización OTA",
     "GTFRI": "Config: reportes de ubicación",
+    "GTQRC": "Config: reportes de rastreo",
     "GTFFC": "Config: frecuencia de reporte FRI",
+    "GTPSM": "Config: modo de ahorro de energía",
+    "GTHBD": "Config: frecuencia de heartbeat",
+    "GTGNSSCFG": "Config: configuración GNSS global",
     "GTTOW": "Alarma configurada: remolque",
     "GTSPD": "Alarma configurada: velocidad",
     "GTSPA": "Alarma configurada: exceso de velocidad",

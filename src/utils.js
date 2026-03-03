@@ -11,7 +11,17 @@ const patterns = {
   message: /^\+RESP.+\$$/,
   buffer: /^\+BUFF/,
   ack: /^\+ACK.+\$$/,
+  nack: /^\+NACK.+\$$/,
   heartbeat: /^\+ACK:GTHBD.+\$$/
+}
+
+/*
+  Possible NACK Causes
+*/
+const nackCauses = {
+  '0': 'Clave o parámetros incorrectos',
+  '1': 'Comando no soportado',
+  '2': 'Comando no permitido en este momento'
 }
 
 /*
@@ -45,7 +55,8 @@ const devices = {
   FC: 'GV600W',
   '6E': 'GV310LAU',
   '802004': 'GV58LAU',
-  '802006': 'GV57CG'
+  '802006': 'GV57CG',
+  'C301': 'GL533CG'
 }
 
 /*
@@ -128,6 +139,17 @@ const externalGPSAntennaOptions = {
   '1': 'Detected in open circuit state',
   '3': 'Unknow state',
   '': 'Unknow'
+}
+
+/*
+  Possible GPS Signal Strength
+*/
+const gpsSignalStrength = {
+  '0': 'Unknown',
+  '1': 'Great',
+  '2': 'Good',
+  '3': 'Normal',
+  '4': 'Weak'
 }
 
 /*
@@ -236,7 +258,8 @@ const beaconModels = {
   '0': 'WKF300',
   '1': 'iBeacon E6',
   '2': 'ID ELA',
-  '4': 'WID310'
+  '4': 'WID310',
+  '10': 'WID330'
 }
 
 /*
@@ -345,6 +368,11 @@ const getProtocolVersion = protocol => {
       protocol.substring(8, 10),
       16
     )}`
+  } else if (['C301'].includes(protocol.substring(0, 4))) {
+    deviceType = devices.hasOwnProperty(protocol.substring(0, 4))
+      ? devices[protocol.substring(0, 4)]
+      : null
+    deviceVersion = parseInt(protocol.substring(4, 8), 16)
   } else {
     deviceType = devices.hasOwnProperty(protocol.substring(0, 2))
       ? devices[protocol.substring(0, 2)]
@@ -528,7 +556,7 @@ const getHoursForHourmeter = hourmeter => {
 /*
   Returns the dBm signal strength
 */
-const getSignalStrength = (networkType, value) => {
+const getSignalStrength = (networkType, value, hexValue=false) => {
   if (value === 99) {
     return null
   }
@@ -543,11 +571,15 @@ const getSignalStrength = (networkType, value) => {
   } else if (networkType === 'GSM') {
     calc = value - 110
     dBm = calc < -110 ? 0 : calc > -47 ? 100 : calc
+  } else if (networkType === 'GPS') {
+    if (hexValue) {
+      return gpsSignalStrength[value.toString()]
+    } else {
+      return null
+    }
   } else {
-    dBm = null
+    return null
   }
-
-  return dBm
 }
 
 /*
@@ -1761,6 +1793,16 @@ const getAlarm = (command, report, extra = false) => {
     }
 
 
+  } else if (command === 'GSENSOR') {
+    return {
+      type: 'Motion',
+      message: messages[command][report]
+    }
+  } else if (command === 'LIGHT') {
+    return {
+      type: 'Light',
+      message: messages[command]
+    }
   } else {
     return {
       type: command,
@@ -1886,10 +1928,12 @@ const parseDate = date => {
 module.exports = {
   langs: langs,
   patterns: patterns,
+  nackCauses: nackCauses,
   OBDIIProtocols: OBDIIProtocols,
   states: states,
   uartDeviceTypes: uartDeviceTypes,
   networkTypes: networkTypes,
+  gpsSignalStrength: gpsSignalStrength,
   externalGPSAntennaOptions: externalGPSAntennaOptions,
   peerRoles: peerRoles,
   peerAddressesTypes: peerAddressesTypes,
