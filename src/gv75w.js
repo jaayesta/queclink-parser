@@ -125,8 +125,14 @@ const parse = raw => {
           ada: null,
           adb: null
         },
-        mcc: parsedData[14] !== '' ? utils.latamMcc[parseInt(parsedData[14], 10)] : null,
-        mnc: parsedData[15] !== '' ? utils.getMNC(parsedData[14], parsedData[15]) : null,
+        mcc:
+          parsedData[14] !== ''
+            ? utils.latamMcc[parseInt(parsedData[14], 10)]
+            : null,
+        mnc:
+          parsedData[15] !== ''
+            ? utils.getMNC(parsedData[14], parsedData[15])
+            : null,
         lac: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
         cid: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
         odometer:
@@ -235,8 +241,14 @@ const parse = raw => {
         ada: null,
         adb: null
       },
-      mcc: parsedData[15] !== '' ? utils.latamMcc[parseInt(parsedData[15], 10)] : null,
-      mnc: parsedData[16] !== '' ? utils.getMNC(parsedData[15], parsedData[16]) : null,
+      mcc:
+        parsedData[15] !== ''
+          ? utils.latamMcc[parseInt(parsedData[15], 10)]
+          : null,
+      mnc:
+        parsedData[16] !== ''
+          ? utils.getMNC(parsedData[15], parsedData[16])
+          : null,
       lac: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
       cid: parsedData[18] !== '' ? parseInt(parsedData[18], 16) : null,
       odometer:
@@ -494,8 +506,14 @@ const parse = raw => {
         ada: null,
         adb: null
       },
-      mcc: parsedData[14] !== '' ? utils.latamMcc[parseInt(parsedData[14], 10)] : null,
-      mnc: parsedData[15] !== '' ? utils.getMNC(parsedData[14], parsedData[15]) : null,
+      mcc:
+        parsedData[14] !== ''
+          ? utils.latamMcc[parseInt(parsedData[14], 10)]
+          : null,
+      mnc:
+        parsedData[15] !== ''
+          ? utils.getMNC(parsedData[14], parsedData[15])
+          : null,
       lac: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
       cid: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
       odometer: parsedData[19] !== '' ? parseFloat(parsedData[19]) : null,
@@ -562,8 +580,14 @@ const parse = raw => {
             ? parseFloat(parsedData[index + 3]) / 1000
             : null
       },
-      mcc: parsedData[15] !== '' ? utils.latamMcc[parseInt(parsedData[15], 10)] : null,
-      mnc: parsedData[16] !== '' ? utils.getMNC(parsedData[15], parsedData[16]) : null,
+      mcc:
+        parsedData[15] !== ''
+          ? utils.latamMcc[parseInt(parsedData[15], 10)]
+          : null,
+      mnc:
+        parsedData[16] !== ''
+          ? utils.getMNC(parsedData[15], parsedData[16])
+          : null,
       lac: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
       cid: parsedData[18] !== '' ? parseInt(parsedData[18], 16) : null,
       odometer: parsedData[index] !== '' ? parseFloat(parsedData[index]) : null,
@@ -597,8 +621,14 @@ const parse = raw => {
         ada: null,
         adb: null
       },
-      mcc: parsedData[14] !== '' ? utils.latamMcc[parseInt(parsedData[14], 10)] : null,
-      mnc: parsedData[15] !== '' ? utils.getMNC(parsedData[14], parsedData[15]) : null,
+      mcc:
+        parsedData[14] !== ''
+          ? utils.latamMcc[parseInt(parsedData[14], 10)]
+          : null,
+      mnc:
+        parsedData[15] !== ''
+          ? utils.getMNC(parsedData[14], parsedData[15])
+          : null,
       lac: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
       cid: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
       odometer: parsedData[19] !== '' ? parseFloat(parsedData[19]) : null,
@@ -663,8 +693,14 @@ const parse = raw => {
         ada: null,
         adb: null
       },
-      mcc: parsedData[11] !== '' ? utils.latamMcc[parseInt(parsedData[11], 10)] : null,
-      mnc: parsedData[12] !== '' ? utils.getMNC(parsedData[11], parsedData[12]) : null,
+      mcc:
+        parsedData[11] !== ''
+          ? utils.latamMcc[parseInt(parsedData[11], 10)]
+          : null,
+      mnc:
+        parsedData[12] !== ''
+          ? utils.getMNC(parsedData[11], parsedData[12])
+          : null,
       lac: parsedData[13] !== '' ? parseInt(parsedData[13], 16) : null,
       cid: parsedData[14] !== '' ? parseInt(parsedData[14], 16) : null,
       odometer: null,
@@ -693,8 +729,14 @@ const parse = raw => {
         ada: null,
         adb: null
       },
-      mcc: parsedData[12] !== '' ? utils.latamMcc[parseInt(parsedData[12], 10)] : null,
-      mnc: parsedData[13] !== '' ? utils.getMNC(parsedData[12], parsedData[13]) : null,
+      mcc:
+        parsedData[12] !== ''
+          ? utils.latamMcc[parseInt(parsedData[12], 10)]
+          : null,
+      mnc:
+        parsedData[13] !== ''
+          ? utils.getMNC(parsedData[12], parsedData[13])
+          : null,
       lac: parsedData[14] !== '' ? parseInt(parsedData[14], 16) : null,
       cid: parsedData[15] !== '' ? parseInt(parsedData[15], 16) : null,
       odometer: null,
@@ -727,8 +769,14 @@ const parse = raw => {
         ada: null,
         adb: null
       },
-      mcc: parsedData[12] !== '' ? utils.latamMcc[parseInt(parsedData[12], 10)] : null,
-      mnc: parsedData[13] !== '' ? utils.getMNC(parsedData[12], parsedData[13]) : null,
+      mcc:
+        parsedData[12] !== ''
+          ? utils.latamMcc[parseInt(parsedData[12], 10)]
+          : null,
+      mnc:
+        parsedData[13] !== ''
+          ? utils.getMNC(parsedData[12], parsedData[13])
+          : null,
       lac: parsedData[14] !== '' ? parseInt(parsedData[14], 16) : null,
       cid: parsedData[15] !== '' ? parseInt(parsedData[15], 16) : null,
       odometer: null,
@@ -757,8 +805,14 @@ const parse = raw => {
         ada: null,
         adb: null
       },
-      mcc: parsedData[12] !== '' ? utils.latamMcc[parseInt(parsedData[12], 10)] : null,
-      mnc: parsedData[13] !== '' ? utils.getMNC(parsedData[12], parsedData[13]) : null,
+      mcc:
+        parsedData[12] !== ''
+          ? utils.latamMcc[parseInt(parsedData[12], 10)]
+          : null,
+      mnc:
+        parsedData[13] !== ''
+          ? utils.getMNC(parsedData[12], parsedData[13])
+          : null,
       lac: parsedData[14] !== '' ? parseInt(parsedData[14], 16) : null,
       cid: parsedData[15] !== '' ? parseInt(parsedData[15], 16) : null,
       odometer: null,
@@ -787,8 +841,14 @@ const parse = raw => {
         ada: null,
         adb: null
       },
-      mcc: parsedData[12] !== '' ? utils.latamMcc[parseInt(parsedData[12], 10)] : null,
-      mnc: parsedData[13] !== '' ? utils.getMNC(parsedData[12], parsedData[13]) : null,
+      mcc:
+        parsedData[12] !== ''
+          ? utils.latamMcc[parseInt(parsedData[12], 10)]
+          : null,
+      mnc:
+        parsedData[13] !== ''
+          ? utils.getMNC(parsedData[12], parsedData[13])
+          : null,
       lac: parsedData[14] !== '' ? parseInt(parsedData[14], 16) : null,
       cid: parsedData[15] !== '' ? parseInt(parsedData[15], 16) : null,
       odometer: parsedData[18] !== '' ? parseFloat(parsedData[18]) : null,
@@ -820,8 +880,14 @@ const parse = raw => {
         ada: null,
         adb: null
       },
-      mcc: parsedData[13] !== '' ? utils.latamMcc[parseInt(parsedData[13], 10)] : null,
-      mnc: parsedData[14] !== '' ? utils.getMNC(parsedData[13], parsedData[14]) : null,
+      mcc:
+        parsedData[13] !== ''
+          ? utils.latamMcc[parseInt(parsedData[13], 10)]
+          : null,
+      mnc:
+        parsedData[14] !== ''
+          ? utils.getMNC(parsedData[13], parsedData[14])
+          : null,
       lac: parsedData[15] !== '' ? parseInt(parsedData[15], 16) : null,
       cid: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
       odometer: parsedData[18] !== '' ? parseFloat(parsedData[18]) : null,
@@ -854,8 +920,14 @@ const parse = raw => {
         ada: null,
         adb: null
       },
-      mcc: parsedData[13] !== '' ? utils.latamMcc[parseInt(parsedData[13], 10)] : null,
-      mnc: parsedData[14] !== '' ? utils.getMNC(parsedData[13], parsedData[14]) : null,
+      mcc:
+        parsedData[13] !== ''
+          ? utils.latamMcc[parseInt(parsedData[13], 10)]
+          : null,
+      mnc:
+        parsedData[14] !== ''
+          ? utils.getMNC(parsedData[13], parsedData[14])
+          : null,
       lac: parsedData[15] !== '' ? parseInt(parsedData[15], 16) : null,
       cid: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
       odometer: parsedData[18] !== '' ? parseFloat(parsedData[18]) : null,
@@ -885,8 +957,14 @@ const parse = raw => {
         ada: null,
         adb: null
       },
-      mcc: parsedData[12] !== '' ? utils.latamMcc[parseInt(parsedData[12], 10)] : null,
-      mnc: parsedData[13] !== '' ? utils.getMNC(parsedData[12], parsedData[13]) : null,
+      mcc:
+        parsedData[12] !== ''
+          ? utils.latamMcc[parseInt(parsedData[12], 10)]
+          : null,
+      mnc:
+        parsedData[13] !== ''
+          ? utils.getMNC(parsedData[12], parsedData[13])
+          : null,
       lac: parsedData[14] !== '' ? parseInt(parsedData[14], 16) : null,
       cid: parsedData[15] !== '' ? parseInt(parsedData[15], 16) : null,
       odometer: null,
@@ -916,8 +994,14 @@ const parse = raw => {
         ada: null,
         adb: null
       },
-      mcc: parsedData[15] !== '' ? utils.latamMcc[parseInt(parsedData[15], 10)] : null,
-      mnc: parsedData[16] !== '' ? utils.getMNC(parsedData[15], parsedData[16]) : null,
+      mcc:
+        parsedData[15] !== ''
+          ? utils.latamMcc[parseInt(parsedData[15], 10)]
+          : null,
+      mnc:
+        parsedData[16] !== ''
+          ? utils.getMNC(parsedData[15], parsedData[16])
+          : null,
       lac: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
       cid: parsedData[18] !== '' ? parseInt(parsedData[18], 16) : null,
       odometer: null,
@@ -947,8 +1031,14 @@ const parse = raw => {
         ada: null,
         adb: null
       },
-      mcc: parsedData[15] !== '' ? utils.latamMcc[parseInt(parsedData[15], 10)] : null,
-      mnc: parsedData[16] !== '' ? utils.getMNC(parsedData[15], parsedData[16]) : null,
+      mcc:
+        parsedData[15] !== ''
+          ? utils.latamMcc[parseInt(parsedData[15], 10)]
+          : null,
+      mnc:
+        parsedData[16] !== ''
+          ? utils.getMNC(parsedData[15], parsedData[16])
+          : null,
       lac: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
       cid: parsedData[18] !== '' ? parseInt(parsedData[18], 16) : null,
       odometer: parsedData[20] !== '' ? parseFloat(parsedData[20]) : null,
@@ -990,8 +1080,14 @@ const parse = raw => {
         ada: null,
         adb: null
       },
-      mcc: parsedData[38] !== '' ? utils.latamMcc[parseInt(parsedData[38], 10)] : null,
-      mnc: parsedData[39] !== '' ? utils.getMNC(parsedData[38], parsedData[39]) : null,
+      mcc:
+        parsedData[38] !== ''
+          ? utils.latamMcc[parseInt(parsedData[38], 10)]
+          : null,
+      mnc:
+        parsedData[39] !== ''
+          ? utils.getMNC(parsedData[38], parsedData[39])
+          : null,
       lac: parsedData[40] !== '' ? parseInt(parsedData[40], 16) : null,
       cid: parsedData[41] !== '' ? parseInt(parsedData[41], 16) : null,
       odometer: null,
@@ -1108,8 +1204,14 @@ const parse = raw => {
           ada: null,
           adb: null
         },
-        mcc: parsedData[15] !== '' ? utils.latamMcc[parseInt(parsedData[15], 10)] : null,
-        mnc: parsedData[16] !== '' ? utils.getMNC(parsedData[15], parsedData[16]) : null,
+        mcc:
+          parsedData[15] !== ''
+            ? utils.latamMcc[parseInt(parsedData[15], 10)]
+            : null,
+        mnc:
+          parsedData[16] !== ''
+            ? utils.getMNC(parsedData[15], parsedData[16])
+            : null,
         lac: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
         cid: parsedData[18] !== '' ? parseInt(parsedData[18], 16) : null,
         odometer: null,
@@ -1234,8 +1336,14 @@ const parse = raw => {
           ada: null,
           adb: null
         },
-        mcc: parsedData[16] !== '' ? utils.latamMcc[parseInt(parsedData[16], 10)] : null,
-        mnc: parsedData[17] !== '' ? utils.getMNC(parsedData[16], parsedData[17]) : null,
+        mcc:
+          parsedData[16] !== ''
+            ? utils.latamMcc[parseInt(parsedData[16], 10)]
+            : null,
+        mnc:
+          parsedData[17] !== ''
+            ? utils.getMNC(parsedData[16], parsedData[17])
+            : null,
         lac: parsedData[18] !== '' ? parseInt(parsedData[18], 16) : null,
         cid: parsedData[19] !== '' ? parseInt(parsedData[19], 16) : null,
         odometer: null,
@@ -1265,8 +1373,14 @@ const parse = raw => {
         ada: null,
         adb: null
       },
-      mcc: parsedData[13] !== '' ? utils.latamMcc[parseInt(parsedData[13], 10)] : null,
-      mnc: parsedData[14] !== '' ? utils.getMNC(parsedData[13], parsedData[14]) : null,
+      mcc:
+        parsedData[13] !== ''
+          ? utils.latamMcc[parseInt(parsedData[13], 10)]
+          : null,
+      mnc:
+        parsedData[14] !== ''
+          ? utils.getMNC(parsedData[13], parsedData[14])
+          : null,
       lac: parsedData[15] !== '' ? parseInt(parsedData[15], 16) : null,
       cid: parsedData[16] !== '' ? parseInt(parsedData[16], 16) : null,
       odometer: null,

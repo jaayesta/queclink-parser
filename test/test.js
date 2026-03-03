@@ -112,8 +112,12 @@ describe('queclink-parzer', () => {
       expect(data.voltage.inputCharge).to.be.a('null')
       expect(data.voltage.ada).to.be.a('null')
       expect(data.voltage.adb).to.be.a('null')
-      expect(data.mcc).to.eql(460)
-      expect(data.mnc).to.eql(0)
+      expect(data.mcc).to.eql(undefined)
+      expect(data.mnc).to.eql({
+        country: 'Desconocido',
+        mnc: 0,
+        operator: 'Desconocido'
+      })
       expect(data.lac).to.eql(6360)
       expect(data.cid).to.eql(24897)
       expect(data.odometer).to.eql(2000)
@@ -162,8 +166,12 @@ describe('queclink-parzer', () => {
       expect(data.voltage.ada).to.eql(2.788)
       expect(data.voltage.adb).to.eql(0.702)
       expect(data.voltage.adc).to.eql(0.137)
-      expect(data.mcc).to.eql(730)
-      expect(data.mnc).to.eql(2)
+      expect(data.mcc).to.eql('Chile')
+      expect(data.mnc).to.eql({
+        country: 'Chile',
+        mnc: 2,
+        operator: 'Movistar'
+      })
       expect(data.lac).to.eql(29712)
       expect(data.cid).to.eql(51081)
       expect(data.odometer).to.eql(0)
@@ -206,8 +214,12 @@ describe('queclink-parzer', () => {
       expect(data.voltage.battery).to.eql(121.354335)
       expect(data.voltage.inputCharge).to.be.a('null')
       expect(data.voltage.ada).to.eql(0.092)
-      expect(data.mcc).to.eql(460)
-      expect(data.mnc).to.eql(0)
+      expect(data.mcc).to.eql(undefined)
+      expect(data.mnc).to.eql({
+        country: 'Desconocido',
+        mnc: 0,
+        operator: 'Desconocido'
+      })
       expect(data.lac).to.eql(6360)
       expect(data.cid).to.eql(24897)
       expect(data.odometer).to.eql(0)
@@ -249,8 +261,12 @@ describe('queclink-parzer', () => {
       expect(data.voltage.battery).to.eql(121.354335)
       expect(data.voltage.inputCharge).to.be.a('null')
       expect(data.voltage.ada).to.eql(0.092)
-      expect(data.mcc).to.eql(460)
-      expect(data.mnc).to.eql(0)
+      expect(data.mcc).to.eql(undefined)
+      expect(data.mnc).to.eql({
+        country: 'Desconocido',
+        mnc: 0,
+        operator: 'Desconocido'
+      })
       expect(data.lac).to.eql(6360)
       expect(data.cid).to.eql(24897)
       expect(data.odometer).to.eql(0)
@@ -342,7 +358,7 @@ describe('queclink-parzer', () => {
         }
       }
       const raw = queclink.parseCommand(data)
-      expect(raw).to.eql('AT+GTOUT=101010,1,0,0,1,0,0,0,0,0,1,0,0,0,0,,,1010$')
+      expect(raw).to.eql('AT+GTOUT=101010,1,0,0,1,0,0,0,0,0,,,,,0,,,1010$')
     })
     it('should return raw di 1 on command GMT serie', () => {
       const data = {
@@ -407,7 +423,7 @@ describe('queclink-parzer', () => {
         }
       }
       const raw = queclink.parseCommand(data)
-      expect(raw).to.eql('AT+GTOUT=101010,1,0,0,0,0,0,0,0,0,1,0,0,0,0,,,1010$')
+      expect(raw).to.eql('AT+GTOUT=101010,1,0,0,0,0,0,0,0,0,,,,,0,,,1010$')
     })
     it('should return raw di off command GMT serie', () => {
       const data = {
@@ -451,7 +467,7 @@ describe('queclink-parzer', () => {
         }
       }
       const raw = queclink.parseCommand(data)
-      expect(raw).to.eql('AT+GTOUT=101010,0,0,0,1,15,1,0,0,0,0,0,0,0,0,,,1010$')
+      expect(raw).to.eql('AT+GTOUT=101010,0,0,0,1,15,1,0,0,0,0,0,0,,0,,,1010$')
     })
 
     it('should return raw clear mem command GV serie', () => {

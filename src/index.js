@@ -365,7 +365,7 @@ const parseCommand = data => {
     const alarmId = data.alarmId || 0
     const sensorId = data.sensorId || '0000000000000000'
     const index = data.sensor_index || 2
-    const sensorType = utils.bleTempHumSensors[data.sensor_type]
+    const sensorType = utils.bleTempHumSensors[data.sensor_type] || '0'
     const minTemp = data.minTemp || 0
     const maxTemp = data.maxTemp || 0
     if (sensorType === '0') {

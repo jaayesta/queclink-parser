@@ -56,7 +56,7 @@ const devices = {
   '6E': 'GV310LAU',
   '802004': 'GV58LAU',
   '802006': 'GV57CG',
-  'C301': 'GL533CG'
+  C301: 'GL533CG'
 }
 
 /*
@@ -244,11 +244,11 @@ const bluetoothModels = {
   BLE Temp & Hum sensors
 */
 const bleTempHumSensors = {
-  'AC100': '0',
-  'WTH300': '2',
+  AC100: '0',
+  WTH300: '2',
   'RHT ELA': '3',
-  'WMS301': '4',
-  'WTH301': '5'
+  WMS301: '4',
+  WTH301: '5'
 }
 
 /*
@@ -342,7 +342,6 @@ const latamMcc = {
   748: 'Uruguay',
   default: 'Desconocido'
 }
-
 
 /*
   Gets the Queclink Device Type
@@ -556,7 +555,7 @@ const getHoursForHourmeter = hourmeter => {
 /*
   Returns the dBm signal strength
 */
-const getSignalStrength = (networkType, value, hexValue=false) => {
+const getSignalStrength = (networkType, value, hexValue = false) => {
   if (value === 99) {
     return null
   }
@@ -580,6 +579,7 @@ const getSignalStrength = (networkType, value, hexValue=false) => {
   } else {
     return null
   }
+  return dBm
 }
 
 /*
@@ -613,77 +613,104 @@ const getMNC = (countryData, opData) => {
   let mnc = parseInt(opData, 10)
   let operator
   if (mcc === 716) {
-    operator = (mnc === 6) ? 'Movistar' :
-      (mnc === 7) ? 'Nextel' :
-        (mnc === 10) ? 'Claro' :
-          (mnc === 15) ? 'Viettel' :
-            (mnc === 17) ? 'Entel' :
-              (mnc === 20) ? 'Cuy Mobile (Claro)' :
-                'Desconocido'
+    operator =
+      mnc === 6
+        ? 'Movistar'
+        : mnc === 7
+          ? 'Nextel'
+          : mnc === 10
+            ? 'Claro'
+            : mnc === 15
+              ? 'Viettel'
+              : mnc === 17
+                ? 'Entel'
+                : mnc === 20 ? 'Cuy Mobile (Claro)' : 'Desconocido'
   } else if (mcc === 722) {
-    operator = (mnc === 1) ? 'Tuenti' :
-      (mnc === 10) ? 'Movicom' :
-        (mnc === 20) ? 'Nextel' :
-          (mnc === 34) ? 'Telecom Personal' :
-            ([310, 320, 330].includes(mnc)) ? 'Claro' :
-              'Desconocido'
+    operator =
+      mnc === 1
+        ? 'Tuenti'
+        : mnc === 10
+          ? 'Movicom'
+          : mnc === 20
+            ? 'Nextel'
+            : mnc === 34
+              ? 'Telecom Personal'
+              : [310, 320, 330].includes(mnc) ? 'Claro' : 'Desconocido'
   } else if (mcc === 724) {
     // Incomplete
-    operator = ([2, 3, 4].includes(mnc)) ? 'TIM' :
-      ([5, 6, 12].includes(mnc)) ? 'Claro' :
-        'Otra'
+    operator = [2, 3, 4].includes(mnc)
+      ? 'TIM'
+      : [5, 6, 12].includes(mnc) ? 'Claro' : 'Otra'
   } else if (mcc === 730) {
-    operator = ([1, 10].includes(mnc)) ? 'Entel' :
-      ([2, 7].includes(mnc)) ? 'Movistar' :
-        ([3, 23].includes(mnc)) ? 'Claro' :
-          (mnc === 8) ? 'VTR (Claro)' :
-            (mnc === 9) ? 'WOM' :
-              ([14, 20, 21, 28].includes(mnc)) ? 'Otro' :
-                'Desconocido'
+    operator = [1, 10].includes(mnc)
+      ? 'Entel'
+      : [2, 7].includes(mnc)
+        ? 'Movistar'
+        : [3, 23].includes(mnc)
+          ? 'Claro'
+          : mnc === 8
+            ? 'VTR (Claro)'
+            : mnc === 9
+              ? 'WOM'
+              : [14, 20, 21, 28].includes(mnc) ? 'Otro' : 'Desconocido'
   } else if (mcc === 732) {
-    operator = (mnc === 1) ? 'Telecom' :
-      (mnc === 2) ? 'Edatel' :
-        (mnc === 101) ? 'Claro' :
-          (mnc === 103) ? 'Colombia Móvil' :
-            ([102, 123].includes(mnc)) ? 'Movistar' :
-              (mnc === 360) ? 'WOM' :
-                'Desconocido'
+    operator =
+      mnc === 1
+        ? 'Telecom'
+        : mnc === 2
+          ? 'Edatel'
+          : mnc === 101
+            ? 'Claro'
+            : mnc === 103
+              ? 'Colombia Móvil'
+              : [102, 123].includes(mnc)
+                ? 'Movistar'
+                : mnc === 360 ? 'WOM' : 'Desconocido'
   } else if (mcc === 736) {
-    operator = (mnc === 1) ? 'Viva Bolivia' :
-      (mnc === 2) ? 'Entel' :
-        (mnc === 3) ? 'Telecel' :
-          (mnc === 4) ? 'Cotas' :
-            (mnc === 5) ? 'Comteco' :
-              'Desconocido'
+    operator =
+      mnc === 1
+        ? 'Viva Bolivia'
+        : mnc === 2
+          ? 'Entel'
+          : mnc === 3
+            ? 'Telecel'
+            : mnc === 4 ? 'Cotas' : mnc === 5 ? 'Comteco' : 'Desconocido'
   } else if (mcc === 740) {
-    operator = (mnc === 1) ? 'Otecel (Movistar)' :
-      (mnc === 2) ? 'Conecel (Claro)' :
-        (mnc === 0) ? 'Telecsa (CNT' :
-          'Desconocido'
+    operator =
+      mnc === 1
+        ? 'Otecel (Movistar)'
+        : mnc === 2
+          ? 'Conecel (Claro)'
+          : mnc === 0 ? 'Telecsa (CNT' : 'Desconocido'
   } else if (mcc === 744) {
-    operator = (mnc === 1) ? 'Hola Paraguay' :
-      (mnc === 2) ? 'AMX Paraguay' :
-        (mnc === 3) ? 'Comunicaciones Privadas' :
-          (mnc === 4) ? 'Telefónica Celular del Paraguay' :
-            (mnc === 5) ? 'Núcleo' :
-              'Desconocido'
+    operator =
+      mnc === 1
+        ? 'Hola Paraguay'
+        : mnc === 2
+          ? 'AMX Paraguay'
+          : mnc === 3
+            ? 'Comunicaciones Privadas'
+            : mnc === 4
+              ? 'Telefónica Celular del Paraguay'
+              : mnc === 5 ? 'Núcleo' : 'Desconocido'
   } else if (mcc === 748) {
-    operator = ([0, 1].includes(mnc)) ? 'Ancel' :
-      (mnc === 7) ? 'Movistar' :
-        (mnc === 0) ? 'AMX Wireless' :
-          'Desconocido'
+    operator = [0, 1].includes(mnc)
+      ? 'Ancel'
+      : mnc === 7 ? 'Movistar' : mnc === 0 ? 'AMX Wireless' : 'Desconocido'
   } else {
     operator = 'Desconocido'
   }
   return {
-    country: latamMcc[mcc] || latamMcc.default, mnc: mnc, operator: operator
+    country: latamMcc[mcc] || latamMcc.default,
+    mnc: mnc,
+    operator: operator
   }
 }
 
 /*
   Hectometer to Kilometer
 */
-const hToKm = (data) => {
+const hToKm = data => {
   let h = parseFloat(data.slice(1))
   return parseFloat((h * 0.1).toFixed(2))
 }
@@ -694,7 +721,9 @@ const hToKm = (data) => {
 const parseCanData = (data, key) => {
   switch (key) {
     case 'ignitionKey':
-      return (data === '0' ? 'ignition_off' : data === '1' ? 'ignition_on' : data === '2' ? 'engine_on' : null)
+      return data === '0'
+        ? 'ignition_off'
+        : data === '1' ? 'ignition_on' : data === '2' ? 'engine_on' : null
     case 'totalDistance':
       if (data.slice(0, 1) === 'H') {
         return hToKm(data)
@@ -728,9 +757,10 @@ const parseCanData = (data, key) => {
   Get CANbus data
 */
 const getCanData = (parsedData, ix, type) => {
-  let canAppendMask = parsedData[ix + 1] !== ''
-    ? nHexDigit(hex2bin(parsedData[ix + 1]), 32)
-    : null
+  let canAppendMask =
+    parsedData[ix + 1] !== ''
+      ? nHexDigit(hex2bin(parsedData[ix + 1]), 32)
+      : null
   if (canAppendMask === 0) {
     return {}
   }
@@ -769,33 +799,36 @@ const getCanData = (parsedData, ix, type) => {
         .join('')
       : '00000000000000000000000000000000'
 
-  let repExpMask = canAppendMask[2] === '1' ? {
-    raw: parsedData[canxIx] ? parsedData[canxIx] : null,
-    adBlueLevel: canExpansionMask[0] === '1',
-    axleWeight1: canExpansionMask[1] === '1',
-    axleWeight3: canExpansionMask[2] === '1',
-    axleWeight4: canExpansionMask[3] === '1',
-    tachographOverspeedSignal: canExpansionMask[4] === '1',
-    tachographVehicleMotionSignal: canExpansionMask[5] === '1',
-    tachographDrivingDirection: canExpansionMask[6] === '1',
-    analogInputValue: canExpansionMask[7] === '1',
-    engineBrakingFactor: canExpansionMask[8] === '1',
-    pedalBrakingFactor: canExpansionMask[9] === '1',
-    totalAcceleratorKickDown: canExpansionMask[10] === '1',
-    totalEffectiveEngineSpeedTime: canExpansionMask[11] === '1',
-    totalCruiseControlTime: canExpansionMask[12] === '1',
-    totalAcceleratorKickDownTime: canExpansionMask[13] === '1',
-    totalBrakeApplications: canExpansionMask[14] === '1',
-    tachographDriver1Card: canExpansionMask[15] === '1',
-    tachographDriver2Card: canExpansionMask[16] === '1',
-    tachographDriver1Name: canExpansionMask[17] === '1',
-    tachographDriver2Name: canExpansionMask[18] === '1',
-    registrationNumber: canExpansionMask[19] === '1',
-    expansionInformation: canExpansionMask[20] === '1',
-    rapidBrakings: canExpansionMask[21] === '1',
-    rapidAccelerations: canExpansionMask[22] === '1',
-    engineTorque: canExpansionMask[23] === '1'
-  } : null
+  let repExpMask =
+    canAppendMask[2] === '1'
+      ? {
+        raw: parsedData[canxIx] ? parsedData[canxIx] : null,
+        adBlueLevel: canExpansionMask[0] === '1',
+        axleWeight1: canExpansionMask[1] === '1',
+        axleWeight3: canExpansionMask[2] === '1',
+        axleWeight4: canExpansionMask[3] === '1',
+        tachographOverspeedSignal: canExpansionMask[4] === '1',
+        tachographVehicleMotionSignal: canExpansionMask[5] === '1',
+        tachographDrivingDirection: canExpansionMask[6] === '1',
+        analogInputValue: canExpansionMask[7] === '1',
+        engineBrakingFactor: canExpansionMask[8] === '1',
+        pedalBrakingFactor: canExpansionMask[9] === '1',
+        totalAcceleratorKickDown: canExpansionMask[10] === '1',
+        totalEffectiveEngineSpeedTime: canExpansionMask[11] === '1',
+        totalCruiseControlTime: canExpansionMask[12] === '1',
+        totalAcceleratorKickDownTime: canExpansionMask[13] === '1',
+        totalBrakeApplications: canExpansionMask[14] === '1',
+        tachographDriver1Card: canExpansionMask[15] === '1',
+        tachographDriver2Card: canExpansionMask[16] === '1',
+        tachographDriver1Name: canExpansionMask[17] === '1',
+        tachographDriver2Name: canExpansionMask[18] === '1',
+        registrationNumber: canExpansionMask[19] === '1',
+        expansionInformation: canExpansionMask[20] === '1',
+        rapidBrakings: canExpansionMask[21] === '1',
+        rapidAccelerations: canExpansionMask[22] === '1',
+        engineTorque: canExpansionMask[23] === '1'
+      }
+      : null
 
   let adbIx = canxIx + parseInt(canExpansionMask[0])
   let ax1Ix = adbIx + parseInt(canExpansionMask[1])
@@ -824,35 +857,67 @@ const getCanData = (parsedData, ix, type) => {
 
   // Logic for CAN data
   let gnnsIx = etqIx + 2 + parseInt(canAppendMask[1])
-  let gsmIx = canAppendMask[1] === '1' ? gnnsIx + parseInt(canAppendMask[0]) + 6 : gnnsIx + parseInt(canAppendMask[0])
+  let gsmIx =
+    canAppendMask[1] === '1'
+      ? gnnsIx + parseInt(canAppendMask[0]) + 6
+      : gnnsIx + parseInt(canAppendMask[0])
 
   let moreIx
   let gnnsData = null
   let gsmData = null
   if (type === 'GTCAN') {
     moreIx = canAppendMask[0] === '1' ? gsmIx + 4 : gsmIx
-    gnnsData = canAppendMask[1] === '1' ? {
-      hdop: parsedData[gnnsIx] ? parseFloat(parsedData[gnnsIx]) : null,
-      speed: parsedData[gnnsIx + 1] ? parseFloat(parsedData[gnnsIx + 1]) : null,
-      azimuth: parsedData[gnnsIx + 2] ? parseFloat(parsedData[gnnsIx + 2]) : null,
-      altitude: parsedData[gnnsIx + 3] ? parseFloat(parsedData[gnnsIx + 3]) : null,
-      loc: {
-        type: 'Point',
-        coordinates: [parseFloat(parsedData[gnnsIx + 4]), parseFloat(parsedData[gnnsIx + 5])]
-      },
-      gpsStatus: checkGps(
-        parseFloat(parsedData[gnnsIx + 4]),
-        parseFloat(parsedData[gnnsIx + 5])
-      ),
-      datetime: parsedData[gnnsIx + 6] ? parseDate(parsedData[gnnsIx + 6]) : null,
-    } : null
+    gnnsData =
+      canAppendMask[1] === '1'
+        ? {
+          hdop: parsedData[gnnsIx] ? parseFloat(parsedData[gnnsIx]) : null,
+          speed: parsedData[gnnsIx + 1]
+            ? parseFloat(parsedData[gnnsIx + 1])
+            : null,
+          azimuth: parsedData[gnnsIx + 2]
+            ? parseFloat(parsedData[gnnsIx + 2])
+            : null,
+          altitude: parsedData[gnnsIx + 3]
+            ? parseFloat(parsedData[gnnsIx + 3])
+            : null,
+          loc: {
+            type: 'Point',
+            coordinates: [
+              parseFloat(parsedData[gnnsIx + 4]),
+              parseFloat(parsedData[gnnsIx + 5])
+            ]
+          },
+          gpsStatus: checkGps(
+            parseFloat(parsedData[gnnsIx + 4]),
+            parseFloat(parsedData[gnnsIx + 5])
+          ),
+          datetime: parsedData[gnnsIx + 6]
+            ? parseDate(parsedData[gnnsIx + 6])
+            : null
+        }
+        : null
 
-    gsmData = canAppendMask[0] === '1' ? {
-      mcc: parsedData[gsmIx] !== '' ? latamMcc[parseInt(parsedData[gsmIx], 10)] : null,
-      mnc: parsedData[gsmIx + 1] !== '' ? getMNC(parsedData[gsmIx], parsedData[gsmIx + 1]) : null,
-      lac: parsedData[gsmIx + 2] !== '' ? parseInt(parsedData[gsmIx + 2], 16) : null,
-      cid: parsedData[gsmIx + 3] !== '' ? parseInt(parsedData[gsmIx + 3], 16) : null
-    } : null
+    gsmData =
+      canAppendMask[0] === '1'
+        ? {
+          mcc:
+              parsedData[gsmIx] !== ''
+                ? latamMcc[parseInt(parsedData[gsmIx], 10)]
+                : null,
+          mnc:
+              parsedData[gsmIx + 1] !== ''
+                ? getMNC(parsedData[gsmIx], parsedData[gsmIx + 1])
+                : null,
+          lac:
+              parsedData[gsmIx + 2] !== ''
+                ? parseInt(parsedData[gsmIx + 2], 16)
+                : null,
+          cid:
+              parsedData[gsmIx + 3] !== ''
+                ? parseInt(parsedData[gsmIx + 3], 16)
+                : null
+        }
+        : null
   } else {
     moreIx = etqIx + 1
   }
@@ -920,132 +985,279 @@ const getCanData = (parsedData, ix, type) => {
         gnssInformation: canAppendMask[1] === '1',
         gsmInformation: canAppendMask[0] === '1'
       },
-      vin: canAppendMask[31] === '1' && parsedData[vinIx] ? parsedData[vinIx] : null,
-      ignitionKey: canAppendMask[30] === '1' && parsedData[ignIx] ? parseCanData(parsedData[ignIx], 'ignitionKey') : null,
-      totalDistance: canAppendMask[29] === '1' && parsedData[disIx] ? parseCanData(parsedData[disIx], 'totalDistance') : null,
-      totalDistanceUnit: canAppendMask[29] === '1' && parsedData[disIx] ? parsedData[disIx].slice(0, 1) === 'H' ? 'km' : 'I' : null,
-      fuelUsed: canAppendMask[28] === '1' && parsedData[fuelIx] ? parseFloat(parsedData[fuelIx]) : null,
-      speed: canAppendMask[27] === '1' && parsedData[spdIx] ? parseFloat(parsedData[spdIx]) : null,
-      rpm: canAppendMask[26] === '1' && parsedData[rpmIx] ? parseInt(parsedData[rpmIx], 10) : null,
-      engineCoolantTemp:
-        canAppendMask[25] === '1' && parsedData[engcIx] ? parseInt(parsedData[engcIx], 10) : null,
-      fuelConsumption: canAppendMask[24] === '1' && parsedData[fuelcIx] ? parseCanData(parsedData[fuelcIx], 'fuelConsumption') : null,
-      fuelLevel: canAppendMask[23] === '1' && parsedData[fuellIx] ? parseFloat(parsedData[fuellIx].slice(1)) : null,
-      fuelLevelUnit: canAppendMask[23] === '1' && parsedData[fuellIx] ? parsedData[fuellIx].slice(0, 1) === 'P' ? '%' : 'L' : null,
-      range: canAppendMask[22] === '1' && parsedData[rngIx] ? parseCanData(parsedData[rngIx], 'range') : null,
-      acceleratorPressure:
-        canAppendMask[21] === '1' && parsedData[accIx] ? parseFloat(parsedData[accIx]) : null,
-      engineHours: canAppendMask[20] === '1' && parsedData[enghIx] ? parseFloat(parsedData[enghIx]) : null,
-      drivingTime: canAppendMask[19] === '1' && parsedData[drvIx] ? parseFloat(parsedData[drvIx]) : null,
-      idleTime: canAppendMask[18] === '1' && parsedData[idltIx] ? parseFloat(parsedData[idltIx]) : null,
-      idleFuelUsed: canAppendMask[17] === '1' && parsedData[idlfIx] ? parseFloat(parsedData[idlfIx]) : null,
-      axleWeight2: canAppendMask[16] === '1' && parsedData[axlwIx] ? parseFloat(parsedData[axlwIx]) : null,
-      tachograph: canAppendMask[15] === '1' && parsedData[tacIx] ? {
-        raw: parsedData[tacIx] ? parsedData[tacIx] : null,
-        validDriverData: tachographBin ? tachographBin[7] === '1' : null,
-        insertedDriverCard: tachographBin ? tachographBin[5] === '1' : null,
-        driverWorkingState: tachographBin
-          ? dWorkingStates[parseInt(tachographBin.substring(3, 5), 2)]
+      vin:
+        canAppendMask[31] === '1' && parsedData[vinIx]
+          ? parsedData[vinIx]
           : null,
-        drivingTimeState: tachographBin
-          ? dTimeStates[parseInt(tachographBin.substring(5, 8), 2)]
-          : null
-      } : null,
-      indicators: canAppendMask[14] === '1' && inicatorsBin ? {
-        raw: inicatorsBin ? parsedData[indIx] : null,
-        lowFuel: inicatorsBin ? inicatorsBin[0] === '1' : null,
-        driverSeatbelt: inicatorsBin ? inicatorsBin[1] === '1' : null,
-        airConditioning: inicatorsBin ? inicatorsBin[2] === '1' : null,
-        cruiseControl: inicatorsBin ? inicatorsBin[3] === '1' : null,
-        brakePedal: inicatorsBin ? inicatorsBin[4] === '1' : null,
-        clutchPedal: inicatorsBin ? inicatorsBin[5] === '1' : null,
-        handbrake: inicatorsBin ? inicatorsBin[6] === '1' : null,
-        centralLock: inicatorsBin ? inicatorsBin[7] === '1' : null,
-        reverseGear: inicatorsBin ? inicatorsBin[8] === '1' : null,
-        runningLights: inicatorsBin ? inicatorsBin[9] === '1' : null,
-        lowBeams: inicatorsBin ? inicatorsBin[10] === '1' : null,
-        highBeams: inicatorsBin ? inicatorsBin[11] === '1' : null,
-        rearFogLights: inicatorsBin ? inicatorsBin[12] === '1' : null,
-        frontFogLights: inicatorsBin ? inicatorsBin[13] === '1' : null,
-        doors: inicatorsBin ? inicatorsBin[14] === '1' : null,
-        trunk: inicatorsBin ? inicatorsBin[15] === '1' : null
-      } : null,
-      lights: canAppendMask[13] === '1' && lights ? {
-        raw: lights ? parsedData[ligIx] : null,
-        running: lights ? lights[0] === '1' : null,
-        lowBeams: lights ? lights[1] === '1' : null,
-        frontFog: lights ? lights[2] === '1' : null,
-        rearFog: lights ? lights[3] === '1' : null,
-        hazard: lights ? lights[4] === '1' : null
-      } : null,
-      doors: canAppendMask[12] === '1' && doors ? {
-        raw: doors ? parsedData[doorIx] : null,
-        driver: doors ? doors[0] === '1' : null,
-        passenger: doors ? doors[1] === '1' : null,
-        rearLeft: doors ? doors[2] === '1' : null,
-        rearRight: doors ? doors[3] === '1' : null,
-        trunk: doors ? doors[4] === '1' : null,
-        hood: doors ? doors[5] === '1' : null
-      } : null,
-      overSpeedTime: canAppendMask[11] === '1' && parsedData[osptIx] ? parseFloat(parsedData[osptIx]) : null,
-      overSpeedEngineTime: canAppendMask[10] === '1' && parsedData[ospeIx] ? parseFloat(parsedData[ospeIx]) : null,
+      ignitionKey:
+        canAppendMask[30] === '1' && parsedData[ignIx]
+          ? parseCanData(parsedData[ignIx], 'ignitionKey')
+          : null,
+      totalDistance:
+        canAppendMask[29] === '1' && parsedData[disIx]
+          ? parseCanData(parsedData[disIx], 'totalDistance')
+          : null,
+      totalDistanceUnit:
+        canAppendMask[29] === '1' && parsedData[disIx]
+          ? parsedData[disIx].slice(0, 1) === 'H' ? 'km' : 'I'
+          : null,
+      fuelUsed:
+        canAppendMask[28] === '1' && parsedData[fuelIx]
+          ? parseFloat(parsedData[fuelIx])
+          : null,
+      speed:
+        canAppendMask[27] === '1' && parsedData[spdIx]
+          ? parseFloat(parsedData[spdIx])
+          : null,
+      rpm:
+        canAppendMask[26] === '1' && parsedData[rpmIx]
+          ? parseInt(parsedData[rpmIx], 10)
+          : null,
+      engineCoolantTemp:
+        canAppendMask[25] === '1' && parsedData[engcIx]
+          ? parseInt(parsedData[engcIx], 10)
+          : null,
+      fuelConsumption:
+        canAppendMask[24] === '1' && parsedData[fuelcIx]
+          ? parseCanData(parsedData[fuelcIx], 'fuelConsumption')
+          : null,
+      fuelLevel:
+        canAppendMask[23] === '1' && parsedData[fuellIx]
+          ? parseFloat(parsedData[fuellIx].slice(1))
+          : null,
+      fuelLevelUnit:
+        canAppendMask[23] === '1' && parsedData[fuellIx]
+          ? parsedData[fuellIx].slice(0, 1) === 'P' ? '%' : 'L'
+          : null,
+      range:
+        canAppendMask[22] === '1' && parsedData[rngIx]
+          ? parseCanData(parsedData[rngIx], 'range')
+          : null,
+      acceleratorPressure:
+        canAppendMask[21] === '1' && parsedData[accIx]
+          ? parseFloat(parsedData[accIx])
+          : null,
+      engineHours:
+        canAppendMask[20] === '1' && parsedData[enghIx]
+          ? parseFloat(parsedData[enghIx])
+          : null,
+      drivingTime:
+        canAppendMask[19] === '1' && parsedData[drvIx]
+          ? parseFloat(parsedData[drvIx])
+          : null,
+      idleTime:
+        canAppendMask[18] === '1' && parsedData[idltIx]
+          ? parseFloat(parsedData[idltIx])
+          : null,
+      idleFuelUsed:
+        canAppendMask[17] === '1' && parsedData[idlfIx]
+          ? parseFloat(parsedData[idlfIx])
+          : null,
+      axleWeight2:
+        canAppendMask[16] === '1' && parsedData[axlwIx]
+          ? parseFloat(parsedData[axlwIx])
+          : null,
+      tachograph:
+        canAppendMask[15] === '1' && parsedData[tacIx]
+          ? {
+            raw: parsedData[tacIx] ? parsedData[tacIx] : null,
+            validDriverData: tachographBin ? tachographBin[7] === '1' : null,
+            insertedDriverCard: tachographBin
+              ? tachographBin[5] === '1'
+              : null,
+            driverWorkingState: tachographBin
+              ? dWorkingStates[parseInt(tachographBin.substring(3, 5), 2)]
+              : null,
+            drivingTimeState: tachographBin
+              ? dTimeStates[parseInt(tachographBin.substring(5, 8), 2)]
+              : null
+          }
+          : null,
+      indicators:
+        canAppendMask[14] === '1' && inicatorsBin
+          ? {
+            raw: inicatorsBin ? parsedData[indIx] : null,
+            lowFuel: inicatorsBin ? inicatorsBin[0] === '1' : null,
+            driverSeatbelt: inicatorsBin ? inicatorsBin[1] === '1' : null,
+            airConditioning: inicatorsBin ? inicatorsBin[2] === '1' : null,
+            cruiseControl: inicatorsBin ? inicatorsBin[3] === '1' : null,
+            brakePedal: inicatorsBin ? inicatorsBin[4] === '1' : null,
+            clutchPedal: inicatorsBin ? inicatorsBin[5] === '1' : null,
+            handbrake: inicatorsBin ? inicatorsBin[6] === '1' : null,
+            centralLock: inicatorsBin ? inicatorsBin[7] === '1' : null,
+            reverseGear: inicatorsBin ? inicatorsBin[8] === '1' : null,
+            runningLights: inicatorsBin ? inicatorsBin[9] === '1' : null,
+            lowBeams: inicatorsBin ? inicatorsBin[10] === '1' : null,
+            highBeams: inicatorsBin ? inicatorsBin[11] === '1' : null,
+            rearFogLights: inicatorsBin ? inicatorsBin[12] === '1' : null,
+            frontFogLights: inicatorsBin ? inicatorsBin[13] === '1' : null,
+            doors: inicatorsBin ? inicatorsBin[14] === '1' : null,
+            trunk: inicatorsBin ? inicatorsBin[15] === '1' : null
+          }
+          : null,
+      lights:
+        canAppendMask[13] === '1' && lights
+          ? {
+            raw: lights ? parsedData[ligIx] : null,
+            running: lights ? lights[0] === '1' : null,
+            lowBeams: lights ? lights[1] === '1' : null,
+            frontFog: lights ? lights[2] === '1' : null,
+            rearFog: lights ? lights[3] === '1' : null,
+            hazard: lights ? lights[4] === '1' : null
+          }
+          : null,
+      doors:
+        canAppendMask[12] === '1' && doors
+          ? {
+            raw: doors ? parsedData[doorIx] : null,
+            driver: doors ? doors[0] === '1' : null,
+            passenger: doors ? doors[1] === '1' : null,
+            rearLeft: doors ? doors[2] === '1' : null,
+            rearRight: doors ? doors[3] === '1' : null,
+            trunk: doors ? doors[4] === '1' : null,
+            hood: doors ? doors[5] === '1' : null
+          }
+          : null,
+      overSpeedTime:
+        canAppendMask[11] === '1' && parsedData[osptIx]
+          ? parseFloat(parsedData[osptIx])
+          : null,
+      overSpeedEngineTime:
+        canAppendMask[10] === '1' && parsedData[ospeIx]
+          ? parseFloat(parsedData[ospeIx])
+          : null,
       canExpanded: {
         canReportExpansionMask: repExpMask,
-        adBlueLevel: repExpMask?.adBlueLevel &&
-          parsedData[adbIx] ? parseCanData(parsedData[adbIx], 'adBlueLevel') : null,
-        adBlueLevelUnit: repExpMask?.adBlueLevelUnit && parsedData[adbIx] ? parsedData[adbIx].slice(0, 1) === 'P' ? '%' : 'L' ? 'L' : '%' : null,
-        axleWeight1: repExpMask?.axleWeight1 && parsedData[ax1Ix] ? parseInt(parsedData[ax1Ix]) : null,
-        axleWeight3: repExpMask?.axleWeight3 && parsedData[ax3Ix] ? parseInt(parsedData[ax3Ix]) : null,
-        axleWeight4: repExpMask?.axleWeight4 && parsedData[ax4Ix] ? parseInt(parsedData[ax4Ix]) : null,
-        tachographOverspeedSignal: repExpMask?.tachographOverspeedSignal &&
-          parsedData[tosIx] ? (parsedData[tosIx] === '1') : null,
-        tachographVehicleMotionSignal: repExpMask?.tachographVehicleMotionSignal &&
-          parsedData[tvmIx] ? (parsedData[tvmIx] === '1') : null,
-        tachographDrivingDirection: repExpMask?.tachographDrivingDirection &&
-          parsedData[tddIx] ? parseCanData(parsedData[tddIx], 'tachographDrivingDirection') : null,
-        analogInputValue: repExpMask?.analogInputValue &&
-          parsedData[aivIx] ? parseFloat(parsedData[aivIx]) * 1000 : null,
-        engineBrakingFactor: repExpMask?.engineBrakingFactor &&
-          parsedData[ebrIx] ? parseInt(parsedData[ebrIx]) : null,
-        pedalBrakingFactor: repExpMask?.pedalBrakingFactor &&
-          parsedData[pbrIx] ? parseInt(parsedData[pbrIx]) : null,
-        totalAcceleratorKickDown: repExpMask?.totalAcceleratorKickDown &&
-          parsedData[ackIx] ? parseInt(parsedData[ackIx]) : null,
-        totalEffectiveEngineSpeedTime: repExpMask?.totalEffectiveEngineSpeedTime &&
-          parsedData[eesIx] ? parseFloat(parsedData[eesIx]) : null,
-        totalCruiseControlTime: repExpMask?.totalCruiseControlTime &&
-          parsedData[crcIx] ? parseFloat(parsedData[crcIx]) : null,
-        totalAcceleratorKickDownTime: repExpMask?.totalAcceleratorKickDownTime &&
-          parsedData[acktIx] ? parseFloat(parsedData[acktIx]) : null,
-        totalBrakeApplications: repExpMask?.totalBrakeApplications &&
-          parsedData[braIx] ? parseInt(parsedData[braIx]) : null,
-        tachographDriver1Card: repExpMask?.tachographDriver1Card && parsedData[tdc1Ix] ? parsedData[tdc1Ix] : null,
-        tachographDriver2Card: repExpMask?.tachographDriver2Card && parsedData[tdc2Ix] ? parsedData[tdc2Ix] : null,
-        tachographDriver1Name: repExpMask?.tachographDriver1Name && parsedData[tdn1Ix] ? parsedData[tdn1Ix] : null,
-        tachographDriver2Name: repExpMask?.tachographDriver2Name && parsedData[tdn2Ix] ? parsedData[tdn2Ix] : null,
-        registrationNumber: repExpMask?.registrationNumber && parsedData[regIx] ? parsedData[regIx] : null,
-        expansionInformation: repExpMask?.expansionInformation && expansionBin != '0000000000000000' ? {
-          raw: parsedData[expbIx] ? parsedData[expbIx] : null,
-          webasto: expansionBin[0] === '1',
-          brakeFluidLowIndicator: expansionBin[1] === '1',
-          coolantLevelLowIndicator: expansionBin[2] === '1',
-          batteryIndicator: expansionBin[3] === '1',
-          brakeSystemFailureIndicator: expansionBin[4] === '1',
-          oilPressureIndicator: expansionBin[5] === '1',
-          engineHotIndicator: expansionBin[6] === '1',
-          ABSFailureIndicator: expansionBin[7] === '1',
-          checkEngineIndicator: expansionBin[9] === '1',
-          airbagsIndicator: expansionBin[10] === '1',
-          serviceCallIndicator: expansionBin[11] === '1',
-          oilLevelLowIndicator: expansionBin[12] === '1'
-        } : null,
-        rapidBrakings: repExpMask?.rapidBrakings && parsedData[rbrIx] ? parseInt(parsedData[rbrIx]) : null,
-        rapidAccelerations: repExpMask?.rapidAccelerations && parsedData[racIx] ? parseInt(parsedData[racIx]) : null,
-        engineTorque: repExpMask?.engineTorque && parsedData[etqIx] ? parseFloat(parsedData[etqIx]) : null,
+        adBlueLevel:
+          repExpMask && repExpMask.adBlueLevel && parsedData[adbIx]
+            ? parseCanData(parsedData[adbIx], 'adBlueLevel')
+            : null,
+        adBlueLevelUnit:
+          repExpMask && repExpMask.adBlueLevelUnit && parsedData[adbIx]
+            ? parsedData[adbIx].slice(0, 1) === 'P' ? '%' : 'L'
+            : null,
+        axleWeight1:
+          repExpMask && repExpMask.axleWeight1 && parsedData[ax1Ix]
+            ? parseInt(parsedData[ax1Ix])
+            : null,
+        axleWeight3:
+          repExpMask && repExpMask.axleWeight3 && parsedData[ax3Ix]
+            ? parseInt(parsedData[ax3Ix])
+            : null,
+        axleWeight4:
+          repExpMask && repExpMask.axleWeight4 && parsedData[ax4Ix]
+            ? parseInt(parsedData[ax4Ix])
+            : null,
+        tachographOverspeedSignal:
+          repExpMask &&
+          repExpMask.tachographOverspeedSignal &&
+          parsedData[tosIx]
+            ? parsedData[tosIx] === '1'
+            : null,
+        tachographVehicleMotionSignal:
+          repExpMask &&
+          repExpMask.tachographVehicleMotionSignal &&
+          parsedData[tvmIx]
+            ? parsedData[tvmIx] === '1'
+            : null,
+        tachographDrivingDirection:
+          repExpMask &&
+          repExpMask.tachographDrivingDirection &&
+          parsedData[tddIx]
+            ? parseCanData(parsedData[tddIx], 'tachographDrivingDirection')
+            : null,
+        analogInputValue:
+          repExpMask && repExpMask.analogInputValue && parsedData[aivIx]
+            ? parseFloat(parsedData[aivIx]) * 1000
+            : null,
+        engineBrakingFactor:
+          repExpMask && repExpMask.engineBrakingFactor && parsedData[ebrIx]
+            ? parseInt(parsedData[ebrIx])
+            : null,
+        pedalBrakingFactor:
+          repExpMask && repExpMask.pedalBrakingFactor && parsedData[pbrIx]
+            ? parseInt(parsedData[pbrIx])
+            : null,
+        totalAcceleratorKickDown:
+          repExpMask && repExpMask.totalAcceleratorKickDown && parsedData[ackIx]
+            ? parseInt(parsedData[ackIx])
+            : null,
+        totalEffectiveEngineSpeedTime:
+          repExpMask &&
+          repExpMask.totalEffectiveEngineSpeedTime &&
+          parsedData[eesIx]
+            ? parseFloat(parsedData[eesIx])
+            : null,
+        totalCruiseControlTime:
+          repExpMask && repExpMask.totalCruiseControlTime && parsedData[crcIx]
+            ? parseFloat(parsedData[crcIx])
+            : null,
+        totalAcceleratorKickDownTime:
+          repExpMask &&
+          repExpMask.totalAcceleratorKickDownTime &&
+          parsedData[acktIx]
+            ? parseFloat(parsedData[acktIx])
+            : null,
+        totalBrakeApplications:
+          repExpMask && repExpMask.totalBrakeApplications && parsedData[braIx]
+            ? parseInt(parsedData[braIx])
+            : null,
+        tachographDriver1Card:
+          repExpMask && repExpMask.tachographDriver1Card && parsedData[tdc1Ix]
+            ? parsedData[tdc1Ix]
+            : null,
+        tachographDriver2Card:
+          repExpMask && repExpMask.tachographDriver2Card && parsedData[tdc2Ix]
+            ? parsedData[tdc2Ix]
+            : null,
+        tachographDriver1Name:
+          repExpMask && repExpMask.tachographDriver1Name && parsedData[tdn1Ix]
+            ? parsedData[tdn1Ix]
+            : null,
+        tachographDriver2Name:
+          repExpMask && repExpMask.tachographDriver2Name && parsedData[tdn2Ix]
+            ? parsedData[tdn2Ix]
+            : null,
+        registrationNumber:
+          repExpMask && repExpMask.registrationNumber && parsedData[regIx]
+            ? parsedData[regIx]
+            : null,
+        expansionInformation:
+          repExpMask &&
+          repExpMask.expansionInformation &&
+          expansionBin !== '0000000000000000'
+            ? {
+              raw: parsedData[expbIx] ? parsedData[expbIx] : null,
+              webasto: expansionBin[0] === '1',
+              brakeFluidLowIndicator: expansionBin[1] === '1',
+              coolantLevelLowIndicator: expansionBin[2] === '1',
+              batteryIndicator: expansionBin[3] === '1',
+              brakeSystemFailureIndicator: expansionBin[4] === '1',
+              oilPressureIndicator: expansionBin[5] === '1',
+              engineHotIndicator: expansionBin[6] === '1',
+              ABSFailureIndicator: expansionBin[7] === '1',
+              checkEngineIndicator: expansionBin[9] === '1',
+              airbagsIndicator: expansionBin[10] === '1',
+              serviceCallIndicator: expansionBin[11] === '1',
+              oilLevelLowIndicator: expansionBin[12] === '1'
+            }
+            : null,
+        rapidBrakings:
+          repExpMask && repExpMask.rapidBrakings && parsedData[rbrIx]
+            ? parseInt(parsedData[rbrIx])
+            : null,
+        rapidAccelerations:
+          repExpMask && repExpMask.rapidAccelerations && parsedData[racIx]
+            ? parseInt(parsedData[racIx])
+            : null,
+        engineTorque:
+          repExpMask && repExpMask.engineTorque && parsedData[etqIx]
+            ? parseFloat(parsedData[etqIx])
+            : null
       }
-    }]
+    }
+  ]
 }
-
 
 /*
   Get Bluetooth data
@@ -1065,21 +1277,28 @@ const getBleData = (parsedData, btIndex) => {
       let aTmpIx = aBatIx + parseInt(appendMask[11])
       let aHumIx = aTmpIx + parseInt(appendMask[10])
       let ioIx = aHumIx + parseInt(appendMask[8])
-      let aEvIx = appendMask[8] === '1' && appendMask[7] === '1'
-        ? ioIx + 3 : ioIx + parseInt(appendMask[7])
-      let pressIx = appendMask[7] === '1' && appendMask[6] === '1'
-        ? aEvIx + 2 : aEvIx + parseInt(appendMask[6])
+      let aEvIx =
+        appendMask[8] === '1' && appendMask[7] === '1'
+          ? ioIx + 3
+          : ioIx + parseInt(appendMask[7])
+      let pressIx =
+        appendMask[7] === '1' && appendMask[6] === '1'
+          ? aEvIx + 2
+          : aEvIx + parseInt(appendMask[6])
       let timeIx = pressIx + parseInt(appendMask[5])
       let eTmpIx = timeIx + parseInt(appendMask[4])
       let magIx = eTmpIx + parseInt(appendMask[3])
-      let aBatpIx = appendMask[3] === '1' && appendMask[2] === '1'
-        ? magIx + 3 : magIx + parseInt(appendMask[2])
+      let aBatpIx =
+        appendMask[3] === '1' && appendMask[2] === '1'
+          ? magIx + 3
+          : magIx + parseInt(appendMask[2])
       let relIx = aBatpIx + parseInt(appendMask[1])
 
       let bleType = bluetoothAccessories[parsedData[cnt + 1]]
-      let bleModel = parsedData[cnt + 2] !== ''
-        ? bluetoothModels[parsedData[cnt + 1]][parsedData[cnt + 2]]
-        : null
+      let bleModel =
+        parsedData[cnt + 2] !== ''
+          ? bluetoothModels[parsedData[cnt + 1]][parsedData[cnt + 2]]
+          : null
       let rawAppendMask = parsedData[cnt + 4]
 
       btDevices.push({
@@ -1108,15 +1327,32 @@ const getBleData = (parsedData, btIndex) => {
             ? parseFloat(parsedData[aBatpIx])
             : null,
         accessoryData: {
-          data: parsedData[cnt + 3] !== '' ? {
-            raw: parsedData[cnt + 3],
-            temperature: getBleTempInCelciousDegrees(bleModel, parsedData[cnt + 3]),
-            humidity: getBleHumidityInRH(bleModel, parsedData[cnt + 3]),
-            relayState: bleModel === 'WRL300' ? parseInt(parsedData[cnt + 3]) === 1 ? 'Connected' : 'Disconnected' : null,
-            tirePresure: getTirePressureInPSI(parsedData[cnt + 3]),
-            productModel: bleModel === 'ATP100/ATP102' ? parsedData[cnt + 3].substring(6, 7) : null,
-            fwVersion: bleModel === 'ATP100/ATP102' ? parsedData[cnt + 3].substring(7, 8) : null,
-          } : null,
+          data:
+            parsedData[cnt + 3] !== ''
+              ? {
+                raw: parsedData[cnt + 3],
+                temperature: getBleTempInCelciousDegrees(
+                  bleModel,
+                  parsedData[cnt + 3]
+                ),
+                humidity: getBleHumidityInRH(bleModel, parsedData[cnt + 3]),
+                relayState:
+                    bleModel === 'WRL300'
+                      ? parseInt(parsedData[cnt + 3]) === 1
+                        ? 'Connected'
+                        : 'Disconnected'
+                      : null,
+                tirePresure: getTirePressureInPSI(parsedData[cnt + 3]),
+                productModel:
+                    bleModel === 'ATP100/ATP102'
+                      ? parsedData[cnt + 3].substring(6, 7)
+                      : null,
+                fwVersion:
+                    bleModel === 'ATP100/ATP102'
+                      ? parsedData[cnt + 3].substring(7, 8)
+                      : null
+              }
+              : null,
           temperature:
             parsedData[aTmpIx] !== '' && appendMask[11] === '1'
               ? parseInt(parsedData[aTmpIx])
@@ -1186,9 +1422,8 @@ const getBleData = (parsedData, btIndex) => {
       btDevices.push({
         index: parsedData[cnt],
         type: beaconTypes[parsedData[cnt + 1]],
-        model: parsedData[cnt + 2] !== ''
-          ? beaconModels[parsedData[cnt + 2]]
-          : null,
+        model:
+          parsedData[cnt + 2] !== '' ? beaconModels[parsedData[cnt + 2]] : null,
         appendMask: parsedData[cnt + 3],
         mac:
           parsedData[aMacIx] !== '' && appendMask[6] === '1'
@@ -1209,7 +1444,7 @@ const getBleData = (parsedData, btIndex) => {
         beaconData:
           parsedData[bTypeIx + 1] !== '' && appendMask[0] === '1'
             ? parseInt(parsedData[bTypeIx + 1])
-            : null,
+            : null
       })
       cnt = bTypeIx + 1 + parseInt(appendMask[1])
     }
@@ -1281,9 +1516,15 @@ const getAlarm = (command, report, extra = false) => {
     if (extra === true && reportID === 1) {
       reportID = 2
     } else if (
-      ['gv800w', 'gv600w', 'gv300w', 'gv310lau', 'gv58lau', 'gv75w', 'GMT100'].includes(
-        extra
-      )
+      [
+        'gv800w',
+        'gv600w',
+        'gv300w',
+        'gv310lau',
+        'gv58lau',
+        'gv75w',
+        'GMT100'
+      ].includes(extra)
     ) {
       reportID += 1
     }
@@ -1526,8 +1767,9 @@ const getAlarm = (command, report, extra = false) => {
       message: messages[command].replace('consumption', consumption)
     }
   } else if (command === 'GTIDA') {
-    const status =
-      report.split(',')[1] ? parseInt(report.split(',')[1], 10) : null
+    const status = report.split(',')[1]
+      ? parseInt(report.split(',')[1], 10)
+      : null
     const driverID = report.split(',')[0] !== null ? report.split(',')[0] : null
     return {
       type: 'Driver_Identification',
@@ -1724,7 +1966,9 @@ const getAlarm = (command, report, extra = false) => {
     if (['01', '02', '03'].includes(report)) {
       const number = parseInt(extra[0])
       const mac = extra[1]
-      const temperature = extra[2].enhancedTemperature ? extra[2].enhancedTemperature : extra[2].temperature
+      const temperature = extra[2].enhancedTemperature
+        ? extra[2].enhancedTemperature
+        : extra[2].temperature
       const status = report !== '03' // 01 & 02 means outside range, 03 means inside range
       return {
         type: 'Outside_Temperature',
@@ -1776,7 +2020,9 @@ const getAlarm = (command, report, extra = false) => {
       const mac = extra[1]
       const status = extra[2].relay.state === 1
       const humanStatus = status ? 'activado' : 'desactivado'
-      const configResult = extra[2].relay.configResult ? extra[2].relay.configResult : null
+      const configResult = extra[2].relay.configResult
+        ? extra[2].relay.configResult
+        : null
       return {
         type: 'Relay_BLE',
         number: number,
@@ -1791,8 +2037,6 @@ const getAlarm = (command, report, extra = false) => {
         message: messages[command][report]
       }
     }
-
-
   } else if (command === 'GSENSOR') {
     return {
       type: 'Motion',
@@ -1817,7 +2061,7 @@ const getAlarm = (command, report, extra = false) => {
 const createDefaultOut = (size, defaultValue) => {
   return Object.fromEntries(
     Array.from({ length: size }, (_, i) => [i + 1, defaultValue])
-  );
+  )
 }
 
 /*
