@@ -1,3 +1,20 @@
+#### 1.9.20 (2026-03-03)
+
+##### New Features
+
+* **nack:**  se soportan comandos NACK para Queclink. ([b3394bd8](https://github.com/jaayesta/queclink-parser/commit/b3394bd861b513f86d1c83568bb39bcb22c30467))
+* **ack:**  se soporta la recepción de ACK ASCII para GL533CG. ([5768c23a](https://github.com/jaayesta/queclink-parser/commit/5768c23a2a6e8b445679db0cfb88a645e6251096))
+* **gl533cg:**  se agrega soporte a GL533CG ([7a8186b8](https://github.com/jaayesta/queclink-parser/commit/7a8186b8805c9658aa49d3ed379ed6ecfebe7064))
+* **hex:**  se agrega soporte a data hexadecimal ([3a5af90d](https://github.com/jaayesta/queclink-parser/commit/3a5af90d731c130e0fc87af048d82d90ac4278a6))
+
+##### Bug Fixes
+
+* **list:**  lint error fixed ([5c5d87d6](https://github.com/jaayesta/queclink-parser/commit/5c5d87d6529e00673f058e33963e832bc5041fc4))
+* **pgl533cg:**  se corrige argumentos de parser. ([04bdb006](https://github.com/jaayesta/queclink-parser/commit/04bdb006cdb42f86156408b384b119b1399bebb0))
+* **isHex:**  se corrige criterio para parsear data hexadecimal. ([064866dc](https://github.com/jaayesta/queclink-parser/commit/064866dc37e2945f5245254d5b37f1d49c3ab5d8))
+* **hex:**  se corrige soporte a GL533CG hexadecimal ([98bc782b](https://github.com/jaayesta/queclink-parser/commit/98bc782b5dd66e319511f3c7ea91861c7777b819))
+* **beaconModels:**  se agrega WID330 ([43181686](https://github.com/jaayesta/queclink-parser/commit/43181686f310ec4e85b47fe824036365dd16b6b0))
+
 #### 1.9.19 (2025-10-27)
 
 ##### Bug Fixes
