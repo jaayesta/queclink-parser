@@ -193,7 +193,7 @@ const parse = raw => {
         // Internal Battery Percentage
         data.voltage = data.voltage || {}
         data.voltage.battery = dataContent.readUInt8(0)
-        data.voltage.inputCharge = false
+        data.voltage.inputCharge = null
       } else if (dataId === 0x11) {
         // RF433 Working Status
         const rfState = dataContent.readUInt8(0)
@@ -455,7 +455,8 @@ const parse = raw => {
         data.voltage.value = dataContent.readUInt16BE(1)
         data.voltage.battery = dataContent.readUInt8(3)
         const charging = dataContent.readUInt8(4)
-        data.voltage.inputCharge = charging !== 0x02 && charging !== 0x007
+        data.voltage.inputCharge =
+          charging !== 0x02 && charging !== 0x007 ? true : null
       } else if (dataId === 0x78) {
         // 120 Self Test
         data.selfTestTime = new Date(dataContent.readUInt32BE(0) * 1000)
