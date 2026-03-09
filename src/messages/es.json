@@ -23,7 +23,7 @@
     "1": "Regreso a temperatura dentro de rango ()"
   },
   "GTCAN": "Reporte Can Bus",
-  "GTCLT": "Alarma Can Bus", 
+  "GTCLT": "Alarma Can Bus",
   "GTJES": "Resumen de datos OBDII",
   "GTOSM": {
     "0": {
@@ -317,7 +317,7 @@
     "GTVMS": "Config: modo de ignición",
     "GTBTS": "Config: general bluetooth",
     "GTBAS": "Config: accesorio bluetooth",
-    "GTBID": "Config: baliza bluetooth", 
+    "GTBID": "Config: baliza bluetooth",
     "GTHMC": "Config: horómetro",
     "GTCMD": "Config: nuevo comando en memoria",
     "GTUDF": "Config: función personalizada",
@@ -342,7 +342,18 @@
       "CAN100 Operation": "Solicitud: vehículo vía CANbus",
       "SCS": "Solicitud: estado de calibración 3-ejes",
       "DELBUF": "Se han eliminado los reportes almacenados",
-      "RLY": "Acción sobre Relé BT"
+      "RLY": "Acción sobre Relé BT",
+      "0": "Solicitud de información específica",
+      "1": "Solicitud de posición actual",
+      "3": "Dispositivo Reiniciado",
+      "8": "Solicitud de información básica",
+      "14": "Eliminar todos los reportes almacenados",
+      "17": "Reseteo de nivel de batería",
+      "18": "Borrar el emparejamiento SVR",
+      "92": "Ingreso a modo de emergencia",
+      "93": "Salida del modo de emergencia",
+      "94": "Restaurar configuración de fábrica",
+      "95": "Forzar configuración de fábrica"
     }
   }
 }
