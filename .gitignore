@@ -28,7 +28,8 @@ node_modules
 lib
 
 ## Examples
-example.js
+example*
 
 ## Protocols
 *.pdf
+*.txt

@@ -107,7 +107,7 @@ const parse = raw => {
     }
 
     // Event Code (1 byte)
-    const eventCode = buf.readUInt8(offset)
+    const eventCode = buf.toString('hex', offset, offset + 1)
     offset += 1
 
     if (recordId === 0x50 || recordId === 0x04) {
@@ -115,7 +115,7 @@ const parse = raw => {
       data.alarm = utils.getAlarm('GTFRI', null)
     } else if (recordId === 0x01) {
       // 01H Device Startup
-      data.alarm = utils.getAlarm('GTPNA', null)
+      data.alarm = utils.getAlarm('GTPNR', eventCode)
     } else if (recordId === 0x05) {
       // 05H Device Shutdown
       data.alarm = utils.getAlarm('GTPFA', null)

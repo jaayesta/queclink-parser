@@ -159,7 +159,22 @@
     "2": "Dispositivo operando nuevamente",
     "3": "Dispositivo operando nuevamente",
     "5": "Dispositivo reiniciado por protocolo watchdog",
-    "6": "Reinicio por actualización de configuración"
+    "6": "Reinicio por actualización de configuración",
+    "00": "Dispositivo encendido",
+    "01": "Dispositivo encendido por reinicio periódico",
+    "02": "Dispositivo encendido por reinicio remoto",
+    "03": "Dispositivo encendido por restauración",
+    "04": "Dispositivo encendido por restauración completa",
+    "07": "Reinicio por actualización de firmware",
+    "08": "Movimiento detectado (Sensor G)",
+    "09": "Regreso del reposo",
+    "10": "Alarma de sensor de luz",
+    "11": "Primer encendido manual",
+    "12": "Encendido anormal",
+    "13": "Error de reloj",
+    "14": "Despertar activo (Botón presionado 3 veces)",
+    "15": "Conexión con servidor perdida",
+    "16": "Conexión con servidor recuperada"
   },
   "GTPFR": {
     "0": "Dispositivo apagado remotamente",
