@@ -1,3 +1,18 @@
+#### 1.9.23 (2026-03-11)
+
+##### Bug Fixes
+
+* **gitignore:**  add npmrc to gitignore ([8378927b](https://github.com/jaayesta/queclink-parser/commit/8378927b875ffd6d5df7923911ab23545eaf3dca))
+* **gl533cg:**
+  *  se corrige eventCode para SVR ([843e9ac8](https://github.com/jaayesta/queclink-parser/commit/843e9ac8bf8251c72ab4f88806c363cdd54cb202))
+  *  se mejora evento de encendido ([df2b8d39](https://github.com/jaayesta/queclink-parser/commit/df2b8d3968e37a0ecc83b56fa1dbc513fe5ddab6))
+* **hbe:**
+  *  se agrega detalle en mensaje HBE ([68b36a3c](https://github.com/jaayesta/queclink-parser/commit/68b36a3c4dd5fc4d2a1d56aa8362a0e61eb8e27b))
+  *  se agrega más data al evento HBE ([c2e07f03](https://github.com/jaayesta/queclink-parser/commit/c2e07f03907ad8f41bf62b4cab1e3d4d7c003e51))
+* **example:**  example file untracked ([50b2dc1a](https://github.com/jaayesta/queclink-parser/commit/50b2dc1af893c986be4e7a8d78531f8a494dd321))
+* **rto:**  Se agrega soporte a RTOs de GL533CG ([7a673bf3](https://github.com/jaayesta/queclink-parser/commit/7a673bf3bd36484c2658cff2d80f2087c323ee89))
+* **inputCharge:**  se pasa campo a null cuando no hay data que agregar. ([836cc537](https://github.com/jaayesta/queclink-parser/commit/836cc5370672f8938d75d2011be2ad31d1834d5b))
+
 #### 1.9.23 (2026-03-03)
 
 #### 1.9.22 (2026-03-03)
