@@ -2,6 +2,9 @@
 logs
 *.log
 
+# npm
+.npmrc
+
 # Runtime data
 pids
 *.pid
