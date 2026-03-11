@@ -3383,18 +3383,19 @@ const parse = raw => {
     let duration = includeStatus
       ? parsedData[index + 4] !== '' ? parseFloat(parsedData[index + 4]) : null
       : parsedData[index + 3] !== '' ? parseFloat(parsedData[index + 3]) : null
+    let speed = parsedData[8] !== '' ? parseFloat(parsedData[8]) : null
 
     data = Object.assign(data, {
       alarm: utils.getAlarm(
         command[1],
         [parsedData[5], parsedData[6]],
-        [maxAcc, duration]
+        [maxAcc, duration, speed]
       ),
       loc: {
         type: 'Point',
         coordinates: [parseFloat(parsedData[11]), parseFloat(parsedData[12])]
       },
-      speed: parsedData[8] !== '' ? parseFloat(parsedData[8]) : null,
+      speed: speed,
       gpsStatus: utils.checkGps(
         parseFloat(parsedData[11]),
         parseFloat(parsedData[12])

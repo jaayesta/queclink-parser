@@ -23,7 +23,7 @@
     "1": "Regreso a temperatura dentro de rango ()"
   },
   "GTCAN": "Reporte Can Bus",
-  "GTCLT": "Alarma Can Bus", 
+  "GTCLT": "Alarma Can Bus",
   "GTJES": "Resumen de datos OBDII",
   "GTOSM": {
     "0": {
@@ -159,7 +159,22 @@
     "2": "Dispositivo operando nuevamente",
     "3": "Dispositivo operando nuevamente",
     "5": "Dispositivo reiniciado por protocolo watchdog",
-    "6": "Reinicio por actualización de configuración"
+    "6": "Reinicio por actualización de configuración",
+    "00": "Dispositivo encendido",
+    "01": "Dispositivo encendido por reinicio periódico",
+    "02": "Dispositivo encendido por reinicio remoto",
+    "03": "Dispositivo encendido por restauración",
+    "04": "Dispositivo encendido por restauración completa",
+    "07": "Reinicio por actualización de firmware",
+    "08": "Movimiento detectado (Sensor G)",
+    "09": "Regreso del reposo",
+    "10": "Alarma de sensor de luz",
+    "11": "Primer encendido manual",
+    "12": "Encendido anormal",
+    "13": "Error de reloj",
+    "14": "Despertar activo (Botón presionado 3 veces)",
+    "15": "Conexión con servidor perdida",
+    "16": "Conexión con servidor recuperada"
   },
   "GTPFR": {
     "0": "Dispositivo apagado remotamente",
@@ -317,7 +332,7 @@
     "GTVMS": "Config: modo de ignición",
     "GTBTS": "Config: general bluetooth",
     "GTBAS": "Config: accesorio bluetooth",
-    "GTBID": "Config: baliza bluetooth", 
+    "GTBID": "Config: baliza bluetooth",
     "GTHMC": "Config: horómetro",
     "GTCMD": "Config: nuevo comando en memoria",
     "GTUDF": "Config: función personalizada",
@@ -342,7 +357,18 @@
       "CAN100 Operation": "Solicitud: vehículo vía CANbus",
       "SCS": "Solicitud: estado de calibración 3-ejes",
       "DELBUF": "Se han eliminado los reportes almacenados",
-      "RLY": "Acción sobre Relé BT"
+      "RLY": "Acción sobre Relé BT",
+      "0": "Solicitud de información específica",
+      "1": "Solicitud de posición actual",
+      "3": "Dispositivo Reiniciado",
+      "8": "Solicitud de información básica",
+      "14": "Eliminar todos los reportes almacenados",
+      "17": "Reseteo de nivel de batería",
+      "18": "Borrar el emparejamiento SVR",
+      "92": "Ingreso a modo de emergencia",
+      "93": "Salida del modo de emergencia",
+      "94": "Restaurar configuración de fábrica",
+      "95": "Forzar configuración de fábrica"
     }
   }
 }

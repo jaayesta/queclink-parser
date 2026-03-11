@@ -107,7 +107,7 @@ const parse = raw => {
     }
 
     // Event Code (1 byte)
-    const eventCode = buf.readUInt8(offset)
+    const eventCode = buf.toString('hex', offset, offset + 1)
     offset += 1
 
     if (recordId === 0x50 || recordId === 0x04) {
@@ -115,7 +115,7 @@ const parse = raw => {
       data.alarm = utils.getAlarm('GTFRI', null)
     } else if (recordId === 0x01) {
       // 01H Device Startup
-      data.alarm = utils.getAlarm('GTPNA', null)
+      data.alarm = utils.getAlarm('GTPNR', eventCode)
     } else if (recordId === 0x05) {
       // 05H Device Shutdown
       data.alarm = utils.getAlarm('GTPFA', null)
@@ -140,7 +140,7 @@ const parse = raw => {
       data.alarm = utils.getAlarm('LIGHT', null)
     } else if (recordId === 0x94) {
       // 94H SVR Connection Notification
-      data.alarm = utils.getAlarm('GTSVR', eventCode)
+      data.alarm = utils.getAlarm('GTSVR', eventCode[1])
     } else if (recordId === 0xf3) {
       // F3H GTC Status
       data.alarm = utils.getAlarm('GTALM', null)
@@ -193,7 +193,7 @@ const parse = raw => {
         // Internal Battery Percentage
         data.voltage = data.voltage || {}
         data.voltage.battery = dataContent.readUInt8(0)
-        data.voltage.inputCharge = false
+        data.voltage.inputCharge = null
       } else if (dataId === 0x11) {
         // RF433 Working Status
         const rfState = dataContent.readUInt8(0)
@@ -455,7 +455,8 @@ const parse = raw => {
         data.voltage.value = dataContent.readUInt16BE(1)
         data.voltage.battery = dataContent.readUInt8(3)
         const charging = dataContent.readUInt8(4)
-        data.voltage.inputCharge = charging !== 0x02 && charging !== 0x007
+        data.voltage.inputCharge =
+          charging !== 0x02 && charging !== 0x007 ? true : null
       } else if (dataId === 0x78) {
         // 120 Self Test
         data.selfTestTime = new Date(dataContent.readUInt32BE(0) * 1000)

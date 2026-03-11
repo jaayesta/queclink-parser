@@ -195,6 +195,9 @@ const getAckCommand = (raw, lang) => {
     data.command = 'SETOVERSPEEDALARM'
   } else if (command[1] === 'GTOUT') {
     data.command = 'SETIOSWITCH'
+  } else if (command[1] === 'RTO') {
+    data.message =
+      messages['+ACK'][`GT${command[1]}`][parsedData[5]] || messages.default
   } else if (command[1] === 'GTRTO') {
     data.message =
       messages['+ACK'][command[1]][parsedData[4]] || messages.default
