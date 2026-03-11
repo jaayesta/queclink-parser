@@ -140,7 +140,7 @@ const parse = raw => {
       data.alarm = utils.getAlarm('LIGHT', null)
     } else if (recordId === 0x94) {
       // 94H SVR Connection Notification
-      data.alarm = utils.getAlarm('GTSVR', eventCode)
+      data.alarm = utils.getAlarm('GTSVR', eventCode[1])
     } else if (recordId === 0xf3) {
       // F3H GTC Status
       data.alarm = utils.getAlarm('GTALM', null)
