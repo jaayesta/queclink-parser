@@ -1,3 +1,9 @@
+#### 1.9.24 (2026-03-12)
+
+##### Bug Fixes
+
+* **messages:**  se corrige mensaje para HBE ([b5abf3c4](https://github.com/jaayesta/queclink-parser/commit/b5abf3c4fec9b5802044a8daf8cd01fcd6c17171))
+
 #### 1.9.23 (2026-03-11)
 
 ##### Bug Fixes
