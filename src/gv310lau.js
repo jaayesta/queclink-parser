@@ -2319,37 +2319,80 @@ const parse = raw => {
     })
   } else if (command[1] === 'GTBID') {
     // Bluetooth beacon detection
-    let number = parsedData[4] !== '' ? parseInt(parsedData[4]) : 1
+    // Bluetooth beacon detection
     let index = 4
-    let binAppendMask = utils.nHexDigit(utils.hex2bin(parsedData[index + 2]), 8)
-    let appendMask = {
-      accessoryMac: binAppendMask[6] === '1',
-      batteryLevel: binAppendMask[4] === '1',
-      signalStrength: binAppendMask[1] === '1',
-      beaconType: binAppendMask[0] === '1'
-    }
+    let number = parsedData[index] !== '' ? parseInt(parsedData[index]) : 1
 
-    let appMk, extra
+    let btDevices = []
     for (let i = 1; i <= number; i++) {
-      appMk = utils.sumOnes(parsedData[index + 2])
-      extra = appendMask.beaconType
-        ? parsedData[index + 5] === '0'
+      let appendMask = utils.nHexDigit(utils.hex2bin(parsedData[index + 2]), 8)
+      let macIx = index + 2 + parseInt(appendMask[6])
+      let batIx = macIx + parseInt(appendMask[4])
+      let sigIx = batIx + parseInt(appendMask[1])
+      let typeIx = sigIx + parseInt(appendMask[0])
+      btDevices.push({
+        model:
+          parsedData[index + 1] !== ''
+            ? utils.beaconModels[parsedData[index + 1]]
+            : null,
+        appendMask: parsedData[index + 2] !== '' ? parsedData[index + 2] : null,
+        mac:
+          appendMask[6] === '1' && parsedData[macIx] !== ''
+            ? parsedData[macIx]
+            : null,
+        battery:
+          appendMask[4] === '1' && parsedData[batIx] !== ''
+            ? parseInt(parsedData[batIx]) / 1000
+            : null,
+        signalStrength:
+          appendMask[1] === '1' && parsedData[sigIx] !== ''
+            ? parseInt(parsedData[sigIx])
+            : null,
+        type:
+          appendMask[0] === '1' && parsedData[typeIx] !== ''
+            ? utils.beaconTypes[parsedData[typeIx]]
+            : null,
+        data:
+          appendMask[0] === '1' && parsedData[typeIx + 1] !== ''
+            ? {
+              idMfrData:
+                  parsedData[typeIx] === '0' && parsedData[typeIx + 1] !== ''
+                    ? parsedData[typeIx + 1]
+                    : null,
+              uuid:
+                  parsedData[typeIx] === '1' && parsedData[typeIx + 1] !== ''
+                    ? parsedData[typeIx + 1]
+                    : null,
+              major:
+                  parsedData[typeIx] === '1' && parsedData[typeIx + 2] !== ''
+                    ? parsedData[typeIx + 2]
+                    : null,
+              minor:
+                  parsedData[typeIx] === '1' && parsedData[typeIx + 3] !== ''
+                    ? parsedData[typeIx + 3]
+                    : null,
+              nid:
+                  parsedData[typeIx] === '2' && parsedData[typeIx + 1] !== ''
+                    ? parsedData[typeIx + 1]
+                    : null,
+              bid:
+                  parsedData[typeIx] === '2' && parsedData[typeIx + 2] !== ''
+                    ? parsedData[typeIx + 2]
+                    : null
+            }
+            : null
+      })
+      let extra =
+        parsedData[typeIx] === '0'
           ? 1
-          : parsedData[index + 5] === '1'
-            ? 3
-            : parsedData[index + 5] === '2' ? 2 : 0
-        : 0
-      index += 2 + appMk + extra
+          : parsedData[typeIx] === '1' ? 3 : parsedData[typeIx] === '2' ? 2 : 0
+      index = typeIx + 1 + extra
     }
 
-    let satelliteInfo = false
-    let satIndex = index + 12
-
-    // If get satellites is configured
-    if (utils.includeSatellites(parsedData[satIndex])) {
-      satIndex += 1
-      satelliteInfo = true
-    }
+    index = index - 1
+    let satelliteInfo = utils.includeSatellites(parsedData[index + 12])
+    let jammingSate = utils.includeJammingSate(parsedData[index + 12])
+    let satIndex = index + 12 + satelliteInfo + jammingSate
 
     data = Object.assign(data, {
       alarm: utils.getAlarm(command[1], null, 'gv310lau'),
@@ -2401,83 +2444,13 @@ const parse = raw => {
           ? parseInt(parsedData[index + 11], 16)
           : null,
       satellites:
-        satelliteInfo && parsedData[satIndex] !== ''
-          ? parseInt(parsedData[satIndex])
+        satelliteInfo &&
+        parsedData[satIndex - (satelliteInfo + jammingSate) + 1] !== ''
+          ? parseInt(parsedData[satIndex - (satelliteInfo + jammingSate) + 1])
           : null,
       odometer: null,
       hourmeter: null
     })
-
-    let btDevices = []
-    let btIndex = 5
-    for (let i = 1; i <= number; i++) {
-      let appendMask = utils.nHexDigit(
-        utils.hex2bin(parsedData[btIndex + 1]),
-        8
-      )
-      let macIx = btIndex + 1 + parseInt(appendMask[6])
-      let batIx = macIx + parseInt(appendMask[4])
-      let sigIx = batIx + parseInt(appendMask[1])
-      let typeIx = sigIx + parseInt(appendMask[0])
-      btDevices.push({
-        model:
-          parsedData[btIndex] !== ''
-            ? utils.beaconModels[parsedData[btIndex]]
-            : null,
-        appendMask:
-          parsedData[btIndex + 1] !== '' ? parsedData[btIndex + 1] : null,
-        mac:
-          appendMask[6] === '1' && parsedData[macIx] !== ''
-            ? parsedData[macIx]
-            : null,
-        battery:
-          appendMask[4] === '1' && parsedData[batIx] !== ''
-            ? parseInt(parsedData[batIx]) / 1000
-            : null,
-        signalStrength:
-          appendMask[1] === '1' && parsedData[sigIx] !== ''
-            ? parseInt(parsedData[sigIx])
-            : null,
-        type:
-          appendMask[0] === '1' && parsedData[typeIx] !== ''
-            ? utils.beaconTypes[parsedData[typeIx]]
-            : null,
-        data:
-          appendMask[0] === '1' && parsedData[typeIx + 1] !== ''
-            ? {
-              idMfrData:
-                  parsedData[typeIx] === '0' && parsedData[typeIx + 1] !== ''
-                    ? parsedData[typeIx + 1]
-                    : null,
-              uuid:
-                  parsedData[typeIx] === '1' && parsedData[typeIx + 1] !== ''
-                    ? parsedData[typeIx + 1]
-                    : null,
-              major:
-                  parsedData[typeIx] === '1' && parsedData[typeIx + 2] !== ''
-                    ? parsedData[typeIx + 2]
-                    : null,
-              minor:
-                  parsedData[typeIx] === '1' && parsedData[typeIx + 3] !== ''
-                    ? parsedData[typeIx + 3]
-                    : null,
-              nid:
-                  parsedData[typeIx] === '2' && parsedData[typeIx + 1] !== ''
-                    ? parsedData[typeIx + 1]
-                    : null,
-              bid:
-                  parsedData[typeIx] === '2' && parsedData[typeIx + 2] !== ''
-                    ? parsedData[typeIx + 2]
-                    : null
-            }
-            : null
-      })
-      let extra =
-        parsedData[typeIx] === '0'
-          ? 1
-          : parsedData[typeIx] === '1' ? 3 : parsedData[typeIx] === '2' ? 2 : 0
-      btIndex = typeIx + 1 + extra
-    }
 
     let bluetoothData = {
       connectedDevices: number,
