@@ -2453,7 +2453,7 @@ const parse = raw => {
       alarm: utils.getAlarm(
         command[1],
         [parsedData[5], parsedData[6]],
-        [maxAcc, duration, speed]
+        [maxAcc, duration]
       ),
       loc: {
         type: 'Point',
