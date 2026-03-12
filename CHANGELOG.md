@@ -1,3 +1,9 @@
+#### 1.9.25 (2026-03-12)
+
+##### Bug Fixes
+
+* **hbe:**  se quita velocidad en mensaje HBE. ([b90ffe67](https://github.com/jaayesta/queclink-parser/commit/b90ffe6701b0fdbed09a54aeff1620ee9a86eee5))
+
 #### 1.9.24 (2026-03-12)
 
 ##### Bug Fixes
