@@ -1851,7 +1851,6 @@ const getAlarm = (command, report, extra = false) => {
     let y = getAccelerationMagnitude(extra[0].substring(4, 8), 4)
     let z = getAccelerationMagnitude(extra[0].substring(8, 12), 4)
     let duration = extra[1]
-    let speed = extra[2]
     let magnitude = Number(
       Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2)).toFixed(2)
     ).toString()
@@ -1860,12 +1859,10 @@ const getAlarm = (command, report, extra = false) => {
       status: parseInt(report[1], 10),
       calibration: report[0] === '2',
       duration: duration,
-      speed: speed,
       magnitude: magnitude,
       xyz: { x: x, y: y, z: z },
       message: messages[command][report[1]]
         .replace('X', magnitude)
-        .replace('Y', speed)
         .replace('Z', duration)
     }
   } else if (command === 'GTCRA') {
