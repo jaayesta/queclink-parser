@@ -86,6 +86,9 @@ const getAck = serial => {
   Returns the reboot command
 */
 const getRebootCommand = (password, serial) => {
+  if (password === 'gl533cg#') {
+    return `AT@RTO=${password},3,,,,,,${serial}$`
+  }
   serial = serial || '0000'
   return `AT+GTRTO=${password},3,,,,,,${serial}$`
 }
@@ -348,7 +351,11 @@ const parseCommand = data => {
   } else if (data.instruction === 'Custom') {
     command = data.command
   } else if (/^reboot$/.test(data.instruction)) {
-    command = `AT+GTRTO=${password},3,,,,,,${serialId}$`
+    if (password === 'gl533cg#') {
+      command = `AT@RTO=${password},3,,,,,,${serialId}$`
+    } else {
+      command = `AT+GTRTO=${password},3,,,,,,${serialId}$`
+    }
   } else if (data.instruction === 'set_driver') {
     const mode = data.mode || 1
     const count = data.count || 1
@@ -393,7 +400,11 @@ const parseCommand = data => {
     command = `AT+GTDAT=${password},2,,>CMD3005,${interval},${maxTemp1},${minTemp1},${maxTemp2},${minTemp2}<,0,,,,${serialId}$`
   } else if (data.instruction === 'get_current_position') {
     // Request current position
-    command = `AT+GTRTO=${password},1,,,,,,${serialId}$`
+    if (password === 'gl533cg#') {
+      command = `AT@RTO=${password},1,,,,,,${serialId}$`
+    } else {
+      command = `AT+GTRTO=${password},1,,,,,,${serialId}$`
+    }
   }
   return command
 }
