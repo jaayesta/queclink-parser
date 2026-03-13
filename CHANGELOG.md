@@ -1,3 +1,17 @@
+#### 1.9.26 (2026-03-13)
+
+##### New Features
+
+* **gl533cg:**  se agrega soporte a instrucciones para GL533CG. ([fd859239](https://github.com/jaayesta/queclink-parser/commit/fd859239b0266f83a926cbbeca8aed94df07f42c))
+* **gv350ceu:**  se agrega soporte para GV350CEU. ([40a1d8e5](https://github.com/jaayesta/queclink-parser/commit/40a1d8e542cf3d3b81e919bd45a310d11511c63d))
+
+##### Bug Fixes
+
+* **gtalm:**
+  *  se corrige indexado para comandos de lectura ([2163bcd8](https://github.com/jaayesta/queclink-parser/commit/2163bcd824c3dd41d53fd52a73638709c4bd503a))
+  *  se cambia status por siglas de config leída. ([c391f088](https://github.com/jaayesta/queclink-parser/commit/c391f0882cd5f6fdc21d8536c86ac9508b99c300))
+* **bid:**  se corrige lógica en evento GTBID ([1e5d0098](https://github.com/jaayesta/queclink-parser/commit/1e5d0098f16ce65488dda8d3d80f3261cd4af278))
+
 #### 1.9.25 (2026-03-12)
 
 ##### Bug Fixes
