@@ -2554,7 +2554,7 @@ const getAlarm = (command, report, extra = false) => {
   ) {
     return {
       type: command,
-      status: 'CONFIG',
+      status: report.split(',')[7],
       message: report
     }
   } else if (command === 'GTCID') {
