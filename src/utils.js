@@ -2552,9 +2552,13 @@ const getAlarm = (command, report, extra = false) => {
     command === 'GTALM' ||
     command === 'GTALS'
   ) {
+    const instruction =
+      command === 'GTALS'
+        ? report.split(',')[4]
+        : command === 'GTALM' ? report.split(',')[6] : report.split(',')[7]
     return {
       type: command,
-      status: report.split(',')[7],
+      status: instruction,
       message: report
     }
   } else if (command === 'GTCID') {
