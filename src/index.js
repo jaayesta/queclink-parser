@@ -14,14 +14,19 @@ const gv600w = require('./gv600w.js')
 const gl50 = require('./gl50.js')
 const gv50p = require('./gv50p.js')
 const gv310lau = require('./gv310lau.js')
+const gv350ceu = require('./gv350ceu.js')
 const gv58lau = require('./gv58lau.js')
 const gv57cg = require('./gv57cg.js')
 const gl533cg = require('./gl533cg.js')
 
 /*
-  Checks if raw is a GL533CG (hex) message
+  Checks if raw is a GL533CG (hex) message (binary format only).
+  ASCII messages like +RESP:GTFRI,... are comma-separated and must not be treated as hex.
 */
 const isHex = raw => {
+  if (typeof raw === 'string' && raw.indexOf(',') !== -1) {
+    return false
+  }
   return (
     (Buffer.isBuffer(raw) &&
       (raw[0] === 0x2b || raw[0] === 0x2d) &&
@@ -81,7 +86,9 @@ const getAck = serial => {
   Returns the reboot command
 */
 const getRebootCommand = (password, serial) => {
-  password = password || '000000'
+  if (password === 'gl533cg#') {
+    return `AT@RTO=${password},3,,,,,,${serial}$`
+  }
   serial = serial || '0000'
   return `AT+GTRTO=${password},3,,,,,,${serial}$`
 }
@@ -128,6 +135,8 @@ const parse = (raw, options) => {
       result = gv300w.parse(raw.toString())
     } else if (device === 'GV310LAU') {
       result = gv310lau.parse(raw.toString())
+    } else if (device === 'GV350CEU') {
+      result = gv350ceu.parse(raw.toString())
     } else if (device === 'GV58LAU') {
       result = gv58lau.parse(raw.toString())
     } else if (device === 'GV57CG') {
@@ -342,7 +351,11 @@ const parseCommand = data => {
   } else if (data.instruction === 'Custom') {
     command = data.command
   } else if (/^reboot$/.test(data.instruction)) {
-    command = `AT+GTRTO=${password},3,,,,,,${serialId}$`
+    if (password === 'gl533cg#') {
+      command = `AT@RTO=${password},3,,,,,,${serialId}$`
+    } else {
+      command = `AT+GTRTO=${password},3,,,,,,${serialId}$`
+    }
   } else if (data.instruction === 'set_driver') {
     const mode = data.mode || 1
     const count = data.count || 1
@@ -387,7 +400,11 @@ const parseCommand = data => {
     command = `AT+GTDAT=${password},2,,>CMD3005,${interval},${maxTemp1},${minTemp1},${maxTemp2},${minTemp2}<,0,,,,${serialId}$`
   } else if (data.instruction === 'get_current_position') {
     // Request current position
-    command = `AT+GTRTO=${password},1,,,,,,${serialId}$`
+    if (password === 'gl533cg#') {
+      command = `AT@RTO=${password},1,,,,,,${serialId}$`
+    } else {
+      command = `AT+GTRTO=${password},1,,,,,,${serialId}$`
+    }
   }
   return command
 }

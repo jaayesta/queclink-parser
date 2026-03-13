@@ -54,6 +54,7 @@ const devices = {
   '41': 'GV75W',
   FC: 'GV600W',
   '6E': 'GV310LAU',
+  '74': 'GV350CEU',
   '802004': 'GV58LAU',
   '802006': 'GV57CG',
   C301: 'GL533CG'
@@ -308,6 +309,30 @@ const dWorkingStates = {
 }
 
 /*
+  Possible Driving Working State in Expansion
+*/
+const dWorkingStatesExpansion = {
+  0: 'rest',
+  1: 'available',
+  2: 'work',
+  3: 'driving',
+  4: 'reserved',
+  5: 'reserved',
+  6: 'invalid data',
+  7: 'invalid data'
+}
+
+/*
+  Possible Jamming Sate Types
+*/
+const jammingSateTypes = {
+  '0': 'Unknown',
+  '1': 'No significan jamming',
+  '2': 'Potencial for interference',
+  '3': 'Interference visible and no fix'
+}
+
+/*
   Possible port N Types for AU100
 */
 const portNTypes = {
@@ -415,7 +440,7 @@ const checkGps = (lng, lat) => {
   included in the report
 */
 const includeSatellites = positionAppendMask => {
-  return nHexDigit(hex2bin(positionAppendMask), 4)[3] === '1'
+  return nHexDigit(hex2bin(positionAppendMask), 8)[7] === '1'
 }
 
 /*
@@ -423,7 +448,7 @@ const includeSatellites = positionAppendMask => {
   included in the report
 */
 const includeGnssTrigger = positionAppendMask => {
-  return nHexDigit(hex2bin(positionAppendMask), 4)[2] === '1'
+  return nHexDigit(hex2bin(positionAppendMask), 8)[6] === '1'
 }
 
 /*
@@ -431,7 +456,7 @@ const includeGnssTrigger = positionAppendMask => {
   included in the report
 */
 const includeStatus = positionAppendMask => {
-  return nHexDigit(hex2bin(positionAppendMask), 4)[1] === '1'
+  return nHexDigit(hex2bin(positionAppendMask), 8)[5] === '1'
 }
 
 /*
@@ -439,7 +464,15 @@ const includeStatus = positionAppendMask => {
   included in the report
 */
 const includeGnnsAccuracy = positionAppendMask => {
-  return nHexDigit(hex2bin(positionAppendMask), 4)[0] === '1'
+  return nHexDigit(hex2bin(positionAppendMask), 8)[4] === '1'
+}
+
+/*
+  Returns if the Jamming Sate is
+  included in the report
+*/
+const includeJammingSate = positionAppendMask => {
+  return nHexDigit(hex2bin(positionAppendMask), 8)[3] === '1'
 }
 
 /*
@@ -748,6 +781,35 @@ const parseCanData = (data, key) => {
       } else {
         return parseFloat(parseFloat(data).toFixed(2))
       }
+    case 'dtcCodeNumber':
+      return parseInt(data, 10) // 0-99
+    case 'dpfSootLevel':
+      return parseFloat(parseFloat(data.slice(2, 6)).toFixed(2))
+    case 'dpgSootLevelUnit':
+      return data.slice(0, 2) === 'FE'
+        ? 'L'
+        : data.slice(0, 2) === 'FF' ? 'P' : '-'
+    case 'dtcStatus':
+      switch (data) {
+        case '00':
+          return 'Success'
+        case '02':
+          return 'No available for this vehicle'
+        case '03':
+          return 'Unrecognized format'
+        case '05':
+          return 'Failed'
+        case '0A':
+          return 'Overflow'
+        case '0B':
+          return 'DTCs has not been read yet'
+        case '0C':
+          return 'No available for this vehicle'
+        case 'FD':
+          return 'Internal error'
+        default:
+          return 'Unavailable'
+      }
     default:
       return data
   }
@@ -755,12 +817,18 @@ const parseCanData = (data, key) => {
 
 /*
   Get CANbus data
+  options.deviceType: 'GV350CEU' | 'GV310LAU' | 'GV58LAU' - when 'GV350CEU', GTCAN uses
+  protocol 4.8.1 (extra fields after expansion) and the position block start is detected.
 */
-const getCanData = (parsedData, ix, type) => {
+const getCanData = (parsedData, ix, type, options) => {
+  options = options || {}
+  const isGV350CEU = options && options.deviceType === 'GV350CEU'
+
   let canAppendMask =
     parsedData[ix + 1] !== ''
       ? nHexDigit(hex2bin(parsedData[ix + 1]), 32)
       : null
+
   if (canAppendMask === 0) {
     return {}
   }
@@ -788,9 +856,18 @@ const getCanData = (parsedData, ix, type) => {
   let doorIx = ligIx + parseInt(canAppendMask[12])
   let osptIx = doorIx + parseInt(canAppendMask[11])
   let ospeIx = osptIx + parseInt(canAppendMask[10])
-  // Values from 9 to 3 are reserved
-  let canxIx = ospeIx + parseInt(canAppendMask[2])
+  // Value 9 is only for hex report
+  let ecscdIx = ospeIx + parseInt(canAppendMask[8]) // Engine Cold Starts Count
+  let eascIx = ecscdIx + parseInt(canAppendMask[7]) // Engine All Starts Count
+  let esicIx = eascIx + parseInt(canAppendMask[6]) // Engine Starts by Ignition Count
+  let tecrIx = esicIx + parseInt(canAppendMask[5]) // Total Engine Engine Cold Running Time
+  let hbraIx = tecrIx + parseInt(canAppendMask[4]) // Handbrake Applications During Ride Count
+  let elIx = hbraIx + parseInt(canAppendMask[3]) // Electric Report Mask
+  let canxIx = isGV350CEU
+    ? hbraIx + parseInt(canAppendMask[2])
+    : elIx + parseInt(canAppendMask[2]) // CAN Expansion Mask
 
+  // CAN Expansion Mask
   let canExpansionMask =
     canAppendMask[2] === '1' && parsedData[canxIx] !== ''
       ? nHexDigit(hex2bin(parsedData[canxIx]), 32)
@@ -826,7 +903,13 @@ const getCanData = (parsedData, ix, type) => {
         expansionInformation: canExpansionMask[20] === '1',
         rapidBrakings: canExpansionMask[21] === '1',
         rapidAccelerations: canExpansionMask[22] === '1',
-        engineTorque: canExpansionMask[23] === '1'
+        engineTorque: canExpansionMask[23] === '1',
+        serviceDistance: canExpansionMask[24] === '1',
+        ambientTemperature: canExpansionMask[25] === '1',
+        dtcCodes: canExpansionMask[28] === '1',
+        gaseousFuelLevel: canExpansionMask[29] === '1',
+        tachographInfoExpansion: canExpansionMask[30] === '1',
+        canReportExpansionMask1: canExpansionMask[31] === '1'
       }
       : null
 
@@ -854,13 +937,449 @@ const getCanData = (parsedData, ix, type) => {
   let rbrIx = expbIx + parseInt(canExpansionMask[21])
   let racIx = rbrIx + parseInt(canExpansionMask[22])
   let etqIx = racIx + parseInt(canExpansionMask[23])
+  let sdIx = etqIx + parseInt(canExpansionMask[24])
+  let atIx = sdIx + parseInt(canExpansionMask[25])
+  let dtcIx =
+    canExpansionMask[28] === '1'
+      ? atIx + 1 + parseCanData(canExpansionMask[28], 'dtcCodeNumber') // Revisar
+      : atIx
+  let gflIx = dtcIx + parseInt(canExpansionMask[29])
+  let tieIx = gflIx + parseInt(canExpansionMask[30])
+  let crm1Ix = tieIx + parseInt(canExpansionMask[31])
+
+  // DTC Codes
+  let dtcCodeNumber = parseCanData(parsedData[dtcIx], 'dtcCodeNumber')
+  let dtcArray = dtcCodeNumber
+    ? Array.from({ length: dtcCodeNumber }, (_, i) => i)
+    : []
+  let dtcCodes =
+    dtcArray.length > 0
+      ? dtcArray.map(dtcCode => {
+        return {
+          id: dtcCode + 1, // 1-99
+          code: parsedData[dtcIx + dtcCode + 1]
+            ? parsedData[dtcIx + dtcCode + 1]
+            : null
+        }
+      })
+      : []
+
+  // Report Expansion Mask 1
+  let canRepExpMask1 =
+    canExpansionMask[31] === '1' && parsedData[crm1Ix] !== ''
+      ? nHexDigit(hex2bin(parsedData[crm1Ix]), 32)
+        .split('')
+        .reverse()
+        .join('')
+      : '00000000000000000000000000000000'
+
+  let retIx = crm1Ix + parseInt(canRepExpMask1[0])
+  let pwrmIx = retIx + parseInt(canRepExpMask1[1])
+  // bit 2 reserved
+  let egsIx = pwrmIx + parseInt(canRepExpMask1[3])
+
+  // E-GENSET Report Mask
+  let egsReportMask =
+    canRepExpMask1[3] === '1' && parsedData[egsIx] !== ''
+      ? nHexDigit(hex2bin(parsedData[egsIx]), 32)
+        .split('')
+        .reverse()
+        .join('')
+      : '00000000000000000000000000000000'
+
+  let husIx = egsIx + parseInt(egsReportMask[0])
+  let sshIx = husIx + parseInt(egsReportMask[1])
+  let simIx = sshIx + parseInt(egsReportMask[2])
+  let rrIx = simIx + parseInt(egsReportMask[3])
+  let ebatTmpIx = rrIx + parseInt(egsReportMask[4])
+  let bmsTmpIx = ebatTmpIx + parseInt(egsReportMask[5])
+  let ebatVIx = bmsTmpIx + parseInt(egsReportMask[6])
+  let minCvIx = ebatVIx + parseInt(egsReportMask[7])
+  let maxCvIx = minCvIx + parseInt(egsReportMask[8])
+  let maxCtIx = maxCvIx + parseInt(egsReportMask[9])
+  let minCtIx = maxCtIx + parseInt(egsReportMask[10])
+  let mbpwIx = minCtIx + parseInt(egsReportMask[11])
+  let cecuErrIx = mbpwIx + parseInt(egsReportMask[12])
+  let cchIx = cecuErrIx + parseInt(egsReportMask[13])
+  let iacl1Ix = cchIx + parseInt(egsReportMask[14])
+  let iacl2Ix = iacl1Ix + parseInt(egsReportMask[15])
+  let iacl3Ix = iacl2Ix + parseInt(egsReportMask[16])
+  let iatIx = iacl3Ix + parseInt(egsReportMask[17])
+  let iotIx = iatIx + parseInt(egsReportMask[18])
+  let iavl1Ix = iotIx + parseInt(egsReportMask[19])
+  let iavl2Ix = iavl1Ix + parseInt(egsReportMask[20])
+  let iavl3Ix = iavl2Ix + parseInt(egsReportMask[21])
+  let isIx = iavl3Ix + parseInt(egsReportMask[22])
+  let sdrIx = isIx + parseInt(egsReportMask[23])
+  let cutIx = sdrIx + parseInt(egsReportMask[24])
+  let citIx = cutIx + parseInt(egsReportMask[25])
+
+  let oltmIx = citIx + parseInt(canRepExpMask1[4])
+  let ollvIx = oltmIx + parseInt(canRepExpMask1[5])
+  let ax5Ix = ollvIx + parseInt(canRepExpMask1[6])
+  let ax6Ix = ax5Ix + parseInt(canRepExpMask1[7])
+  let ax7Ix = ax6Ix + parseInt(canRepExpMask1[8])
+  let grnIx = ax7Ix + parseInt(canRepExpMask1[9])
+  let dpflvIx = grnIx + parseInt(canRepExpMask1[10])
+  let vintrIx = dpflvIx + parseInt(canRepExpMask1[11])
+  let exp2Ix = vintrIx + parseInt(canRepExpMask1[12])
+  let flidIx = exp2Ix + parseInt(canRepExpMask1[13])
+  let vgrwIx = flidIx + parseInt(canRepExpMask1[14])
+  let tireCount =
+    canRepExpMask1[15] === '1' && parsedData[vgrwIx + 1]
+      ? parseInt(parsedData[vgrwIx + 1], 10)
+      : 0
+  let tprIx = vgrwIx + (canRepExpMask1[15] === '1' ? 1 + tireCount * 4 : 0)
+  let rtsIx = tprIx + parseInt(canRepExpMask1[16])
+  let tfrrIx = rtsIx + parseInt(canRepExpMask1[17])
+  let tgrsIx = tfrrIx + parseInt(canRepExpMask1[18])
+  let dtcsIx = tgrsIx + parseInt(canRepExpMask1[19])
+
+  let tireNumber =
+    canRepExpMask1[15] === '1' && parsedData[tprIx]
+      ? parseInt(parsedData[tprIx], 10)
+      : null
+  let tires = tireNumber ? Array.from({ length: tireNumber }, (_, i) => i) : []
+  let tiresData =
+    tires.length > 0
+      ? tires.map(tire => {
+        return {
+          id: tire + 1,
+          positionOfAnAxle: parsedData[tprIx + (4 * tire + 1)]
+            ? parseInt(parsedData[tprIx + (4 * tire + 1)], 10)
+            : null,
+          pressure: parsedData[tprIx + (4 * tire + 2)]
+            ? parseInt(parsedData[tprIx + (4 * tire + 2)], 10)
+            : null,
+          temperature: parsedData[tprIx + (4 * tire + 3)]
+            ? parseInt(parsedData[tprIx + (4 * tire + 3)], 10)
+            : null,
+          status: parsedData[tprIx + (4 * tire + 4)]
+            ? parseInt(parsedData[tprIx + (4 * tire + 4)], 10)
+            : null
+        }
+      })
+      : []
+
+  let repExpMask1 =
+    canExpansionMask[31] === '1'
+      ? {
+        raw: parsedData[crm1Ix] ? parsedData[crm1Ix] : null,
+        bin: canRepExpMask1,
+        retarderUsage:
+            canRepExpMask1[0] === '1' && parsedData[retIx]
+              ? parseInt(parsedData[retIx], 10)
+              : null, // percentage
+        powerMode:
+            canRepExpMask1[1] === '1' && parsedData[pwrmIx]
+              ? parseInt(parsedData[pwrmIx], 10)
+              : null,
+        // generatorVoltage: parsedData[genIx] ? parseInt(parsedData[genIx], 10) : null,
+        oilTemperature:
+            canRepExpMask1[4] === '1' && parsedData[oltmIx]
+              ? parseInt(parsedData[oltmIx], 10)
+              : null,
+        oilLevel:
+            canRepExpMask1[5] === '1' && parsedData[ollvIx]
+              ? parseInt(parsedData[ollvIx], 10)
+              : null,
+        axleWeight5:
+            canRepExpMask1[6] === '1' && parsedData[ax5Ix]
+              ? parseInt(parsedData[ax5Ix], 10)
+              : null,
+        axleWeight6:
+            canRepExpMask1[7] === '1' && parsedData[ax6Ix]
+              ? parseInt(parsedData[ax6Ix], 10)
+              : null,
+        axleWeight7:
+            canRepExpMask1[8] === '1' && parsedData[ax7Ix]
+              ? parseInt(parsedData[ax7Ix], 10)
+              : null,
+        currentGearNumber:
+            canRepExpMask1[9] === '1' && parsedData[grnIx]
+              ? parseInt(parsedData[grnIx], 10)
+              : null,
+        dpfSootLevel:
+            canRepExpMask1[10] === '1' && parsedData[dpflvIx]
+              ? parseCanData(parsedData[dpflvIx], 'dpfSootLevel')
+              : null,
+        dpgSootLevelUnit:
+            canRepExpMask1[10] === '1' && parsedData[dpflvIx]
+              ? parseCanData(parsedData[dpflvIx], 'dpgSootLevelUnit')
+              : null,
+        vinOfTrailer:
+            canRepExpMask1[11] === '1' && parsedData[vintrIx]
+              ? parsedData[vintrIx]
+              : null,
+        expansionInformation2:
+            canRepExpMask1[12] === '1' && parsedData[exp2Ix]
+              ? { brakeLiningsWornOffIndicator: parsedData[exp2Ix][7] === '1' }
+              : null,
+        vehicleGrossWeight:
+            canRepExpMask1[14] === '1' && parsedData[vgrwIx]
+              ? parseInt(parsedData[vgrwIx], 10)
+              : null,
+        tiresNumber:
+            canRepExpMask1[15] === '1' && parsedData[tprIx]
+              ? parseInt(parsedData[tprIx], 10)
+              : null,
+        tiresData: tiresData,
+        remaininTimeToMaintenanceService:
+            canRepExpMask1[16] === '1' && parsedData[rtsIx]
+              ? parseInt(parsedData[rtsIx], 10)
+              : null, // days
+        totalFuelReadFromVehicleComputer:
+            canRepExpMask1[17] === '1' && parsedData[tfrrIx]
+              ? parseFloat(parsedData[tfrrIx])
+              : null, // liters
+        totalGaseousFuelUsage:
+            canRepExpMask1[18] === '1' && parsedData[tgrsIx]
+              ? parseFloat(parsedData[tgrsIx])
+              : null, // kg
+        dtcStatus:
+            canRepExpMask1[19] === '1' && parsedData[dtcsIx]
+              ? parseCanData(parsedData[dtcsIx], 'dtcStatus')
+              : null,
+        eGensetReport:
+            canRepExpMask1[3] === '1'
+              ? {
+                raw: parsedData[egsIx] ? parsedData[egsIx] : null,
+                binEgsReportMask: egsReportMask,
+                hoursUntilService:
+                    egsReportMask[0] === '1' &&
+                    parsedData[husIx] &&
+                    parsedData[husIx] !== '65535'
+                      ? parseInt(parsedData[husIx], 10)
+                      : null,
+                systemStatusHealth:
+                    egsReportMask[1] === '1' &&
+                    parsedData[sshIx] &&
+                    parsedData[sshIx] !== 'FFFF'
+                      ? parseInt(parsedData[sshIx], 16)
+                      : null,
+                statusInverterMode:
+                    egsReportMask[2] === '1' &&
+                    parsedData[simIx] &&
+                    parsedData[simIx] !== '255'
+                      ? parseInt(parsedData[simIx], 10)
+                      : null,
+                remainingRuntime:
+                    egsReportMask[3] === '1' &&
+                    parsedData[rrIx] &&
+                    parsedData[rrIx] !== '255'
+                      ? parseInt(parsedData[rrIx], 10)
+                      : null,
+                batteryTemperature:
+                    egsReportMask[4] === '1' && parsedData[ebatTmpIx]
+                      ? parseInt(parsedData[ebatTmpIx], 10)
+                      : null,
+                bmsBoardTemperature:
+                    egsReportMask[5] === '1' && parsedData[bmsTmpIx]
+                      ? parseInt(parsedData[bmsTmpIx], 10)
+                      : null,
+                batteryVoltage:
+                    egsReportMask[6] === '1' && parsedData[ebatVIx]
+                      ? parseFloat(parsedData[ebatVIx])
+                      : null,
+                minimumCellVoltage:
+                    egsReportMask[7] === '1' && parsedData[minCvIx]
+                      ? parseFloat(parsedData[minCvIx])
+                      : null,
+                maximumCellVoltage:
+                    egsReportMask[8] === '1' && parsedData[maxCvIx]
+                      ? parseFloat(parsedData[maxCvIx])
+                      : null,
+                maximumCellTemperature:
+                    egsReportMask[9] === '1' && parsedData[maxCtIx]
+                      ? parseInt(parsedData[maxCtIx], 10)
+                      : null,
+                minimumCellTemperature:
+                    egsReportMask[10] === '1' && parsedData[minCtIx]
+                      ? parseInt(parsedData[minCtIx], 10)
+                      : null,
+                moduleBatteryPrewarning:
+                    egsReportMask[11] === '1' && parsedData[mbpwIx]
+                      ? parseInt(parsedData[mbpwIx], 10)
+                      : null,
+                cecuError:
+                    egsReportMask[12] === '1' && parsedData[cecuErrIx]
+                      ? parseInt(parsedData[cecuErrIx], 10)
+                      : null,
+                cumulativeChargingHours:
+                    egsReportMask[13] === '1' && parsedData[cchIx]
+                      ? parseFloat(parsedData[cchIx])
+                      : null,
+                inverterAcCurrentL1:
+                    egsReportMask[14] === '1' && parsedData[iacl1Ix]
+                      ? parseFloat(parsedData[iacl1Ix])
+                      : null,
+                inverterAcCurrentL2:
+                    egsReportMask[15] === '1' && parsedData[iacl2Ix]
+                      ? parseFloat(parsedData[iacl2Ix])
+                      : null,
+                inverterAcCurrentL3:
+                    egsReportMask[16] === '1' && parsedData[iacl3Ix]
+                      ? parseFloat(parsedData[iacl3Ix])
+                      : null,
+                inverterAmbientTemperature:
+                    egsReportMask[17] === '1' && parsedData[iatIx]
+                      ? parseInt(parsedData[iatIx], 10)
+                      : null,
+                inverterObcTemperature:
+                    egsReportMask[18] === '1' && parsedData[iotIx]
+                      ? parseInt(parsedData[iotIx], 10)
+                      : null,
+                inverterAcVoltageL1:
+                    egsReportMask[19] === '1' && parsedData[iavl1Ix]
+                      ? parseFloat(parsedData[iavl1Ix])
+                      : null,
+                inverterAcVoltageL2:
+                    egsReportMask[20] === '1' && parsedData[iavl2Ix]
+                      ? parseFloat(parsedData[iavl2Ix])
+                      : null,
+                inverterAcVoltageL3:
+                    egsReportMask[21] === '1' && parsedData[iavl3Ix]
+                      ? parseFloat(parsedData[iavl3Ix])
+                      : null,
+                inverterState:
+                    egsReportMask[22] === '1' && parsedData[isIx]
+                      ? parseInt(parsedData[isIx], 10)
+                      : null,
+                shutDownReason:
+                    egsReportMask[23] === '1' && parsedData[sdrIx]
+                      ? parseInt(parsedData[sdrIx], 10)
+                      : null,
+                cumulativeUsageTime:
+                    egsReportMask[24] === '1' && parsedData[cutIx]
+                      ? parseFloat(parsedData[cutIx])
+                      : null,
+                cumulativeIdleTime:
+                    egsReportMask[25] === '1' && parsedData[citIx]
+                      ? parseFloat(parsedData[citIx])
+                      : null
+              }
+              : null
+      }
+      : null
+
+  // Electric Report Mask
+  if (isGV350CEU) {
+    elIx = dtcsIx + parseInt(canAppendMask[3])
+  }
+  let evReportMask =
+    canAppendMask[3] === '1' && parsedData[elIx] !== ''
+      ? nHexDigit(hex2bin(parsedData[elIx]), 32)
+        .split('')
+        .reverse()
+        .join('')
+      : '00000000000000000000000000000000'
+
+  let batIVIx = elIx + parseInt(evReportMask[0])
+  let batCCCx = batIVIx + parseInt(evReportMask[1])
+  let totERIx = batCCCx + parseInt(evReportMask[2])
+  let batCLIx = totERIx + parseInt(evReportMask[6])
+  let batCSIx = batCLIx + parseInt(evReportMask[7])
+  let batTempIx = batCSIx + parseInt(evReportMask[8])
+  let batCCIx = batTempIx + parseInt(evReportMask[9])
+  let batIPIx = batCCIx + parseInt(evReportMask[10])
+  let batSOHx = batIPIx + parseInt(evReportMask[11])
+  let totEIx = batSOHx + parseInt(evReportMask[12])
+  let totEIWIx = totEIx + parseInt(evReportMask[13])
+  let totECIx = totEIWIx + parseInt(evReportMask[14])
+  let csOIx = totECIx + parseInt(evReportMask[16])
+
+  let evReport =
+    canAppendMask[3] === '1' && parsedData[elIx] !== '' && isGV350CEU
+      ? {
+        raw: parsedData[elIx] ? parsedData[elIx] : null,
+        binEvReportMask: evReportMask,
+        batteryInstantaneousVoltage:
+            evReportMask[0] === '1' && parsedData[batIVIx]
+              ? parseFloat(parsedData[batIVIx])
+              : null,
+        batteryChargingCyclesCount:
+            evReportMask[1] === '1' && parsedData[batCCCx]
+              ? parseInt(parsedData[batCCCx], 10)
+              : null,
+        totalEnergyRecuperated:
+            evReportMask[2] === '1' && parsedData[totERIx]
+              ? parseFloat(parsedData[totERIx])
+              : null,
+        batteryChargeLevel:
+            evReportMask[6] === '1' && parsedData[batCLIx]
+              ? parseFloat(parsedData[batCLIx])
+              : null,
+        chargingState:
+            evReportMask[7] === '1' && parsedData[batCSIx]
+              ? parseInt(parsedData[batCSIx], 10)
+              : null,
+        baterryTemperature:
+            evReportMask[8] === '1' && parsedData[batTempIx]
+              ? parseFloat(parsedData[batTempIx])
+              : null,
+        batteryChargingCurrent:
+            evReportMask[9] === '1' && parsedData[batCCIx]
+              ? parseFloat(parsedData[batCCIx])
+              : null,
+        batteryInstantaneousPower:
+            evReportMask[10] === '1' && parsedData[batIPIx]
+              ? parseFloat(parsedData[batIPIx])
+              : null,
+        batteryStateOfHealth:
+            evReportMask[11] === '1' && parsedData[batSOHx]
+              ? parseInt(parsedData[batSOHx], 10)
+              : null,
+        totalEnergyUsed:
+            evReportMask[12] === '1' && parsedData[totEIx]
+              ? parseFloat(parsedData[totEIx])
+              : null,
+        totalEnergyUsedWhenIdling:
+            evReportMask[13] === '1' && parsedData[totEIWIx]
+              ? parseFloat(parsedData[totEIWIx])
+              : null,
+        totalEnergyCharged:
+            evReportMask[14] === '1' && parsedData[totECIx]
+              ? parseFloat(parsedData[totECIx])
+              : null,
+        chargeStateOptimization:
+            evReportMask[16] === '1' && parsedData[csOIx]
+              ? parseInt(parsedData[csOIx], 10)
+              : null
+      }
+      : null
 
   // Logic for CAN data
-  let gnnsIx = etqIx + 2 + parseInt(canAppendMask[1])
-  let gsmIx =
-    canAppendMask[1] === '1'
-      ? gnnsIx + parseInt(canAppendMask[0]) + 6
-      : gnnsIx + parseInt(canAppendMask[0])
+  let evFieldsCount = 0
+  if (isGV350CEU && canAppendMask[3] === '1' && parsedData[elIx] !== '') {
+    for (let i = 0; i < 32; i++) {
+      if (evReportMask[i] === '1') evFieldsCount++
+    }
+  }
+
+  let gnnsIx = -1
+  if (isGV350CEU) {
+    let startIx = crm1Ix + 1
+    for (let i = startIx; i < parsedData.length - 6; i++) {
+      let d = parsedData[i + 6]
+      if (d && d.length === 14 && /^\d{14}$/.test(d)) {
+        if (
+          !isNaN(parseFloat(parsedData[i + 1])) &&
+          !isNaN(parseFloat(parsedData[i + 4]))
+        ) {
+          gnnsIx = i
+          break
+        }
+      }
+    }
+  }
+
+  if (gnnsIx === -1) {
+    gnnsIx = isGV350CEU
+      ? elIx + parseInt(canAppendMask[3]) + evFieldsCount + 2
+      : crm1Ix + 2 + parseInt(canAppendMask[1])
+  }
+
+  let gsmIx = canAppendMask[1] === '1' ? gnnsIx + 7 : gnnsIx
 
   let moreIx
   let gnnsData = null
@@ -919,7 +1438,7 @@ const getCanData = (parsedData, ix, type) => {
         }
         : null
   } else {
-    moreIx = etqIx + 1
+    moreIx = crm1Ix + 1
   }
 
   let inicatorsBin =
@@ -944,6 +1463,13 @@ const getCanData = (parsedData, ix, type) => {
   let tachographBin =
     canAppendMask[15] === '1' && parsedData[tacIx] !== ''
       ? nHexDigit(hex2bin(parsedData[tacIx]), 8)
+        .split('')
+        .reverse()
+        .join('')
+      : null
+  let tachographExpBin =
+    canAppendMask[30] === '1' && parsedData[tieIx] !== ''
+      ? nHexDigit(hex2bin(parsedData[tieIx]), 16)
         .split('')
         .reverse()
         .join('')
@@ -1126,6 +1652,26 @@ const getCanData = (parsedData, ix, type) => {
         canAppendMask[10] === '1' && parsedData[ospeIx]
           ? parseFloat(parsedData[ospeIx])
           : null,
+      engineColdStartsCount:
+        canAppendMask[8] === '1' && parsedData[ecscdIx]
+          ? parseInt(parsedData[ecscdIx])
+          : null,
+      engineAllStartsCount:
+        canAppendMask[7] === '1' && parsedData[eascIx]
+          ? parseInt(parsedData[eascIx])
+          : null,
+      engineStartsByIgnitionCount:
+        canAppendMask[6] === '1' && parsedData[esicIx]
+          ? parseInt(parsedData[esicIx])
+          : null,
+      totalEngineColdRunningTime:
+        canAppendMask[5] === '1' && parsedData[tecrIx]
+          ? parseFloat(parsedData[tecrIx])
+          : null,
+      handbrakeApplicationsDuringRideCount:
+        canAppendMask[4] === '1' && parsedData[hbraIx]
+          ? parseInt(parsedData[hbraIx])
+          : null,
       canExpanded: {
         canReportExpansionMask: repExpMask,
         adBlueLevel:
@@ -1253,8 +1799,106 @@ const getCanData = (parsedData, ix, type) => {
         engineTorque:
           repExpMask && repExpMask.engineTorque && parsedData[etqIx]
             ? parseFloat(parsedData[etqIx])
+            : null,
+        serviceDistance:
+          repExpMask && repExpMask.serviceDistance && parsedData[sdIx]
+            ? parseFloat(parsedData[sdIx])
+            : null,
+        ambientTemperature:
+          repExpMask && repExpMask.ambientTemperature && parsedData[atIx]
+            ? parseFloat(parsedData[atIx])
+            : null,
+        dtcCodes:
+          repExpMask && repExpMask.dtcCodes && parsedData[dtcIx]
+            ? dtcCodes
+            : null,
+        gaseousFuelLevel:
+          repExpMask && repExpMask.gaseousFuelLevel && parsedData[gflIx]
+            ? parseInt(parsedData[gflIx])
+            : null,
+        tachographInfoExpansion:
+          repExpMask && repExpMask.tachographInfoExpansion
+            ? {
+              raw: parsedData[tieIx],
+              tachographExpBin: tachographExpBin,
+              outOfScope:
+                  tachographExpBin.substring(0, 2) === '00'
+                    ? 'normal operation'
+                    : tachographExpBin.substring(15, 2) === '01'
+                      ? 'out of scope'
+                      : 'invalid data',
+              driverWorkingState1:
+                  dWorkingStatesExpansion[
+                    parseInt(tachographExpBin.substring(2, 5), 2)
+                  ],
+              driverWorkingState2:
+                  dWorkingStatesExpansion[
+                    parseInt(tachographExpBin.substring(5, 8), 2)
+                  ],
+              insertedDriverCard1:
+                  tachographExpBin.substring(10, 12) === '00'
+                    ? 'no driver card'
+                    : tachographExpBin.substring(11, 13) === '01'
+                      ? 'driver card inserted'
+                      : 'invalid data',
+              insertedDriverCard2:
+                  tachographExpBin.substring(18, 20) === '00'
+                    ? 'no driver card'
+                    : tachographExpBin.substring(13, 15) === '01'
+                      ? 'driver card inserted'
+                      : 'invalid data',
+              drivingTimeState1:
+                  dTimeStates[parseInt(tachographExpBin.substring(12, 16), 2)],
+              drivingTimeState2:
+                  dTimeStates[parseInt(tachographExpBin.substring(20, 24), 2)],
+              vehicleMotion:
+                  tachographExpBin.substring(26, 28) === '00'
+                    ? 'not detected'
+                    : tachographExpBin.substring(24, 26) === '01'
+                      ? 'detected'
+                      : 'invalid data',
+              drivingDirection:
+                  tachographExpBin.substring(28, 30) === '000'
+                    ? 'forward'
+                    : tachographExpBin.substring(26, 29) === '001'
+                      ? 'backward'
+                      : tachographExpBin.substring(26, 29) === '010'
+                        ? 'left'
+                        : tachographExpBin.substring(26, 29) === '011'
+                          ? 'right'
+                          : 'invalid data',
+              overspeed:
+                  tachographExpBin.substring(30, 32) === '00'
+                    ? 'not detected'
+                    : tachographExpBin.substring(29, 31) === '01'
+                      ? 'detected'
+                      : 'invalid data'
+            }
+            : null,
+        canReportExpansionMask1:
+          repExpMask && repExpMask.canReportExpansionMask1 && parsedData[crm1Ix]
+            ? repExpMask1
             : null
-      }
+      },
+      electricVehicles: evReport
+        ? {
+          raw: evReport.raw,
+          binevReportMask: evReport.binevReportMask,
+          chargeStateOptimization: evReport.chargeStateOptimization,
+          totalEnergyCharged: evReport.totalEnergyCharged
+            ? parseFloat(evReport.totalEnergyCharged)
+            : null,
+          totalEnergyUsedWhenIdling: evReport.totalEnergyUsedWhenIdling
+            ? parseFloat(evReport.totalEnergyUsedWhenIdling)
+            : null,
+          totalEnergyUsed: evReport.totalEnergyUsed
+            ? parseFloat(evReport.totalEnergyUsed)
+            : null,
+          batteryStateOfHealth: evReport.batteryStateOfHealth
+            ? parseFloat(evReport.batteryStateOfHealth)
+            : null
+        }
+        : null
     }
   ]
 }
@@ -1908,9 +2552,13 @@ const getAlarm = (command, report, extra = false) => {
     command === 'GTALM' ||
     command === 'GTALS'
   ) {
+    const instruction =
+      command === 'GTALS'
+        ? report.split(',')[4]
+        : command === 'GTALM' ? report.split(',')[6] : report.split(',')[7]
     return {
       type: command,
-      status: 'CONFIG',
+      status: instruction,
       message: report
     }
   } else if (command === 'GTCID') {
@@ -2195,10 +2843,12 @@ module.exports = {
   dTimeStates: dTimeStates,
   dWorkingStates: dWorkingStates,
   gnssTriggerTypes: gnssTriggerTypes,
+  jammingSateTypes: jammingSateTypes,
   latamMcc: latamMcc,
   getDevice: getDevice,
   getProtocolVersion: getProtocolVersion,
   checkGps: checkGps,
+  includeJammingSate: includeJammingSate,
   includeSatellites: includeSatellites,
   includeGnssTrigger: includeGnssTrigger,
   includeStatus: includeStatus,
