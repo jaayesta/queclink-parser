@@ -2,7 +2,13 @@
 
 const langEs = require('./messages/es.json')
 const langEn = require('./messages/en.json')
-const langs = { es: langEs, en: langEn }
+const langPt = require('./messages/pt.json')
+const langs = { es: langEs, en: langEn, pt: langPt }
+
+let currentLang = 'es'
+const setLang = lang => {
+  currentLang = lang
+}
 
 /*
   Data patterns
@@ -2100,7 +2106,7 @@ const getBleData = (parsedData, btIndex) => {
   Gets the alarm type
 */
 const getAlarm = (command, report, extra = false) => {
-  const messages = langs['es']
+  const messages = langs[currentLang] || langs['es']
   if (
     command === 'GTFRI' ||
     command === 'GTERI' ||
@@ -2862,6 +2868,7 @@ module.exports = {
   getCanData: getCanData,
   getBleData: getBleData,
   getAlarm: getAlarm,
+  setLang: setLang,
   createDefaultOut: createDefaultOut,
   bin2dec: bin2dec,
   bin2hex: bin2hex,
