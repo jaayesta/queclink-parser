@@ -1,3 +1,11 @@
+#### 1.9.27 (2026-03-16)
+
+##### Bug Fixes
+
+* **hbe:**
+  *  se corrige unidad de medida de duración del evento ([6ef963a2](https://github.com/jaayesta/queclink-parser/commit/6ef963a27ddcfce95a46573d413723f258fdff6c))
+  *  se corrige duración del evento ([2761d04b](https://github.com/jaayesta/queclink-parser/commit/2761d04bd5eb6e327f981f7a57e836b93ac7dbf6))
+
 #### 1.9.26 (2026-03-13)
 
 ##### New Features
