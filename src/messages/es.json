@@ -214,11 +214,11 @@
     "5": "Comportamiento Brusco Desconocido"
   },
   "GTHBE": {
-    "0": "Frenada Brusca de X m/s² durante Z milisegundos",
-    "1": "Aceleración Brusca de X m/s² durante Z milisegundos",
-    "2": "Giro Brusco de X m/s² durante Z milisegundos",
-    "3": "Frenada Brusca Girando de X m/s² durante Z milisegundos",
-    "4": "Aceleración Brusca Girando de X m/s² durante Z milisegundos",
+    "0": "Frenada Brusca de X m/s² durante Z segundos",
+    "1": "Aceleración Brusca de X m/s² durante Z segundos",
+    "2": "Giro Brusco de X m/s² durante Z segundos",
+    "3": "Frenada Brusca Girando de X m/s² durante Z segundos",
+    "4": "Aceleración Brusca Girando de X m/s² durante Z segundos",
     "5": "Comportamiento Brusco Desconocido"
   },
   "GTDOG": {
