@@ -3381,8 +3381,12 @@ const parse = raw => {
       ? parsedData[index + 3] !== '' ? parsedData[index + 3] : null
       : parsedData[index + 2] !== '' ? parsedData[index + 2] : null
     let duration = includeStatus
-      ? parsedData[index + 4] !== '' ? parseFloat(parsedData[index + 4]) : null
-      : parsedData[index + 3] !== '' ? parseFloat(parsedData[index + 3]) : null
+      ? parsedData[index + 4] !== ''
+        ? parseFloat(parsedData[index + 4]) / 100
+        : null
+      : parsedData[index + 3] !== ''
+        ? parseFloat(parsedData[index + 3]) / 100
+        : null
     let speed = parsedData[8] !== '' ? parseFloat(parsedData[8]) : null
 
     data = Object.assign(data, {
