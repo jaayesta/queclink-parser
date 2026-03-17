@@ -1,3 +1,9 @@
+#### 1.9.28 (2026-03-17)
+
+##### Bug Fixes
+
+* **gl533cg:**  se agrega campo en alarma PNR y se modifican mensajes. ([dd10d272](https://github.com/jaayesta/queclink-parser/commit/dd10d2721d08d87e5275b7a617ac305a3a901ae6))
+
 #### 1.9.27 (2026-03-16)
 
 ##### Bug Fixes
