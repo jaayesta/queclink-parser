@@ -1,3 +1,9 @@
+#### 1.9.29 (2026-03-20)
+
+##### Bug Fixes
+
+* **config:**  se corrige status en consulta de configuración. ([75e29aa1](https://github.com/jaayesta/queclink-parser/commit/75e29aa185dd6002b0d2fd5c6fb3e1dadbbe6dd8))
+
 #### 1.9.28 (2026-03-17)
 
 ##### Bug Fixes
