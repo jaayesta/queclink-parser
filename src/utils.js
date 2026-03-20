@@ -2556,7 +2556,7 @@ const getAlarm = (command, report, extra = false) => {
     const instruction =
       command === 'GTALS'
         ? report.split(',')[4]
-        : command === 'GTALM' ? report.split(',')[6] : report.split(',')[7]
+        : command === 'GTALC' ? report.split(',')[6] : report.split(',')[7]
     return {
       type: command,
       status: instruction,
