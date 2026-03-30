@@ -1,0 +1,334 @@
+{
+  "SETOVERSPEEDALARM": "Ajuste do alarme de excesso de velocidade",
+  "SETIOSWITCH": "Alteração de estado nas saídas digitais",
+  "CLEARBUF": "Memória interna esvaziada",
+  "REBOOT": "Dispositivo Reiniciado",
+  "ANTIJAMMER": "Anti-Jammer configurado",
+  "REQUESTCURRENTPOSITION": "Solicitação de posição atual",
+  "default": "Última ação",
+  "GTIDA": {
+    "1": "Condutor identificado autorizado",
+    "0": "Condutor identificado não autorizado",
+    "2": "Término de sessão de condutor identificado."
+  },
+  "GTSVR": {
+    "0": "Conexão com o dispositivo perdida",
+    "1": "Dispositivo reconectado",
+    "2": "Falha na conexão do dispositivo durante a instalação"
+  },
+  "GTFLA": "Combustível reduzido em consumption%",
+  "GTTMP": {
+    "0": "Temperatura fora da faixa ()",
+    "1": "Retorno à temperatura dentro da faixa ()"
+  },
+  "GTCAN": "Relatório Can Bus",
+  "GTCLT": "Alarme Can Bus", 
+  "GTJES": "Resumo de dados OBDII",
+  "GTOSM": {
+    "0": {
+      "0": "RPM dentro da faixa permitida",
+      "1": "RPM fora da faixa permitida"
+    },
+    "1": {
+      "0": "Velocidade dentro da faixa permitida",
+      "1": "Velocidade fora da faixa permitida"
+    },
+    "2": {
+      "0": "Temperatura do fluido de arrefecimento dentro da faixa permitida",
+      "1": "Temperatura do fluido de arrefecimento fora da faixa permitida"
+    },
+    "3": {
+      "0": "Consumo de combustível dentro da faixa permitida",
+      "1": "Consumo de combustível fora da faixa permitida"
+    },
+    "4": {
+      "0": "Consumo de combustível dentro da faixa permitida",
+      "1": "Consumo de combustível fora da faixa permitida"
+    },
+    "5": {
+      "0": "MIL dentro da faixa permitida",
+      "1": "MIL fora da faixa permitida"
+    },
+    "6": {
+      "0": "Acelerador dentro da faixa permitida",
+      "1": "Acelerador fora da faixa permitida"
+    },
+    "7": {
+      "0": "Carga do motor dentro da faixa permitida",
+      "1": "Carga do motor fora da faixa permitida"
+    },
+    "8": {
+      "0": "Nível de combustível dentro da faixa permitida",
+      "1": "Nível de combustível baixo"
+    }
+  },
+  "GTOPN": "OBDII Conectado",
+  "GTOPF": "OBDII Desconectado",
+  "GTGSS": {
+    "1": "Sinal GPS recuperado",
+    "0": "Sem sinal GPS"
+  },
+  "GTPDP": "Conexão GPRS estabelecida",
+  "GTSTT": "Movimento do dispositivo detectado",
+  "GTAVC": {
+    "0": "Porta serial desconectada",
+    "1": "Porta serial conectada"
+  },
+  "GTHBD": "Conexão ativa (Heartbeat)",
+  "GTRMD": {
+    "3": "Bloqueio de roaming",
+    "2": "Roaming desconhecido ativado",
+    "1": "Roaming conhecido ativado",
+    "0": "Roaming desativado"
+  },
+  "GTNMR": {
+    "1": "Dispositivo em movimento",
+    "0": "Dispositivo parado"
+  },
+  "GTSTP": "Veículo parado",
+  "GTLSP": "Parada prolongada detectada",
+  "GTSTR": "Veículo iniciando movimento",
+  "GTANT": {
+    "0": "Antena GPS conectada",
+    "1": "Antena GPS desconectada",
+    "3": "Antena GPS em estado desconhecido"
+  },
+  "GTAIS": {
+    "2": "Botão SOS pressionado"
+  },
+  "GTMAI": {
+    "2": "Botão SOS pressionado"
+  },
+  "GTEPS": "Bateria da fonte de alimentação baixa",
+  "GTJDR": "Jamming detectado",
+  "GTJDS": {
+    "1": "Cessação de Jammer",
+    "2": "Veículo com Jammer detectado"
+  },
+  "GTGPJ": {
+    "0": "GPS Jammer desconhecido",
+    "1": "GPS Jammer insignificante",
+    "2": "Aviso de Jammer GPS",
+    "3": "Veículo com Jammer detectado (GPS)"
+  },
+  "GTIDF": "Veículo fora de marcha lenta (Ralenti)",
+  "GTIDN": "Veículo em marcha lenta (Ralenti)",
+  "GTBPL": "Bateria baixa",
+  "GTSTC": "Carregamento da bateria interrompido",
+  "GTBTC": "Carregando bateria",
+  "GTDRM": "Dispositivo removido",
+  "GTEPF": "Desconectado da fonte de alimentação",
+  "GTMPF": "Desconectado da fonte de alimentação",
+  "GTMPN": "Conectado à fonte de alimentação",
+  "GTEMP": "Conectado à fonte de alimentação",
+  "GTPFA": "Dispositivo Desligado",
+  "GTPNA": "Dispositivo Ligado",
+  "GTIGN": "Entrada digital 1 ativada",
+  "GTIGF": "Entrada digital 1 desativada",
+  "GTAUR": "Configuração AU100",
+  "GTIGL": {
+    "1": "Entrada digital 1 ativada",
+    "0": "Entrada digital 1 desativada"
+  },
+  "GTVGL": {
+    "1": "Entrada virtual 1 ativada",
+    "0": "Entrada virtual 1 desativada"
+  },
+  "GTVGN": {
+    "0": "Entrada virtual 1 ativada por motivo desconhecido",
+    "1": "Entrada virtual 1 ativada por sensor de movimento",
+    "2": "Entrada virtual 1 ativada por fonte de alimentação",
+    "3": "Entrada virtual 1 ativada por motivo desconhecido",
+    "4": "Entrada virtual 1 ativada por acelerômetro",
+    "5": "Entrada virtual 1 ativada por evento na fonte de alimentação",
+    "7": "Entrada virtual 1 ativada por sensor de movimento e acelerômetro"
+  },
+  "GTVGF": {
+    "0": "Entrada virtual 1 desativada por motivo desconhecido",
+    "1": "Entrada virtual 1 desativada por sensor de movimento",
+    "2": "Entrada virtual 1 desativada por fonte de alimentação",
+    "3": "Entrada virtual 1 desativada por motivo desconhecido",
+    "4": "Entrada virtual 1 desativada por acelerômetro",
+    "5": "Entrada virtual 1 ativada por evento na fonte de alimentação",
+    "7": "Entrada virtual 1 desativada por sensor de movimento e acelerômetro"
+  },
+  "GTPNR": {
+    "0": "Dispositivo ligado",
+    "1": "Dispositivo reiniciado por Atualização de Firmware",
+    "2": "Dispositivo operando novamente",
+    "3": "Dispositivo operando novamente",
+    "5": "Dispositivo reiniciado por protocolo watchdog",
+    "6": "Reinicialização por atualização de configuração"
+  },
+  "GTPFR": {
+    "0": "Dispositivo desligado remotamente",
+    "1": "Dispositivo desligado por bateria baixa",
+    "2": "Dispositivo desligado por reinicialização remota",
+    "3": "Dispositivo desligado por protocolo watchdog"
+  },
+  "GTSPD": {
+    "0": "Excesso de Velocidade",
+    "1": "Retorno à velocidade permitida"
+  },
+  "GTSOS": "Botão SOS pressionado",
+  "GTWPB": "Botão SOS pressionado",
+  "GTTOW": "Veículo rebocado",
+  "GTDIS": {
+    "1": "Entrada digital id ativada",
+    "0": "Entrada digital id desativada"
+  },
+  "GTIOB": "Saída digital modificada por IOB",
+  "GTDOS": {
+    "1": "Saída digital ativada",
+    "0": "Saída digital desativada"
+  },
+  "GTDOM": "Saída digital ativada",
+  "GTNMD": {
+    "0": "Veículo em movimento",
+    "1": "Veículo parado"
+  },
+  "GTDAT": "Dados da porta serial recebidos",
+  "GTSOA": "Compartimento do cartão SIM aberto",
+  "GTHBM": {
+    "0": "Frenagem Brusca",
+    "1": "Aceleração Brusca",
+    "2": "Curva Brusca",
+    "3": "Frenagem Brusca em Curva",
+    "4": "Aceleração Brusca em Curva",
+    "5": "Comportamento Brusco Desconhecido"
+  },
+  "GTHBE": {
+    "0": "Fim de Frenagem Brusca",
+    "1": "Fim de Aceleração Brusca",
+    "2": "Fim de Curva Brusca",
+    "3": "Fim de Frenagem Brusca em Curva",
+    "4": "Fim de Aceleração Brusca em Curva",
+    "5": "Fim de Comportamento Brusco Desconhecido"
+  },
+  "GTDOG": {
+    "1": "Dispositivo reiniciado por frequência configurada",
+    "2": "Dispositivo reiniciado por ignição",
+    "3": "Dispositivo reiniciado por entrada digital",
+    "4": "Dispositivo reiniciado por estar sem sinal GSM",
+    "5": "Dispositivo reiniciado por estar sem internet móvel",
+    "6": "Dispositivo reiniciado por erro de comunicação"
+  },
+  "GTGSM": "Relatório de antenas GSM",
+  "GTCRA": "Possível colisão detectada",
+  "GTCRD": "Informação do acelerômetro de 3 eixos",
+  "GTACC": "Informação do acelerômetro",
+  "GTCRG": {
+    "0": "Informação anterior à possível colisão recebida",
+    "1": "Informação posterior à possível colisão recebida"
+  },
+  "GTASC": "Acelerômetro calibrado automaticamente",
+  "GTDTT": "Dados transparentes da porta serial",
+  "GTMON": "Chamada telefônica concluída",
+  "GTCID": "ICC do SIM: data",
+  "GTCSQ": "Nível de sinal GSM: data%",
+  "GTVER": "FW: data0 - HW: data1",
+  "GTBCS": "Acessório Bluetooth conectado",
+  "GTBDS": "Acessório Bluetooth desconectado",
+  "GTBAA": {
+    "00": "Acessório com bateria baixa",
+    "01": "Temperatura abaixo da faixa definida ()",
+    "02": "Temperatura acima da faixa definida ()",
+    "03": "Retorno à temperatura dentro da faixa ()",
+    "04": "Botão pressionado",
+    "07": "Baixo nível de umidade ()",
+    "08": "Alto nível de umidade ()",
+    "09": "Retorno à umidade dentro da faixa ()",
+    "0A": "Evento de ângulo",
+    "0C": "Evento de magneto",
+    "0E": "Pneu com pressão baixa ()",
+    "0F": "Pneu com pressão alta ()",
+    "10": "Retorno à pressão de pneus dentro da faixa ()",
+    "11": "Acessório Bluetooth não detectado",
+    "12": "Acessório Bluetooth detectado",
+    "13": "Porta aberta",
+    "14": "Porta fechada",
+    "15": "Relé Bluetooth __"
+  },
+  "GTBID": "Baliza (Beacon) Bluetooth detectada",
+  "GTLBA": {
+    "1": "Bateria baixa no WTS100",
+    "2": "Bateria baixa no WTH100",
+    "3": "Bateria baixa no botão SOS Bluetooth"
+  },
+  "+ACK": {
+    "GTBSI": "Config: APN",
+    "GTSRI": "Config: servidor backend",
+    "GTQSS": "Config: APN e servidor backend",
+    "GTMQT": "Config: servidor MQTT",
+    "GTTLS": "Config: criptografia de dados",
+    "GTCFG": "Configuração geral",
+    "GTPIN": "Config: desbloqueio de SIM",
+    "GTDOG": "Config: Protocolo watchdog",
+    "GTTMA": "Config: Ajuste de fuso horário",
+    "GTOWH": "Config: horário comercial",
+    "GTPDS": "Config: preservar estados",
+    "GTUPC": "Atualização OTA",
+    "GTFRI": "Config: relatórios de localização",
+    "GTFFC": "Config: frequência de relatório FRI",
+    "GTTOW": "Alarme configurado: reboque",
+    "GTSPD": "Alarme configurado: velocidade",
+    "GTSPA": "Alarme configurado: excesso de velocidade",
+    "GTBZA": "Alarme configurado: buzzer",
+    "GTSOS": "Alarme configurado: botão SOS",
+    "GTIDL": "Alarme configurado: marcha lenta",
+    "GTRMD": "Alarme configurado: roaming",
+    "GTHBM": "Alarme configurado: direção brusca",
+    "GTSSR": "Alarme configurado: detecção de paradas",
+    "GTCRA": "Alarme configurado: detecção de colisões",
+    "GTJBS": "Alarme configurado: jamming",
+    "GTJDC": "Config: detecção de jamming",
+    "GTASC": "Config: autocalibração de acelerômetro",
+    "GTOUT": "Config: saídas digitais",
+    "GTDOS": "Config: saídas digitais",
+    "GTDIS": "Config: entradas digitais",
+    "GTGDO": "Config: saídas digitais graduais",
+    "GTROS": "Config: restrição de saídas",
+    "GTEPS": "Config: monitoramento na fonte de alimentação",
+    "GTURT": "Config: comunicação serial",
+    "GTDAT": "Config: transparência de dados",
+    "GTIDA": "Config: identificação de condutor",
+    "GTACD": "Config: dispositivo AC100",
+    "GTTMP": "Config: alarme de temperatura",
+    "GTUDT": "Config: dados para porta serial",
+    "GTCMS": "Config: câmera serial",
+    "GTTAP": "Config: captura de fotografia",
+    "GTCAN": "Config: leitura de CANBUS",
+    "GTVVS": "Config: ignição virtual",
+    "GTAVS": "Config: ignição por acelerômetro",
+    "GTVMS": "Config: modo de ignição",
+    "GTBTS": "Config: bluetooth geral",
+    "GTBAS": "Config: acessório bluetooth",
+    "GTBID": "Config: baliza (beacon) bluetooth", 
+    "GTHMC": "Config: horímetro",
+    "GTCMD": "Config: novo comando em memória",
+    "GTUDF": "Config: função personalizada",
+    "GTRTO": {
+      "GPS": "O estado GNSS será enviado",
+      "RTL": "Solicitação de posição atual",
+      "READ": "Solicitação de configuração vigente",
+      "REBOOT": "Dispositivo Reiniciado",
+      "RESET": "Restaurar configuração de fábrica",
+      "PWROFF": "Dispositivo desligado",
+      "CID": "Solicitação: ICC do SIM",
+      "CSQ": "Solicitação: nível de sinal GSM",
+      "VER": "Solicitação: versão de firmware",
+      "BAT": "Solicitação: nível de bateria",
+      "IOS": "Solicitação: estados I/O",
+      "GSV": "Solicitação: informações de satélites GNSS",
+      "CAN": "Solicitação: informações de CANbus",
+      "CVN": "Solicitação: versão do CAN100",
+      "CSN": "Solicitação: serial do CAN100",
+      "BLE": "Solicitação: info de bluetooth",
+      "ATI": "Solicitação: informações básicas de AVL",
+      "CAN100 Operation": "Solicitação: veículo via CANbus",
+      "SCS": "Solicitação: estado de calibração 3-eixos",
+      "DELBUF": "Os relatórios armazenados foram excluídos",
+      "RLY": "Ação sobre Relé BT"
+    }
+  }
+}
