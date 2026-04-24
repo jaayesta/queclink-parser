@@ -2271,6 +2271,7 @@ const getAlarm = (command, report, extra = false) => {
       type: 'Power_Reason',
       status: command === 'GTPNR',
       dailyWakeup: report === '09' || false,
+      reason: report,
       message: messages[command][report]
     }
   } else if (command === 'GTMPN' || command === 'GTEPN') {
