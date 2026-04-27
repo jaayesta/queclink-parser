@@ -116,6 +116,7 @@ const getImei = raw => {
 const parse = (raw, options) => {
   let result = { type: 'UNKNOWN', raw: raw.toString() }
   options = options || {}
+  utils.setLang(options.lang || 'es')
   if (
     utils.patterns.message.test(raw.toString()) ||
     utils.patterns.ack.test(raw.toString()) ||

@@ -1,6 +1,334 @@
 {
-  "SETOVERSPEEDALARM": "Set over speed alarm",
-  "SETIOSWITCH": "Set IO Switch",
-  "CLEARBUF": "Clear internal buffer",
-  "default": "Last action"
+  "SETOVERSPEEDALARM": "Overspeed alarm setting",
+  "SETIOSWITCH": "Digital output state change",
+  "CLEARBUF": "Internal memory cleared",
+  "REBOOT": "Device Rebooted",
+  "ANTIJAMMER": "Anti-Jammer configured",
+  "REQUESTCURRENTPOSITION": "Current position request",
+  "default": "Last action",
+  "GTIDA": {
+    "1": "Authorized identified driver",
+    "0": "Unauthorized identified driver",
+    "2": "Identified driver session ended"
+  },
+  "GTSVR": {
+    "0": "Connection to device lost",
+    "1": "Device reconnected",
+    "2": "Device connection failed during installation"
+  },
+  "GTFLA": "Fuel reduced by consumption%",
+  "GTTMP": {
+    "0": "Temperature out of range ()",
+    "1": "Temperature returned to range ()"
+  },
+  "GTCAN": "Can Bus report",
+  "GTCLT": "Can Bus alarm",
+  "GTJES": "OBDII data summary",
+  "GTOSM": {
+    "0": {
+      "0": "RPM within allowed range",
+      "1": "RPM outside allowed range"
+    },
+    "1": {
+      "0": "Speed within allowed range",
+      "1": "Speed outside allowed range"
+    },
+    "2": {
+      "0": "Coolant temperature within allowed range",
+      "1": "Coolant temperature outside allowed range"
+    },
+    "3": {
+      "0": "Fuel consumption within allowed range",
+      "1": "Fuel consumption outside allowed range"
+    },
+    "4": {
+      "0": "Fuel consumption within allowed range",
+      "1": "Fuel consumption outside allowed range"
+    },
+    "5": {
+      "0": "MIL within allowed range",
+      "1": "MIL outside allowed range"
+    },
+    "6": {
+      "0": "Throttle within allowed range",
+      "1": "Throttle outside allowed range"
+    },
+    "7": {
+      "0": "Engine load within allowed range",
+      "1": "Engine load outside allowed range"
+    },
+    "8": {
+      "0": "Fuel level within allowed range",
+      "1": "Low fuel level"
+    }
+  },
+  "GTOPN": "OBDII Connected",
+  "GTOPF": "OBDII Disconnected",
+  "GTGSS": {
+    "1": "GPS signal recovered",
+    "0": "No GPS signal"
+  },
+  "GTPDP": "GPRS connection established",
+  "GTSTT": "Device movement detected",
+  "GTAVC": {
+    "0": "Serial port disconnected",
+    "1": "Serial port connected"
+  },
+  "GTHBD": "Heartbeat connection",
+  "GTRMD": {
+    "3": "Roaming blocked",
+    "2": "Unknown roaming activated",
+    "1": "Known roaming activated",
+    "0": "Roaming deactivated"
+  },
+  "GTNMR": {
+    "1": "Device in motion",
+    "0": "Device stopped"
+  },
+  "GTSTP": "Vehicle stopped",
+  "GTLSP": "Extended stop detected",
+  "GTSTR": "Vehicle starts moving",
+  "GTANT": {
+    "0": "GPS antenna connected",
+    "1": "GPS antenna disconnected",
+    "3": "GPS antenna in unknown state"
+  },
+  "GTAIS": {
+    "2": "SOS button pressed"
+  },
+  "GTMAI": {
+    "2": "SOS button pressed"
+  },
+  "GTEPS": "Low External Power Supply Battery",
+  "GTJDR": "Jamming detected",
+  "GTJDS": {
+    "1": "Jamming ceased",
+    "2": "Vehicle Jammed"
+  },
+  "GTGPJ": {
+    "0": "Unknown GPS Jammer",
+    "1": "Insignificant GPS Jammer",
+    "2": "GPS Jammer warning",
+    "3": "Vehicle Jammed (GPS)"
+  },
+  "GTIDF": "Vehicle exiting Idling",
+  "GTIDN": "Vehicle Idling",
+  "GTBPL": "Low battery",
+  "GTSTC": "Battery charging stopped",
+  "GTBTC": "Battery charging",
+  "GTDRM": "Device removed",
+  "GTEPF": "Disconnected from power source",
+  "GTMPF": "Disconnected from power source",
+  "GTMPN": "Connected to power source",
+  "GTEMP": "Connected to power source",
+  "GTPFA": "Device Powered Off",
+  "GTPNA": "Device Powered On",
+  "GTIGN": "Digital input 1 activated",
+  "GTIGF": "Digital input 1 deactivated",
+  "GTAUR": "AU100 Configuration",
+  "GTIGL": {
+    "1": "Digital input 1 activated",
+    "0": "Digital input 1 deactivated"
+  },
+  "GTVGL": {
+    "1": "Virtual input 1 activated",
+    "0": "Virtual input 1 deactivated"
+  },
+  "GTVGN": {
+    "0": "Virtual input 1 activated for unknown reason",
+    "1": "Virtual input 1 activated by motion sensor",
+    "2": "Virtual input 1 activated by power source",
+    "3": "Virtual input 1 activated for unknown reason",
+    "4": "Virtual input 1 activated by accelerometer",
+    "5": "Virtual input 1 activated by power source event",
+    "7": "Virtual input 1 activated by motion sensor and accelerometer"
+  },
+  "GTVGF": {
+    "0": "Virtual input 1 deactivated for unknown reason",
+    "1": "Virtual input 1 deactivated by motion sensor",
+    "2": "Virtual input 1 deactivated by power source",
+    "3": "Virtual input 1 deactivated for unknown reason",
+    "4": "Virtual input 1 deactivated by accelerometer",
+    "5": "Virtual input 1 activated by power source event",
+    "7": "Virtual input 1 deactivated by motion sensor and accelerometer"
+  },
+  "GTPNR": {
+    "0": "Device powered on",
+    "1": "Device rebooted by Firmware Update",
+    "2": "Device operating again",
+    "3": "Device operating again",
+    "5": "Device rebooted by watchdog protocol",
+    "6": "Rebooted by configuration update"
+  },
+  "GTPFR": {
+    "0": "Device powered off remotely",
+    "1": "Device powered off due to low battery",
+    "2": "Device powered off by remote reboot",
+    "3": "Device powered off by watchdog protocol"
+  },
+  "GTSPD": {
+    "0": "Speeding",
+    "1": "Returned to allowed speed"
+  },
+  "GTSOS": "SOS button pressed",
+  "GTWPB": "SOS button pressed",
+  "GTTOW": "Vehicle towed",
+  "GTDIS": {
+    "1": "Digital input id activated",
+    "0": "Digital input id deactivated"
+  },
+  "GTIOB": "Digital output modified by IOB",
+  "GTDOS": {
+    "1": "Digital output activated",
+    "0": "Digital output deactivated"
+  },
+  "GTDOM": "Digital output activated",
+  "GTNMD": {
+    "0": "Vehicle in motion",
+    "1": "Vehicle stopped"
+  },
+  "GTDAT": "Serial port data received",
+  "GTSOA": "SIM card compartment open",
+  "GTHBM": {
+    "0": "Harsh Braking",
+    "1": "Harsh Acceleration",
+    "2": "Harsh Cornering",
+    "3": "Harsh Braking while Turning",
+    "4": "Harsh Acceleration while Turning",
+    "5": "Unknown Harsh Behavior"
+  },
+  "GTHBE": {
+    "0": "End of Harsh Braking",
+    "1": "End of Harsh Acceleration",
+    "2": "End of Harsh Cornering",
+    "3": "End of Harsh Braking while Turning",
+    "4": "End of Harsh Acceleration while Turning",
+    "5": "End of Unknown Harsh Behavior"
+  },
+  "GTDOG": {
+    "1": "Device rebooted by configured frequency",
+    "2": "Device rebooted by ignition",
+    "3": "Device rebooted by digital input",
+    "4": "Device rebooted due to no GSM signal",
+    "5": "Device rebooted due to no mobile internet",
+    "6": "Device rebooted due to communication error"
+  },
+  "GTGSM": "GSM antenna report",
+  "GTCRA": "Possible crash detected",
+  "GTCRD": "3-axis accelerometer information",
+  "GTACC": "Accelerometer information",
+  "GTCRG": {
+    "0": "Pre-crash information received",
+    "1": "Post-crash information received"
+  },
+  "GTASC": "Accelerometer automatically calibrated",
+  "GTDTT": "Serial port transparent data",
+  "GTMON": "Phone call completed",
+  "GTCID": "SIM ICCID: data",
+  "GTCSQ": "GSM signal level: data%",
+  "GTVER": "FW: data0 - HW: data1",
+  "GTBCS": "Bluetooth accessory connected",
+  "GTBDS": "Bluetooth accessory disconnected",
+  "GTBAA": {
+    "00": "Accessory with low battery",
+    "01": "Temperature below defined range ()",
+    "02": "Temperature above defined range ()",
+    "03": "Temperature returned to range ()",
+    "04": "Button pressed",
+    "07": "Low humidity level ()",
+    "08": "High humidity level ()",
+    "09": "Humidity returned to range ()",
+    "0A": "Angle event",
+    "0C": "Magnet event",
+    "0E": "Tire with low pressure ()",
+    "0F": "Tire with high pressure ()",
+    "10": "Tire pressure returned to range ()",
+    "11": "Bluetooth accessory not detected",
+    "12": "Bluetooth accessory detected",
+    "13": "Door open",
+    "14": "Door closed",
+    "15": "Bluetooth relay __"
+  },
+  "GTBID": "Bluetooth beacon detected",
+  "GTLBA": {
+    "1": "Low battery on WTS100",
+    "2": "Low battery on WTH100",
+    "3": "Low battery on Bluetooth SOS button"
+  },
+  "+ACK": {
+    "GTBSI": "Config: APN",
+    "GTSRI": "Config: backend server",
+    "GTQSS": "Config: APN and backend server",
+    "GTMQT": "Config: MQTT server",
+    "GTTLS": "Config: data encryption",
+    "GTCFG": "General configuration",
+    "GTPIN": "Config: SIM unlock",
+    "GTDOG": "Config: Watchdog protocol",
+    "GTTMA": "Config: Time zone adjustment",
+    "GTOWH": "Config: working hours",
+    "GTPDS": "Config: preserve states",
+    "GTUPC": "OTA Update",
+    "GTFRI": "Config: location reports",
+    "GTFFC": "Config: FRI report frequency",
+    "GTTOW": "Alarm configured: towing",
+    "GTSPD": "Alarm configured: speed",
+    "GTSPA": "Alarm configured: overspeeding",
+    "GTBZA": "Alarm configured: buzzer",
+    "GTSOS": "Alarm configured: SOS button",
+    "GTIDL": "Alarm configured: idling",
+    "GTRMD": "Alarm configured: roaming",
+    "GTHBM": "Alarm configured: harsh driving",
+    "GTSSR": "Alarm configured: stop detection",
+    "GTCRA": "Alarm configured: crash detection",
+    "GTJBS": "Alarm configured: jamming",
+    "GTJDC": "Config: jamming detection",
+    "GTASC": "Config: accelerometer auto-calibration",
+    "GTOUT": "Config: digital outputs",
+    "GTDOS": "Config: digital outputs",
+    "GTDIS": "Config: digital inputs",
+    "GTGDO": "Config: gradual digital outputs",
+    "GTROS": "Config: output restriction",
+    "GTEPS": "Config: power supply monitoring",
+    "GTURT": "Config: serial communication",
+    "GTDAT": "Config: data transparency",
+    "GTIDA": "Config: driver identification",
+    "GTACD": "Config: AC100 device",
+    "GTTMP": "Config: temperature alarm",
+    "GTUDT": "Config: data to serial port",
+    "GTCMS": "Config: serial camera",
+    "GTTAP": "Config: take photo",
+    "GTCAN": "Config: CANBUS reading",
+    "GTVVS": "Config: virtual ignition",
+    "GTAVS": "Config: ignition by accelerometer",
+    "GTVMS": "Config: ignition mode",
+    "GTBTS": "Config: general bluetooth",
+    "GTBAS": "Config: bluetooth accessory",
+    "GTBID": "Config: bluetooth beacon",
+    "GTHMC": "Config: hour meter",
+    "GTCMD": "Config: new command in memory",
+    "GTUDF": "Config: custom function",
+    "GTRTO": {
+      "GPS": "GNSS status will be sent",
+      "RTL": "Current position request",
+      "READ": "Current configuration request",
+      "REBOOT": "Device Rebooted",
+      "RESET": "Restore factory settings",
+      "PWROFF": "Device powered off",
+      "CID": "Request: SIM ICCID",
+      "CSQ": "Request: GSM signal level",
+      "VER": "Request: firmware version",
+      "BAT": "Request: battery level",
+      "IOS": "Request: I/O states",
+      "GSV": "Request: GNSS satellite information",
+      "CAN": "Request: CANbus information",
+      "CVN": "Request: CAN100 version",
+      "CSN": "Request: CAN100 serial",
+      "BLE": "Request: bluetooth info",
+      "ATI": "Request: basic AVL information",
+      "CAN100 Operation": "Request: vehicle via CANbus",
+      "SCS": "Request: 3-axis calibration status",
+      "DELBUF": "Stored reports have been deleted",
+      "RLY": "BT Relay action"
+    }
+  }
 }
