@@ -23,7 +23,7 @@ const parse = raw => {
     imei: parsedData[2],
     protocolVersion: utils.getProtocolVersion(parsedData[1]),
     temperature: null,
-    history: history,
+    history,
     sentTime: utils.parseDate(parsedData[parsedData.length - 2]),
     serialId: parseInt(parsedData[parsedData.length - 1], 16)
   }
@@ -48,59 +48,59 @@ const parse = raw => {
           raw: parsedData[24],
           sos: false,
           input: {
-            '1':
+            1:
               utils.nHexDigit(
                 utils.hex2bin(parsedData[24].substring(2, 4)),
                 6
               )[5] === '1',
-            '2':
+            2:
               utils.nHexDigit(
                 utils.hex2bin(parsedData[24].substring(2, 4)),
                 6
               )[4] === '1',
-            '3':
+            3:
               utils.nHexDigit(
                 utils.hex2bin(parsedData[24].substring(2, 4)),
                 6
               )[3] === '1',
-            '4':
+            4:
               utils.nHexDigit(
                 utils.hex2bin(parsedData[24].substring(2, 4)),
                 6
               )[2] === '1',
-            '5':
+            5:
               utils.nHexDigit(
                 utils.hex2bin(parsedData[24].substring(2, 4)),
                 6
               )[1] === '1',
-            '6':
+            6:
               utils.nHexDigit(
                 utils.hex2bin(parsedData[24].substring(2, 4)),
                 6
               )[0] === '1'
           },
           output: {
-            '1':
+            1:
               utils.nHexDigit(
                 utils.hex2bin(parsedData[24].substring(4, 6)),
                 5
               )[4] === '1',
-            '2':
+            2:
               utils.nHexDigit(
                 utils.hex2bin(parsedData[24].substring(4, 6)),
                 5
               )[3] === '1',
-            '3':
+            3:
               utils.nHexDigit(
                 utils.hex2bin(parsedData[24].substring(4, 6)),
                 5
               )[2] === '1',
-            '4':
+            4:
               utils.nHexDigit(
                 utils.hex2bin(parsedData[24].substring(4, 6)),
                 5
               )[1] === '1',
-            '5':
+            5:
               utils.nHexDigit(
                 utils.hex2bin(parsedData[24].substring(4, 6)),
                 5
@@ -163,59 +163,59 @@ const parse = raw => {
         raw: parsedData[25],
         sos: false,
         input: {
-          '1':
+          1:
             utils.nHexDigit(
               utils.hex2bin(parsedData[25].substring(2, 4)),
               6
             )[5] === '1',
-          '2':
+          2:
             utils.nHexDigit(
               utils.hex2bin(parsedData[25].substring(2, 4)),
               6
             )[4] === '1',
-          '3':
+          3:
             utils.nHexDigit(
               utils.hex2bin(parsedData[25].substring(2, 4)),
               6
             )[3] === '1',
-          '4':
+          4:
             utils.nHexDigit(
               utils.hex2bin(parsedData[25].substring(2, 4)),
               6
             )[2] === '1',
-          '5':
+          5:
             utils.nHexDigit(
               utils.hex2bin(parsedData[25].substring(2, 4)),
               6
             )[1] === '1',
-          '6':
+          6:
             utils.nHexDigit(
               utils.hex2bin(parsedData[25].substring(2, 4)),
               6
             )[0] === '1'
         },
         output: {
-          '1':
+          1:
             utils.nHexDigit(
               utils.hex2bin(parsedData[25].substring(4, 6)),
               5
             )[4] === '1',
-          '2':
+          2:
             utils.nHexDigit(
               utils.hex2bin(parsedData[25].substring(4, 6)),
               5
             )[3] === '1',
-          '3':
+          3:
             utils.nHexDigit(
               utils.hex2bin(parsedData[25].substring(4, 6)),
               5
             )[2] === '1',
-          '4':
+          4:
             utils.nHexDigit(
               utils.hex2bin(parsedData[25].substring(4, 6)),
               5
             )[1] === '1',
-          '5':
+          5:
             utils.nHexDigit(
               utils.hex2bin(parsedData[25].substring(4, 6)),
               5
@@ -263,7 +263,7 @@ const parse = raw => {
     let externalData = {
       eriMask: {
         raw: parsedData[4],
-        oneWire: oneWire,
+        oneWire,
         digitFuelSensor: false,
         rpm: false,
         rf: false
@@ -271,9 +271,9 @@ const parse = raw => {
       uartDeviceType: null
     }
     if (oneWire) {
-      let oneWireDevices = []
+      const oneWireDevices = []
       let count = 28
-      for (var k = 0; k < oneWireConnected; k++) {
+      for (let k = 0; k < oneWireConnected; k++) {
         oneWireDevices.push({
           deviceNumber: parsedData[count],
           deviceType: parsedData[count + 1],
@@ -289,7 +289,7 @@ const parse = raw => {
       })
     }
     data = Object.assign(data, {
-      externalData: externalData
+      externalData
     })
   } else if (command[1] === 'GTHBD') {
     // Heartbeat. It must response an ACK command
@@ -834,19 +834,19 @@ const parse = raw => {
         raw: parsedData[25] + parsedData[26],
         sos: utils.nHexDigit(utils.hex2bin(parsedData[27]), 6)[4] === '1',
         input: {
-          '1': utils.nHexDigit(utils.hex2bin(parsedData[27]), 6)[5] === '1',
-          '2': utils.nHexDigit(utils.hex2bin(parsedData[27]), 6)[4] === '1',
-          '3': utils.nHexDigit(utils.hex2bin(parsedData[27]), 6)[3] === '1',
-          '4': utils.nHexDigit(utils.hex2bin(parsedData[27]), 6)[2] === '1',
-          '5': utils.nHexDigit(utils.hex2bin(parsedData[27]), 6)[1] === '1',
-          '6': utils.nHexDigit(utils.hex2bin(parsedData[27]), 6)[0] === '1'
+          1: utils.nHexDigit(utils.hex2bin(parsedData[27]), 6)[5] === '1',
+          2: utils.nHexDigit(utils.hex2bin(parsedData[27]), 6)[4] === '1',
+          3: utils.nHexDigit(utils.hex2bin(parsedData[27]), 6)[3] === '1',
+          4: utils.nHexDigit(utils.hex2bin(parsedData[27]), 6)[2] === '1',
+          5: utils.nHexDigit(utils.hex2bin(parsedData[27]), 6)[1] === '1',
+          6: utils.nHexDigit(utils.hex2bin(parsedData[27]), 6)[0] === '1'
         },
         output: {
-          '1': utils.nHexDigit(utils.hex2bin(parsedData[27]), 5)[4] === '1',
-          '2': utils.nHexDigit(utils.hex2bin(parsedData[27]), 5)[3] === '1',
-          '3': utils.nHexDigit(utils.hex2bin(parsedData[27]), 5)[2] === '1',
-          '4': utils.nHexDigit(utils.hex2bin(parsedData[27]), 5)[1] === '1',
-          '5': utils.nHexDigit(utils.hex2bin(parsedData[27]), 5)[0] === '1'
+          1: utils.nHexDigit(utils.hex2bin(parsedData[27]), 5)[4] === '1',
+          2: utils.nHexDigit(utils.hex2bin(parsedData[27]), 5)[3] === '1',
+          3: utils.nHexDigit(utils.hex2bin(parsedData[27]), 5)[2] === '1',
+          4: utils.nHexDigit(utils.hex2bin(parsedData[27]), 5)[1] === '1',
+          5: utils.nHexDigit(utils.hex2bin(parsedData[27]), 5)[0] === '1'
         },
         charge: parseFloat(parsedData[4]) > 5
       },
@@ -1101,5 +1101,5 @@ const parse = raw => {
 }
 
 module.exports = {
-  parse: parse
+  parse
 }

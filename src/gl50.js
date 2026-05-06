@@ -23,7 +23,7 @@ const parse = raw => {
     imei: parsedData[2],
     protocolVersion: utils.getProtocolVersion(parsedData[1]),
     temperature: null,
-    history: history,
+    history,
     sentTime: utils.parseDate(parsedData[parsedData.length - 2]),
     serialId: parseInt(parsedData[parsedData.length - 1], 16)
   }
@@ -244,5 +244,5 @@ const parse = raw => {
 }
 
 module.exports = {
-  parse: parse
+  parse
 }

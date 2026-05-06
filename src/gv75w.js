@@ -23,7 +23,7 @@ const parse = raw => {
     imei: parsedData[2],
     protocolVersion: utils.getProtocolVersion(parsedData[1]),
     temperature: null,
-    history: history,
+    history,
     sentTime: utils.parseDate(parsedData[parsedData.length - 2]),
     serialId: parseInt(parsedData[parsedData.length - 1], 16)
   }
@@ -31,8 +31,8 @@ const parse = raw => {
   // Gps
   if (command[1] === 'GTFRI') {
     try {
-      let number = parsedData[6] !== '' ? parseInt(parsedData[6], 10) : 1
-      let index = 6 + 12 * number // odometer
+      const number = parsedData[6] !== '' ? parseInt(parsedData[6], 10) : 1
+      const index = 6 + 12 * number // odometer
 
       data = Object.assign(data, {
         alarm: utils.getAlarm(command[1], null),
@@ -51,28 +51,28 @@ const parse = raw => {
           raw: parsedData[index + 6],
           sos: false,
           input: {
-            '1':
+            1:
               utils.nHexDigit(
                 utils.hex2bin(
                   utils.nHexDigit(parsedData[index + 6], 10).substring(6, 8)
                 ),
                 4
               )[3] === '1',
-            '2':
+            2:
               utils.nHexDigit(
                 utils.hex2bin(
                   utils.nHexDigit(parsedData[index + 6], 10).substring(6, 8)
                 ),
                 4
               )[2] === '1',
-            '3':
+            3:
               utils.nHexDigit(
                 utils.hex2bin(
                   utils.nHexDigit(parsedData[index + 6], 10).substring(6, 8)
                 ),
                 4
               )[1] === '1',
-            '4':
+            4:
               utils.nHexDigit(
                 utils.hex2bin(
                   utils.nHexDigit(parsedData[index + 6], 10).substring(6, 8)
@@ -81,21 +81,21 @@ const parse = raw => {
               )[0] === '1'
           },
           output: {
-            '1':
+            1:
               utils.nHexDigit(
                 utils.hex2bin(
                   utils.nHexDigit(parsedData[index + 6], 10).substring(8, 10)
                 ),
                 3
               )[2] === '1',
-            '2':
+            2:
               utils.nHexDigit(
                 utils.hex2bin(
                   utils.nHexDigit(parsedData[index + 6], 10).substring(8, 10)
                 ),
                 3
               )[1] === '1',
-            '3':
+            3:
               utils.nHexDigit(
                 utils.hex2bin(
                   utils.nHexDigit(parsedData[index + 6], 10).substring(8, 10)
@@ -107,8 +107,8 @@ const parse = raw => {
           state:
             utils.nHexDigit(parsedData[index + 6], 10).substring(4, 6) !== ''
               ? utils.states[ // eslint-disable-line
-                utils.nHexDigit(parsedData[index + 6], 10).substring(4, 6)
-              ]
+                  utils.nHexDigit(parsedData[index + 6], 10).substring(4, 6)
+                ]
               : null
         },
         azimuth: parsedData[9] !== '' ? parseFloat(parsedData[9]) : null,
@@ -149,8 +149,8 @@ const parse = raw => {
     }
   } else if (command[1] === 'GTERI') {
     // GPS with AC100 Devices Connected
-    let number = parsedData[7] !== '' ? parseInt(parsedData[7], 10) : 1
-    let index = 7 + 12 * number // odometer
+    const number = parsedData[7] !== '' ? parseInt(parsedData[7], 10) : 1
+    const index = 7 + 12 * number // odometer
     data = Object.assign(data, {
       alarm: utils.getAlarm(command[1], null),
       loc: {
@@ -168,28 +168,28 @@ const parse = raw => {
         raw: parsedData[index + 6],
         sos: false,
         input: {
-          '1':
+          1:
             utils.nHexDigit(
               utils.hex2bin(
                 utils.nHexDigit(parsedData[index + 6], 10).substring(6, 8)
               ),
               4
             )[3] === '1',
-          '2':
+          2:
             utils.nHexDigit(
               utils.hex2bin(
                 utils.nHexDigit(parsedData[index + 6], 10).substring(6, 8)
               ),
               4
             )[2] === '1',
-          '3':
+          3:
             utils.nHexDigit(
               utils.hex2bin(
                 utils.nHexDigit(parsedData[index + 6], 10).substring(6, 8)
               ),
               4
             )[1] === '1',
-          '4':
+          4:
             utils.nHexDigit(
               utils.hex2bin(
                 utils.nHexDigit(parsedData[index + 6], 10).substring(6, 8)
@@ -198,21 +198,21 @@ const parse = raw => {
             )[0] === '1'
         },
         output: {
-          '1':
+          1:
             utils.nHexDigit(
               utils.hex2bin(
                 utils.nHexDigit(parsedData[index + 6], 10).substring(8, 10)
               ),
               3
             )[2] === '1',
-          '2':
+          2:
             utils.nHexDigit(
               utils.hex2bin(
                 utils.nHexDigit(parsedData[index + 6], 10).substring(8, 10)
               ),
               3
             )[1] === '1',
-          '3':
+          3:
             utils.nHexDigit(
               utils.hex2bin(
                 utils.nHexDigit(parsedData[index + 6], 10).substring(8, 10)
@@ -224,8 +224,8 @@ const parse = raw => {
         state:
           utils.nHexDigit(parsedData[index + 6], 10).substring(4, 6) !== ''
             ? utils.states[ // eslint-disable-line
-              utils.nHexDigit(parsedData[index + 6], 10).substring(4, 6)
-            ]
+                utils.nHexDigit(parsedData[index + 6], 10).substring(4, 6)
+              ]
             : null
       },
       azimuth: parsedData[10] !== '' ? parseFloat(parsedData[10]) : null,
@@ -271,16 +271,18 @@ const parse = raw => {
     const ac100DevicesConnected =
       AC100 && digitFuelSensor
         ? parseInt(parsedData[index + 9], 10)
-        : AC100 && !digitFuelSensor ? parseInt(parsedData[index + 8], 10) : 0
+        : AC100 && !digitFuelSensor
+          ? parseInt(parsedData[index + 8], 10)
+          : 0
 
     let externalData = {
       eriMask: {
         raw: parsedData[4],
-        digitFuelSensor: digitFuelSensor,
-        AC100: AC100,
-        reserved: reserved,
-        fuelLevelPercentage: fuelLevelPercentage,
-        fuelVolume: fuelVolume
+        digitFuelSensor,
+        AC100,
+        reserved,
+        fuelLevelPercentage,
+        fuelVolume
       },
       uartDeviceType: utils.uartDeviceTypes[parsedData[index + 7]]
     }
@@ -299,17 +301,17 @@ const parse = raw => {
               fuelVolume && fuelLevelPercentage && parsedData[index + 12] !== ''
                 ? parseInt(parsedData[index + 12], 10)
                 : fuelVolume &&
-                  !fuelLevelPercentage &&
-                  parsedData[index + 11] !== ''
+                    !fuelLevelPercentage &&
+                    parsedData[index + 11] !== ''
                   ? parseInt(parsedData[index + 11], 10)
                   : null
           },
           AC100Devices: null
         })
       } else if (!digitFuelSensor && AC100) {
-        let ac100Devices = []
+        const ac100Devices = []
         let count = index + 10
-        for (var i = 0; i < ac100DevicesConnected; i++) {
+        for (let i = 0; i < ac100DevicesConnected; i++) {
           ac100Devices.push({
             deviceNumber: parsedData[count],
             deviceType: parsedData[count + 1],
@@ -324,12 +326,14 @@ const parse = raw => {
           AC100Devices: ac100Devices
         })
       } else if (digitFuelSensor && AC100) {
-        let ac100Devices = []
+        const ac100Devices = []
         let count =
           fuelVolume && fuelLevelPercentage
             ? 33
-            : fuelVolume && !fuelLevelPercentage ? index + 13 : index + 12
-        for (var j = 0; j < ac100DevicesConnected; j++) {
+            : fuelVolume && !fuelLevelPercentage
+              ? index + 13
+              : index + 12
+        for (let j = 0; j < ac100DevicesConnected; j++) {
           ac100Devices.push({
             deviceNumber: parsedData[count],
             deviceType: parsedData[count + 1],
@@ -351,8 +355,8 @@ const parse = raw => {
               fuelVolume && fuelLevelPercentage && parsedData[index + 13] !== ''
                 ? parseInt(parsedData[index + 13], 10)
                 : fuelVolume &&
-                  !fuelLevelPercentage &&
-                  parsedData[index + 12] !== ''
+                    !fuelLevelPercentage &&
+                    parsedData[index + 12] !== ''
                   ? parseInt(parsedData[index + 12], 10)
                   : null
           },
@@ -362,9 +366,9 @@ const parse = raw => {
     } else if (parsedData[index + 7] === '2') {
       // AC100 1 Wire Bus
       if (!digitFuelSensor && AC100) {
-        let ac100Devices = []
+        const ac100Devices = []
         let count = index + 9
-        for (var k = 0; k < ac100DevicesConnected; k++) {
+        for (let k = 0; k < ac100DevicesConnected; k++) {
           ac100Devices.push({
             deviceNumber: parsedData[count],
             deviceType: parsedData[count + 1],
@@ -389,9 +393,9 @@ const parse = raw => {
           AC100Devices: null
         })
       } else if (digitFuelSensor && AC100) {
-        let ac100Devices = []
+        const ac100Devices = []
         let count = index + 10
-        for (var l = 0; l < ac100DevicesConnected; l++) {
+        for (let l = 0; l < ac100DevicesConnected; l++) {
           ac100Devices.push({
             deviceNumber: parsedData[count],
             deviceType: parsedData[count + 1],
@@ -413,7 +417,7 @@ const parse = raw => {
       }
     }
     data = Object.assign(data, {
-      externalData: externalData
+      externalData
     })
   } else if (command[1] === 'GTHBD') {
     // Heartbeat. It must response an ACK command
@@ -444,16 +448,16 @@ const parse = raw => {
         raw: parsedData[18] + parsedData[19],
         sos: false,
         input: {
-          '4': utils.nHexDigit(utils.hex2bin(parsedData[20][1]), 4)[0] === '1',
-          '3': utils.nHexDigit(utils.hex2bin(parsedData[20][1]), 4)[1] === '1',
-          '2': utils.nHexDigit(utils.hex2bin(parsedData[20][1]), 4)[2] === '1',
-          '1': utils.nHexDigit(utils.hex2bin(parsedData[20][1]), 4)[3] === '1'
+          4: utils.nHexDigit(utils.hex2bin(parsedData[20][1]), 4)[0] === '1',
+          3: utils.nHexDigit(utils.hex2bin(parsedData[20][1]), 4)[1] === '1',
+          2: utils.nHexDigit(utils.hex2bin(parsedData[20][1]), 4)[2] === '1',
+          1: utils.nHexDigit(utils.hex2bin(parsedData[20][1]), 4)[3] === '1'
         },
         output: {
-          '4': utils.nHexDigit(utils.hex2bin(parsedData[19][1]), 4)[0] === '1',
-          '3': utils.nHexDigit(utils.hex2bin(parsedData[19][1]), 4)[1] === '1',
-          '2': utils.nHexDigit(utils.hex2bin(parsedData[19][1]), 4)[2] === '1',
-          '1': utils.nHexDigit(utils.hex2bin(parsedData[19][1]), 4)[3] === '1'
+          4: utils.nHexDigit(utils.hex2bin(parsedData[19][1]), 4)[0] === '1',
+          3: utils.nHexDigit(utils.hex2bin(parsedData[19][1]), 4)[1] === '1',
+          2: utils.nHexDigit(utils.hex2bin(parsedData[19][1]), 4)[2] === '1',
+          1: utils.nHexDigit(utils.hex2bin(parsedData[19][1]), 4)[3] === '1'
         },
         charge: parsedData[8] === '1'
       },
@@ -521,8 +525,8 @@ const parse = raw => {
     })
   } else if (command[1] === 'GTTMP') {
     // Temperature Alarm
-    let number = parsedData[7] !== '' ? parseInt(parsedData[7], 10) : 1
-    let index = 8 + 12 * number // odometer
+    const number = parsedData[7] !== '' ? parseInt(parsedData[7], 10) : 1
+    const index = 8 + 12 * number // odometer
     data = Object.assign(data, {
       alarm: utils.getAlarm(command[1], parsedData[6], [
         parsedData[index + 9],
@@ -543,21 +547,21 @@ const parse = raw => {
         raw: `${parsedData[index + 4]}${parsedData[index + 5]}`,
         sos: false,
         input: {
-          '3':
+          3:
             utils.nHexDigit(utils.hex2bin(parsedData[index + 4][1]), 4)[1] ===
             '1',
-          '2':
+          2:
             utils.nHexDigit(utils.hex2bin(parsedData[index + 4][1]), 4)[2] ===
             '1',
-          '1':
+          1:
             utils.nHexDigit(utils.hex2bin(parsedData[index + 4][1]), 4)[3] ===
             '1'
         },
         output: {
-          '2':
+          2:
             utils.nHexDigit(utils.hex2bin(parsedData[index + 5][1]), 4)[2] ===
             '1',
-          '1':
+          1:
             utils.nHexDigit(utils.hex2bin(parsedData[index + 5][1]), 4)[3] ===
             '1'
         },
@@ -1045,15 +1049,15 @@ const parse = raw => {
       hourmeter: null
     })
   } else if (command[1] === 'GTCAN') {
-    let inicatorsBin =
+    const inicatorsBin =
       parsedData[24] !== ''
         ? utils.nHexDigit(utils.hex2bin(parsedData[24]), 16)
         : null
-    let lights =
+    const lights =
       parsedData[25] !== ''
         ? utils.nHexDigit(utils.hex2bin(parsedData[25]), 8)
         : null
-    let doors =
+    const doors =
       parsedData[26] !== ''
         ? utils.nHexDigit(utils.hex2bin(parsedData[26]), 8)
         : null
@@ -1235,7 +1239,7 @@ const parse = raw => {
         uartDeviceType: 'Camaleon',
         fuelSensorData: null
       }
-      let AC100Devices = [
+      const AC100Devices = [
         {
           deviceNumber: `${parsedData[2]}|1`,
           deviceType: '1',
@@ -1252,11 +1256,11 @@ const parse = raw => {
         })
       }
       externalData = Object.assign(externalData, {
-        AC100Devices: AC100Devices
+        AC100Devices
       })
       data = Object.assign(data, {
         alarm: utils.getAlarm('GTERI', null),
-        externalData: externalData
+        externalData
       })
     } else if (/^>ET/.test(parsedData[7])) {
       // Temp Alarms
@@ -1268,7 +1272,7 @@ const parse = raw => {
         parsedSerialData[4]
       ])
       data = Object.assign(data, {
-        alarm: alarm
+        alarm
       })
     } else if (/^>ID/.test(parsedData[7])) {
       // Checks if its a iButton GTDAT -> DT
@@ -1277,7 +1281,7 @@ const parse = raw => {
       const driverID = parsedSerialData[2] ? parsedSerialData[2] : ''
       const alarm = utils.getAlarm('GTIDA', `${driverID},1`)
       data = Object.assign(data, {
-        alarm: alarm
+        alarm
       })
     } else {
       // Normal GTDAT
@@ -1406,5 +1410,5 @@ const parse = raw => {
 }
 
 module.exports = {
-  parse: parse
+  parse
 }

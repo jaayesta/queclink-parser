@@ -351,10 +351,10 @@ describe('queclink-parzer', () => {
         instruction: '2_on',
         device_serie: 'GV',
         previousOutput: {
-          '1': true,
-          '2': false,
-          '3': false,
-          '4': true
+          1: true,
+          2: false,
+          3: false,
+          4: true
         }
       }
       const raw = queclink.parseCommand(data)
@@ -367,10 +367,10 @@ describe('queclink-parzer', () => {
         instruction: '1_on',
         device_serie: 'GMT',
         previousOutput: {
-          '1': false,
-          '2': false,
-          '3': false,
-          '4': false
+          1: false,
+          2: false,
+          3: false,
+          4: false
         }
       }
       const raw = queclink.parseCommand(data)
@@ -383,10 +383,10 @@ describe('queclink-parzer', () => {
         instruction: '2_on',
         device_serie: 'GMT',
         previousOutput: {
-          '1': false,
-          '2': false,
-          '3': false,
-          '4': false
+          1: false,
+          2: false,
+          3: false,
+          4: false
         }
       }
       const raw = queclink.parseCommand(data)
@@ -399,10 +399,10 @@ describe('queclink-parzer', () => {
         instruction: '2_on',
         device_serie: 'GMT',
         previousOutput: {
-          '1': true,
-          '2': false,
-          '3': false,
-          '4': false
+          1: true,
+          2: false,
+          3: false,
+          4: false
         }
       }
       const raw = queclink.parseCommand(data)
@@ -416,10 +416,10 @@ describe('queclink-parzer', () => {
         instruction: '2_off',
         device_serie: 'GV',
         previousOutput: {
-          '1': true,
-          '2': false,
-          '3': false,
-          '4': true
+          1: true,
+          2: false,
+          3: false,
+          4: true
         }
       }
       const raw = queclink.parseCommand(data)
@@ -432,10 +432,10 @@ describe('queclink-parzer', () => {
         instruction: '1_off',
         device_serie: 'GMT',
         previousOutput: {
-          '1': true,
-          '2': false,
-          '3': false,
-          '4': true
+          1: true,
+          2: false,
+          3: false,
+          4: true
         }
       }
       const raw = queclink.parseCommand(data)
@@ -448,22 +448,22 @@ describe('queclink-parzer', () => {
         serial: 4112,
         instruction: '2_on',
         previousOutput: {
-          '1': false,
-          '2': true,
-          '3': false,
-          '4': false
+          1: false,
+          2: true,
+          3: false,
+          4: false
         },
         previousDuration: {
-          '1': 0,
-          '2': 15,
-          '3': 0,
-          '4': 0
+          1: 0,
+          2: 15,
+          3: 0,
+          4: 0
         },
         previousToggle: {
-          '1': 0,
-          '2': 1,
-          '3': 0,
-          '4': 0
+          1: 0,
+          2: 1,
+          3: 0,
+          4: 0
         }
       }
       const raw = queclink.parseCommand(data)
