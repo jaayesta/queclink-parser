@@ -1,3 +1,18 @@
+#### 1.9.31 (2026-05-07)
+
+##### Chores
+
+* **dev:**  upgrade dev dependencies and fix vulnerabilities ([625a66a5](https://github.com/jaayesta/queclink-parser/commit/625a66a5a84a076527e3f5c773d2711336e8ab36))
+
+##### New Features
+
+* **node22:**  se actualiza el proyecto a node 22 ([a07c3c42](https://github.com/jaayesta/queclink-parser/commit/a07c3c423aa8c671ddc4f521ded7d8c5bb785117))
+* **pnr:**  se agrega motivo del reinicio. ([225f5fce](https://github.com/jaayesta/queclink-parser/commit/225f5fce94f0618cf99ad7b3fe56a1bdfe18877e))
+
+##### Bug Fixes
+
+* **readme:**  se actualiza documentación ([08f5e033](https://github.com/jaayesta/queclink-parser/commit/08f5e033464827d7f6b6becad59077331e78a39a))
+
 #### 1.9.29 (2026-03-20)
 
 ##### Bug Fixes
