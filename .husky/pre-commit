@@ -1,0 +1,8 @@
+[ -n "$CI" ] && exit 0
+
+npx --no-install lint-staged
+
+if git diff --cached --name-only | grep -qE '^(package|package-lock)\.json$'; then
+  echo "Lockfile/package.json changed → running npm audit (critical)..."
+  npm run audit:critical
+fi
