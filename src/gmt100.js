@@ -23,7 +23,7 @@ const parse = raw => {
     imei: parsedData[2],
     protocolVersion: utils.getProtocolVersion(parsedData[1]),
     temperature: null,
-    history: history,
+    history,
     sentTime: utils.parseDate(parsedData[parsedData.length - 2]),
     serialId: parseInt(parsedData[parsedData.length - 1], 16),
     hourmeter: null
@@ -48,12 +48,12 @@ const parse = raw => {
         raw: parsedData[24] + parsedData[25],
         sos: false,
         input: {
-          '1': utils.nHexDigit(utils.hex2bin(parsedData[24]), 2)[1] === '1',
-          '2': utils.nHexDigit(utils.hex2bin(parsedData[24]), 2)[0] === '1'
+          1: utils.nHexDigit(utils.hex2bin(parsedData[24]), 2)[1] === '1',
+          2: utils.nHexDigit(utils.hex2bin(parsedData[24]), 2)[0] === '1'
         },
         output: {
-          '1': utils.nHexDigit(utils.hex2bin(parsedData[25]), 2)[1] === '1',
-          '2': utils.nHexDigit(utils.hex2bin(parsedData[25]), 2)[0] === '1'
+          1: utils.nHexDigit(utils.hex2bin(parsedData[25]), 2)[1] === '1',
+          2: utils.nHexDigit(utils.hex2bin(parsedData[25]), 2)[0] === '1'
         },
         charge: parseFloat(parsedData[4]) > 5
       },
@@ -107,12 +107,12 @@ const parse = raw => {
         raw: parsedData[18] + parsedData[19],
         sos: false,
         input: {
-          '1': utils.nHexDigit(utils.hex2bin(parsedData[20]), 2)[1] === '1',
-          '2': utils.nHexDigit(utils.hex2bin(parsedData[20]), 2)[0] === '1'
+          1: utils.nHexDigit(utils.hex2bin(parsedData[20]), 2)[1] === '1',
+          2: utils.nHexDigit(utils.hex2bin(parsedData[20]), 2)[0] === '1'
         },
         output: {
-          '1': utils.nHexDigit(utils.hex2bin(parsedData[21]), 2)[1] === '1',
-          '2': utils.nHexDigit(utils.hex2bin(parsedData[21]), 2)[0] === '1'
+          1: utils.nHexDigit(utils.hex2bin(parsedData[21]), 2)[1] === '1',
+          2: utils.nHexDigit(utils.hex2bin(parsedData[21]), 2)[0] === '1'
         },
         charge: parsedData[8] === '1'
       },
@@ -548,5 +548,5 @@ const parse = raw => {
 }
 
 module.exports = {
-  parse: parse
+  parse
 }

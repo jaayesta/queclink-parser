@@ -78,7 +78,7 @@ const getAckHeartBeat = (protocolVersion, count) => {
   Returns the ACK for the given data
 */
 const getAck = serial => {
-  let count = utils.nHexDigit(utils.dec2hex(serial), 4).toUpperCase()
+  const count = utils.nHexDigit(utils.dec2hex(serial), 4).toUpperCase()
   return `+SACK:${count}$`
 }
 
@@ -174,13 +174,13 @@ const parse = (raw, options) => {
   Returns the ack command
 */
 const getAckCommand = (raw, lang) => {
-  const messages = utils.langs[lang] || utils.langs['es']
+  const messages = utils.langs[lang] || utils.langs.es
   const rawData = raw.substr(0, raw.length - 1)
   const parsedData = rawData.split(',')
   const command = parsedData[0].split(':')
   const isGT = command[1].startsWith('GT')
 
-  let data = {
+  const data = {
     raw: rawData,
     rawCommand: command[1],
     manufacturer: 'queclink',
@@ -237,7 +237,7 @@ const getNackCommand = (raw, lang) => {
       utils.hex2dec(parsedData[parsedData.length - 4]).toString()
     ] || 'Unknown'
 
-  let data = {
+  const data = {
     raw: rawData,
     rawCommand: command[1],
     manufacturer: 'queclink',
@@ -284,15 +284,15 @@ const parseCommand = data => {
       AT+GTOUT=gv800w,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,F,0,0,0,0,0,FFFF$
       AT+GTOUT=gv800w,0,0,0,0,0,0,0,0,0,0,0,0,0,0,,,0426$
     */
-    let _data = data.instruction.split('_')
+    const _data = data.instruction.split('_')
     port = parseInt(_data[0], 10)
     state = _data[1]
     prevOutputs = data.previousOutput || utils.createDefaultOut(5, false)
     prevDurations = data.previousDuration || utils.createDefaultOut(5, 0)
     prevToggles = data.previousToggle || utils.createDefaultOut(5, 0)
 
-    const outputs = Object.keys(prevOutputs).map(
-      key => (prevOutputs[key] === true ? 1 : 0)
+    const outputs = Object.keys(prevOutputs).map(key =>
+      prevOutputs[key] === true ? 1 : 0
     )
     outputs[0] = !outputs[0] ? 0 : outputs[0]
     outputs[1] = !outputs[1] ? 0 : outputs[1]
@@ -375,7 +375,7 @@ const parseCommand = data => {
     command = `AT+GTGPJ=${password},${mode},15,3,,,,,0,0,0,0,,${serialId}$`
   } else if (/^temp_alarm_(on|off)(E)?$/.test(data.instruction)) {
     // Temperature Alarm
-    let _data = data.instruction.split('_')
+    const _data = data.instruction.split('_')
     state = _data[2]
     mode = /on(E)?/.test(state) ? 3 : 0
     const alarmId = data.alarmId || 0
@@ -410,12 +410,12 @@ const parseCommand = data => {
 }
 
 module.exports = {
-  parse: parse,
-  isQueclink: isQueclink,
-  isHeartBeat: isHeartBeat,
-  getAckHeartBeat: getAckHeartBeat,
-  getAck: getAck,
-  parseCommand: parseCommand,
-  getRebootCommand: getRebootCommand,
-  getImei: getImei
+  parse,
+  isQueclink,
+  isHeartBeat,
+  getAckHeartBeat,
+  getAck,
+  parseCommand,
+  getRebootCommand,
+  getImei
 }

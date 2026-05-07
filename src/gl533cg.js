@@ -53,12 +53,12 @@ const parse = raw => {
   const reservedLen = buf.readUInt8(offset)
   offset += 1 + reservedLen
 
-  let data = {
+  const data = {
     raw: typeof raw === 'string' ? raw : raw.toString('hex').toUpperCase(),
     manufacturer: 'queclink',
     device: 'Queclink-GL533CG',
     type: 'data',
-    imei: imei,
+    imei,
     protocolVersion: utils.getProtocolVersion(
       `${deviceTypeStr}${protocolVersionStr}`
     ),
@@ -188,7 +188,9 @@ const parse = raw => {
         data.connectionMode =
           mode === 0x00
             ? 'Power saving'
-            : mode === 0x01 ? 'Continuous' : 'Unknown'
+            : mode === 0x01
+              ? 'Continuous'
+              : 'Unknown'
       } else if (dataId === 0x0a) {
         // Internal Battery Percentage
         data.voltage = data.voltage || {}
@@ -202,7 +204,9 @@ const parse = raw => {
             ? 'Normal'
             : rfState === 1
               ? 'Module abnormal'
-              : rfState === 2 ? 'Antenna abnormal' : 'Unknown'
+              : rfState === 2
+                ? 'Antenna abnormal'
+                : 'Unknown'
       } else if (dataId === 0x13) {
         // Triggered Time
         const triggeredTime = dataContent.readUInt32BE(0)
@@ -217,7 +221,9 @@ const parse = raw => {
         data.status.motion =
           motion === 0x00
             ? 'Motionless'
-            : motion === 0x01 ? 'Moving' : 'Unknown'
+            : motion === 0x01
+              ? 'Moving'
+              : 'Unknown'
         data.alarm = utils.getAlarm('GSENSOR', parseInt(motion).toString(2))
         // } else if (dataId === 0x22) { // Real-time Customization
         //   data.alarm = utils.getAlarm('GTINFO', null)
@@ -259,7 +265,11 @@ const parse = raw => {
         data.fixState =
           fixState === 0
             ? 'Off'
-            : fixState === 1 ? 'No fix' : fixState === 2 ? 'Fix' : 'Unknown'
+            : fixState === 1
+              ? 'No fix'
+              : fixState === 2
+                ? 'Fix'
+                : 'Unknown'
         data.fixMode = fixMode === 0 ? '2D' : fixMode === 1 ? '3D' : 'Unknown'
       } else if (dataId === 0x52) {
         // 82 Full Location
@@ -311,7 +321,11 @@ const parse = raw => {
         data.fixState =
           fixState === 0
             ? 'Off'
-            : fixState === 1 ? 'No fix' : fixState === 2 ? 'Fix' : 'Unknown'
+            : fixState === 1
+              ? 'No fix'
+              : fixState === 2
+                ? 'Fix'
+                : 'Unknown'
         data.fixMode = fixMode === 0 ? '2D' : fixMode === 1 ? '3D' : 'Unknown'
         data.satellites = satellites
       } else if (dataId === 0x55) {
@@ -442,7 +456,9 @@ const parse = raw => {
         const fieldName =
           dataId === 0x65
             ? 'upgradeInfo'
-            : dataId === 0x66 ? 'updateConfig' : 'getConfig'
+            : dataId === 0x66
+              ? 'updateConfig'
+              : 'getConfig'
         data[fieldName] = {
           status: status.code,
           reason: status.subcode,
@@ -520,5 +536,5 @@ const parse = raw => {
 }
 
 module.exports = {
-  parse: parse
+  parse
 }

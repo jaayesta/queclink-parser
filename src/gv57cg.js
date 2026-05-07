@@ -23,7 +23,7 @@ const parse = raw => {
     imei: parsedData[2],
     protocolVersion: utils.getProtocolVersion(parsedData[1]),
     // temperature: null,
-    history: history,
+    history,
     sentTime: utils.parseDate(parsedData[parsedData.length - 2]),
     serialId: parseInt(parsedData[parsedData.length - 1], 16)
   }
@@ -32,10 +32,10 @@ const parse = raw => {
   // "+RESP:GTFRI,8020060402,864696060060852,GV57CG,,10,1,0,,,,,,,0730,0001,13EE,0032A502,03,0,0,0.0,0000000:00:00,,,,0,210100,,,,20240925144523,0011$"
   if (command[1] === 'GTFRI') {
     try {
-      let number = parsedData[6] !== '' ? parseInt(parsedData[6], 10) : 1
-      let satelliteInfo = utils.includeSatellites(parsedData[18])
-      let gnssInfo = utils.includeGnssTrigger(parsedData[18])
-      let index = 6 + (12 + satelliteInfo + gnssInfo) * number + 1
+      const number = parsedData[6] !== '' ? parseInt(parsedData[6], 10) : 1
+      const satelliteInfo = utils.includeSatellites(parsedData[18])
+      const gnssInfo = utils.includeGnssTrigger(parsedData[18])
+      const index = 6 + (12 + satelliteInfo + gnssInfo) * number + 1
 
       data = Object.assign(data, {
         alarm: utils.getAlarm(command[1], null),
@@ -53,29 +53,29 @@ const parse = raw => {
           raw: parsedData[index + 6],
           sos: false,
           input: {
-            '2':
+            2:
               utils.nHexDigit(
                 utils.hex2bin(parsedData[index + 6].substring(2, 4)),
                 8
               )[6] === '1',
-            '1':
+            1:
               utils.nHexDigit(
                 utils.hex2bin(parsedData[index + 6].substring(2, 4)),
                 8
               )[7] === '1'
           },
           output: {
-            '3':
+            3:
               utils.nHexDigit(
                 utils.hex2bin(parsedData[index + 6].substring(4, 6)),
                 8
               )[5] === '1',
-            '2':
+            2:
               utils.nHexDigit(
                 utils.hex2bin(parsedData[index + 6].substring(4, 6)),
                 8
               )[6] === '1',
-            '1':
+            1:
               utils.nHexDigit(
                 utils.hex2bin(parsedData[index + 6].substring(4, 6)),
                 8
@@ -124,9 +124,9 @@ const parse = raw => {
 
       // More than 1 GNSS report in data
       if (number > 1) {
-        let moreData = []
+        const moreData = []
         for (let i = 1; i < number; i++) {
-          let gnssIx = 7 + (12 + gnssInfo + satelliteInfo) * i
+          const gnssIx = 7 + (12 + gnssInfo + satelliteInfo) * i
 
           moreData.push({
             index: i,
@@ -183,23 +183,23 @@ const parse = raw => {
               gnssInfo &&
               parsedData[gnssIx + satelliteInfo + gnssInfo + 11] !== ''
                 ? utils.gnssTriggerTypes[
-                  parsedData[gnssIx + satelliteInfo + gnssInfo + 11]
-                ]
+                    parsedData[gnssIx + satelliteInfo + gnssInfo + 11]
+                  ]
                 : null
           })
         }
 
-        data = Object.assign(data, { moreData: moreData })
+        data = Object.assign(data, { moreData })
       }
     } catch (err) {
       return { type: 'UNKNOWN', raw: data.raw.toString() }
     }
   } else if (command[1] === 'GTERI') {
     // GPS with AC100 and/or Bluetoth Devices Connected
-    let number = parsedData[7] !== '' ? parseInt(parsedData[7], 10) : 1
-    let satelliteInfo = utils.includeSatellites(parsedData[19])
-    let gnssInfo = utils.includeGnssTrigger(parsedData[19])
-    let index = 7 + (12 + satelliteInfo + gnssInfo) * number + 1
+    const number = parsedData[7] !== '' ? parseInt(parsedData[7], 10) : 1
+    const satelliteInfo = utils.includeSatellites(parsedData[19])
+    const gnssInfo = utils.includeGnssTrigger(parsedData[19])
+    const index = 7 + (12 + satelliteInfo + gnssInfo) * number + 1
 
     data = Object.assign(data, {
       alarm: utils.getAlarm(command[1], null),
@@ -217,29 +217,29 @@ const parse = raw => {
         raw: parsedData[index + 6],
         sos: false,
         input: {
-          '2':
+          2:
             utils.nHexDigit(
               utils.hex2bin(parsedData[index + 6].substring(2, 4)),
               8
             )[6] === '1',
-          '1':
+          1:
             utils.nHexDigit(
               utils.hex2bin(parsedData[index + 6].substring(2, 4)),
               8
             )[7] === '1'
         },
         output: {
-          '3':
+          3:
             utils.nHexDigit(
               utils.hex2bin(parsedData[index + 6].substring(4, 6)),
               8
             )[5] === '1',
-          '2':
+          2:
             utils.nHexDigit(
               utils.hex2bin(parsedData[index + 6].substring(4, 6)),
               8
             )[6] === '1',
-          '1':
+          1:
             utils.nHexDigit(
               utils.hex2bin(parsedData[index + 6].substring(4, 6)),
               8
@@ -288,11 +288,11 @@ const parse = raw => {
     const bandData =
       utils.nHexDigit(utils.hex2bin(parsedData[4]), 32)[16] === '1'
 
-    let externalData = {
+    const externalData = {
       eriMask: {
         raw: parsedData[4],
-        canData: canData,
-        bandData: bandData
+        canData,
+        bandData
       }
     }
 
@@ -479,14 +479,14 @@ const parse = raw => {
     // }
 
     data = Object.assign(data, {
-      externalData: externalData
+      externalData
     })
 
     // More than 1 GNSS report in data
     if (number > 1) {
-      let moreData = []
+      const moreData = []
       for (let i = 1; i < number; i++) {
-        let gnssIx = 8 + (12 + gnssInfo + satelliteInfo) * i
+        const gnssIx = 8 + (12 + gnssInfo + satelliteInfo) * i
         moreData.push({
           index: i,
           loc: {
@@ -542,13 +542,13 @@ const parse = raw => {
             gnssInfo &&
             parsedData[gnssIx + satelliteInfo + gnssInfo + 11] !== ''
               ? utils.gnssTriggerTypes[
-                parsedData[gnssIx + satelliteInfo + gnssInfo + 11]
-              ]
+                  parsedData[gnssIx + satelliteInfo + gnssInfo + 11]
+                ]
               : null
         })
       }
 
-      data = Object.assign(data, { moreData: moreData })
+      data = Object.assign(data, { moreData })
     }
   } else if (command[1] === 'GTHBD') {
     // Heartbeat. It must response an ACK command
@@ -568,16 +568,16 @@ const parse = raw => {
         RSSI_quality:
           parsedData[10] !== ''
             ? utils.getSignalStrength(
-              utils.networkTypes[parsedData[10]],
-              parseInt(parsedData[6], 10)
-            )
+                utils.networkTypes[parsedData[10]],
+                parseInt(parsedData[6], 10)
+              )
             : null, // Signal Strength
         RSSI_percentage:
           parsedData[10] !== ''
             ? utils.getSignalPercentage(
-              utils.networkTypes[parsedData[10]],
-              parseInt(parsedData[6], 10)
-            )
+                utils.networkTypes[parsedData[10]],
+                parseInt(parsedData[6], 10)
+              )
             : null, // Signal Percetange
         GSM_quality:
           parsedData[7] !== ''
@@ -594,13 +594,13 @@ const parse = raw => {
         raw: `${parsedData[21]}${parsedData[22]}`,
         sos: false,
         input: {
-          '2': utils.nHexDigit(utils.hex2bin(parsedData[21]), 8)[6] === '1',
-          '1': utils.nHexDigit(utils.hex2bin(parsedData[21]), 8)[7] === '1'
+          2: utils.nHexDigit(utils.hex2bin(parsedData[21]), 8)[6] === '1',
+          1: utils.nHexDigit(utils.hex2bin(parsedData[21]), 8)[7] === '1'
         },
         output: {
-          '3': utils.nHexDigit(utils.hex2bin(parsedData[22]), 8)[5] === '1',
-          '2': utils.nHexDigit(utils.hex2bin(parsedData[22]), 8)[6] === '1',
-          '1': utils.nHexDigit(utils.hex2bin(parsedData[22]), 8)[7] === '1'
+          3: utils.nHexDigit(utils.hex2bin(parsedData[22]), 8)[5] === '1',
+          2: utils.nHexDigit(utils.hex2bin(parsedData[22]), 8)[6] === '1',
+          1: utils.nHexDigit(utils.hex2bin(parsedData[22]), 8)[7] === '1'
         },
         charge: parsedData[12] === '1'
       },
@@ -629,7 +629,7 @@ const parse = raw => {
     command[1] === 'GTHBM'
   ) {
     // Common Alarms
-    let number = parsedData[6] !== '' ? parseInt(parsedData[6], 10) : 1
+    const number = parsedData[6] !== '' ? parseInt(parsedData[6], 10) : 1
     let index = 6 + 12 * number // position append mask
     let satelliteInfo = false
 
@@ -715,7 +715,7 @@ const parse = raw => {
     })
   } else if (command[1] === 'GTEPS' || command[1] === 'GTAIS') {
     // External low battery and Low voltage for analog input
-    let number = parsedData[6] !== '' ? parseInt(parsedData[6], 10) : 1
+    const number = parsedData[6] !== '' ? parseInt(parsedData[6], 10) : 1
     let index = 6 + 12 * number // position append mask
     let satelliteInfo = false
 
@@ -802,7 +802,7 @@ const parse = raw => {
     command[1] === 'GTBTC' ||
     command[1] === 'GTDRM'
   ) {
-    var index = 15
+    let index = 15
     let satelliteInfo = false
     // let includeStatus =
     //   parsedData[index] !== '' ? parseInt(parsedData[index]) > 3 : null
@@ -1066,7 +1066,7 @@ const parse = raw => {
   } else if (command[1] === 'GTIGN' || command[1] === 'GTIGF') {
     let index = 16 // position append mask
     let satelliteInfo = false
-    let includeStatus =
+    const includeStatus =
       parsedData[index] !== '' ? parseInt(parsedData[index]) > 3 : null
 
     // If get satellites is configured
@@ -1110,40 +1110,40 @@ const parse = raw => {
           : null,
       status: includeStatus
         ? {
-          raw: parsedData[index + 1],
-          sos: false,
-          input: {
-            '2':
+            raw: parsedData[index + 1],
+            sos: false,
+            input: {
+              2:
                 utils.nHexDigit(
                   utils.hex2bin(parsedData[index + 1].substring(2, 4)),
                   8
                 )[6] === '1',
-            '1':
+              1:
                 utils.nHexDigit(
                   utils.hex2bin(parsedData[index + 1].substring(2, 4)),
                   8
                 )[7] === '1'
-          },
-          output: {
-            '3':
+            },
+            output: {
+              3:
                 utils.nHexDigit(
                   utils.hex2bin(parsedData[index + 1].substring(4, 6)),
                   8
                 )[5] === '1',
-            '2':
+              2:
                 utils.nHexDigit(
                   utils.hex2bin(parsedData[index + 1].substring(4, 6)),
                   8
                 )[6] === '1',
-            '1':
+              1:
                 utils.nHexDigit(
                   utils.hex2bin(parsedData[index + 1].substring(4, 6)),
                   8
                 )[7] === '1'
-          },
-          charge: null,
-          state: utils.states[parsedData[index + 1].substring(0, 2)]
-        }
+            },
+            charge: null,
+            state: utils.states[parsedData[index + 1].substring(0, 2)]
+          }
         : null,
       odometer: includeStatus
         ? parsedData[index + 3] !== ''
@@ -1713,7 +1713,7 @@ const parse = raw => {
     // Virtual ignition
     let index = 18 // possition append mask
     let satelliteInfo = false
-    let includeStatus =
+    const includeStatus =
       parsedData[index] !== '' ? parseInt(parsedData[index]) > 3 : null
 
     // If get satellites is configured
@@ -1757,40 +1757,40 @@ const parse = raw => {
           : null,
       status: includeStatus
         ? {
-          raw: parsedData[index + 1],
-          sos: false,
-          input: {
-            '2':
+            raw: parsedData[index + 1],
+            sos: false,
+            input: {
+              2:
                 utils.nHexDigit(
                   utils.hex2bin(parsedData[index + 1].substring(2, 4)),
                   8
                 )[6] === '1',
-            '1':
+              1:
                 utils.nHexDigit(
                   utils.hex2bin(parsedData[index + 1].substring(2, 4)),
                   8
                 )[7] === '1'
-          },
-          output: {
-            '3':
+            },
+            output: {
+              3:
                 utils.nHexDigit(
                   utils.hex2bin(parsedData[index + 1].substring(4, 6)),
                   8
                 )[5] === '1',
-            '2':
+              2:
                 utils.nHexDigit(
                   utils.hex2bin(parsedData[index + 1].substring(4, 6)),
                   8
                 )[6] === '1',
-            '1':
+              1:
                 utils.nHexDigit(
                   utils.hex2bin(parsedData[index + 1].substring(4, 6)),
                   8
                 )[7] === '1'
-          },
-          charge: null,
-          state: utils.states[parsedData[index + 1].substring(0, 2)]
-        }
+            },
+            charge: null,
+            state: utils.states[parsedData[index + 1].substring(0, 2)]
+          }
         : null,
       odometer: includeStatus
         ? parsedData[index + 3] !== ''
@@ -1812,7 +1812,7 @@ const parse = raw => {
       alarm: utils.getAlarm(command[1], null),
       fixType: parsedData[3] !== '' ? parsedData[3] : null
     })
-    let antData = []
+    const antData = []
     let index = 4
     for (let i = 0; i < 6; i++) {
       antData.push({
@@ -1834,16 +1834,16 @@ const parse = raw => {
         rxLevel:
           parsedData[index + 4] !== ''
             ? utils.getSignalStrength(
-              'GSM',
-              parseInt(parsedData[index + 4], 10)
-            )
+                'GSM',
+                parseInt(parsedData[index + 4], 10)
+              )
             : null,
         rxSignalPercentage:
           parsedData[index + 4] !== ''
             ? utils.getSignalPercentage(
-              'GSM',
-              parseInt(parsedData[index + 4], 10)
-            )
+                'GSM',
+                parseInt(parsedData[index + 4], 10)
+              )
             : null
       })
       index += 6
@@ -1872,9 +1872,9 @@ const parse = raw => {
       rxSignalPercentage:
         parsedData[index + 4] !== ''
           ? utils.getSignalPercentage(
-            'GSM',
-            parseInt(parsedData[index + 4], 10)
-          )
+              'GSM',
+              parseInt(parsedData[index + 4], 10)
+            )
           : null
     })
   } else if (command[1] === 'GTCLT') {
@@ -1882,7 +1882,7 @@ const parse = raw => {
     let index = 71 // position append mask
     let satelliteInfo = false
 
-    let includeStatus =
+    const includeStatus =
       parsedData[index] !== '' ? parseInt(parsedData[index]) > 3 : null
 
     // If get satellites is configured
@@ -1891,65 +1891,65 @@ const parse = raw => {
       satelliteInfo = true
     }
 
-    let alarmMask1 =
+    const alarmMask1 =
       parsedData[5] !== ''
         ? utils
-          .nHexDigit(utils.hex2bin(parsedData[5]), 32)
-          .split('')
-          .reverse()
-          .join('')
+            .nHexDigit(utils.hex2bin(parsedData[5]), 32)
+            .split('')
+            .reverse()
+            .join('')
         : null
-    let alarmMask2 =
+    const alarmMask2 =
       parsedData[6] !== ''
         ? utils
-          .nHexDigit(utils.hex2bin(parsedData[6]), 32)
-          .split('')
-          .reverse()
-          .join('')
+            .nHexDigit(utils.hex2bin(parsedData[6]), 32)
+            .split('')
+            .reverse()
+            .join('')
         : null
-    let alarmMask3 =
+    const alarmMask3 =
       parsedData[7] !== ''
         ? utils
-          .nHexDigit(utils.hex2bin(parsedData[7]), 32)
-          .split('')
-          .reverse()
-          .join('')
+            .nHexDigit(utils.hex2bin(parsedData[7]), 32)
+            .split('')
+            .reverse()
+            .join('')
         : null
-    let inicatorsBin =
+    const inicatorsBin =
       parsedData[28] !== ''
         ? utils.nHexDigit(utils.hex2bin(parsedData[28]), 16)
         : null
-    let lights =
+    const lights =
       parsedData[29] !== ''
         ? utils.nHexDigit(utils.hex2bin(parsedData[29]), 8)
         : null
-    let doors =
+    const doors =
       parsedData[30] !== ''
         ? utils.nHexDigit(utils.hex2bin(parsedData[30]), 8)
         : null
-    let canExpansionMask =
+    const canExpansionMask =
       parsedData[33] !== ''
         ? utils
-          .nHexDigit(utils.hex2bin(parsedData[33]), 32)
-          .split('')
-          .reverse()
-          .join('')
+            .nHexDigit(utils.hex2bin(parsedData[33]), 32)
+            .split('')
+            .reverse()
+            .join('')
         : null
-    let expansionBin =
+    const expansionBin =
       parsedData[54] !== ''
         ? utils
-          .nHexDigit(utils.hex2bin(parsedData[54]), 16)
-          .split('')
-          .reverse()
-          .join('')
+            .nHexDigit(utils.hex2bin(parsedData[54]), 16)
+            .split('')
+            .reverse()
+            .join('')
         : null
-    let tachographBin =
+    const tachographBin =
       parsedData[27] !== ''
         ? utils
-          .nHexDigit(utils.hex2bin(parsedData[27]), 8)
-          .split('')
-          .reverse()
-          .join('')
+            .nHexDigit(utils.hex2bin(parsedData[27]), 8)
+            .split('')
+            .reverse()
+            .join('')
         : null
     data = Object.assign(data, {
       alarm: utils.getAlarm(command[1], parsedData[6]),
@@ -1983,40 +1983,40 @@ const parse = raw => {
           : null,
       status: includeStatus
         ? {
-          raw: parsedData[index + 1],
-          sos: false,
-          input: {
-            '2':
+            raw: parsedData[index + 1],
+            sos: false,
+            input: {
+              2:
                 utils.nHexDigit(
                   utils.hex2bin(parsedData[index + 1].substring(2, 4)),
                   8
                 )[6] === '1',
-            '1':
+              1:
                 utils.nHexDigit(
                   utils.hex2bin(parsedData[index + 1].substring(2, 4)),
                   8
                 )[7] === '1'
-          },
-          output: {
-            '3':
+            },
+            output: {
+              3:
                 utils.nHexDigit(
                   utils.hex2bin(parsedData[index + 1].substring(4, 6)),
                   8
                 )[5] === '1',
-            '2':
+              2:
                 utils.nHexDigit(
                   utils.hex2bin(parsedData[index + 1].substring(4, 6)),
                   8
                 )[6] === '1',
-            '1':
+              1:
                 utils.nHexDigit(
                   utils.hex2bin(parsedData[index + 1].substring(4, 6)),
                   8
                 )[7] === '1'
-          },
-          charge: null,
-          state: utils.states[parsedData[index + 1].substring(0, 2)]
-        }
+            },
+            charge: null,
+            state: utils.states[parsedData[index + 1].substring(0, 2)]
+          }
         : null,
       odometer: null,
       hourmeter: null,
@@ -2443,13 +2443,13 @@ const parse = raw => {
       satelliteInfo = true
     }
 
-    let maxAcc = parsedData[index + 1] !== '' ? parsedData[index + 1] : null
-    let avgAcc = parsedData[index + 2] !== '' ? parsedData[index + 2] : null
-    let duration =
+    const maxAcc = parsedData[index + 1] !== '' ? parsedData[index + 1] : null
+    const avgAcc = parsedData[index + 2] !== '' ? parsedData[index + 2] : null
+    const duration =
       parsedData[index + 3] !== ''
         ? parseFloat(parsedData[index + 3]) / 100
         : null
-    let speed = parsedData[8] !== '' ? parseFloat(parsedData[8]) : null
+    const speed = parsedData[8] !== '' ? parseFloat(parsedData[8]) : null
 
     data = Object.assign(data, {
       alarm: utils.getAlarm(
@@ -2461,7 +2461,7 @@ const parse = raw => {
         type: 'Point',
         coordinates: [parseFloat(parsedData[11]), parseFloat(parsedData[12])]
       },
-      speed: speed,
+      speed,
       gpsStatus: utils.checkGps(
         parseFloat(parsedData[11]),
         parseFloat(parsedData[12])
@@ -2551,7 +2551,7 @@ const parse = raw => {
           ? utils.getAccelerationMagnitude(avgAcc.substring(8, 12), 4)
           : null
       },
-      duration: duration,
+      duration,
       odometer:
         parsedData[index + 4] !== '' ? parseFloat(parsedData[index + 4]) : null
       // hourmeter: null
@@ -2577,5 +2577,5 @@ const parse = raw => {
 }
 
 module.exports = {
-  parse: parse
+  parse
 }

@@ -5,16 +5,16 @@
   "main": "src",
   "scripts": {
     "lint": "eslint . --fix",
-    "format": "prettier-standard 'src/**/*.js' 'test/**/*.js'",
+    "format": "prettier --write 'src/**/*.js' 'test/**/*.js'",
     "precommit": "lint-staged",
     "pretest": "npm run lint -s && npm run format -s",
-    "test": "istanbul cover _mocha",
+    "test": "nyc mocha",
     "release:major": "changelog -M && git add CHANGELOG.md && git commit -m 'updated CHANGELOG.md' && npm version major && git push origin && git push origin --tags && npm publish",
     "release:minor": "changelog -m && git add CHANGELOG.md && git commit -m 'updated CHANGELOG.md' && npm version minor && git push origin && git push origin --tags && npm publish",
     "release:patch": "changelog -p && git add CHANGELOG.md && git commit -m 'updated CHANGELOG.md' && npm version patch && git push origin && git push origin --tags && npm publish"
   },
   "engines": {
-    "node": ">=8"
+    "node": ">=22"
   },
   "repository": {
     "type": "git",
@@ -40,29 +40,30 @@
     "url": "https://github.com/jaayesta/queclink-parser/issues"
   },
   "homepage": "https://github.com/jaayesta/queclink-parser#readme",
-  "dependencies": {},
   "devDependencies": {
-    "chai": "4.1.2",
-    "eslint": "4.14.0",
-    "eslint-config-standard": "11.0.0-beta.0",
-    "eslint-plugin-import": "2.8.0",
-    "eslint-plugin-node": "5.2.1",
-    "eslint-plugin-promise": "3.6.0",
-    "eslint-plugin-standard": "3.0.1",
-    "generate-changelog": "1.7.0",
-    "husky": "0.14.3",
-    "istanbul": "0.4.5",
-    "lint-staged": "6.0.0",
-    "mocha": "4.1.0",
-    "prettier-standard": "8.0.0"
+    "chai": "^4.5.0",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-n": "^16.6.2",
+    "eslint-plugin-promise": "^6.6.0",
+    "generate-changelog": "^1.8.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.4.3",
+    "mocha": "^11.1.0",
+    "nyc": "^17.1.0",
+    "prettier": "^3.5.0"
   },
   "eslintConfig": {
-    "extends": "standard",
+    "extends": [
+      "standard",
+      "prettier"
+    ],
     "rules": {
       "no-console": [
         "error"
-      ],
-      "standard/computed-property-even-spacing": "off"
+      ]
     }
   },
   "eslintIgnore": [
@@ -70,18 +71,14 @@
     "example.js"
   ],
   "lint-staged": {
-    "linters": {
-      "src/**/*.js": [
-        "eslint --fix",
-        "prettier-standard",
-        "git add"
-      ],
-      "test/**/*.js": [
-        "eslint --fix",
-        "prettier-standard",
-        "git add"
-      ]
-    }
+    "src/**/*.js": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "test/**/*.js": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   },
   "tonicExampleFilename": "example.js",
   "renovate": {

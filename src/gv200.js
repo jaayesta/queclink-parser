@@ -23,7 +23,7 @@ const parse = raw => {
     imei: parsedData[2],
     protocolVersion: utils.getProtocolVersion(parsedData[1]),
     temperature: null,
-    history: history,
+    history,
     sentTime: utils.parseDate(parsedData[parsedData.length - 2]),
     serialId: parseInt(parsedData[parsedData.length - 1], 16)
   }
@@ -48,22 +48,16 @@ const parse = raw => {
           raw: parsedData[24] + parsedData[25],
           sos: false,
           input: {
-            '4':
-              utils.nHexDigit(utils.hex2bin(parsedData[24][1]), 4)[0] === '1',
-            '3':
-              utils.nHexDigit(utils.hex2bin(parsedData[24][1]), 4)[1] === '1',
-            '2':
-              utils.nHexDigit(utils.hex2bin(parsedData[24][1]), 4)[2] === '1',
-            '1': utils.nHexDigit(utils.hex2bin(parsedData[24][1]), 4)[3] === '1'
+            4: utils.nHexDigit(utils.hex2bin(parsedData[24][1]), 4)[0] === '1',
+            3: utils.nHexDigit(utils.hex2bin(parsedData[24][1]), 4)[1] === '1',
+            2: utils.nHexDigit(utils.hex2bin(parsedData[24][1]), 4)[2] === '1',
+            1: utils.nHexDigit(utils.hex2bin(parsedData[24][1]), 4)[3] === '1'
           },
           output: {
-            '4':
-              utils.nHexDigit(utils.hex2bin(parsedData[25][1]), 4)[0] === '1',
-            '3':
-              utils.nHexDigit(utils.hex2bin(parsedData[25][1]), 4)[1] === '1',
-            '2':
-              utils.nHexDigit(utils.hex2bin(parsedData[25][1]), 4)[2] === '1',
-            '1': utils.nHexDigit(utils.hex2bin(parsedData[25][1]), 4)[3] === '1'
+            4: utils.nHexDigit(utils.hex2bin(parsedData[25][1]), 4)[0] === '1',
+            3: utils.nHexDigit(utils.hex2bin(parsedData[25][1]), 4)[1] === '1',
+            2: utils.nHexDigit(utils.hex2bin(parsedData[25][1]), 4)[2] === '1',
+            1: utils.nHexDigit(utils.hex2bin(parsedData[25][1]), 4)[3] === '1'
           },
           charge: parseFloat(parsedData[4]) > 5
         },
@@ -117,16 +111,16 @@ const parse = raw => {
         raw: parsedData[25] + parsedData[26],
         sos: false,
         input: {
-          '4': utils.nHexDigit(utils.hex2bin(parsedData[25][1]), 4)[0] === '1',
-          '3': utils.nHexDigit(utils.hex2bin(parsedData[25][1]), 4)[1] === '1',
-          '2': utils.nHexDigit(utils.hex2bin(parsedData[25][1]), 4)[2] === '1',
-          '1': utils.nHexDigit(utils.hex2bin(parsedData[25][1]), 4)[3] === '1'
+          4: utils.nHexDigit(utils.hex2bin(parsedData[25][1]), 4)[0] === '1',
+          3: utils.nHexDigit(utils.hex2bin(parsedData[25][1]), 4)[1] === '1',
+          2: utils.nHexDigit(utils.hex2bin(parsedData[25][1]), 4)[2] === '1',
+          1: utils.nHexDigit(utils.hex2bin(parsedData[25][1]), 4)[3] === '1'
         },
         output: {
-          '4': utils.nHexDigit(utils.hex2bin(parsedData[26][1]), 4)[0] === '1',
-          '3': utils.nHexDigit(utils.hex2bin(parsedData[26][1]), 4)[1] === '1',
-          '2': utils.nHexDigit(utils.hex2bin(parsedData[26][1]), 4)[2] === '1',
-          '1': utils.nHexDigit(utils.hex2bin(parsedData[26][1]), 4)[3] === '1'
+          4: utils.nHexDigit(utils.hex2bin(parsedData[26][1]), 4)[0] === '1',
+          3: utils.nHexDigit(utils.hex2bin(parsedData[26][1]), 4)[1] === '1',
+          2: utils.nHexDigit(utils.hex2bin(parsedData[26][1]), 4)[2] === '1',
+          1: utils.nHexDigit(utils.hex2bin(parsedData[26][1]), 4)[3] === '1'
         },
         charge: parseFloat(parsedData[5]) > 5
       },
@@ -171,16 +165,18 @@ const parse = raw => {
     const ac100DevicesConnected =
       AC100 && digitFuelSensor
         ? parseInt(parsedData[29], 10)
-        : AC100 && !digitFuelSensor ? parseInt(parsedData[28], 10) : 0
+        : AC100 && !digitFuelSensor
+          ? parseInt(parsedData[28], 10)
+          : 0
 
     let externalData = {
       eriMask: {
         raw: parsedData[4],
-        digitFuelSensor: digitFuelSensor,
-        AC100: AC100,
-        reserved: reserved,
-        fuelLevelPercentage: fuelLevelPercentage,
-        fuelVolume: fuelVolume
+        digitFuelSensor,
+        AC100,
+        reserved,
+        fuelLevelPercentage,
+        fuelVolume
       },
       uartDeviceType: utils.uartDeviceTypes[parsedData[27]]
     }
@@ -206,9 +202,9 @@ const parse = raw => {
           AC100Devices: null
         })
       } else if (!digitFuelSensor && AC100) {
-        let ac100Devices = []
+        const ac100Devices = []
         let count = 29
-        for (var i = 0; i < ac100DevicesConnected; i++) {
+        for (let i = 0; i < ac100DevicesConnected; i++) {
           ac100Devices.push({
             deviceNumber: parsedData[count],
             deviceType: parsedData[count + 1],
@@ -223,12 +219,14 @@ const parse = raw => {
           AC100Devices: ac100Devices
         })
       } else if (digitFuelSensor && AC100) {
-        let ac100Devices = []
+        const ac100Devices = []
         let count =
           fuelVolume && fuelLevelPercentage
             ? 33
-            : fuelVolume && !fuelLevelPercentage ? 32 : 31
-        for (var j = 0; j < ac100DevicesConnected; j++) {
+            : fuelVolume && !fuelLevelPercentage
+              ? 32
+              : 31
+        for (let j = 0; j < ac100DevicesConnected; j++) {
           ac100Devices.push({
             deviceNumber: parsedData[count],
             deviceType: parsedData[count + 1],
@@ -259,9 +257,9 @@ const parse = raw => {
     } else if (parsedData[27] === '2') {
       // AC100 1 Wire Bus
       if (!digitFuelSensor && AC100) {
-        let ac100Devices = []
+        const ac100Devices = []
         let count = 29
-        for (var k = 0; k < ac100DevicesConnected; k++) {
+        for (let k = 0; k < ac100DevicesConnected; k++) {
           ac100Devices.push({
             deviceNumber: parsedData[count],
             deviceType: parsedData[count + 1],
@@ -286,9 +284,9 @@ const parse = raw => {
           AC100Devices: null
         })
       } else if (digitFuelSensor && AC100) {
-        let ac100Devices = []
+        const ac100Devices = []
         let count = 29
-        for (var l = 0; l < ac100DevicesConnected; l++) {
+        for (let l = 0; l < ac100DevicesConnected; l++) {
           ac100Devices.push({
             deviceNumber: parsedData[count],
             deviceType: parsedData[count + 1],
@@ -310,7 +308,7 @@ const parse = raw => {
       }
     }
     data = Object.assign(data, {
-      externalData: externalData
+      externalData
     })
   } else if (command[1] === 'GTHBD') {
     // Heartbeat. It must response an ACK command
@@ -326,16 +324,16 @@ const parse = raw => {
         raw: parsedData[18] + parsedData[19],
         sos: false,
         input: {
-          '4': utils.nHexDigit(utils.hex2bin(parsedData[18][1]), 4)[0] === '1',
-          '3': utils.nHexDigit(utils.hex2bin(parsedData[18][1]), 4)[1] === '1',
-          '2': utils.nHexDigit(utils.hex2bin(parsedData[18][1]), 4)[2] === '1',
-          '1': utils.nHexDigit(utils.hex2bin(parsedData[18][1]), 4)[3] === '1'
+          4: utils.nHexDigit(utils.hex2bin(parsedData[18][1]), 4)[0] === '1',
+          3: utils.nHexDigit(utils.hex2bin(parsedData[18][1]), 4)[1] === '1',
+          2: utils.nHexDigit(utils.hex2bin(parsedData[18][1]), 4)[2] === '1',
+          1: utils.nHexDigit(utils.hex2bin(parsedData[18][1]), 4)[3] === '1'
         },
         output: {
-          '4': utils.nHexDigit(utils.hex2bin(parsedData[19][1]), 4)[0] === '1',
-          '3': utils.nHexDigit(utils.hex2bin(parsedData[19][1]), 4)[1] === '1',
-          '2': utils.nHexDigit(utils.hex2bin(parsedData[19][1]), 4)[2] === '1',
-          '1': utils.nHexDigit(utils.hex2bin(parsedData[19][1]), 4)[3] === '1'
+          4: utils.nHexDigit(utils.hex2bin(parsedData[19][1]), 4)[0] === '1',
+          3: utils.nHexDigit(utils.hex2bin(parsedData[19][1]), 4)[1] === '1',
+          2: utils.nHexDigit(utils.hex2bin(parsedData[19][1]), 4)[2] === '1',
+          1: utils.nHexDigit(utils.hex2bin(parsedData[19][1]), 4)[3] === '1'
         },
         charge: parsedData[8] === '1'
       }
@@ -359,7 +357,7 @@ const parse = raw => {
         charging: parsedData[12] === '1'
       },
       externalGPSAntenna: parsedData[15] === '0',
-      status: status,
+      status,
       voltage: {
         battery:
           parsedData[11] !== ''
@@ -427,7 +425,7 @@ const parse = raw => {
     // Low voltage for analog input
     const alarm = utils.getAlarm(command[1], parsedData[5])
     data = Object.assign(data, {
-      alarm: alarm,
+      alarm,
       loc: {
         type: 'Point',
         coordinates: [parseFloat(parsedData[11]), parseFloat(parsedData[12])]
@@ -879,16 +877,16 @@ const parse = raw => {
         raw: parsedData[24] + parsedData[25],
         sos: utils.hex2bin(parsedData[24][1])[1] === '1',
         input: {
-          '4': utils.hex2bin(parsedData[25][1])[3] === '1',
-          '3': utils.hex2bin(parsedData[25][1])[2] === '1',
-          '2': utils.hex2bin(parsedData[25][1])[1] === '1',
-          '1': utils.hex2bin(parsedData[25][1])[0] === '1'
+          4: utils.hex2bin(parsedData[25][1])[3] === '1',
+          3: utils.hex2bin(parsedData[25][1])[2] === '1',
+          2: utils.hex2bin(parsedData[25][1])[1] === '1',
+          1: utils.hex2bin(parsedData[25][1])[0] === '1'
         },
         output: {
-          '4': utils.hex2bin(parsedData[26][1])[3] === '1',
-          '3': utils.hex2bin(parsedData[26][1])[2] === '1',
-          '2': utils.hex2bin(parsedData[26][1])[1] === '1',
-          '1': utils.hex2bin(parsedData[26][1])[0] === '1'
+          4: utils.hex2bin(parsedData[26][1])[3] === '1',
+          3: utils.hex2bin(parsedData[26][1])[2] === '1',
+          2: utils.hex2bin(parsedData[26][1])[1] === '1',
+          1: utils.hex2bin(parsedData[26][1])[0] === '1'
         },
         charge: parseFloat(parsedData[4]) > 5
       },
@@ -1220,5 +1218,5 @@ const parse = raw => {
 }
 
 module.exports = {
-  parse: parse
+  parse
 }
