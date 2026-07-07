@@ -1,3 +1,13 @@
+#### 1.9.32 (2026-07-07)
+
+##### New Features
+
+* **gv30cau:**  se agrega soporte al GV30CAU ([7b72b07b](https://github.com/jaayesta/queclink-parser/commit/7b72b07b19ea61e5711a9bef37a8b3040eab6a8b))
+
+##### Bug Fixes
+
+* **sos:**  se corrige alarma SOS BLE. ([1c5733d0](https://github.com/jaayesta/queclink-parser/commit/1c5733d04e7def6a3fa0751937fc61fd1612c844))
+
 #### 1.9.31 (2026-05-07)
 
 ##### Chores
