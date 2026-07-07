@@ -57,7 +57,8 @@ const devices = {
   74: 'GV350CEU',
   802004: 'GV58LAU',
   802006: 'GV57CG',
-  C301: 'GL533CG'
+  C301: 'GL533CG',
+  802021: 'GV30CAU'
 }
 
 /*
@@ -384,7 +385,7 @@ const getDevice = raw => {
 const getProtocolVersion = protocol => {
   let deviceType
   let deviceVersion
-  if (['802004', '802006'].includes(protocol.substring(0, 6))) {
+  if (['802004', '802006', '802021'].includes(protocol.substring(0, 6))) {
     deviceType = Object.hasOwn(devices, protocol.substring(0, 6))
       ? devices[protocol.substring(0, 6)]
       : null
@@ -2633,9 +2634,9 @@ const getAlarm = (command, report, extra = false) => {
   } else if (command === 'GTBDS') {
     return { type: 'Bluetooth_Disonnected', message: messages[command] }
   } else if (command === 'GTBAA') {
+    const mac = extra[1].mac
     if (['01', '02', '03'].includes(report)) {
       const number = parseInt(extra[0])
-      const mac = extra[1]
       const temperature = extra[2].enhancedTemperature
         ? extra[2].enhancedTemperature
         : extra[2].temperature
@@ -2648,20 +2649,19 @@ const getAlarm = (command, report, extra = false) => {
         temperature,
         message: messages[command][report].replace('()', `(${temperature}°C)`)
       }
-    } else if (report === '20') {
+    } else if (report === '20' || (report === '04' && extra[3] === 'GV58LAU')) {
       // Button pressed
       const number = parseInt(extra[0])
-      const mac = extra[1]
+      const voltage = extra[1].batteryLevel ? extra[1].batteryLevel : null
       return {
         type: 'SOS_Button',
         number,
         deviceID: mac,
-        voltage: extra[2].voltage ? extra[2].voltage : null,
+        voltage,
         message: messages[command][report]
       }
     } else if (['07', '08', '09'].includes(report)) {
       const number = parseInt(extra[0])
-      const mac = extra[1]
       const humidity = extra[2].humidity ? extra[2].humidity : null
       const status = report !== '09' // 07 & 08 means outside range, 09 means inside range
       return {
@@ -2674,7 +2674,6 @@ const getAlarm = (command, report, extra = false) => {
       }
     } else if (['0E', '0F', '10'].includes(report)) {
       const number = parseInt(extra[0])
-      const mac = extra[1]
       const pressure = extra[2].tirePresure ? extra[2].tirePresure : null
       const status = report !== '10' // 0E & 0F means outside range, 10 means inside range
       return {
@@ -2687,7 +2686,6 @@ const getAlarm = (command, report, extra = false) => {
       }
     } else if (report === '15') {
       const number = parseInt(extra[0])
-      const mac = extra[1]
       const status = extra[2].relay.state === 1
       const humanStatus = status ? 'activado' : 'desactivado'
       const configResult = extra[2].relay.configResult

@@ -934,4 +934,127 @@ describe('queclink-parzer', () => {
       expect(date).to.eql(new Date('2016-08-11T17:08:21+00:00'))
     })
   })
+
+  describe('GV30CAU', () => {
+    it('should parse GTFRI report', () => {
+      const raw = Buffer.from(
+        '+RESP:GTFRI,80202100,862170013895931,,00,1,1,4.3,92,70.0,0.0,121.354335,31.222073,20090214013254,0460,0000,18d8,6141,00,2000.0,12345:12:34,,80,210100,,,,20090214093254,11F0$'
+      )
+      const data = queclink.parse(raw)
+      expect(data.device).to.eql('Queclink-GV30CAU')
+      expect(data.type).to.eql('data')
+      expect(data.imei).to.eql('862170013895931')
+      expect(data.alarm.type).to.eql('Gps')
+      expect(data.loc.type).to.eql('Point')
+      expect(data.loc.coordinates).to.eql([121.354335, 31.222073])
+      expect(data.speed).to.eql(92)
+      expect(data.gpsStatus).to.equal(true)
+      expect(data.hdop).to.eql(4.3)
+    })
+
+    it('should parse GTHBD heartbeat', () => {
+      const raw = Buffer.from(
+        '+RESP:GTHBD,80202100,862170013895931,,00,20090214093254,11F0$'
+      )
+      const data = queclink.parse(raw)
+      expect(data.device).to.eql('Queclink-GV30CAU')
+      expect(data.alarm.type).to.eql('Heartbeat')
+    })
+
+    it('should parse GTTOW alarm', () => {
+      const raw = Buffer.from(
+        '+RESP:GTTOW,80202100,862170013895931,,00,1,1,4.3,92,70.0,121.354335,31.222073,20090214013254,0460,0000,18d8,6141,00,2000.0,,,,20090214093254,11F0$'
+      )
+      const data = queclink.parse(raw)
+      expect(data.device).to.eql('Queclink-GV30CAU')
+      expect(data.alarm.type).to.eql('Towing')
+    })
+
+    it('should parse GTSPD alarm', () => {
+      const raw = Buffer.from(
+        '+RESP:GTSPD,80202100,862170013895931,,00,0,1,4.3,92,70.0,121.354335,31.222073,20090214013254,0460,0000,18d8,6141,00,2000.0,,,,20090214093254,11F0$'
+      )
+      const data = queclink.parse(raw)
+      expect(data.device).to.eql('Queclink-GV30CAU')
+      expect(data.alarm.type).to.eql('Over_Speed')
+    })
+
+    it('should parse GTIGN event', () => {
+      const raw = Buffer.from(
+        '+RESP:GTIGN,80202100,862170013895931,,00,0,0.8,4.3,92,70.0,121.354335,31.222073,20090214013254,0460,0000,18d8,6141,00,,,,20090214093254,11F0$'
+      )
+      const data = queclink.parse(raw)
+      expect(data.device).to.eql('Queclink-GV30CAU')
+      expect(data.alarm.type).to.eql('DI')
+      expect(data.alarm.status).to.equal(true)
+    })
+
+    it('should parse GTIGF event', () => {
+      const raw = Buffer.from(
+        '+RESP:GTIGF,80202100,862170013895931,,00,0,0.8,4.3,92,70.0,121.354335,31.222073,20090214013254,0460,0000,18d8,6141,00,,,,20090214093254,11F0$'
+      )
+      const data = queclink.parse(raw)
+      expect(data.device).to.eql('Queclink-GV30CAU')
+      expect(data.alarm.type).to.eql('DI')
+      expect(data.alarm.status).to.equal(false)
+    })
+
+    it('should parse GTINF report', () => {
+      const raw = Buffer.from(
+        '+RESP:GTINF,80202100,862170013895931,,21,3,5,0,0,89223456789012345,3.8,1,01,1,00000000,1,4.2,0,0,0,20090214013254,2102,2102,2102,00,20090214093254,11F0$'
+      )
+      const data = queclink.parse(raw)
+      expect(data.device).to.eql('Queclink-GV30CAU')
+      expect(data.alarm.type).to.eql('General_Info_Report')
+    })
+
+    it('should parse GTEPS alarm', () => {
+      const raw = Buffer.from(
+        '+RESP:GTEPS,80202100,862170013895931,,00,3500,1,1,4.3,92,70.0,121.354335,31.222073,20090214013254,0460,0000,18d8,6141,00,20090214093254,11F0$'
+      )
+      const data = queclink.parse(raw)
+      expect(data.device).to.eql('Queclink-GV30CAU')
+      expect(data.alarm.type).to.eq('External_Low_battery')
+    })
+
+    it('should parse GTPNA event', () => {
+      const raw = Buffer.from(
+        '+RESP:GTPNA,80202100,862170013895931,,20090214013254,20090214093254,11F0$'
+      )
+      const data = queclink.parse(raw)
+      expect(data.device).to.eql('Queclink-GV30CAU')
+      expect(data.alarm.type).to.eql('Power')
+      expect(data.alarm.status).to.equal(true)
+      expect(data.loc).to.eql(null)
+    })
+
+    it('should parse GTPFA event', () => {
+      const raw = Buffer.from(
+        '+RESP:GTPFA,80202100,862170013895931,,20090214013254,20090214093254,11F0$'
+      )
+      const data = queclink.parse(raw)
+      expect(data.device).to.eql('Queclink-GV30CAU')
+      expect(data.alarm.type).to.eql('Power')
+      expect(data.alarm.status).to.equal(false)
+      expect(data.loc).to.eql(null)
+    })
+
+    it('should parse GTVER report', () => {
+      const raw = Buffer.from(
+        '+RESP:GTVER,80202100,862170013895931,,00,10A01,20A00,20090214093254,11F0$'
+      )
+      const data = queclink.parse(raw)
+      expect(data.device).to.eql('Queclink-GV30CAU')
+      expect(data.alarm.type).to.eql('GTVER')
+    })
+
+    it('should parse GTCRA event', () => {
+      const raw = Buffer.from(
+        '+RESP:GTCRA,80202100,862170013895931,,00,0.8,4.3,92,70.0,121.354335,31.222073,20090214013254,0460,0000,18d8,6141,00,,,,20090214093254,11F0$'
+      )
+      const data = queclink.parse(raw)
+      expect(data.device).to.eql('Queclink-GV30CAU')
+      expect(data.alarm.type).to.eql('Crash')
+    })
+  })
 })

@@ -18,6 +18,7 @@ const gv350ceu = require('./gv350ceu.js')
 const gv58lau = require('./gv58lau.js')
 const gv57cg = require('./gv57cg.js')
 const gl533cg = require('./gl533cg.js')
+const gv30cau = require('./gv30cau.js')
 
 /*
   Checks if raw is a GL533CG (hex) message (binary format only).
@@ -135,6 +136,8 @@ const parse = (raw, options) => {
       result = gv300w.parse(raw.toString())
     } else if (device === 'GV310LAU') {
       result = gv310lau.parse(raw.toString())
+    } else if (device === 'GV30CAU') {
+      result = gv30cau.parse(raw.toString())
     } else if (device === 'GV350CEU') {
       result = gv350ceu.parse(raw.toString())
     } else if (device === 'GV58LAU') {

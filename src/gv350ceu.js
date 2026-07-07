@@ -2062,8 +2062,9 @@ const parse = raw => {
     data = Object.assign(data, {
       alarm: utils.getAlarm(command[1], parsedData[7], [
         parsedData[4],
-        bleInfo.mac,
-        bleData
+        bleInfo,
+        bleData,
+        'GV350CEU'
       ]),
       loc: {
         type: 'Point',
