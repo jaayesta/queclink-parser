@@ -4,6 +4,12 @@
 
 * **gv30cau:**  se agrega nuevo protocolo detectado. ([996b00a6](https://github.com/jaayesta/queclink-parser/commit/996b00a60d19fd2d7f76d456d6eb699a930f82c7))
 
+#### 1.9.33 (2026-07-08)
+
+##### Bug Fixes
+
+* **gv30cau:**  se agrega nuevo protocolo detectado. ([996b00a6](https://github.com/jaayesta/queclink-parser/commit/996b00a60d19fd2d7f76d456d6eb699a930f82c7))
+
 #### 1.9.32 (2026-07-07)
 
 ##### New Features
