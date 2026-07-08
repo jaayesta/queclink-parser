@@ -58,7 +58,8 @@ const devices = {
   802004: 'GV58LAU',
   802006: 'GV57CG',
   C301: 'GL533CG',
-  802021: 'GV30CAU'
+  802021: 'GV30CAU',
+  '80201C': 'GV30CAU'
 }
 
 /*
@@ -385,7 +386,7 @@ const getDevice = raw => {
 const getProtocolVersion = protocol => {
   let deviceType
   let deviceVersion
-  if (['802004', '802006', '802021'].includes(protocol.substring(0, 6))) {
+  if (['802004', '802006', '802021', '80201C'].includes(protocol.substring(0, 6))) {
     deviceType = Object.hasOwn(devices, protocol.substring(0, 6))
       ? devices[protocol.substring(0, 6)]
       : null
