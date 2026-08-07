@@ -1,3 +1,9 @@
+#### 1.9.34 (2026-08-07)
+
+##### Bug Fixes
+
+* **patterns:**  match binary payloads with line terminators ([c7790e59](https://github.com/jaayesta/queclink-parser/commit/c7790e595833223cab10e4bc1c21da7df0067bc8))
+
 #### 1.9.33 (2026-07-08)
 
 ##### Bug Fixes
