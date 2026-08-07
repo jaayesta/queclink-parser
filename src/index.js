@@ -45,7 +45,7 @@ const isQueclink = raw => {
     // Normal Queclink devices
     utils.patterns.message.test(raw.toString()) ||
     utils.patterns.ack.test(raw.toString()) ||
-    utils.patterns.buffer.test(raw.toString()) ||
+    utils.patterns.bufferMessage.test(raw.toString()) ||
     utils.patterns.nack.test(raw.toString())
   ) {
     return true
@@ -121,7 +121,7 @@ const parse = (raw, options) => {
     utils.patterns.message.test(raw.toString()) ||
     utils.patterns.ack.test(raw.toString()) ||
     utils.patterns.nack.test(raw.toString()) ||
-    utils.patterns.buffer.test(raw.toString()) ||
+    utils.patterns.bufferMessage.test(raw.toString()) ||
     isHex(raw)
   ) {
     const device = isHex(raw) ? 'GL533CG' : utils.getDevice(raw.toString())

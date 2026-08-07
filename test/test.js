@@ -299,6 +299,90 @@ describe('queclink-parzer', () => {
     })
   })
 
+  /*
+    Reports carrying an arbitrary binary payload (GTDTT transparent serial data,
+    GTSVR) may embed 0x0A/0x0D bytes. The frame is complete (it ends in $) and
+    must be detected and parsed, not discarded.
+  */
+  describe('binary payload with line terminators', () => {
+    const binary = Buffer.from([0x02, 0x41, 0x0d, 0x0a, 0x42, 0x03]).toString(
+      'binary'
+    )
+
+    it('should detect a +RESP with 0x0A/0x0D in the payload', () => {
+      const raw = Buffer.from(
+        `+RESP:GTDTT,6E0104,867844003012625,,0,1,0,1,${binary},20240115103000,000A$`
+      )
+      expect(queclink.isQueclink(raw)).to.equal(true)
+      expect(queclink.getImei(raw)).to.eql('867844003012625')
+    })
+
+    it('should parse GTDTT transparent data with 0x0A/0x0D in the payload', () => {
+      const raw = Buffer.from(
+        `+RESP:GTDTT,6E0104,867844003012625,,0,1,0,1,${binary},20240115103000,000A$`
+      )
+      const data = queclink.parse(raw)
+      expect(data.device).to.eql('Queclink-GV310LAU')
+      expect(data.type).to.eql('data')
+      expect(data.imei).to.eql('867844003012625')
+      expect(data.alarm.type).to.eql('Transparent_Data')
+      expect(data.alarm.dataType).to.eql('Binary')
+      expect(data.alarm.data).to.eql(binary)
+    })
+
+    it('should parse GTSVR with 0x0A/0x0D in the payload', () => {
+      const raw = Buffer.from(
+        `+RESP:GTSVR,6E0104,867844003012625,NAME${binary}X,0,1,1,0,0.8,0,0,816.1,-70.514613,-33.361280,20160811170821,0730,0002,7410,C789,00,20160811180025,07B8$`
+      )
+      expect(queclink.isQueclink(raw)).to.equal(true)
+      const data = queclink.parse(raw)
+      expect(data.device).to.eql('Queclink-GV310LAU')
+      expect(data.type).to.eql('data')
+      expect(data.alarm.type).to.eql('Stolen_Vehicle_Alarm')
+      expect(data.loc.coordinates).to.eql([-70.514613, -33.36128])
+    })
+
+    it('should parse an +ACK with 0x0A/0x0D in the payload', () => {
+      const raw = Buffer.from(
+        `+ACK:GTOUT,350302,867844003012625,NAME${binary}X,0018,20040101000148,0017$`
+      )
+      expect(queclink.isQueclink(raw)).to.equal(true)
+      const data = queclink.parse(raw)
+      expect(data.device).to.eql('Queclink-COMMAND-OK')
+      expect(data.type).to.eql('ok')
+      expect(data.command).to.eql('SETIOSWITCH')
+      expect(data.serial).to.eql(24)
+      expect(data.counter).to.eql(23)
+    })
+
+    it('should parse a +BUFF with 0x0A/0x0D in the payload as history', () => {
+      const raw = Buffer.from(
+        `+BUFF:GTDTT,6E0104,867844003012625,,0,1,0,1,${binary},20240115103000,000A$`
+      )
+      expect(queclink.isQueclink(raw)).to.equal(true)
+      const data = queclink.parse(raw)
+      expect(data.device).to.eql('Queclink-GV310LAU')
+      expect(data.type).to.eql('data')
+      expect(data.history).to.equal(true)
+      expect(data.alarm.type).to.eql('Transparent_Data')
+      expect(data.alarm.data).to.eql(binary)
+    })
+
+    it('should not detect a truncated +BUFF', () => {
+      const raw = Buffer.from('+BUFF:GTFRI,6E0104,8678440030')
+      expect(queclink.isQueclink(raw)).to.equal(false)
+      expect(queclink.parse(raw).type).to.eql('UNKNOWN')
+    })
+
+    it('should not detect a truncated +RESP', () => {
+      const raw = Buffer.from(
+        `+RESP:GTDTT,6E0104,867844003012625,,0,1,0,1,${binary}`
+      )
+      expect(queclink.isQueclink(raw)).to.equal(false)
+      expect(queclink.parse(raw).type).to.eql('UNKNOWN')
+    })
+  })
+
   describe('isHeartBeat', () => {
     it('should return true', () => {
       const raw = Buffer.from(
