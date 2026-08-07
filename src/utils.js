@@ -6,13 +6,22 @@ const langs = { es: langEs, en: langEn }
 
 /*
   Data patterns
+
+  The body is matched with [\s\S] and not with . because reports that carry an
+  arbitrary binary payload (GTDTT transparent serial data, GTSVR) may contain
+  0x0A/0x0D bytes, and . never matches a line terminator in JavaScript.
+
+  `buffer` is a prefix test over the command token (+BUFF vs +RESP), used by the
+  device parsers to flag history reports; `bufferMessage` is the full frame test
+  used to detect and route incoming data.
 */
 const patterns = {
-  message: /^\+RESP.+\$$/,
+  message: /^\+RESP[\s\S]+\$$/,
   buffer: /^\+BUFF/,
-  ack: /^\+ACK.+\$$/,
-  nack: /^\+NACK.+\$$/,
-  heartbeat: /^\+ACK:GTHBD.+\$$/
+  bufferMessage: /^\+BUFF[\s\S]+\$$/,
+  ack: /^\+ACK[\s\S]+\$$/,
+  nack: /^\+NACK[\s\S]+\$$/,
+  heartbeat: /^\+ACK:GTHBD[\s\S]+\$$/
 }
 
 /*
@@ -386,7 +395,9 @@ const getDevice = raw => {
 const getProtocolVersion = protocol => {
   let deviceType
   let deviceVersion
-  if (['802004', '802006', '802021', '80201C'].includes(protocol.substring(0, 6))) {
+  if (
+    ['802004', '802006', '802021', '80201C'].includes(protocol.substring(0, 6))
+  ) {
     deviceType = Object.hasOwn(devices, protocol.substring(0, 6))
       ? devices[protocol.substring(0, 6)]
       : null
