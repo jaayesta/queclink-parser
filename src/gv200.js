@@ -1,11 +1,15 @@
 'use strict'
 const utils = require('./utils.js')
 
-/*
-  Parses messages data from GV200 devices
-*/
-const parse = raw => {
-  raw = raw.substr(0, raw.length - 1)
+/**
+ * Parses messages data from GV200 devices
+ *
+ * @param {string} originalRaw -
+ * @returns {Object<string, *>}
+ */
+const parse = originalRaw => {
+  const lastIndex = originalRaw.length - 1
+  const raw = originalRaw.substring(0, lastIndex)
 
   const parsedData = raw.split(',')
   const command = parsedData[0].split(':')
@@ -13,6 +17,9 @@ const parse = raw => {
   let history = false
   if (utils.patterns.buffer.test(command[0])) {
     history = true
+    if (originalRaw[lastIndex] !== '$') {
+      return { type: 'UNKNOWN', raw: originalRaw }
+    }
   }
 
   let data = {
