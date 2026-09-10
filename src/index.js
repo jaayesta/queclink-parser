@@ -316,7 +316,7 @@ const parseCommand = data => {
     if (data.device_serie === 'GV' && password === 'gv57cg') {
       command = `AT+GTDOS=${password},,,1,${do1},,,${dosReport},0,5,,,,${serialId}$`
     } else if (data.device_serie === 'GV' && password === 'gv30cau') {
-      command = `AT+GTDOS=${password},,,1,${do1},,,,,${dosReport},0,5,,,,${serialId}$`
+      command = `AT+GTDOS=${password},0,1,1,${do1},,,${dosReport},0,5,,,,${serialId}$`
     } else if (data.device_serie === 'GV' && password === 'gv58lau') {
       command = `AT+GTDOS=${password},0,3,1,${do1},0,,2,${do2},0,,3,${do3},0,,0,,,${dosReport},,,${serialId}$`
     } else if (
