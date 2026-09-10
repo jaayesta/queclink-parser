@@ -1,3 +1,9 @@
+#### 1.9.35 (2026-09-10)
+
+##### Bug Fixes
+
+* **gv30cau:**  se agrega soporte a 1_on|off ([a74268f7](https://github.com/jaayesta/queclink-parser/commit/a74268f7bdd123601ee5919ed7a69023285a941c))
+
 #### 1.9.34 (2026-08-07)
 
 ##### Bug Fixes
