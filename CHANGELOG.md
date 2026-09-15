@@ -1,3 +1,9 @@
+#### 1.9.36 (2026-09-15)
+
+##### Bug Fixes
+
+* **action:**  se corrige instrucción para activar salida digital. ([94de63bd](https://github.com/jaayesta/queclink-parser/commit/94de63bd3ea4585b633b2867ca710ccd43c12229))
+
 #### 1.9.35 (2026-09-10)
 
 ##### Bug Fixes
