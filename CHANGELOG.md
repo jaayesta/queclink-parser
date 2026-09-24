@@ -1,3 +1,12 @@
+#### 1.9.37 (2026-09-24)
+
+##### Bug Fixes
+
+* **parser:**
+  *  se corrigen satélites en reportes multipunto y datos de GV30CAU. ([531fd217](https://github.com/jaayesta/queclink-parser/commit/531fd217e55a2eb7a5279599f3a1eb6da99bb385))
+  *  se corrigen crashes y campos mal parseados. ([31dcb02d](https://github.com/jaayesta/queclink-parser/commit/31dcb02d0ac187b1cf20c384dd43735aaec6bb68))
+* **config:**  se obtiene nombre de config por contenido y no por índice fijo. ([e4d5aec8](https://github.com/jaayesta/queclink-parser/commit/e4d5aec880cc3320ef191b809ab768588e64e589))
+
 #### 1.9.36 (2026-09-15)
 
 ##### Bug Fixes
