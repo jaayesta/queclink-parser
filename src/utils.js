@@ -2126,6 +2126,22 @@ const getBleData = (parsedData, btIndex) => {
 /*
   Gets the alarm type
 */
+/*
+  Gets the config name (e.g. IDA, FRI) from a GTALC/GTALM/GTALS report.
+  The position varies between models (GV75W has one field less than GV310LAU
+  before the packet counters), so it looks for the first 3 uppercase letters
+  field followed by a numeric one. Starts at index 4 to skip the device name.
+*/
+const getConfigName = report => {
+  if (!report) return undefined
+  const fields = report.split(',')
+  const isName = x => /^[A-Z]{3}$/.test(x)
+  for (let i = 4; i < fields.length - 1; i++) {
+    if (isName(fields[i]) && /^\d+$/.test(fields[i + 1])) return fields[i]
+  }
+  return fields.slice(4).find(isName)
+}
+
 const getAlarm = (command, report, extra = false) => {
   const messages = langs.es
   if (
@@ -2581,15 +2597,9 @@ const getAlarm = (command, report, extra = false) => {
     command === 'GTALM' ||
     command === 'GTALS'
   ) {
-    const instruction =
-      command === 'GTALS'
-        ? report.split(',')[4]
-        : command === 'GTALC'
-          ? report.split(',')[6]
-          : report.split(',')[7]
     return {
       type: command,
-      status: instruction,
+      status: getConfigName(report),
       message: report
     }
   } else if (command === 'GTCID') {

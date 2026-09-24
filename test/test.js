@@ -1019,6 +1019,59 @@ describe('queclink-parzer', () => {
     })
   })
 
+  describe('config reports (GTALC/GTALM/GTALS)', () => {
+    it('should return config name on GV75W GTALM', () => {
+      const raw =
+        '+RESP:GTALM,410700,864802032772547,,5,1,IDA,0,1,50,,,20260924173920,A8E3$'
+      const data = queclink.parse(Buffer.from(raw))
+      expect(data.device).to.eql('Queclink-GV75W')
+      expect(data.alarm.type).to.eql('GTALM')
+      expect(data.alarm.status).to.eql('IDA')
+      expect(data.alarm.message).to.eql(raw.slice(0, -1))
+    })
+
+    it('should return config name on GV310LAU GTALM', () => {
+      const raw =
+        '+RESP:GTALM,6E0E00,868589060797530,,,1,1,IDA,0,1,25,,,20260924173920,A8E3$'
+      const data = queclink.parse(Buffer.from(raw))
+      expect(data.device).to.eql('Queclink-GV310LAU')
+      expect(data.alarm.type).to.eql('GTALM')
+      expect(data.alarm.status).to.eql('IDA')
+      expect(data.alarm.message).to.eql(raw.slice(0, -1))
+    })
+
+    it('should return config name on GV75W GTALC', () => {
+      const raw =
+        '+RESP:GTALC,410605,864802032651246,,80000000,1,1,IDA,2,1,50,,,20230131150051,A8E3$'
+      const data = queclink.parse(Buffer.from(raw))
+      expect(data.device).to.eql('Queclink-GV75W')
+      expect(data.alarm.type).to.eql('GTALC')
+      expect(data.alarm.status).to.eql('IDA')
+      expect(data.alarm.message).to.eql(raw.slice(0, -1))
+    })
+
+    it('should return config name on GTALS', () => {
+      const raw =
+        '+RESP:GTALS,410700,864802032772547,,FRI,1,1,,,,30,30,,,,,,,,,0,20260924173920,A8E4$'
+      const alarm = utils.getAlarm('GTALS', raw)
+      expect(alarm.type).to.eql('GTALS')
+      expect(alarm.status).to.eql('FRI')
+      expect(alarm.message).to.eql(raw)
+    })
+
+    it('should ignore a device name that looks like a config name', () => {
+      const raw =
+        '+RESP:GTALM,410700,864802032772547,ABC,5,1,FRI,0,1,50,,,20260924173920,A8E3$'
+      expect(utils.getAlarm('GTALM', raw).status).to.eql('FRI')
+    })
+
+    it('should not throw without report', () => {
+      const alarm = utils.getAlarm('GTALM', null)
+      expect(alarm.type).to.eql('GTALM')
+      expect(alarm.status).to.eql(undefined)
+    })
+  })
+
   describe('GV30CAU', () => {
     it('should parse GTFRI report', () => {
       const raw = Buffer.from(
