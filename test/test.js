@@ -1120,6 +1120,27 @@ describe('queclink-parzer', () => {
     })
   })
 
+  describe('BLE relay (GTBAA 15)', () => {
+    it('should return connection error when relay was not reached', () => {
+      const raw =
+        '+RESP:GTBAA,6E0C03,868589060699249,,00,13,0,15,4007,,780541484175,0,1,0,1,0.0,262,2209.4,-68.982641,-22.461280,20260901022135,0730,0001,0835,00896703,01,12,20260901022137,1F11$'
+      const data = queclink.parse(Buffer.from(raw))
+      expect(data.alarm.type).to.eql('Relay_BLE')
+      expect(data.alarm.configResult).to.eql('Error connecting')
+      expect(data.alarm.status).to.eql(false)
+      expect(data.alarm.message).to.eql('Relay bluetooth: error de conexión')
+    })
+
+    it('should return relay state when command succeeded', () => {
+      const raw =
+        '+RESP:GTBAA,6E0C03,868589060699249,,00,13,0,15,4007,,78054154CE1F,1,0,1,1,0.0,262,2209.4,-68.982641,-22.461280,20260901172829,0730,0001,0835,00896703,01,12,20260901172831,1F12$'
+      const data = queclink.parse(Buffer.from(raw))
+      expect(data.alarm.configResult).to.eql('Success')
+      expect(data.alarm.status).to.eql(true)
+      expect(data.alarm.message).to.eql('Relay bluetooth activado')
+    })
+  })
+
   describe('multi-point GNSS reports', () => {
     it('should return satellites of each point on GV30CAU GTFRI', () => {
       const raw =

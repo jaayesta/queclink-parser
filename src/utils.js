@@ -295,6 +295,13 @@ const relayBLEResults = {
   4: 'Error'
 }
 
+const relayBLEErrors = {
+  'Error connecting': 'error de conexión',
+  'Incorrect BLE password': 'contraseña BLE incorrecta',
+  'Error updating BLE password': 'error al actualizar contraseña BLE',
+  Error: 'error'
+}
+
 /*
   Possible Driving Time Related States
 */
@@ -2722,13 +2729,17 @@ const getAlarm = (command, report, extra = false) => {
       const configResult = extra[2].relay.configResult
         ? extra[2].relay.configResult
         : null
+      // When the device could not reach the relay, the state is not confirmed
+      const failed = configResult !== null && configResult !== 'Success'
       return {
         type: 'Relay_BLE',
         number,
         deviceID: mac,
         status,
         configResult,
-        message: messages[command][report].replace('__', `${humanStatus}`)
+        message: failed
+          ? `Relay bluetooth: ${relayBLEErrors[configResult] || 'error'}`
+          : messages[command][report].replace('__', `${humanStatus}`)
       }
     } else {
       return {
