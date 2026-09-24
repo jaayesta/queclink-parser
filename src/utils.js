@@ -1968,7 +1968,8 @@ const getBleData = (parsedData, btIndex) => {
       const bleType = bluetoothAccessories[parsedData[cnt + 1]]
       const bleModel =
         parsedData[cnt + 2] !== ''
-          ? bluetoothModels[parsedData[cnt + 1]][parsedData[cnt + 2]]
+          ? (bluetoothModels[parsedData[cnt + 1]] || {})[parsedData[cnt + 2]] ||
+            null
           : null
       const rawAppendMask = parsedData[cnt + 4]
 
@@ -2536,13 +2537,23 @@ const getAlarm = (command, report, extra = false) => {
         4: acceleration turning
         5: unknown harsh behavior
       */
-    const x = getAccelerationMagnitude(extra[0].substring(0, 4), 4)
-    const y = getAccelerationMagnitude(extra[0].substring(4, 8), 4)
-    const z = getAccelerationMagnitude(extra[0].substring(8, 12), 4)
-    const duration = extra[1]
-    const magnitude = Number(
-      Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2)).toFixed(2)
-    ).toString()
+    const acc = extra && extra[0]
+    const x = acc ? getAccelerationMagnitude(acc.substring(0, 4), 4) : null
+    const y = acc ? getAccelerationMagnitude(acc.substring(4, 8), 4) : null
+    const z = acc ? getAccelerationMagnitude(acc.substring(8, 12), 4) : null
+    const duration = extra ? extra[1] : null
+    const magnitude = acc
+      ? Number(
+          Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2)).toFixed(2)
+        ).toString()
+      : null
+    let message = messages[command][report[1]] || messages[command]['5']
+    message = magnitude
+      ? message.replace('X', magnitude)
+      : message.replace(' de X m/s²', '')
+    message = duration
+      ? message.replace('Z', duration)
+      : message.replace(' durante Z segundos', '')
     return {
       type: 'Harsh_Behavior',
       status: parseInt(report[1], 10),
@@ -2550,9 +2561,7 @@ const getAlarm = (command, report, extra = false) => {
       duration,
       magnitude,
       xyz: { x, y, z },
-      message: messages[command][report[1]]
-        .replace('X', magnitude)
-        .replace('Z', duration)
+      message
     }
   } else if (command === 'GTCRA') {
     return {

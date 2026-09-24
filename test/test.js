@@ -1072,6 +1072,54 @@ describe('queclink-parzer', () => {
     })
   })
 
+  describe('robustness', () => {
+    it('should not throw on GTHBE without max acceleration', () => {
+      const alarm = utils.getAlarm('GTHBE', '01', [null, '1.5'])
+      expect(alarm.magnitude).to.eql(null)
+      expect(alarm.xyz).to.eql({ x: null, y: null, z: null })
+      expect(alarm.message).to.eql('Aceleración Brusca durante 1.5 segundos')
+    })
+
+    it('should not throw on unknown BLE accessory model', () => {
+      const devices = utils.getBleData(
+        ['1', '01', '3', '0', '', '0002', 'AABBCCDDEEFF'],
+        0
+      )
+      expect(devices[0].model).to.eql(null)
+      expect(devices[0].mac).to.eql('AABBCCDDEEFF')
+    })
+
+    it('should return null lac/cid when GTGSM cell is FFFF', () => {
+      const cells = '0730,0001,FFFF,FFFF,20,,'.repeat(6)
+      for (const protocol of ['6E0104', '802004']) {
+        const raw = `+RESP:GTGSM,${protocol},867844003012625,FRI,${cells}0730,0001,18D8,6141,30,,20240101120001,0001$`
+        const data = queclink.parse(Buffer.from(raw))
+        expect(data.neighborCells[0].lac).to.eql(null)
+        expect(data.neighborCells[0].cid).to.eql(null)
+        expect(data.lac).to.eql(6360)
+        expect(data.cid).to.eql(24897)
+      }
+    })
+
+    it('should keep GTCLT VIN and registration number as strings', () => {
+      const fields = Array(74).fill('')
+      fields[0] = '+RESP:GTCLT'
+      fields[1] = '6E0104'
+      fields[2] = '867844003012625'
+      fields[11] = '9BWZZZ377VT004251'
+      fields[53] = 'ABCD12'
+      '0.8,0,0,816.1,-70.514613,-33.361280,20160811170821,0730,0002,7410,C789'
+        .split(',')
+        .forEach((x, i) => (fields[60 + i] = x))
+      fields[71] = '00'
+      fields[72] = '20160811180025'
+      fields[73] = '07B8$'
+      const data = queclink.parse(Buffer.from(fields.join(',')))
+      expect(data.can.vin).to.eql('9BWZZZ377VT004251')
+      expect(data.can.canExpanded.registrationNumber).to.eql('ABCD12')
+    })
+  })
+
   describe('GV30CAU', () => {
     it('should parse GTFRI report', () => {
       const raw = Buffer.from(

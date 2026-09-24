@@ -1093,13 +1093,13 @@ const parse = raw => {
             ? parseInt(parsedData[index + 1], 10)
             : null,
         lac:
-          parsedData[index + 2] !== '' ||
-          parsedData[index + 2].toUpperCase() === 'FFFF'
+          parsedData[index + 2] &&
+          parsedData[index + 2].toUpperCase() !== 'FFFF'
             ? parseInt(parsedData[index + 2], 16)
             : null,
         cid:
-          parsedData[index + 3] !== '' ||
-          parsedData[index + 3].toUpperCase() === 'FFFF'
+          parsedData[index + 3] &&
+          parsedData[index + 3].toUpperCase() !== 'FFFF'
             ? parseInt(parsedData[index + 3], 16)
             : null,
         rxLevel:
@@ -1127,13 +1127,11 @@ const parse = raw => {
           ? parseInt(parsedData[index + 1], 10)
           : null,
       lac:
-        parsedData[index + 2] !== '' ||
-        parsedData[index + 2].toUpperCase() === 'FFFF'
+        parsedData[index + 2] && parsedData[index + 2].toUpperCase() !== 'FFFF'
           ? parseInt(parsedData[index + 2], 16)
           : null,
       cid:
-        parsedData[index + 3] !== '' ||
-        parsedData[index + 3].toUpperCase() === 'FFFF'
+        parsedData[index + 3] && parsedData[index + 3].toUpperCase() !== 'FFFF'
           ? parseInt(parsedData[index + 3], 16)
           : null,
       rxLevel:

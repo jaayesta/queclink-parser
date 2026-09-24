@@ -1878,13 +1878,13 @@ const parse = raw => {
         connected: parsedData[index + 6] !== '',
         bluetoothInfo: {
           name:
-            parsedData[index + 2] !== '' &&
+            parsedData[index + 2] &&
             utils.nHexDigit(utils.hex2bin(parsedData[index + 1]), 16)[15] ===
               '1'
               ? parsedData[index + 2]
               : null,
           mac:
-            parsedData[index + 3] !== '' &&
+            parsedData[index + 3] &&
             utils.nHexDigit(utils.hex2bin(parsedData[index + 1]), 16)[14] ===
               '1'
               ? parsedData[index + 3]
@@ -2367,13 +2367,13 @@ const parse = raw => {
             ? parseInt(parsedData[index + 1], 10)
             : null,
         lac:
-          parsedData[index + 2] !== '' ||
-          parsedData[index + 2].toUpperCase() === 'FFFF'
+          parsedData[index + 2] &&
+          parsedData[index + 2].toUpperCase() !== 'FFFF'
             ? parseInt(parsedData[index + 2], 16)
             : null,
         cid:
-          parsedData[index + 3] !== '' ||
-          parsedData[index + 3].toUpperCase() === 'FFFF'
+          parsedData[index + 3] &&
+          parsedData[index + 3].toUpperCase() !== 'FFFF'
             ? parseInt(parsedData[index + 3], 16)
             : null,
         rxLevel:
@@ -2401,13 +2401,11 @@ const parse = raw => {
           ? parseInt(parsedData[index + 1], 10)
           : null,
       lac:
-        parsedData[index + 2] !== '' ||
-        parsedData[index + 2].toUpperCase() === 'FFFF'
+        parsedData[index + 2] && parsedData[index + 2].toUpperCase() !== 'FFFF'
           ? parseInt(parsedData[index + 2], 16)
           : null,
       cid:
-        parsedData[index + 3] !== '' ||
-        parsedData[index + 3].toUpperCase() === 'FFFF'
+        parsedData[index + 3] && parsedData[index + 3].toUpperCase() !== 'FFFF'
           ? parseInt(parsedData[index + 3], 16)
           : null,
       rxLevel:
@@ -2586,7 +2584,7 @@ const parse = raw => {
         }
       },
       can: {
-        vin: parsedData[11] !== '' ? parseInt(parsedData[11]) : null,
+        vin: parsedData[11] !== '' ? parsedData[11] : null,
         ignitionKey:
           parsedData[12] !== '' ? parseInt(parsedData[12], 10) : null,
         distance: parsedData[13] !== '' ? parsedData[13] : null,
@@ -2745,14 +2743,11 @@ const parse = raw => {
             parsedData[47] !== '' ? parseFloat(parsedData[47]) : null,
           totalBrakeApplications:
             parsedData[48] !== '' ? parseInt(parsedData[48]) : null,
-          tachographDriver1Card:
-            parsedData[49] !== '' ? parseInt(parsedData[49]) : null,
-          tachographDriver2Card:
-            parsedData[50] !== '' ? parseInt(parsedData[50]) : null,
+          tachographDriver1Card: parsedData[49] !== '' ? parsedData[49] : null,
+          tachographDriver2Card: parsedData[50] !== '' ? parsedData[50] : null,
           tachographDriver1Name: parsedData[51] !== '' ? parsedData[51] : null,
           tachographDriver2Name: parsedData[52] !== '' ? parsedData[52] : null,
-          registrationNumber:
-            parsedData[53] !== '' ? parseInt(parsedData[53]) : null,
+          registrationNumber: parsedData[53] !== '' ? parsedData[53] : null,
           expansionInformation: {
             raw: parsedData[54] !== '' ? parsedData[54] : null,
             webasto: expansionBin ? expansionBin[0] === '1' : null,
