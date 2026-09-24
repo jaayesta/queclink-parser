@@ -1120,7 +1120,51 @@ describe('queclink-parzer', () => {
     })
   })
 
+  describe('multi-point GNSS reports', () => {
+    it('should return satellites of each point on GV30CAU GTFRI', () => {
+      const raw =
+        '+RESP:GTFRI,80201C0200,866714080286072,,27764,10,3,1,47.4,346,541.6,-70.629206,-33.482745,20260924135952,0730,0001,3337,008D2D02,01,11,1,47.8,323,542.2,-70.629506,-33.482205,20260924135957,0730,0001,3337,008D2D02,01,22,1,42.1,319,543.0,-70.629956,-33.481780,20260924140002,0730,0001,3337,008D2D02,01,33,52.4,0000003:07:13,,,,100,220100,,,,20260924140004,0524$'
+      const data = queclink.parse(Buffer.from(raw))
+      expect(data.datetime).to.eql(new Date('2026-09-24T13:59:52Z'))
+      expect(data.satellites).to.eql(11)
+      expect(data.moreData.map(x => x.satellites)).to.eql([22, 33])
+      expect(data.odometer).to.eql(52.4)
+    })
+
+    it('should return satellites of each point on GV58LAU GTERI', () => {
+      const raw =
+        '+RESP:GTERI,8020040A00,866314061835664,,00000100,28174,10,3,1,28.4,339,489.0,-70.710936,-33.342062,20260924155949,0730,0001,333A,007ECF03,01,12,1,24.9,339,488.9,-70.711086,-33.341726,20260924155954,0730,0001,333A,007ECF03,01,10,1,22.0,338,487.8,-70.711218,-33.341442,20260924155959,0730,0001,333A,007ECF03,01,07,3193.5,0000109:59:25,,,,100,220100,,1,02,6,5,23D600BF,283F,,7805414BBD35,1,3373,1,91,1.91,95,20260924160000,0D2F$'
+      const data = queclink.parse(Buffer.from(raw))
+      expect(data.device).to.eql('Queclink-GV58LAU')
+      expect(data.satellites).to.eql(12)
+      expect(data.moreData.map(x => x.satellites)).to.eql([10, 7])
+      expect(data.odometer).to.eql(3193.5)
+    })
+  })
+
   describe('GV30CAU', () => {
+    it('should return backup battery on GTBPL', () => {
+      const raw =
+        '+RESP:GTBPL,80201C0200,866714080280679,,3.70,1,0.0,0,490.9,-70.705872,-33.461316,20260924022957,0730,0001,333F,03AD777B,01,32,20260924022959,08A1$'
+      const data = queclink.parse(Buffer.from(raw))
+      expect(data.voltage.battery).to.eql(3.7)
+      expect(data.satellites).to.eql(32)
+    })
+
+    it('should return satellites on GTMPF', () => {
+      const raw =
+        '+RESP:GTMPF,80201C0200,866714080280679,,1,0.0,0,503.7,-70.705835,-33.461315,20260923231125,0730,0001,333F,00313302,01,30,20260923231125,0848$'
+      const data = queclink.parse(Buffer.from(raw))
+      expect(data.satellites).to.eql(30)
+    })
+
+    it('should return used satellites in decimal on GTGSS', () => {
+      const raw =
+        '+RESP:GTGSS,80201C0200,866714080288359,,0,12,21,,0,0.0,279,8.1,-71.543217,-32.972579,20260923174950,0730,0003,EA6F,00070B34,01,0,20260923175450,83F7$'
+      const data = queclink.parse(Buffer.from(raw))
+      expect(data.usedSatellites).to.eql(12)
+    })
+
     it('should parse GTFRI report', () => {
       const raw = Buffer.from(
         '+RESP:GTFRI,80202100,862170013895931,,00,1,1,4.3,92,70.0,0.0,121.354335,31.222073,20090214013254,0460,0000,18d8,6141,00,2000.0,12345:12:34,,80,210100,,,,20090214093254,11F0$'

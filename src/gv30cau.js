@@ -36,6 +36,10 @@ const parse = raw => {
       const accuracyInfo = utils.includeGnnsAccuracy(parsedData[18]) ? 3 : 0
       const index =
         6 + (12 + satelliteInfo + gnssTriggerType + accuracyInfo) * number
+      // Satellites/accuracy of the first GNSS block (the one used for loc)
+      const firstIx =
+        index -
+        (12 + satelliteInfo + gnssTriggerType + accuracyInfo) * (number - 1)
 
       data = Object.assign(data, {
         alarm: utils.getAlarm(command[1], null),
@@ -113,23 +117,23 @@ const parse = raw => {
         cid: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
         satellites:
           satelliteInfo &&
-          parsedData[index - (satelliteInfo + accuracyInfo) + 1] !== ''
+          parsedData[firstIx - (satelliteInfo + accuracyInfo) + 1] !== ''
             ? parseInt(
-                parsedData[index - (satelliteInfo + accuracyInfo) + 1],
+                parsedData[firstIx - (satelliteInfo + accuracyInfo) + 1],
                 10
               )
             : null,
         Hdop:
-          accuracyInfo && parsedData[index - accuracyInfo + 1] !== ''
-            ? parseFloat(parsedData[index - accuracyInfo + 1])
+          accuracyInfo && parsedData[firstIx - accuracyInfo + 1] !== ''
+            ? parseFloat(parsedData[firstIx - accuracyInfo + 1])
             : null,
         Vdop:
-          accuracyInfo && parsedData[index - accuracyInfo + 2] !== ''
-            ? parseFloat(parsedData[index - accuracyInfo + 2])
+          accuracyInfo && parsedData[firstIx - accuracyInfo + 2] !== ''
+            ? parseFloat(parsedData[firstIx - accuracyInfo + 2])
             : null,
         Ddop:
-          accuracyInfo && parsedData[index] !== ''
-            ? parseFloat(parsedData[index])
+          accuracyInfo && parsedData[firstIx] !== ''
+            ? parseFloat(parsedData[firstIx])
             : null,
         odometer:
           parsedData[index + 1] !== ''
@@ -199,16 +203,34 @@ const parse = raw => {
                 ? parseInt(parsedData[gnssIx + 12], 10)
                 : null,
             Hdop:
-              accuracyInfo && parsedData[gnssIx + 13] !== ''
-                ? parseFloat(parsedData[gnssIx + 13], 10)
+              accuracyInfo &&
+              parsedData[gnssIx + 12 + satelliteInfo + gnssTriggerType] !== ''
+                ? parseFloat(
+                    parsedData[gnssIx + 12 + satelliteInfo + gnssTriggerType],
+                    10
+                  )
                 : null,
             Vdop:
-              accuracyInfo && parsedData[gnssIx + 14] !== ''
-                ? parseFloat(parsedData[gnssIx + 14], 10)
+              accuracyInfo &&
+              parsedData[gnssIx + 12 + satelliteInfo + gnssTriggerType + 1] !==
+                ''
+                ? parseFloat(
+                    parsedData[
+                      gnssIx + 12 + satelliteInfo + gnssTriggerType + 1
+                    ],
+                    10
+                  )
                 : null,
             Ddop:
-              accuracyInfo && parsedData[gnssIx + 15] !== ''
-                ? parseFloat(parsedData[gnssIx + 15], 10)
+              accuracyInfo &&
+              parsedData[gnssIx + 12 + satelliteInfo + gnssTriggerType + 2] !==
+                ''
+                ? parseFloat(
+                    parsedData[
+                      gnssIx + 12 + satelliteInfo + gnssTriggerType + 2
+                    ],
+                    10
+                  )
                 : null
           })
         }
@@ -226,6 +248,10 @@ const parse = raw => {
     const accuracyInfo = utils.includeGnnsAccuracy(parsedData[19]) ? 3 : 0
     const index =
       7 + (12 + satelliteInfo + gnssTriggerType + accuracyInfo) * number
+    // Satellites/accuracy of the first GNSS block (the one used for loc)
+    const firstIx =
+      index -
+      (12 + satelliteInfo + gnssTriggerType + accuracyInfo) * (number - 1)
 
     data = Object.assign(data, {
       alarm: utils.getAlarm(command[1], null),
@@ -302,20 +328,20 @@ const parse = raw => {
       cid: parsedData[18] !== '' ? parseInt(parsedData[18], 16) : null,
       satellites:
         satelliteInfo &&
-        parsedData[index - (satelliteInfo + accuracyInfo) + 1] !== ''
-          ? parseInt(parsedData[index - (satelliteInfo + accuracyInfo) + 1])
+        parsedData[firstIx - (satelliteInfo + accuracyInfo) + 1] !== ''
+          ? parseInt(parsedData[firstIx - (satelliteInfo + accuracyInfo) + 1])
           : null,
       Hdop:
-        accuracyInfo && parsedData[index - accuracyInfo + 1] !== ''
-          ? parseFloat(parsedData[index - accuracyInfo + 1])
+        accuracyInfo && parsedData[firstIx - accuracyInfo + 1] !== ''
+          ? parseFloat(parsedData[firstIx - accuracyInfo + 1])
           : null,
       Vdop:
-        accuracyInfo && parsedData[index - accuracyInfo + 2] !== ''
-          ? parseFloat(parsedData[index - accuracyInfo + 2])
+        accuracyInfo && parsedData[firstIx - accuracyInfo + 2] !== ''
+          ? parseFloat(parsedData[firstIx - accuracyInfo + 2])
           : null,
       Ddop:
-        accuracyInfo && parsedData[index] !== ''
-          ? parseFloat(parsedData[index])
+        accuracyInfo && parsedData[firstIx] !== ''
+          ? parseFloat(parsedData[firstIx])
           : null,
       odometer:
         parsedData[index + 1] !== '' ? parseFloat(parsedData[index + 1]) : null,
@@ -383,16 +409,28 @@ const parse = raw => {
               ? parseInt(parsedData[gnssIx + 12], 10)
               : null,
           Hdop:
-            accuracyInfo && parsedData[gnssIx + 13] !== ''
-              ? parseFloat(parsedData[gnssIx + 13], 10)
+            accuracyInfo &&
+            parsedData[gnssIx + 12 + satelliteInfo + gnssTriggerType] !== ''
+              ? parseFloat(
+                  parsedData[gnssIx + 12 + satelliteInfo + gnssTriggerType],
+                  10
+                )
               : null,
           Vdop:
-            accuracyInfo && parsedData[gnssIx + 14] !== ''
-              ? parseFloat(parsedData[gnssIx + 14], 10)
+            accuracyInfo &&
+            parsedData[gnssIx + 12 + satelliteInfo + gnssTriggerType + 1] !== ''
+              ? parseFloat(
+                  parsedData[gnssIx + 12 + satelliteInfo + gnssTriggerType + 1],
+                  10
+                )
               : null,
           Ddop:
-            accuracyInfo && parsedData[gnssIx + 15] !== ''
-              ? parseFloat(parsedData[gnssIx + 15], 10)
+            accuracyInfo &&
+            parsedData[gnssIx + 12 + satelliteInfo + gnssTriggerType + 2] !== ''
+              ? parseFloat(
+                  parsedData[gnssIx + 12 + satelliteInfo + gnssTriggerType + 2],
+                  10
+                )
               : null
         })
       }
@@ -688,6 +726,10 @@ const parse = raw => {
           : null,
       lac: parsedData[13] !== '' ? parseInt(parsedData[13], 16) : null,
       cid: parsedData[14] !== '' ? parseInt(parsedData[14], 16) : null,
+      satellites:
+        utils.includeSatellites(parsedData[15]) && parsedData[16] !== ''
+          ? parseInt(parsedData[16], 10)
+          : null,
       odometer: null,
       hourmeter: null
     })
@@ -724,7 +766,10 @@ const parse = raw => {
       altitude: parsedData[8] !== '' ? parseFloat(parsedData[8]) : null,
       datetime: parsedData[11] !== '' ? utils.parseDate(parsedData[11]) : null,
       voltage: {
-        battery: null,
+        battery:
+          command[1] === 'GTBPL' && parsedData[4] !== ''
+            ? parseFloat(parsedData[4])
+            : null,
         inputCharge: null,
         ada: null
       },
@@ -989,7 +1034,7 @@ const parse = raw => {
           : null,
       lac: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
       cid: parsedData[18] !== '' ? parseInt(parsedData[18], 16) : null,
-      usedSatellites: parsedData[5] !== '' ? parseInt(parsedData[5], 16) : null,
+      usedSatellites: parsedData[5] !== '' ? parseInt(parsedData[5], 10) : null,
       satellites:
         satelliteInfo && parsedData[index] !== ''
           ? parseInt(parsedData[index], 10)
