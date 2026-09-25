@@ -1,3 +1,9 @@
+#### 1.9.38 (2026-09-25)
+
+##### Bug Fixes
+
+* **ble:**  GTBAA de relay informa error cuando el equipo no llega al relay. ([8c2a5dba](https://github.com/jaayesta/queclink-parser/commit/8c2a5dbad400dedc2e6dc472e37bd7d530337edb))
+
 #### 1.9.37 (2026-09-24)
 
 ##### Bug Fixes
