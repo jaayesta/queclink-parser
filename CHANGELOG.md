@@ -1,3 +1,13 @@
+#### 1.9.39 (2026-10-02)
+
+##### New Features
+
+* **gtscs:**  se parsea estado de autocalibración del acelerómetro. ([c80d50e7](https://github.com/jaayesta/queclink-parser/commit/c80d50e746842d300dfbfe2c660ee7636fcccef8))
+
+##### Bug Fixes
+
+* **gtscs:**  se agregan hdop, speed y gpsStatus en null. ([8ce41668](https://github.com/jaayesta/queclink-parser/commit/8ce4166898c3397e03b31f580257a7b676a85599))
+
 #### 1.9.38 (2026-09-25)
 
 ##### Bug Fixes
