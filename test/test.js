@@ -1153,6 +1153,7 @@ describe('queclink-parzer', () => {
       expect(data.alarm.calibrationStatus).to.eql(2)
       expect(data.alarm.message).to.eql('Acelerómetro calibrado')
       expect(data.loc).to.eql(null)
+      expect(data.hdop).to.eql(null)
       expect(data.datetime).to.eql(new Date('2026-10-02T12:00:00Z'))
       expect(data.calibration).to.eql({
         xForward: -0.06,

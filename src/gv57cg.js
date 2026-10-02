@@ -2557,6 +2557,9 @@ const parse = raw => {
     data = Object.assign(data, {
       alarm: utils.getAlarm(command[1], raw.toString()),
       loc: null,
+      speed: null,
+      gpsStatus: null,
+      hdop: null,
       datetime: data.sentTime,
       calibration:
         parsedData[4] === '2' ? utils.getCalibrationMatrix(parsedData, 5) : null
