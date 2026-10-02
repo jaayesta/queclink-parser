@@ -238,6 +238,11 @@
     "1": "Información posterior al posible choque recibida"
   },
   "GTASC": "Acelerómetro calibrado automáticamente",
+  "GTSCS": {
+    "0": "Autocalibración del acelerómetro deshabilitada",
+    "1": "Autocalibración del acelerómetro no realizada",
+    "2": "Acelerómetro calibrado"
+  },
   "GTDTT": "Data transparente del puerto serial",
   "GTMON": "Llamada telefónica completada",
   "GTCID": "ICC de la SIM: data",

@@ -1141,6 +1141,48 @@ describe('queclink-parzer', () => {
     })
   })
 
+  describe('self calibration status (GTSCS)', () => {
+    it('should return calibration matrix on GV310LAU when calibrated', () => {
+      const raw =
+        '+RESP:GTSCS,6E1203,865585040006649,GV310LAU,2,-0.06,0.88,-0.48,-0.97,0.05,0.22,0.22,0.48,0.85,20261002120000,1A2B$'
+      const data = queclink.parse(Buffer.from(raw))
+      expect(data.device).to.eql('Queclink-GV310LAU')
+      expect(data.type).to.eql('data')
+      expect(data.alarm.type).to.eql('GTSCS')
+      expect(data.alarm.selfCalibration).to.eql(true)
+      expect(data.alarm.calibrationStatus).to.eql(2)
+      expect(data.alarm.message).to.eql('Acelerómetro calibrado')
+      expect(data.loc).to.eql(null)
+      expect(data.datetime).to.eql(new Date('2026-10-02T12:00:00Z'))
+      expect(data.calibration).to.eql({
+        xForward: -0.06,
+        yForward: 0.88,
+        zForward: -0.48,
+        xSide: -0.97,
+        ySide: 0.05,
+        zSide: 0.22,
+        xVertical: 0.22,
+        yVertical: 0.48,
+        zVertical: 0.85
+      })
+    })
+
+    it('should return no matrix on GV58LAU when not calibrated', () => {
+      const raw =
+        '+BUFF:GTSCS,8020040A00,866314061835664,GV58LAU,1,20261002120000,1A2C$'
+      const data = queclink.parse(Buffer.from(raw))
+      expect(data.device).to.eql('Queclink-GV58LAU')
+      expect(data.history).to.eql(true)
+      expect(data.alarm.selfCalibration).to.eql(false)
+      expect(data.alarm.calibrationStatus).to.eql(1)
+      expect(data.alarm.message).to.eql(
+        'Autocalibración del acelerómetro no realizada'
+      )
+      expect(data.calibration).to.eql(null)
+      expect(data.datetime).to.eql(new Date('2026-10-02T12:00:00Z'))
+    })
+  })
+
   describe('multi-point GNSS reports', () => {
     it('should return satellites of each point on GV30CAU GTFRI', () => {
       const raw =

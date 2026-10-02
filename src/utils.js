@@ -571,6 +571,29 @@ const getAccelerationMagnitude = (hexNumber, n) => {
 }
 
 /*
+  Gets the rotation matrix of the 3-axis sensor (GTASC, GTSCS)
+*/
+const getCalibrationMatrix = (parsedData, start) => {
+  const keys = [
+    'xForward',
+    'yForward',
+    'zForward',
+    'xSide',
+    'ySide',
+    'zSide',
+    'xVertical',
+    'yVertical',
+    'zVertical'
+  ]
+  return Object.fromEntries(
+    keys.map((key, i) => [
+      key,
+      parsedData[start + i] !== '' ? parseFloat(parsedData[start + i]) : null
+    ])
+  )
+}
+
+/*
   Gets fuel consumption from string
 */
 const getFuelConsumption = fuelString => {
@@ -2628,10 +2651,20 @@ const getAlarm = (command, report, extra = false) => {
           : messages[command].replace('data', '-')
     }
   } else if (command === 'GTSCS') {
+    /*
+      calibrationStatus:
+        0: self calibration disabled
+        1: self calibration not done
+        2: self calibration done
+    */
+    const calibrationStatus = report.split(',')[4]
     return {
       type: command,
       status: 'CONFIG',
-      selfCalibration: report.split(',')[4] === '2'
+      selfCalibration: calibrationStatus === '2',
+      calibrationStatus:
+        calibrationStatus !== '' ? parseInt(calibrationStatus, 10) : null,
+      message: messages[command][calibrationStatus] || ''
     }
   } else if (command === 'GTLBA') {
     const type = report[0]
@@ -2900,6 +2933,7 @@ module.exports = {
   includeStatus,
   includeGnnsAccuracy,
   getAccelerationMagnitude,
+  getCalibrationMatrix,
   getTempInCelciousDegrees,
   getFuelConsumption,
   getHoursForHourmeter,

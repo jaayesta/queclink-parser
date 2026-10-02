@@ -1388,6 +1388,16 @@ const parse = raw => {
       odometer: null,
       hourmeter: null
     })
+  } else if (command[1] === 'GTSCS') {
+    // Self calibration status of the 3-axis sensor (reply to AT+GTRTO SCS)
+    // It has no GNSS data, so datetime is the send time
+    data = Object.assign(data, {
+      alarm: utils.getAlarm(command[1], raw.toString()),
+      loc: null,
+      datetime: data.sentTime,
+      calibration:
+        parsedData[4] === '2' ? utils.getCalibrationMatrix(parsedData, 5) : null
+    })
   } else {
     // Default: unrecognized command
     data = Object.assign(data, {

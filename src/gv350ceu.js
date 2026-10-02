@@ -3039,6 +3039,16 @@ const parse = raw => {
         parsedData[index + 4] !== '' ? parseFloat(parsedData[index + 4]) : null,
       hourmeter: null
     })
+  } else if (command[1] === 'GTSCS') {
+    // Self calibration status of the 3-axis sensor (reply to AT+GTRTO SCS)
+    // It has no GNSS data, so datetime is the send time
+    data = Object.assign(data, {
+      alarm: utils.getAlarm(command[1], raw.toString()),
+      loc: null,
+      datetime: data.sentTime,
+      calibration:
+        parsedData[4] === '2' ? utils.getCalibrationMatrix(parsedData, 5) : null
+    })
   } else {
     // GTBAR report is not parsed because it only supports one device
     data = Object.assign(data, {
