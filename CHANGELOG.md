@@ -1,3 +1,13 @@
+#### 1.9.40 (2026-10-07)
+
+##### Bug Fixes
+
+* **charge:**  se omite status.charge cuando GTFRI/GTERI no trae voltaje externo. ([df3f3f2a](https://github.com/jaayesta/queclink-parser/commit/df3f3f2a864717ae80e9e606cbeb9e35752ead0c))
+* **gtinf:**  se corrige el tipo de red y la señal en GV310LAU, GV58LAU y GV30CAU. ([85c96cb3](https://github.com/jaayesta/queclink-parser/commit/85c96cb36394ec0499f35c06405db93d6dcfb95a))
+* **hourmeter:**  se convierte a horas el horómetro de GTIGN/GTIGF (GV58LAU) y GTVGN/GTVGF (GV310LAU, GV30CAU). ([0b5177bb](https://github.com/jaayesta/queclink-parser/commit/0b5177bb67c55c15d0d38bb5792a58a2830f7c79))
+*  se corrigen caídas del parser en GTERI con 1-wire y CAN, GTTMP y accesorios BLE. ([650d1c71](https://github.com/jaayesta/queclink-parser/commit/650d1c71b210e75c24c65451bbea7a11beeb72a4))
+* **can:**  se corrige la decodificación de consumo, tacógrafo, indicadores, luces y puertas. ([36e9582d](https://github.com/jaayesta/queclink-parser/commit/36e9582dbc773c1522c5c3c4a1c66b4e6f61176c))
+
 #### 1.9.39 (2026-10-02)
 
 ##### New Features
