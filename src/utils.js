@@ -514,7 +514,9 @@ const getTempInCelciousDegrees = hexTemp => {
   Gets the temperature from BLE devices in celcious degrees
 */
 const getBleTempInCelciousDegrees = (device, hexData) => {
-  if (device === 'WTH300') {
+  if (typeof hexData !== 'string' || hexData === '') {
+    return null
+  } else if (device === 'WTH300') {
     const intTemp = parseInt(hexData.substring(0, 2), 16)
     const decTemp = parseInt(hexData.substring(2, 4), 16)
     return intTemp + decTemp / 256
@@ -534,6 +536,9 @@ const getBleTempInCelciousDegrees = (device, hexData) => {
   Gets the humidity from BLE devices in rh
 */
 const getBleHumidityInRH = (device, hexData) => {
+  if (typeof hexData !== 'string' || hexData === '') {
+    return null
+  }
   const intHum = parseInt(hexData.substring(4, 6), 16)
   const decHum = parseInt(hexData.substring(6, 8), 16)
   if (device === 'WTH300') {
@@ -549,6 +554,9 @@ const getBleHumidityInRH = (device, hexData) => {
   Gets the humidity from BLE devices in rh
 */
 const getTirePressureInPSI = hexData => {
+  if (typeof hexData !== 'string' || hexData === '') {
+    return null
+  }
   const tirePress = parseInt(hexData.substring(2, 4), 16) * 2.5 // In kPa
   return tirePress / 6.895 // In PSI
 }
@@ -942,14 +950,10 @@ const getCanData = (parsedData, ix, type, options) => {
   options = options || {}
   const isGV350CEU = options && options.deviceType === 'GV350CEU'
 
-  const canAppendMask =
-    parsedData[ix + 1] !== ''
-      ? nHexDigit(hex2bin(parsedData[ix + 1]), 32)
-      : null
-
-  if (canAppendMask === 0) {
-    return {}
-  }
+  // An empty CAN report mask means no CAN fields are reported
+  const canAppendMask = parsedData[ix + 1]
+    ? nHexDigit(hex2bin(parsedData[ix + 1]), 32)
+    : '0'.repeat(32)
 
   const vinIx = ix + 1 + parseInt(canAppendMask[31])
   const ignIx = vinIx + parseInt(canAppendMask[30])
@@ -2505,13 +2509,22 @@ const getAlarm = (command, report, extra = false) => {
   } else if (command === 'GTTMP') {
     const number = parseInt(report[0], 10)
     const temperature = extra[1] !== '' ? parseFloat(extra[1]) : null
+    // Report Type bit 0: 0 outside / 1 within the range
+    // Report Type bit 1: 0 temperature decreases / 1 temperature increases
+    const reportType = parseInt(report[1], 16)
+    const inside = reportType & 1
     return {
       type: 'Outside_Temperature',
       number,
       deviceID: extra[0],
-      status: report[1] === '0', // 0 means outside the range, 1 means inside
+      status: inside === 0,
+      trend: isNaN(reportType)
+        ? null
+        : reportType & 2
+          ? 'increasing'
+          : 'decreasing',
       temperature,
-      message: messages[command][report[1]].replace('()', `(${temperature}°C)`)
+      message: messages[command][inside].replace('()', `(${temperature}°C)`)
     }
   } else if (command === 'GTFLA') {
     const before =
@@ -2979,6 +2992,9 @@ module.exports = {
   getSignalStrength,
   getSignalPercentage,
   getCanData,
+  getBleTempInCelciousDegrees,
+  getBleHumidityInRH,
+  getTirePressureInPSI,
   getBleData,
   getAlarm,
   createDefaultOut,

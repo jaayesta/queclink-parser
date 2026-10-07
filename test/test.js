@@ -1424,4 +1424,55 @@ describe('queclink-parzer', () => {
       expect(can.doors.hood).to.eql(false)
     })
   })
+
+  describe('crash fixes', () => {
+    it('should not throw on GTERI with 1-wire and empty CAN data', () => {
+      const raw = Buffer.from(
+        '+RESP:GTERI,6E0E00,868589060596890,,00000006,0,10,1,1,0.1,314,536.6,-70.700586,-33.539057,20261007070904,0730,0001,3341,01DEB17A,01,12,24698.7,0000389:32:47,,,,95,110000,0,0,0,203FFFFF,,,,,,,,,,,,,,,,,,,,,,,FFFFFF,,,,,,,,,,,,,,,,,,,,,,,,,20261007070906,9FB4$'
+      )
+      const data = queclink.parse(raw)
+      expect(data.can.comunicationOk).to.eql(false)
+      expect(data.can.canAppendMask.hex).to.eql('203FFFFF')
+      expect(data.odometer).to.eql(24698.7)
+      expect(data.hourmeter).to.be.closeTo(389.546, 0.001)
+      expect(data.loc.coordinates).to.eql([-70.700586, -33.539057])
+    })
+
+    it('should not throw on CAN data with empty mask', () => {
+      const canData = utils.getCanData(['0', ''], 0, 'GTERI')
+      expect(canData[3].comunicationOk).to.eql(false)
+      expect(canData[3].canAppendMask.hex).to.eql(null)
+      expect(canData[3].totalDistance).to.eql(null)
+    })
+
+    it('should return GTTMP alarm with temperature trend', () => {
+      const base =
+        '+RESP:GTTMP,6E0E00,862170013894694,GV310LAU,,12183,RT,1,2,0.0,266,88.9,117.129568,31.837759,20230628081232,0460,0000,550B,085B,01,1,0.0,12345:12:34,11574,10574,9644,01,01,,,,28131A4103000056,,28,20130627054009,0028$'
+      const rising = queclink.parse(Buffer.from(base.replace('RT', '02')))
+      expect(rising.alarm.status).to.eql(true)
+      expect(rising.alarm.trend).to.eql('increasing')
+      expect(rising.alarm.message).to.eql('Temperatura fuera de rango (28°C)')
+      const back = queclink.parse(Buffer.from(base.replace('RT', '03')))
+      expect(back.alarm.status).to.eql(false)
+      expect(back.alarm.trend).to.eql('increasing')
+      expect(back.alarm.message).to.eql(
+        'Regreso a temperatura dentro de rango (28°C)'
+      )
+    })
+
+    it('should not throw on BLE raw data helpers without data', () => {
+      expect(utils.getBleTempInCelciousDegrees('WTH301', undefined)).to.eql(
+        null
+      )
+      expect(utils.getBleHumidityInRH('WTH301', undefined)).to.eql(null)
+      expect(utils.getTirePressureInPSI(undefined)).to.eql(null)
+    })
+
+    it('should not throw on GV310LAU manual GTERI example with BLE', () => {
+      const raw = Buffer.from(
+        '+RESP:GTERI,6E0E00,864696060004173,GV310LAU,00000100,,10,1,1,0.0,0,115.8,117.129356,31.839248,20230808061540,0460,0001,DF5C,05FE6667,03,15,,4.0,0000102:34:33,4219,10466,15,100,210000,9,1,0,06,12,0,001A42A2,0617,TMPS,08351B00043C,1,26,65,20231030085704,20231030085704,0017$'
+      )
+      expect(() => queclink.parse(raw)).to.not.throw()
+    })
+  })
 })

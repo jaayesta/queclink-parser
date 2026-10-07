@@ -591,14 +591,13 @@ const parse = raw => {
     }
 
     if (canData) {
+      // CAN data starts after the digital fuel sensor data (1 field) and the
+      // 1-wire data (Number + 3 fields per device)
       const newIndex =
-        digitFuelSensor && !AC100
-          ? index + 9 + 1
-          : !digitFuelSensor && AC100
-            ? index + 9 + 4
-            : digitFuelSensor && AC100
-              ? index + 9 + 5
-              : index + 9
+        index +
+        9 +
+        (digitFuelSensor ? 1 : 0) +
+        (AC100 ? 1 + 3 * (ac100DevicesConnected || 0) : 0)
       const parsedCanData = utils.getCanData(parsedData, newIndex, command[1])
       const canInfo = parsedCanData[3]
       index = parsedCanData[0]
