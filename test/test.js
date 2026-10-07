@@ -1475,4 +1475,34 @@ describe('queclink-parzer', () => {
       expect(() => queclink.parse(raw)).to.not.throw()
     })
   })
+
+  describe('hourmeter in hours', () => {
+    it('should return hourmeter in hours on GV58LAU GTIGN', () => {
+      const raw = Buffer.from(
+        '+RESP:GTIGN,8020040802,866314061631675,,380,0,0.0,223,486.1,-70.760953,-33.395442,20261007074002,0730,0001,3338,003F6101,01,12,0002627:07:11,30403.7,20261007074124,07D2$'
+      )
+      const data = queclink.parse(raw)
+      expect(data.hourmeter).to.be.closeTo(2627.1197, 0.0001)
+      expect(data.odometer).to.eql(30403.7)
+    })
+
+    it('should return hourmeter in hours on GV58LAU GTIGF', () => {
+      const raw = Buffer.from(
+        '+RESP:GTIGF,8020040900,866314061822084,,335,1,0.1,309,28.5,-70.389247,-23.596181,20261007074103,0730,0001,0836,002DA208,01,12,0000541:41:54,2821.5,20261007074103,1C7C$'
+      )
+      const data = queclink.parse(raw)
+      expect(data.hourmeter).to.be.closeTo(541.6983, 0.0001)
+      expect(data.odometer).to.eql(2821.5)
+    })
+
+    it('should return hourmeter in hours on GV310LAU and GV30CAU GTVGN', () => {
+      const raw =
+        '+RESP:GTVGN,6E0E00,135790246811220,GV310LAU,00,2,1200,0,4.3,92,70.0,121.354335,31.222073,20230214013254,0460,0000,18d8,085BE2AE,01,1,12345:12:34,2000.0,20231214093254,11F0$'
+      for (const r of [raw, raw.replace('6E0E00', '80201C0200')]) {
+        const data = queclink.parse(Buffer.from(r))
+        expect(data.hourmeter).to.be.closeTo(12345.2094, 0.0001)
+        expect(data.odometer).to.eql(2000)
+      }
+    })
+  })
 })

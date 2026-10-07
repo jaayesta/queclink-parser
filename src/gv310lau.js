@@ -2532,7 +2532,10 @@ const parse = raw => {
           : null,
       odometer:
         parsedData[index + 2] !== '' ? parseFloat(parsedData[index + 2]) : null,
-      hourmeter: parsedData[index + 1] !== '' ? parsedData[index + 1] : null
+      hourmeter:
+        parsedData[index + 1] !== ''
+          ? utils.getHoursForHourmeter(parsedData[index + 1])
+          : null
     })
   } else if (command[1] === 'GTGSM') {
     data = Object.assign(data, {

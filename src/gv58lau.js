@@ -1317,7 +1317,9 @@ const parse = raw => {
           ? parseFloat(parsedData[index])
           : null,
       hourmeter:
-        parsedData[index + 1] !== '' ? parseFloat(parsedData[index + 1]) : null,
+        parsedData[index + 1] !== ''
+          ? utils.getHoursForHourmeter(parsedData[index + 1])
+          : null,
       odometer:
         parsedData[index + 2] !== '' ? parseFloat(parsedData[index + 2]) : null
     })
