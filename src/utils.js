@@ -813,6 +813,14 @@ const hToKm = data => {
 }
 
 /*
+  Hectometer to Kilometer for values without unit prefix (e.g. CAN range)
+*/
+const hmToKm = data => {
+  const hm = parseFloat(/^[A-Z]/i.test(data) ? data.slice(1) : data)
+  return isNaN(hm) ? null : parseFloat((hm * 0.1).toFixed(2))
+}
+
+/*
   Parse CAN100 data
 */
 const parseCanData = (data, key) => {
@@ -832,15 +840,21 @@ const parseCanData = (data, key) => {
         return data
       }
     case 'range':
-      return hToKm(data)
-    case 'fuelConsumption':
-      if (data[0] === 'H') {
-        return hToKm(data) * 1000
-      } else if (data[0] === 'L') {
-        return parseFloat(parseFloat(data.slice(1)).toFixed(2))
-      } else {
-        return data
-      }
+      // Hectometers without unit prefix
+      return hmToKm(data)
+    case 'fuelConsumption': {
+      // H: L/h, M: L/100km
+      const value = parseFloat(/^[A-Z]/i.test(data) ? data.slice(1) : data)
+      return isNaN(value) ? null : parseFloat(value.toFixed(2))
+    }
+    case 'fuelConsumptionUnit':
+      return data[0] === 'H'
+        ? 'L/h'
+        : data[0] === 'M'
+          ? 'L/100km'
+          : data[0] === 'L'
+            ? 'L'
+            : null
     case 'tachographDrivingDirection':
       return data === '0' ? 'forward' : 'backward'
     case 'adBlueLevel':
@@ -883,6 +897,40 @@ const parseCanData = (data, key) => {
     default:
       return data
   }
+}
+
+/*
+  Driver byte of the CAN tachograph information (bit 7 to bit 0):
+  V (validity, 1 = no valid data), R, W1-W0 (working state), C (card),
+  T2-T0 (driving time related state)
+*/
+const getCanTachographDriver = bin => {
+  if (!bin || bin[0] === '1') {
+    return {
+      validDriverData: bin ? false : null,
+      insertedDriverCard: null,
+      driverWorkingState: null,
+      drivingTimeState: null
+    }
+  }
+  return {
+    validDriverData: true,
+    insertedDriverCard: bin[4] === '1',
+    driverWorkingState:
+      dWorkingStatesExpansion[parseInt(bin.substring(2, 4), 2)],
+    drivingTimeState: dTimeStates[parseInt(bin.substring(5, 8), 2)]
+  }
+}
+
+/*
+  CAN tachograph information: high byte is driver 2, low byte is driver 1
+*/
+const getCanTachograph = raw => {
+  const bin = nHexDigit(hex2bin(raw), raw.length > 2 ? 16 : 8)
+  const driver1 = getCanTachographDriver(bin.slice(-8))
+  return Object.assign({ raw }, driver1, {
+    driver2: bin.length === 16 ? getCanTachographDriver(bin.slice(0, 8)) : null
+  })
 }
 
 /*
@@ -1501,26 +1549,23 @@ const getCanData = (parsedData, ix, type, options) => {
     moreIx = crm1Ix + 1
   }
 
+  // Reversed so that index N is bit N (bit 0 = LSB)
   const inicatorsBin =
     canAppendMask[14] === '1' && parsedData[indIx] !== ''
-      ? nHexDigit(hex2bin(parsedData[indIx]), 16)
+      ? nHexDigit(hex2bin(parsedData[indIx]), 16).split('').reverse().join('')
       : null
   const lights =
     canAppendMask[13] === '1' && parsedData[ligIx] !== ''
-      ? nHexDigit(hex2bin(parsedData[ligIx]), 8)
+      ? nHexDigit(hex2bin(parsedData[ligIx]), 8).split('').reverse().join('')
       : null
   const doors =
     canAppendMask[12] === '1' && parsedData[doorIx] !== ''
-      ? nHexDigit(hex2bin(parsedData[doorIx]), 8)
+      ? nHexDigit(hex2bin(parsedData[doorIx]), 8).split('').reverse().join('')
       : null
   const expansionBin =
     parsedData[expbIx] !== ''
       ? nHexDigit(hex2bin(parsedData[expbIx]), 16).split('').reverse().join('')
       : '0000000000000000'
-  const tachographBin =
-    canAppendMask[15] === '1' && parsedData[tacIx] !== ''
-      ? nHexDigit(hex2bin(parsedData[tacIx]), 8).split('').reverse().join('')
-      : null
   const tachographExpBin =
     canAppendMask[30] === '1' && parsedData[tieIx] !== ''
       ? nHexDigit(hex2bin(parsedData[tieIx]), 16).split('').reverse().join('')
@@ -1600,6 +1645,10 @@ const getCanData = (parsedData, ix, type, options) => {
         canAppendMask[24] === '1' && parsedData[fuelcIx]
           ? parseCanData(parsedData[fuelcIx], 'fuelConsumption')
           : null,
+      fuelConsumptionUnit:
+        canAppendMask[24] === '1' && parsedData[fuelcIx]
+          ? parseCanData(parsedData[fuelcIx], 'fuelConsumptionUnit')
+          : null,
       fuelLevel:
         canAppendMask[23] === '1' && parsedData[fuellIx]
           ? parseFloat(parsedData[fuellIx].slice(1))
@@ -1640,19 +1689,7 @@ const getCanData = (parsedData, ix, type, options) => {
           : null,
       tachograph:
         canAppendMask[15] === '1' && parsedData[tacIx]
-          ? {
-              raw: parsedData[tacIx] ? parsedData[tacIx] : null,
-              validDriverData: tachographBin ? tachographBin[7] === '1' : null,
-              insertedDriverCard: tachographBin
-                ? tachographBin[5] === '1'
-                : null,
-              driverWorkingState: tachographBin
-                ? dWorkingStates[parseInt(tachographBin.substring(3, 5), 2)]
-                : null,
-              drivingTimeState: tachographBin
-                ? dTimeStates[parseInt(tachographBin.substring(5, 8), 2)]
-                : null
-            }
+          ? getCanTachograph(parsedData[tacIx])
           : null,
       indicators:
         canAppendMask[14] === '1' && inicatorsBin
@@ -1682,9 +1719,10 @@ const getCanData = (parsedData, ix, type, options) => {
               raw: lights ? parsedData[ligIx] : null,
               running: lights ? lights[0] === '1' : null,
               lowBeams: lights ? lights[1] === '1' : null,
-              frontFog: lights ? lights[2] === '1' : null,
-              rearFog: lights ? lights[3] === '1' : null,
-              hazard: lights ? lights[4] === '1' : null
+              highBeams: lights ? lights[2] === '1' : null,
+              frontFog: lights ? lights[3] === '1' : null,
+              rearFog: lights ? lights[4] === '1' : null,
+              hazard: lights ? lights[5] === '1' : null
             }
           : null,
       doors:
@@ -1734,7 +1772,7 @@ const getCanData = (parsedData, ix, type, options) => {
             ? parseCanData(parsedData[adbIx], 'adBlueLevel')
             : null,
         adBlueLevelUnit:
-          repExpMask && repExpMask.adBlueLevelUnit && parsedData[adbIx]
+          repExpMask && repExpMask.adBlueLevel && parsedData[adbIx]
             ? parsedData[adbIx].slice(0, 1) === 'P'
               ? '%'
               : 'L'
@@ -1771,7 +1809,7 @@ const getCanData = (parsedData, ix, type, options) => {
             : null,
         analogInputValue:
           repExpMask && repExpMask.analogInputValue && parsedData[aivIx]
-            ? parseFloat(parsedData[aivIx]) * 1000
+            ? parseFloat(parsedData[aivIx]) // mV
             : null,
         engineBrakingFactor:
           repExpMask && repExpMask.engineBrakingFactor && parsedData[ebrIx]
@@ -2920,6 +2958,7 @@ module.exports = {
   beaconTypes,
   relayBLEResults,
   dTimeStates,
+  parseCanData,
   dWorkingStates,
   gnssTriggerTypes,
   jammingSateTypes,

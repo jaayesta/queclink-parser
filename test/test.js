@@ -1350,4 +1350,78 @@ describe('queclink-parzer', () => {
       expect(data.alarm.type).to.eql('Crash')
     })
   })
+
+  describe('CAN data (GTCAN)', () => {
+    const vvvh52 =
+      '+RESP:GTCAN,6E0E00,868589061108679,,00,1,E03153CF,XLRTSH432SG547329,2,H381813,14320.79,63,H11.5,P99.20,,682.86,567.22,FFFF,0.00,0.00,153DFF,P100.00,,,,,,,,663484,3411,918.51,198.69,25.63,,,0000,,,0,0.0,57,566.3,-70.620145,-33.477219,20261007131836,0730,0003,C35C,00018D34,01,12,20261007131836,8ACA$'
+    const vjlv15 =
+      '+RESP:GTCAN,6E0E00,868589061006048,,00,1,E03735AF,9BM968403TB421296,2,H1032932,,1556,,P41.60,0,1827.26,628.97,FFFF,0688,,0.01,0.00,735BFF,P84.00,,,,,,,,4323581,803472,2456.23,852.26,45433,,,0000,55,101,,,1,83.4,273,140.8,-71.316592,-33.653601,20261007131849,0730,0009,091A,003BA646,01,12,20261007131849,F3C1$'
+    const vhwj95 =
+      '+RESP:GTCAN,6E0E00,868589060716597,,00,1,E03D5B9F,,2,H1632377,48218.07,11,H0.5,P100.00,,2640.55,2234.42,770.73,0F3F,,00,0.00,0.00,D5BAFF,P89.00,,5084,4547,0,1,0,,816959,2640.55,1212.14,129.44,,,,0800,0,,,,1,11.3,24,-2.2,-71.625133,-33.605622,20261007131848,0730,0001,1454,003D5902,01,12,20261007131848,5F1F$'
+
+    it('should return fuel consumption in L/h', () => {
+      const can = queclink.parse(Buffer.from(vvvh52)).can
+      expect(can.fuelConsumption).to.eql(11.5)
+      expect(can.fuelConsumptionUnit).to.eql('L/h')
+      expect(can.fuelLevel).to.eql(99.2)
+      expect(can.totalDistance).to.eql(38181.3)
+      expect(can.canExpanded.adBlueLevel).to.eql(100)
+      expect(can.canExpanded.adBlueLevelUnit).to.eql('%')
+    })
+
+    it('should return fuel consumption in L/100km', () => {
+      expect(utils.parseCanData('M3.2', 'fuelConsumption')).to.eql(3.2)
+      expect(utils.parseCanData('M3.2', 'fuelConsumptionUnit')).to.eql(
+        'L/100km'
+      )
+    })
+
+    it('should return range in km from hectometers without prefix', () => {
+      expect(utils.parseCanData('3960', 'range')).to.eql(396)
+    })
+
+    it('should return no valid tachograph data when FFFF', () => {
+      const tachograph = queclink.parse(Buffer.from(vvvh52)).can.tachograph
+      expect(tachograph.raw).to.eql('FFFF')
+      expect(tachograph.validDriverData).to.eql(false)
+      expect(tachograph.insertedDriverCard).to.eql(null)
+      expect(tachograph.driverWorkingState).to.eql(null)
+      expect(tachograph.driver2.validDriverData).to.eql(false)
+    })
+
+    it('should return tachograph data of both drivers', () => {
+      const tachograph = queclink.parse(Buffer.from(vhwj95)).can.tachograph
+      expect(tachograph.validDriverData).to.eql(true)
+      expect(tachograph.insertedDriverCard).to.eql(true)
+      expect(tachograph.driverWorkingState).to.eql('driving')
+      expect(tachograph.drivingTimeState).to.eql('other')
+      expect(tachograph.driver2.driverWorkingState).to.eql('rest')
+      expect(tachograph.driver2.insertedDriverCard).to.eql(true)
+    })
+
+    it('should return indicators with bit 0 as least significant bit', () => {
+      const indicators = queclink.parse(Buffer.from(vjlv15)).can.indicators
+      expect(indicators.raw).to.eql('0688')
+      expect(indicators.lowFuel).to.eql(false)
+      expect(indicators.cruiseControl).to.eql(true)
+      expect(indicators.centralLock).to.eql(true)
+      expect(indicators.runningLights).to.eql(true)
+      expect(indicators.lowBeams).to.eql(true)
+      expect(indicators.trunk).to.eql(false)
+    })
+
+    it('should return lights and doors with bit 0 as least significant bit', () => {
+      const raw = vvvh52
+        .replace(',E03153CF,', ',E03F53CF,')
+        .replace(',FFFF,0.00,0.00,', ',FFFF,0001,24,03,0.00,0.00,')
+      const can = queclink.parse(Buffer.from(raw)).can
+      expect(can.indicators.lowFuel).to.eql(true)
+      expect(can.lights.highBeams).to.eql(true)
+      expect(can.lights.hazard).to.eql(true)
+      expect(can.lights.running).to.eql(false)
+      expect(can.doors.driver).to.eql(true)
+      expect(can.doors.passenger).to.eql(true)
+      expect(can.doors.hood).to.eql(false)
+    })
+  })
 })
