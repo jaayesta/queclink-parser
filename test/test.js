@@ -1505,4 +1505,35 @@ describe('queclink-parzer', () => {
       }
     })
   })
+
+  describe('network type on GTINF', () => {
+    const inf =
+      '+RESP:GTINF,6E0E00,135790246811220,GV310LAU,16,898600810906F8048812,16,0,1,12000,1,4.40,0,0,1,1,20230214013254,,14798,14,40,0000,0001,+0800,0,20230214093254,11F0$'
+
+    it('should return EGPRS network with CSQ RSSI', () => {
+      const gsmInfo = queclink.parse(Buffer.from(inf)).gsmInfo
+      expect(gsmInfo.networkType).to.eql('EGPRS')
+      expect(gsmInfo.RSSI_quality).to.eql(-81)
+    })
+
+    it('should return LTE network with CSQ RSRP', () => {
+      for (const protocol of ['6E0E00', '8020040900', '80201C0200']) {
+        const raw = inf
+          .replace('6E0E00', protocol)
+          .replace(',16,0,1,12000,1,', ',60,0,1,12000,3,')
+        const gsmInfo = queclink.parse(Buffer.from(raw)).gsmInfo
+        expect(gsmInfo.networkType).to.eql('LTE')
+        expect(gsmInfo.RSSI_quality).to.be.closeTo(-80.62, 0.01)
+        expect(gsmInfo.RSSI_percentage).to.eql(61.86)
+      }
+    })
+
+    it('should return unknown signal when LTE RSRP is 255', () => {
+      const raw = inf.replace(',16,0,1,12000,1,', ',255,0,1,12000,3,')
+      const gsmInfo = queclink.parse(Buffer.from(raw)).gsmInfo
+      expect(gsmInfo.networkType).to.eql('LTE')
+      expect(gsmInfo.RSSI_quality).to.eql(null)
+      expect(gsmInfo.RSSI_percentage).to.eql(null)
+    })
+  })
 })

@@ -450,19 +450,19 @@ const parse = raw => {
       gsmInfo: {
         SIM_ICC: parsedData[5] !== '' ? parsedData[5] : null,
         networkType:
-          parsedData[10] !== '' ? utils.networkTypes[parsedData[10]] : null,
+          parsedData[10] !== '' ? utils.lteNetworkTypes[parsedData[10]] : null,
         RSSI: parsedData[6] !== '' ? parseInt(parsedData[6], 10) : null,
         RSSI_quality:
           parsedData[10] !== ''
             ? utils.getSignalStrength(
-                utils.networkTypes[parsedData[10]],
+                utils.lteNetworkTypes[parsedData[10]],
                 parseInt(parsedData[6], 10)
               )
             : null, // Signal Strength
         RSSI_percentage:
           parsedData[10] !== ''
             ? utils.getSignalPercentage(
-                utils.networkTypes[parsedData[10]],
+                utils.lteNetworkTypes[parsedData[10]],
                 parseInt(parsedData[6], 10)
               )
             : null, // Signal Percetange

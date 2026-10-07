@@ -133,6 +133,16 @@ const networkTypes = {
 }
 
 /*
+  Network Types of GV310LAU, GV58LAU and GV30CAU (INF)
+*/
+const lteNetworkTypes = {
+  0: 'Unregistered',
+  1: 'EGPRS',
+  2: 'WCDMA',
+  3: 'LTE'
+}
+
+/*
   Possible Jammed Network Types
 */
 const jammingNetworkTypes = {
@@ -639,15 +649,15 @@ const getHoursForHourmeter = hourmeter => {
   Returns the dBm signal strength
 */
 const getSignalStrength = (networkType, value, hexValue = false) => {
-  if (value === 99) {
+  if (value === 99 || (networkType === 'LTE' && value === 255)) {
     return null
   }
 
   let calc, dBm
-  if (networkType === '2G' || networkType === '3G') {
+  if (['2G', '3G', 'EGPRS', 'WCDMA'].includes(networkType)) {
     calc = 2 * value - 113
     dBm = calc < -113 ? 0 : calc > -51 ? 100 : calc
-  } else if (networkType === '4G') {
+  } else if (networkType === '4G' || networkType === 'LTE') {
     calc = (96 / 97) * value - 140
     dBm = calc < -140 ? 0 : calc > -44 ? 100 : calc
   } else if (networkType === 'GSM') {
@@ -669,14 +679,14 @@ const getSignalStrength = (networkType, value, hexValue = false) => {
   Returns the percentage of signal strength
 */
 const getSignalPercentage = (networkType, value) => {
-  if (value === 99) {
+  if (value === 99 || (networkType === 'LTE' && value === 255)) {
     return null
   }
 
   let perc
-  if (networkType === '2G' || networkType === '3G') {
+  if (['2G', '3G', 'EGPRS', 'WCDMA'].includes(networkType)) {
     perc = (value / 31) * 100
-  } else if (networkType === '4G') {
+  } else if (networkType === '4G' || networkType === 'LTE') {
     perc = (value / 97) * 100
   } else if (networkType === 'GSM') {
     perc = (value / 63) * 100
@@ -2959,6 +2969,7 @@ module.exports = {
   states,
   uartDeviceTypes,
   networkTypes,
+  lteNetworkTypes,
   gpsSignalStrength,
   externalGPSAntennaOptions,
   peerRoles,
