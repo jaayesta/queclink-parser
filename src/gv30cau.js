@@ -81,7 +81,7 @@ const parse = raw => {
                 3
               )[2] === '1'
           },
-          charge: parseFloat(parsedData[4]) > 5,
+          ...utils.getExternalPowerCharge(parsedData[4]),
           state:
             utils.nHexDigit(parsedData[index + 7], 10).substring(4, 6) !== ''
               ? utils.states[ // eslint-disable-line
@@ -293,7 +293,7 @@ const parse = raw => {
               3
             )[2] === '1'
         },
-        charge: parseFloat(parsedData[5]) > 5,
+        ...utils.getExternalPowerCharge(parsedData[5]),
         state:
           utils.nHexDigit(parsedData[index + 7], 10).substring(4, 6) !== ''
             ? utils.states[ // eslint-disable-line

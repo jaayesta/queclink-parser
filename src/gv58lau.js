@@ -86,7 +86,7 @@ const parse = raw => {
                 8
               )[7] === '1'
           },
-          charge: parseFloat(parsedData[4]) > 5,
+          ...utils.getExternalPowerCharge(parsedData[4]),
           state: utils.states[parsedData[index + 7].substring(0, 2)]
         },
         azimuth: parsedData[9] !== '' ? parseFloat(parsedData[9]) : null,
@@ -312,7 +312,7 @@ const parse = raw => {
               8
             )[7] === '1'
         },
-        charge: parseFloat(parsedData[5]) > 5,
+        ...utils.getExternalPowerCharge(parsedData[5]),
         state: utils.states[parsedData[index + 7].substring(0, 2)]
       },
       azimuth: parsedData[10] !== '' ? parseFloat(parsedData[10]) : null,

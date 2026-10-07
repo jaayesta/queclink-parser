@@ -1536,4 +1536,31 @@ describe('queclink-parzer', () => {
       expect(gsmInfo.RSSI_percentage).to.eql(null)
     })
   })
+
+  describe('external power charge status', () => {
+    it('should omit charge when external power voltage is empty', () => {
+      const raw = Buffer.from(
+        '+RESP:GTERI,6E0C03,868589060716126,,00000100,,10,1,1,5.2,206,1525.9,-69.499665,-23.421765,20261007121455,0730,0001,0837,00550F05,01,12,4462.1,,,,,100,220100,0,1,00,13,0,00000000,4007,,780541484264,1,0,20261007121457,757F$'
+      )
+      const data = queclink.parse(raw)
+      expect(data.status).to.not.have.property('charge')
+      expect(data.voltage.inputCharge).to.eql(null)
+    })
+
+    it('should return charge status from external power voltage', () => {
+      const off = queclink.parse(
+        Buffer.from(
+          '+RESP:GTFRI,8020040900,866314061801617,,0,10,1,1,0.0,308,163.1,-71.501873,-32.966929,20261007121235,0730,0002,01F7,000FE115,01,9,81129.3,0001579:31:13,,,,62,110000,,,,20261007121457,F52E$'
+        )
+      )
+      expect(off.status.charge).to.eql(false)
+      const on = queclink.parse(
+        Buffer.from(
+          '+RESP:GTFRI,80201C0200,866714080268575,,28763,10,1,1,7.7,101,29.5,-70.431878,-23.102668,20261007083155,0730,0001,0AF1,00353A07,01,30,1651.1,0000035:14:06,,,,100,220100,,,,20261007083207,37D7$'
+        )
+      )
+      expect(on.status.charge).to.eql(true)
+      expect(on.voltage.inputCharge).to.eql(28.763)
+    })
+  })
 })

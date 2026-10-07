@@ -823,6 +823,18 @@ const getMNC = (countryData, opData) => {
 }
 
 /*
+  External power charge status from External Power Voltage (mV), to be spread
+  into the status object. The field is empty when it is not reported
+  (AT+GTEPS <Sync with FRI> = 0); then the charge key is omitted, because the
+  checker treats any present charge key (even null) as a known status.
+*/
+const getExternalPowerCharge = voltage => {
+  const mV =
+    voltage === undefined || voltage === null ? NaN : parseFloat(voltage)
+  return isNaN(mV) ? {} : { charge: mV > 5 }
+}
+
+/*
   Hectometer to Kilometer
 */
 const hToKm = data => {
@@ -2983,6 +2995,7 @@ module.exports = {
   relayBLEResults,
   dTimeStates,
   parseCanData,
+  getExternalPowerCharge,
   dWorkingStates,
   gnssTriggerTypes,
   jammingSateTypes,
