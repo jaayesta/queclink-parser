@@ -2564,11 +2564,17 @@ const getAlarm = (command, report, extra = false) => {
       ? parseInt(report.split(',')[1], 10)
       : null
     const driverID = report.split(',')[0] !== null ? report.split(',')[0] : null
+    // GV310LAU/GV58LAU: ID Report Type 0 = IDA deshabilitado, 1 = autorizado,
+    // 2 = logout, 3 = no autorizado
+    const idaMessages = ['gv310lau', 'gv58lau'].includes(extra)
+      ? messages.GTIDA_V2
+      : messages[command]
     return {
       type: 'Driver_Identification',
       status: status === 1,
+      reportType: status,
       driverID,
-      message: messages[command][status]
+      message: idaMessages[status]
     }
   } else if (command === 'GTDOS') {
     const outputId = report.split(',')[0]

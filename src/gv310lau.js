@@ -1514,7 +1514,11 @@ const parse = raw => {
     }
 
     data = Object.assign(data, {
-      alarm: utils.getAlarm(command[1], `${parsedData[5]},${parsedData[6]}`),
+      alarm: utils.getAlarm(
+        command[1],
+        `${parsedData[5]},${parsedData[6]}`,
+        'gv310lau'
+      ),
       loc: {
         type: 'Point',
         coordinates: [parseFloat(parsedData[12]), parseFloat(parsedData[13])]

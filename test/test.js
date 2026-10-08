@@ -1563,4 +1563,38 @@ describe('queclink-parzer', () => {
       expect(on.voltage.inputCharge).to.eql(28.763)
     })
   })
+
+  describe('driver identification (GTIDA)', () => {
+    it('should map GV310LAU/GV58LAU ID report types', () => {
+      const authorized = queclink.parse(
+        Buffer.from(
+          '+RESP:GTIDA,6E0C03,868589060820530,,,01D90B1F01000016,1,1,1,0.0,282,3054.5,-69.055738,-24.265459,20261007074236,0730,0002,00CB,09866F1F,01,12,75976.0,,,,,20261007074236,0B80$'
+        )
+      )
+      expect(authorized.alarm.status).to.eql(true)
+      expect(authorized.alarm.reportType).to.eql(1)
+      expect(authorized.alarm.message).to.eql(
+        'Conductor identificado autorizado'
+      )
+      const disabled = queclink.parse(
+        Buffer.from(
+          '+RESP:GTIDA,8020040900,866314061847008,,,16825841,0,1,0,0.0,197,2338.8,-68.056691,-23.538670,20261007081128,0730,0001,0837,002C0A11,01,0,83819.3,,,,,20261007081624,6F9A$'
+        )
+      )
+      expect(disabled.alarm.status).to.eql(false)
+      expect(disabled.alarm.reportType).to.eql(0)
+      expect(disabled.alarm.message).to.eql(
+        'Identificación de conductor deshabilitada'
+      )
+      const unauthorized = queclink.parse(
+        Buffer.from(
+          '+RESP:GTIDA,6E0C03,868589060820530,,,01D90B1F01000016,3,1,1,0.0,282,3054.5,-69.055738,-24.265459,20261007074236,0730,0002,00CB,09866F1F,01,12,75976.0,,,,,20261007074236,0B80$'
+        )
+      )
+      expect(unauthorized.alarm.status).to.eql(false)
+      expect(unauthorized.alarm.message).to.eql(
+        'Conductor identificado no autorizado'
+      )
+    })
+  })
 })
