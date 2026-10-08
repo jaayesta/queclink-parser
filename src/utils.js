@@ -2329,6 +2329,7 @@ const getAlarm = (command, report, extra = false) => {
         'gv300w',
         'gv310lau',
         'gv58lau',
+        'gv30cau',
         'gv75w',
         'GMT100'
       ].includes(extra)

@@ -1671,4 +1671,17 @@ describe('queclink-parzer', () => {
       expect(data.gsmInfo.GSM_quality).to.eql(null)
     })
   })
+
+  describe('GV30CAU digital input (GTDIS)', () => {
+    it('should report DI1 as input 2 (input 1 is ignition)', () => {
+      const data = queclink.parse(
+        Buffer.from(
+          '+RESP:GTDIS,80201C0200,866714080281149,,,11,1,1,0.0,0,821.1,-70.515627,-33.356228,20261007111221,0730,0001,3331,00317C12,01,24,740.6,20261007111221,4C12$'
+        )
+      )
+      expect(data.alarm.type).to.eql('DI')
+      expect(data.alarm.number).to.eql(2)
+      expect(data.alarm.status).to.eql(true)
+    })
+  })
 })
