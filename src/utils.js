@@ -3024,7 +3024,91 @@ const parseDate = date => {
   )
 }
 
+/*
+  FRI/ERI con más de un punto: el punto principal del mensaje es el ÚLTIMO
+  (el más reciente). moreData queda con los anteriores en orden cronológico.
+  Todos los campos del punto principal salen del mismo punto. Si el ERI
+  reemplazó la velocidad por la del CAN (gpsSpeed), se mantiene la del CAN y
+  gpsSpeed pasa a ser la del último punto.
+*/
+const promoteLastPoint = (data, parsedData, firstGnssIx, opts = {}) => {
+  const number = opts.number
+  if (!number || number < 2) return data
+  const sat = Number(opts.satelliteInfo) || 0
+  const trig = Number(opts.gnssTrigger) || 0
+  const acc = Number(opts.accuracyInfo) || 0
+  const step = 12 + sat + trig + acc
+  const val = (ix, fn) =>
+    parsedData[ix] !== undefined && parsedData[ix] !== ''
+      ? fn(parsedData[ix])
+      : null
+  const points = []
+  for (let i = 0; i < number; i++) {
+    const g = firstGnssIx + step * i
+    const extraIx = g + 12
+    points.push({
+      raw: { mcc: parsedData[g + 7], mnc: parsedData[g + 8] },
+      point: {
+        loc: {
+          type: 'Point',
+          coordinates: [
+            parseFloat(parsedData[g + 4]),
+            parseFloat(parsedData[g + 5])
+          ]
+        },
+        speed: val(g + 1, parseFloat),
+        gpsStatus: checkGps(
+          parseFloat(parsedData[g + 4]),
+          parseFloat(parsedData[g + 5])
+        ),
+        hdop: val(g, parseFloat),
+        azimuth: val(g + 2, parseFloat),
+        altitude: val(g + 3, parseFloat),
+        datetime: val(g + 6, parseDate),
+        mcc: val(g + 7, x => parseInt(x, 10)),
+        mnc: val(g + 8, x => parseInt(x, 10)),
+        lac: val(g + 9, x => parseInt(x, 16)),
+        cid: val(g + 10, x => parseInt(x, 16)),
+        satellites: sat ? val(extraIx, x => parseInt(x, 10)) : null,
+        gnssTrigger: trig ? val(extraIx + sat, x => gnssTriggerTypes[x]) : null,
+        Hdop: acc ? val(extraIx + sat + trig, parseFloat) : null,
+        Vdop: acc ? val(extraIx + sat + trig + 1, parseFloat) : null,
+        Ddop: acc ? val(extraIx + sat + trig + 2, parseFloat) : null
+      }
+    })
+  }
+  const last = points[number - 1]
+  const top = Object.assign({}, last.point)
+  top.mcc =
+    last.raw.mcc !== undefined && last.raw.mcc !== ''
+      ? latamMcc[parseInt(last.raw.mcc, 10)] ||
+        (opts.mccDefault ? latamMcc.default : undefined)
+      : null
+  top.mnc =
+    last.raw.mnc !== undefined && last.raw.mnc !== ''
+      ? getMNC(last.raw.mcc, last.raw.mnc)
+      : null
+  // Solo se reemplazan los campos que el parser del modelo ya entrega
+  Object.keys(top).forEach(k => {
+    if (!(k in data)) delete top[k]
+  })
+  if (data.gpsSpeed !== undefined) {
+    data.gpsSpeed = top.speed
+    delete top.speed
+  }
+  const moreData = points.slice(0, number - 1).map((p, i) => {
+    const item = { index: i + 1 }
+    Object.keys(p.point).forEach(k => {
+      if (k === 'gnssTrigger' && !trig && !('gnssTrigger' in data)) return
+      item[k] = p.point[k]
+    })
+    return item
+  })
+  return Object.assign(data, top, { moreData })
+}
+
 module.exports = {
+  promoteLastPoint,
   langs,
   patterns,
   nackCauses,

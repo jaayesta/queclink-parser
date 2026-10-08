@@ -249,6 +249,11 @@ const parse = raw => {
         }
 
         data = Object.assign(data, { moreData })
+        data = utils.promoteLastPoint(data, parsedData, 7, {
+          number,
+          satelliteInfo,
+          accuracyInfo
+        })
       }
     } catch (err) {
       return { type: 'UNKNOWN', raw: data.raw.toString() }
@@ -710,6 +715,11 @@ const parse = raw => {
       }
 
       data = Object.assign(data, { moreData })
+      data = utils.promoteLastPoint(data, parsedData, 8, {
+        number,
+        satelliteInfo,
+        accuracyInfo
+      })
     }
   } else if (command[1] === 'GTHBD') {
     // Heartbeat. It must response an ACK command

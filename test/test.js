@@ -1190,9 +1190,10 @@ describe('queclink-parzer', () => {
       const raw =
         '+RESP:GTFRI,80201C0200,866714080286072,,27764,10,3,1,47.4,346,541.6,-70.629206,-33.482745,20260924135952,0730,0001,3337,008D2D02,01,11,1,47.8,323,542.2,-70.629506,-33.482205,20260924135957,0730,0001,3337,008D2D02,01,22,1,42.1,319,543.0,-70.629956,-33.481780,20260924140002,0730,0001,3337,008D2D02,01,33,52.4,0000003:07:13,,,,100,220100,,,,20260924140004,0524$'
       const data = queclink.parse(Buffer.from(raw))
-      expect(data.datetime).to.eql(new Date('2026-09-24T13:59:52Z'))
-      expect(data.satellites).to.eql(11)
-      expect(data.moreData.map(x => x.satellites)).to.eql([22, 33])
+      // El punto principal es el último (el más reciente)
+      expect(data.datetime).to.eql(new Date('2026-09-24T14:00:02Z'))
+      expect(data.satellites).to.eql(33)
+      expect(data.moreData.map(x => x.satellites)).to.eql([11, 22])
       expect(data.odometer).to.eql(52.4)
     })
 
@@ -1201,8 +1202,8 @@ describe('queclink-parzer', () => {
         '+RESP:GTERI,8020040A00,866314061835664,,00000100,28174,10,3,1,28.4,339,489.0,-70.710936,-33.342062,20260924155949,0730,0001,333A,007ECF03,01,12,1,24.9,339,488.9,-70.711086,-33.341726,20260924155954,0730,0001,333A,007ECF03,01,10,1,22.0,338,487.8,-70.711218,-33.341442,20260924155959,0730,0001,333A,007ECF03,01,07,3193.5,0000109:59:25,,,,100,220100,,1,02,6,5,23D600BF,283F,,7805414BBD35,1,3373,1,91,1.91,95,20260924160000,0D2F$'
       const data = queclink.parse(Buffer.from(raw))
       expect(data.device).to.eql('Queclink-GV58LAU')
-      expect(data.satellites).to.eql(12)
-      expect(data.moreData.map(x => x.satellites)).to.eql([10, 7])
+      expect(data.satellites).to.eql(7)
+      expect(data.moreData.map(x => x.satellites)).to.eql([12, 10])
       expect(data.odometer).to.eql(3193.5)
     })
   })
@@ -1743,6 +1744,40 @@ describe('queclink-parzer', () => {
           '+RESP:GTRMD,6E0E00,868589060742833,,2,1,0.0,0,506.2,-70.705845,-33.461324,20261007074202,0730,0001,333F,03AD7771,01,12,20261007074204,3378$'
         ).status
       ).to.eql(null)
+    })
+  })
+
+  describe('multi-point reports use the most recent point', () => {
+    it('should use the last point of GV58LAU GTFRI as the main point', () => {
+      const data = queclink.parse(
+        Buffer.from(
+          '+RESP:GTFRI,8020040900,866314061690846,,28173,10,3,1,18.2,104,601.7,-70.574165,-33.465217,20261007131445,0730,0001,332F,002EEA17,01,12,1,11.7,103,602.5,-70.573934,-33.465254,20261007131450,0730,0001,332F,002EEA17,01,12,1,7.7,108,604.1,-70.573794,-33.465283,20261007131455,0730,0001,332F,002EEA17,01,12,34172.9,0001790:22:03,,,,100,220100,,,,20261007131457,F1E5$'
+        )
+      )
+      expect(data.loc.coordinates).to.eql([-70.573794, -33.465283])
+      expect(data.datetime).to.eql(new Date('2026-10-07T13:14:55Z'))
+      expect(data.speed).to.eql(7.7)
+      expect(data.azimuth).to.eql(108)
+      expect(data).to.not.have.property('gpsDatetime')
+      expect(data.moreData.map(x => [x.index, x.datetime])).to.eql([
+        [1, new Date('2026-10-07T13:14:45Z')],
+        [2, new Date('2026-10-07T13:14:50Z')]
+      ])
+      expect(data.moreData[0].speed).to.eql(18.2)
+    })
+
+    it('should use the last point of GV310LAU GTERI as the main point', () => {
+      const data = queclink.parse(
+        Buffer.from(
+          '+RESP:GTERI,6E0E00,868589060737866,,00000002,28147,10,3,1,0.0,215,124.5,-72.609595,-38.734571,20261007125517,0730,0001,238D,00355A01,01,12,1,0.0,215,124.5,-72.609595,-38.734571,20261007125522,0730,0001,238D,00355A01,01,12,1,0.0,215,124.5,-72.609595,-38.734571,20261007125527,0730,0001,238D,00355A01,01,12,45957.9,0000409:26:03,,,,100,220100,2,0,20261007125527,4F0E$'
+        )
+      )
+      expect(data.datetime).to.eql(new Date('2026-10-07T12:55:27Z'))
+      expect(data.odometer).to.eql(45957.9)
+      expect(data.moreData.map(x => x.datetime)).to.eql([
+        new Date('2026-10-07T12:55:17Z'),
+        new Date('2026-10-07T12:55:22Z')
+      ])
     })
   })
 })
