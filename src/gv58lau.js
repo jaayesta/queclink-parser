@@ -550,10 +550,7 @@ const parse = raw => {
                 parseInt(parsedData[6], 10)
               )
             : null, // Signal Percetange
-        GSM_quality:
-          parsedData[7] !== ''
-            ? 100 * parseInt(parseFloat(parsedData[7]) / 7, 10)
-            : null // Percentage
+        GSM_quality: utils.getBerQuality(parsedData[7]) // Percentage
       },
       backupBattery: {
         using: parsedData[11] !== '' && parseFloat(parsedData[11]) < 4.5,
@@ -564,16 +561,9 @@ const parse = raw => {
       status: {
         raw: `${parsedData[21]}${parsedData[22]}`,
         sos: false,
-        input: {
-          2: utils.nHexDigit(utils.hex2bin(parsedData[21]), 8)[6] === '1',
-          1: utils.nHexDigit(utils.hex2bin(parsedData[21]), 8)[7] === '1'
-        },
-        output: {
-          3: utils.nHexDigit(utils.hex2bin(parsedData[22]), 8)[5] === '1',
-          2: utils.nHexDigit(utils.hex2bin(parsedData[22]), 8)[6] === '1',
-          1: utils.nHexDigit(utils.hex2bin(parsedData[22]), 8)[7] === '1'
-        },
-        charge: parsedData[12] === '1'
+        input: utils.getInfDigitalPorts(parsedData[21], 2),
+        output: utils.getInfDigitalPorts(parsedData[22], 3),
+        charge: parsedData[8] === '1'
       },
       voltage: {
         battery:

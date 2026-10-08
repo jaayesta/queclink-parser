@@ -466,28 +466,20 @@ const parse = raw => {
                 parseInt(parsedData[6], 10)
               )
             : null, // Signal Percetange
-        GSM_quality:
-          parsedData[7] !== ''
-            ? 100 * parseInt(parseFloat(parsedData[7]) / 7, 10)
-            : null // Percentage
+        GSM_quality: utils.getBerQuality(parsedData[7]) // Percentage
       },
       backupBattery: {
         using: parsedData[11] !== '' && parseFloat(parsedData[11]) < 4.5,
         voltage: parsedData[11] !== '' ? parseFloat(parsedData[11]) : null,
         charging: parsedData[12] === '1'
       },
-      externalGPSAntenna: utils.externalGPSAntennaOptions[parsedData[15]],
+      externalGPSAntenna: null,
       status: {
-        raw: parsedData[18] + parsedData[19] + parsedData[20],
+        raw: `${parsedData[21]}${parsedData[22]}`,
         sos: false,
-        input: {
-          2: utils.nHexDigit(utils.hex2bin(parsedData[21][1]), 4)[2] === '1',
-          1: utils.nHexDigit(utils.hex2bin(parsedData[21][1]), 4)[3] === '1'
-        },
-        output: {
-          1: utils.nHexDigit(utils.hex2bin(parsedData[22][1]), 4)[3] === '1'
-        },
-        charge: parsedData[12] === '1'
+        input: utils.getInfDigitalPorts(parsedData[21], 2),
+        output: utils.getInfDigitalPorts(parsedData[22], 1),
+        charge: parsedData[8] === '1'
       },
       voltage: {
         battery:

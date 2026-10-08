@@ -678,6 +678,29 @@ const getSignalStrength = (networkType, value, hexValue = false) => {
 /*
   Returns the percentage of signal strength
 */
+/*
+  GTINF: CSQ BER (0 = mejor, 7 = peor, 99 = desconocido) como porcentaje de calidad.
+*/
+const getBerQuality = ber => {
+  if (ber === undefined || ber === null || ber === '') return null
+  const value = parseInt(ber, 10)
+  if (isNaN(value) || value < 0 || value > 7) return null
+  return Math.round((100 * (7 - value)) / 7)
+}
+
+/*
+  GTINF: entradas/salidas digitales en hex (bit 0 = puerto 1). Los bits altos
+  opcionales (EIO100) no se usan.
+*/
+const getInfDigitalPorts = (hex, ports) => {
+  const value = hex !== undefined && hex !== '' ? parseInt(hex, 16) : NaN
+  const result = {}
+  for (let i = ports; i >= 1; i--) {
+    result[i] = isNaN(value) ? false : ((value >> (i - 1)) & 1) === 1
+  }
+  return result
+}
+
 const getSignalPercentage = (networkType, value) => {
   if (value === 99 || (networkType === 'LTE' && value === 255)) {
     return null
@@ -3023,6 +3046,8 @@ module.exports = {
   getHoursForHourmeter,
   getSignalStrength,
   getSignalPercentage,
+  getBerQuality,
+  getInfDigitalPorts,
   getCanData,
   getBleTempInCelciousDegrees,
   getBleHumidityInRH,

@@ -1637,4 +1637,38 @@ describe('queclink-parzer', () => {
       expect(gsmOnly.lac).to.eql(0x550b)
     })
   })
+
+  describe('GTINF device status', () => {
+    it('should read digital ports, BER quality and external power (GV310LAU)', () => {
+      const data = queclink.parse(
+        Buffer.from(
+          '+RESP:GTINF,6E0E00,135790246811220,GV310LAU,16,898600810906F8048812,16,0,1,12000,3,4.10,0,1,0,1,20221201021215,F,,,,0005,0001,+0000,0,20221201021216,003D$'
+        )
+      )
+      expect(data.status.input).to.eql({ 1: true, 2: false, 3: true, 4: false })
+      expect(data.status.output).to.eql({
+        1: true,
+        2: false,
+        3: false,
+        4: false
+      })
+      expect(data.status.raw).to.eql('00050001')
+      expect(data.status.charge).to.eql(true)
+      expect(data.gsmInfo.GSM_quality).to.eql(100)
+    })
+
+    it('should read digital ports and ignore reserved fields (GV30CAU)', () => {
+      const data = queclink.parse(
+        Buffer.from(
+          '+RESP:GTINF,8020210100,868487004398475,GV30CAU,21,89860085120216903926,51,99,0,11662,3,4.13,1,1,,,20250306094027,0,,,,01,00,+0000,0,20250306094028,34CB$'
+        )
+      )
+      expect(data.status.input).to.eql({ 1: true, 2: false })
+      expect(data.status.output).to.eql({ 1: false })
+      expect(data.status.raw).to.eql('0100')
+      expect(data.status.charge).to.eql(false)
+      expect(data.externalGPSAntenna).to.eql(null)
+      expect(data.gsmInfo.GSM_quality).to.eql(null)
+    })
+  })
 })
