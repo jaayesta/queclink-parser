@@ -1618,4 +1618,23 @@ describe('queclink-parzer', () => {
       expect(real.hourmeter).to.eql(null)
     })
   })
+
+  describe('GTCAN GSM block without GNSS block', () => {
+    it('should read MCC/MNC/LAC/Cell ID when only the GSM bit is set', () => {
+      const withGnss = queclink.parse(
+        Buffer.from(
+          '+RESP:GTCAN,6E0A03,866775051515393,GV310LAU,02,1,C00FFFFF,,0,,,,,,,,,,0.11,0.10,0.01,0.00,,,0000,,00,,,1,0.0,13,163.4,117.129183,31.839473,20241210033130,0460,0000,550B,0E9E30A5,09,12,0.96,1.09,1.45,20241210033131,1133$'
+        )
+      )
+      const gsmOnly = queclink.parse(
+        Buffer.from(
+          '+RESP:GTCAN,6E0A03,866775051515393,GV310LAU,02,1,800FFFFF,,0,,,,,,,,,,0.11,0.10,0.01,0.00,,,0000,,00,,,0460,0000,550B,0E9E30A5,09,12,0.96,1.09,1.45,20241210033131,1133$'
+        )
+      )
+      expect(gsmOnly.lac).to.eql(withGnss.lac)
+      expect(gsmOnly.cid).to.eql(withGnss.cid)
+      expect(gsmOnly.mnc).to.eql(withGnss.mnc)
+      expect(gsmOnly.lac).to.eql(0x550b)
+    })
+  })
 })

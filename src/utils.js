@@ -1510,7 +1510,9 @@ const getCanData = (parsedData, ix, type, options) => {
   if (gnnsIx === -1) {
     gnnsIx = isGV350CEU
       ? elIx + parseInt(canAppendMask[3]) + evFieldsCount + 2
-      : crm1Ix + 2 + parseInt(canAppendMask[1])
+      : // Después de la expansión vienen 2 campos Reserved; el bloque GNSS o, si
+        // no viene, el bloque GSM empieza en el campo siguiente
+        crm1Ix + 3
   }
 
   const gsmIx = canAppendMask[1] === '1' ? gnnsIx + 7 : gnnsIx
