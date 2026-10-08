@@ -1,3 +1,19 @@
+#### 1.9.41 (2026-10-08)
+
+##### New Features
+
+* **multipunto:**  FRI/ERI con varios puntos usan el más reciente como punto principal. ([c0e476f7](https://github.com/jaayesta/queclink-parser/commit/c0e476f7d2655c165e9a33a7bea02a47565ec4cb))
+
+##### Bug Fixes
+
+* **textos:**  se completan mensajes y detalles de alarmas según los manuales. ([fa120e28](https://github.com/jaayesta/queclink-parser/commit/fa120e2865676fce383469530d52df5a13c39368))
+* **gtais:**  status de GTAIS/GTMAI compara el tipo de reporte como número. ([0e53ca8c](https://github.com/jaayesta/queclink-parser/commit/0e53ca8c3a07f8468fdd534268c851582da3bee6))
+* **gv30cau:**  GTDIS informa la entrada digital 1 como entrada 2. ([6441f2d9](https://github.com/jaayesta/queclink-parser/commit/6441f2d9bf11da110bd0c1afaf5dd23281b35a96))
+* **gtinf:**  se corrigen entradas, salidas, calidad GSM y carga en GTINF. ([984217a3](https://github.com/jaayesta/queclink-parser/commit/984217a35dc5917d0313d43d5e2467a59b063cec))
+* **can:**  se corrige el bloque GSM del GTCAN cuando no viene el bloque GNSS. ([e9991694](https://github.com/jaayesta/queclink-parser/commit/e9991694d07b76ecfe717d95fe73033ff4fb2e2d))
+* **gtsvr:**  GTSVR ya no lee kilometraje ni horómetro en GV310LAU y GV58LAU. ([302c4722](https://github.com/jaayesta/queclink-parser/commit/302c4722322f9e97726ea236ed7dcd05ce79e8b6))
+* **gtida:**  se corrige el tipo de reporte de IDA en GV310LAU y GV58LAU. ([bd0733e2](https://github.com/jaayesta/queclink-parser/commit/bd0733e21feecc1ac495a7c3936ffa3f006936d4))
+
 #### 1.9.40 (2026-10-07)
 
 ##### Bug Fixes
