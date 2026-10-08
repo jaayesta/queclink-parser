@@ -1237,7 +1237,7 @@ const parse = raw => {
     }
 
     data = Object.assign(data, {
-      alarm: utils.getAlarm(command[1], parsedData[4]),
+      alarm: utils.getAlarm(command[1], parsedData[4], parsedData[5]),
       loc: {
         type: 'Point',
         coordinates: [parseFloat(parsedData[10]), parseFloat(parsedData[11])]

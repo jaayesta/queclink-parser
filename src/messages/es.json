@@ -156,15 +156,15 @@
     "2": "Entrada virtual 1 desactivada por fuente de poder",
     "3": "Entrada virtual 1 desactivada por motivo desconocido",
     "4": "Entrada virtual 1 desactivada por acelerómetro",
-    "5": "Entrada virtual 1 activada por evento en la fuente de poder",
+    "5": "Entrada virtual 1 desactivada por evento en la fuente de poder",
     "7": "Entrada virtual 1 desactivada por sensor de movimiento y acelerómetro"
   },
   "GTPNR": {
     "0": "Dispositivo encendido",
     "1": "Dispositivo reiniciado por Actualización de Firmware",
-    "2": "Dispositivo operando nuevamente",
-    "3": "Dispositivo operando nuevamente",
-    "5": "Dispositivo reiniciado por protocolo watchdog",
+    "2": "Dispositivo reiniciado por comando remoto",
+    "3": "Dispositivo reiniciado por watchdog",
+    "5": "Dispositivo reiniciado por watchdog del sistema",
     "6": "Reinicio por actualización de configuración",
     "00": "Dispositivo encendido",
     "01": "Dispositivo encendido por reinicio periódico",
@@ -202,7 +202,8 @@
   "GTIOB": "Salida digital modificada por IOB",
   "GTDOS": {
     "1": "Salida digital activada",
-    "0": "Salida digital desactivada"
+    "0": "Salida digital desactivada",
+    "2": "Salida digital en onda gradual"
   },
   "GTDOM": "Salida digital activada",
   "GTNMD": {
@@ -233,7 +234,10 @@
     "3": "Dispositivo reiniciado por entrada digital",
     "4": "Dispositivo reiniciado por estar sin señal GSM",
     "5": "Dispositivo reiniciado por estar sin internet móvil",
-    "6": "Dispositivo reiniciado por error en comunicación"
+    "6": "Dispositivo reiniciado por error en comunicación",
+    "7": "Módulo de red reiniciado por estar sin señal",
+    "8": "Módulo de red reiniciado por estar sin internet móvil",
+    "9": "Módulo de red reiniciado por error en comunicación"
   },
   "GTGSM": "Reporte de antenas GSM",
   "GTCRA": "Posible choque detectado",

@@ -1702,4 +1702,47 @@ describe('queclink-parzer', () => {
       expect(within.alarm.status).to.eql(false)
     })
   })
+
+  describe('alarm texts and details', () => {
+    const alarm = raw => queclink.parse(Buffer.from(raw)).alarm
+    it('should describe GTDOG RF watchdog reboots (7-9)', () => {
+      expect(
+        alarm(
+          '+BUFF:GTDOG,6E0C03,868589060981613,,,07,1,1,47.1,330,2134.6,-69.216758,-23.136934,20261007070315,,,,,01,12,28494.4,20261007070315,27C6$'
+        ).message
+      ).to.eql('Módulo de red reiniciado por estar sin señal')
+    })
+    it('should describe GTPNR RTO reboot', () => {
+      expect(
+        alarm('+RESP:GTPNR,6E0D02,868589061360379,,2,,,,,20261007074054,39C5$')
+          .message
+      ).to.eql('Dispositivo reiniciado por comando remoto')
+    })
+    it('should include the jamming network on GTJDS', () => {
+      expect(
+        alarm(
+          '+RESP:GTJDS,6E0E00,135790246811220,GV310LAU,1,3,0,4.3,92,70.0,121.354335,31.222073,20230214013254,0460,0000,18d8,6141,05,1,220100,20230214093254,11F0$'
+        ).jammingNetwork
+      ).to.eql('2G, 3G y 4G')
+      expect(
+        alarm(
+          '+RESP:GTJDS,80201C0200,866714080281149,,2,3,0,4.3,92,70.0,121.354335,31.222073,20230214013254,0460,0000,18d8,6141,01,1,20230214093254,11F0$'
+        ).jammingNetwork
+      ).to.eql('2G y 4G')
+    })
+    it('should use the GV30CAU network table on GTJDR', () => {
+      expect(
+        alarm(
+          '+RESP:GTJDR,80201C0200,866714080281149,,3,1,0.0,0,506.2,-70.705845,-33.461324,20261007074202,0730,0001,333F,03AD7771,01,32,20261007074204,3378$'
+        ).jammingNetwork
+      ).to.eql('2G y 4G')
+    })
+    it('should return null status for unknown roaming on GTRMD', () => {
+      expect(
+        alarm(
+          '+RESP:GTRMD,6E0E00,868589060742833,,2,1,0.0,0,506.2,-70.705845,-33.461324,20261007074202,0730,0001,333F,03AD7771,01,12,20261007074204,3378$'
+        ).status
+      ).to.eql(null)
+    })
+  })
 })

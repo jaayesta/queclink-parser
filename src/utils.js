@@ -150,7 +150,17 @@ const jammingNetworkTypes = {
   2: '4G',
   3: '2G, 3G y 4G',
   4: '3G',
-  5: '2G y 3G'
+  5: '2G y 3G',
+  6: '2G, 3G y 4G (prioridad 3G)'
+}
+
+/*
+  GV30CAU: el modo de red del jamming solo puede ser EGPRS/GSM, LTE o ambos
+*/
+const gv30cauJammingNetworkTypes = {
+  1: '2G',
+  2: '4G',
+  3: '2G y 4G'
 }
 
 /*
@@ -2375,7 +2385,7 @@ const getAlarm = (command, report, extra = false) => {
     if (reportID === 1) {
       reportID = 'sensor de movimiento'
     } else if (reportID === 2) {
-      reportID = 'voltaje de batería'
+      reportID = 'voltaje de la alimentación externa'
     } else if (reportID === 4) {
       reportID = 'acelerómetro'
     } else if (reportID === 7) {
@@ -2462,24 +2472,32 @@ const getAlarm = (command, report, extra = false) => {
       message: messages[command]
     }
   } else if (command === 'GTJDR') {
-    const jammingNetwork = jammingNetworkTypes[report] || null
+    const networks =
+      extra === 'gv30cau' ? gv30cauJammingNetworkTypes : jammingNetworkTypes
+    const jammingNetwork = networks[report] || null
     return {
       type: 'Jamming',
       status: true,
       gps: false,
       jammingNetwork,
       message: jammingNetwork
-        ? `${messages[command]}: ${jammingNetworkTypes[report]}`
+        ? `${messages[command]}: ${jammingNetwork}`
         : messages[command]
     }
   } else if (command === 'GTJDS') {
+    // extra: Jamming Net, o { net, model } para usar la tabla del modelo
+    const net = extra && typeof extra === 'object' ? extra.net : extra
+    const networks =
+      extra && typeof extra === 'object' && extra.model === 'gv30cau'
+        ? gv30cauJammingNetworkTypes
+        : jammingNetworkTypes
     return {
       type: 'Jamming',
       status: report === '2',
       gps: false,
       jammingNetwork:
-        typeof extra !== 'undefined' && extra !== ''
-          ? jammingNetworkTypes[extra]
+        typeof net !== 'undefined' && net !== '' && net !== false
+          ? networks[net] || null
           : null,
       message: messages[command][report]
     }
@@ -2527,7 +2545,8 @@ const getAlarm = (command, report, extra = false) => {
   } else if (command === 'GTRMD') {
     return {
       type: 'Roaming',
-      status: report === '1',
+      // 2 = roaming en red desconocida: el estado no se puede afirmar
+      status: report === '2' ? null : report === '1',
       message: messages[command][report]
     }
   } else if (command === 'GTHBD') {

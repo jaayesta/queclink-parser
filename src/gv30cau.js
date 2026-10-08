@@ -329,7 +329,10 @@ const parse = raw => {
       satellites:
         satelliteInfo &&
         parsedData[firstIx - (satelliteInfo + accuracyInfo) + 1] !== ''
-          ? parseInt(parsedData[firstIx - (satelliteInfo + accuracyInfo) + 1])
+          ? parseInt(
+              parsedData[firstIx - (satelliteInfo + accuracyInfo) + 1],
+              10
+            )
           : null,
       Hdop:
         accuracyInfo && parsedData[firstIx - accuracyInfo + 1] !== ''
@@ -551,7 +554,7 @@ const parse = raw => {
       satellites:
         satelliteInfo &&
         parsedData[index - (satelliteInfo + accuracyInfo) + 1] !== ''
-          ? parseInt(parsedData[index - (satelliteInfo + accuracyInfo) + 1])
+          ? parseInt(parsedData[index - (satelliteInfo + accuracyInfo) + 1], 10)
           : null,
       Hdop:
         accuracyInfo && parsedData[index - accuracyInfo + 1] !== ''
@@ -624,7 +627,7 @@ const parse = raw => {
       cid: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
       satellites:
         satelliteInfo && parsedData[index] !== ''
-          ? parseInt(parsedData[index])
+          ? parseInt(parsedData[index], 10)
           : null,
       odometer:
         parsedData[index + 1] !== '' ? parseFloat(parsedData[index + 1]) : null,
@@ -742,7 +745,11 @@ const parse = raw => {
     }
 
     data = Object.assign(data, {
-      alarm: utils.getAlarm(command[1], parsedData[4]),
+      alarm: utils.getAlarm(
+        command[1],
+        parsedData[4],
+        command[1] === 'GTJDR' ? 'gv30cau' : undefined
+      ),
       loc: {
         type: 'Point',
         coordinates: [parseFloat(parsedData[9]), parseFloat(parsedData[10])]
@@ -793,7 +800,10 @@ const parse = raw => {
     }
 
     data = Object.assign(data, {
-      alarm: utils.getAlarm(command[1], parsedData[4]),
+      alarm: utils.getAlarm(command[1], parsedData[4], {
+        net: parsedData[5],
+        model: 'gv30cau'
+      }),
       loc: {
         type: 'Point',
         coordinates: [parseFloat(parsedData[10]), parseFloat(parsedData[11])]
@@ -1109,7 +1119,7 @@ const parse = raw => {
       cid: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
       satellites:
         satelliteInfo && parsedData[index] !== ''
-          ? parseInt(parsedData[index])
+          ? parseInt(parsedData[index], 10)
           : null,
       odometer:
         parsedData[index + 2] !== '' ? parseFloat(parsedData[index + 2]) : null,
@@ -1230,7 +1240,7 @@ const parse = raw => {
       cid: parsedData[23] !== '' ? parseInt(parsedData[23], 16) : null,
       satellites:
         satelliteInfo && parsedData[index] !== ''
-          ? parseInt(parsedData[index])
+          ? parseInt(parsedData[index], 10)
           : null,
       calibration: {
         xForward: parsedData[4] !== '' ? parseFloat(parsedData[4]) : null,
@@ -1303,7 +1313,7 @@ const parse = raw => {
       cid: parsedData[17] !== '' ? parseInt(parsedData[17], 16) : null,
       satellites:
         satelliteInfo && parsedData[index] !== ''
-          ? parseInt(parsedData[index])
+          ? parseInt(parsedData[index], 10)
           : null,
       maxAcceleration: {
         raw: maxAcc,
