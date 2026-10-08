@@ -891,7 +891,8 @@ describe('queclink-parzer', () => {
       const data = queclink.parse(raw)
       expect(data.alarm.type).to.eq('AI')
       expect(data.alarm.number).to.eq(0)
-      expect(data.alarm.status).to.equal(false)
+      // Report Type 0 = fuera del rango predefinido
+      expect(data.alarm.status).to.equal(true)
     })
     it('should return GTANT alarm', () => {
       const raw = Buffer.from(
@@ -1682,6 +1683,23 @@ describe('queclink-parzer', () => {
       expect(data.alarm.type).to.eql('DI')
       expect(data.alarm.number).to.eql(2)
       expect(data.alarm.status).to.eql(true)
+    })
+  })
+
+  describe('analog input alarm (GTAIS)', () => {
+    it('should set status true when the value is outside the range', () => {
+      const outside = queclink.parse(
+        Buffer.from(
+          '+RESP:GTAIS,6E0E00,868589060793695,,0,20,1,0,5.9,40,1693.1,-73.081801,-41.537301,20261002144959,0730,0001,2776,00407105,01,0,311.5,20261007123111,83D0$'
+        )
+      )
+      expect(outside.alarm).to.eql({ type: 'AI', number: 2, status: true })
+      const within = queclink.parse(
+        Buffer.from(
+          '+RESP:GTAIS,6E0E00,868589060793695,,0,21,1,0,5.9,40,1693.1,-73.081801,-41.537301,20261002144959,0730,0001,2776,00407105,01,0,311.5,20261007123111,83D0$'
+        )
+      )
+      expect(within.alarm.status).to.eql(false)
     })
   })
 })

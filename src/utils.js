@@ -2505,7 +2505,7 @@ const getAlarm = (command, report, extra = false) => {
     // if (reportID === 2) {
     //   return { type: 'SOS_Button', message: messages[command][reportID] }
     // }
-    return { type: 'AI', number: reportID, status: reportType === '0' }
+    return { type: 'AI', number: reportID, status: reportType === 0 }
   } else if (command === 'GTANT') {
     return {
       type: 'GPS_Antena',
