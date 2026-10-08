@@ -1597,4 +1597,25 @@ describe('queclink-parzer', () => {
       )
     })
   })
+
+  describe('stolen vehicle recovery (GTSVR)', () => {
+    it('should not read odometer or hourmeter from GTSVR', () => {
+      const manual = queclink.parse(
+        Buffer.from(
+          '+RESP:GTSVR,6E0E00,866775051512598,GV310LAU,1,78054125E8F7,7000000000000000000000,,1,0.0,0,56.8,117.129404,31.839378,20221201021215,0460,0000,550B,30A5,01,12,20221201021216,003D$'
+        )
+      )
+      expect(manual.odometer).to.eql(null)
+      expect(manual.hourmeter).to.eql(null)
+      expect(manual.satellites).to.eql(12)
+      expect(manual.loc.coordinates).to.eql([117.129404, 31.839378])
+      const real = queclink.parse(
+        Buffer.from(
+          '+RESP:GTSVR,6E0C03,868589060840983,,0,\n\u0001,3000000000000000000000,,0,0.0,,,-69.083462,-24.315858,20261006194153,,,,,00,20261007074828,AAB1$'
+        )
+      )
+      expect(real.odometer).to.eql(null)
+      expect(real.hourmeter).to.eql(null)
+    })
+  })
 })

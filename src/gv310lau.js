@@ -3018,9 +3018,9 @@ const parse = raw => {
         satelliteInfo && parsedData[index] !== ''
           ? parseInt(parsedData[index])
           : null,
-      odometer:
-        parsedData[index + 2] !== '' ? parseFloat(parsedData[index + 2]) : null,
-      hourmeter: parsedData[index + 1] !== '' ? parsedData[index + 1] : null,
+      // SVR no trae kilometraje ni horómetro (ver manual)
+      odometer: null,
+      hourmeter: null,
       bluetooth: {
         mac: parsedData[5] !== '' ? parsedData[5] : null,
         svrInfo: parsedData[6] !== '' ? parsedData[6] : null
