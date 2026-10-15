@@ -1425,6 +1425,30 @@ describe('queclink-parzer', () => {
       expect(can.doors.passenger).to.eql(true)
       expect(can.doors.hood).to.eql(false)
     })
+
+    it('should return every dashboard indicator off when expansion information is 0000', () => {
+      const info = queclink.parse(Buffer.from(vvvh52)).can.canExpanded
+        .expansionInformation
+      expect(info.raw).to.eql('0000')
+      expect(info.ABSFailureIndicator).to.eql(false)
+      expect(info.checkEngineIndicator).to.eql(false)
+      expect(info.oilLevelLowIndicator).to.eql(false)
+    })
+
+    it('should return the dashboard indicator that is on in expansion information', () => {
+      const raw = vvvh52.replace(',,,0000,,,', ',,,0080,,,')
+      const info = queclink.parse(Buffer.from(raw)).can.canExpanded
+        .expansionInformation
+      expect(info.raw).to.eql('0080')
+      expect(info.ABSFailureIndicator).to.eql(true)
+      expect(info.checkEngineIndicator).to.eql(false)
+    })
+
+    it('should return null expansion information when the field is empty', () => {
+      const raw = vvvh52.replace(',,,0000,,,', ',,,,,,')
+      const can = queclink.parse(Buffer.from(raw)).can
+      expect(can.canExpanded.expansionInformation).to.eql(null)
+    })
   })
 
   describe('crash fixes', () => {
