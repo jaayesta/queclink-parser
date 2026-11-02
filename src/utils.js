@@ -2830,7 +2830,31 @@ const getAlarm = (command, report, extra = false) => {
     return { type: 'Bluetooth_Disonnected', message: messages[command] }
   } else if (command === 'GTBAA') {
     const mac = extra[1].mac
-    if (['01', '02', '03'].includes(report)) {
+    if (report === '00') {
+      // Accessory voltage under the <Low Voltage Threshold> of its AT+GTBAS.
+      // <Index> is hex: 0xFF is a WKF300 and 0xFE any other beacon, neither
+      // has an AT+GTBAS index.
+      const index = parseInt(extra[0], 16)
+      const number = isNaN(index) || index >= 0xfe ? null : index
+      const voltage =
+        extra[1].batteryLevel !== null ? extra[1].batteryLevel / 1000 : null
+      const percentage = extra[1].batteryPercentage
+      const detail =
+        voltage !== null
+          ? ` (${voltage} V)`
+          : percentage !== null
+            ? ` (${percentage}%)`
+            : ''
+      return {
+        type: 'Bluetooth_Low_Battery',
+        number,
+        deviceID: mac,
+        accessory: extra[1].accesory,
+        voltage,
+        batteryPercentage: percentage,
+        message: `${messages[command][report]}${detail}`
+      }
+    } else if (['01', '02', '03'].includes(report)) {
       const number = parseInt(extra[0])
       const temperature = extra[2].enhancedTemperature
         ? extra[2].enhancedTemperature

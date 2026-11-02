@@ -1142,6 +1142,30 @@ describe('queclink-parzer', () => {
     })
   })
 
+  describe('BLE low battery (GTBAA 00)', () => {
+    it('should return the accessory voltage on GV310LAU', () => {
+      const raw =
+        '+RESP:GTBAA,6E0E00,868589061021807,,FF,3,0,00,000A,7805413BD305,2444,1,0.0,340,470.8,-70.770393,-33.475783,20261021000330,0730,0001,333F,003D0711,01,12,20261021000331,ED9B$'
+      const data = queclink.parse(Buffer.from(raw))
+      expect(data.alarm.type).to.eql('Bluetooth_Low_Battery')
+      expect(data.alarm.number).to.eql(null)
+      expect(data.alarm.deviceID).to.eql('7805413BD305')
+      expect(data.alarm.accessory).to.eql('Bluetooth beacon accessory')
+      expect(data.alarm.voltage).to.eql(2.444)
+      expect(data.alarm.message).to.eql('Accesorio con batería baja (2.444 V)')
+      expect(data.loc.coordinates).to.eql([-70.770393, -33.475783])
+    })
+
+    it('should keep the AT+GTBAS index of the accessory', () => {
+      const raw =
+        '+RESP:GTBAA,6E0E00,868589061021807,,02,6,0,00,000A,7805413BD305,2900,1,0.0,340,470.8,-70.770393,-33.475783,20261021000330,0730,0001,333F,003D0711,01,12,20261021000331,ED9C$'
+      const data = queclink.parse(Buffer.from(raw))
+      expect(data.alarm.number).to.eql(2)
+      expect(data.alarm.accessory).to.eql('Beacon Multi-Functional Sensor')
+      expect(data.alarm.voltage).to.eql(2.9)
+    })
+  })
+
   describe('self calibration status (GTSCS)', () => {
     it('should return calibration matrix on GV310LAU when calibrated', () => {
       const raw =
