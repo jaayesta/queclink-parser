@@ -1166,6 +1166,113 @@ describe('queclink-parzer', () => {
     })
   })
 
+  describe('crash detection (GTCRA and its packets)', () => {
+    const samples = '000100010055fffffff10052'
+    const expectSamples = data =>
+      expect(data.crash.samples).to.eql([
+        { x: 1, y: 1, z: 85 },
+        { x: -1, y: -15, z: 82 }
+      ])
+
+    it('should parse GTCRA with crash counter on GV310LAU', () => {
+      const raw =
+        '+RESP:GTCRA,6E0E00,866775051514750,GV310LAU,08,3,0.0,0,2.1,117.129271,31.839842,20220906121042,0460,0000,550B,30A5,05,1,220100,20220906121043,0057$'
+      const data = queclink.parse(Buffer.from(raw))
+      expect(data.alarm.type).to.eql('Crash')
+      expect(data.alarm.counter).to.eql(8)
+      expect(data.loc.coordinates).to.eql([117.129271, 31.839842])
+    })
+
+    it('should parse GTCRA without crash counter on GV75W', () => {
+      const raw =
+        '+RESP:GTCRA,410101,863835020303983,,0,2.1,345,72.5,117.201503,31.833105,20160702123654,0460,0000,5678,2079,00,20160702123655,1237$'
+      const data = queclink.parse(Buffer.from(raw))
+      expect(data.alarm.type).to.eql('Crash')
+      expect(data.alarm.counter).to.eql(null)
+      expect(data.speed).to.eql(2.1)
+      expect(data.loc.coordinates).to.eql([117.201503, 31.833105])
+      expect(data.datetime).to.eql(new Date('2016-07-02T12:36:54.000Z'))
+    })
+
+    it('should parse GTCRA with crash counter on GV300W', () => {
+      const raw =
+        '+BUFF:GTCRA,278615,867162029766763,gv300w,B4,0,0.0,179,521.0,-70.688512,-33.432842,20260904163955,0730,0002,F303,F03437,00,20260904163957,A4B7$'
+      const data = queclink.parse(Buffer.from(raw))
+      expect(data.alarm.counter).to.eql(180)
+      expect(data.loc.coordinates).to.eql([-70.688512, -33.432842])
+    })
+
+    it('should decode GTCRD samples and crash direction', () => {
+      const raw = `+BUFF:GTCRD,278615,867162029766763,gv300w,B8,21,5,1,${samples},20260905170726,ACA1$`
+      const data = queclink.parse(Buffer.from(raw))
+      expect(data.alarm.type).to.eql('Crash_Acceleration')
+      expect(data.alarm.counter).to.eql(184)
+      expect(data.alarm.before).to.eql(false)
+      expect(data.crash.direction).to.eql({ x: null, y: null, z: '+' })
+      expect(data.crash.totalFrames).to.eql(5)
+      expect(data.crash.frame).to.eql(1)
+      expect(data.datetime).to.eql(new Date('2026-09-05T17:07:26.000Z'))
+      expectSamples(data)
+    })
+
+    it('should decode GTCRD without crash counter on GV75W', () => {
+      const raw = `+RESP:GTCRD,410101,359231038715676,,1,3,3,${samples},20160330115736,005A$`
+      const data = queclink.parse(Buffer.from(raw))
+      expect(data.alarm.counter).to.eql(null)
+      expect(data.alarm.before).to.eql(false)
+      expect(data.crash.frame).to.eql(3)
+      expectSamples(data)
+    })
+
+    it('should decode GTCRD on GV30CAU', () => {
+      const raw = `+RESP:GTCRD,80201C0200,862170013895931,,0A,2B,3,2,${samples},20260102030405,0010$`
+      const data = queclink.parse(Buffer.from(raw))
+      expect(data.device).to.eql('Queclink-GV30CAU')
+      expect(data.alarm.counter).to.eql(10)
+      expect(data.crash.direction).to.eql({ x: '+', y: '+', z: '+' })
+    })
+
+    it('should decode GTACC samples', () => {
+      const raw = `+RESP:GTACC,6E0E00,864292043426376,GV310LAU,${samples},,,,20200623030020,863C$`
+      const data = queclink.parse(Buffer.from(raw))
+      expect(data.alarm.type).to.eql('Acceleration_Data')
+      expectSamples(data)
+    })
+
+    it('should use the GTCRG point closest to the crash', () => {
+      const raw =
+        '+RESP:GTCRG,6E0E00,135790246811220,GV310LAU,0,2,1,1,19.1,165,54.8,121.390739,31.164275,20160202060648,2,1,24.8,176,51.3,121.390733,31.164220,20160202060649,20160202060658,01A8$'
+      const data = queclink.parse(Buffer.from(raw))
+      expect(data.alarm.type).to.eql('Crash_Information')
+      expect(data.alarm.before).to.eql(true)
+      expect(data.gnssData).to.have.lengthOf(2)
+      expect(data.loc.coordinates).to.eql([121.390733, 31.16422])
+      expect(data.speed).to.eql(24.8)
+    })
+
+    it('should parse GTCRG on GV58LAU', () => {
+      const raw =
+        '+RESP:GTCRG,8020040B02,862170013895931,,1,1,1,0,10.0,90,500.0,-70.6,-33.4,20260102030400,20260102030405,0011$'
+      const data = queclink.parse(Buffer.from(raw))
+      expect(data.device).to.eql('Queclink-GV58LAU')
+      expect(data.alarm.before).to.eql(false)
+      expect(data.loc.coordinates).to.eql([-70.6, -33.4])
+    })
+
+    it('should parse GTCRE position and accelerations', () => {
+      const raw =
+        '+RESP:GTCRE,6E0E00,865084030478505,GV310LAU,,0,2,0,0.0,350,46.2,117.129174,31.839210,20230408100222,0460,0000,550B,B969,01,1,220100,000AFFDE004D,0001FFF00043,37,0.0,20230408180223,002C$'
+      const data = queclink.parse(Buffer.from(raw))
+      expect(data.alarm.type).to.eql('Crash_End')
+      expect(data.loc.coordinates).to.eql([117.129174, 31.83921])
+      expect(data.azimuth).to.eql(350)
+      expect(data.datetime).to.eql(new Date('2023-04-08T10:02:22.000Z'))
+      expect(data.crash.maxAcceleration).to.eql({ x: 10, y: -34, z: 77 })
+      expect(data.crash.stableAcceleration).to.eql({ x: 1, y: -16, z: 67 })
+      expect(data.odometer).to.eql(0)
+    })
+  })
+
   describe('self calibration status (GTSCS)', () => {
     it('should return calibration matrix on GV310LAU when calibrated', () => {
       const raw =

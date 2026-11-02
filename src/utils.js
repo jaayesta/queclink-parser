@@ -2561,12 +2561,6 @@ const getAlarm = (command, report, extra = false) => {
       status: report === '1',
       message: messages[command][report]
     }
-  } else if (command === 'GTCRG') {
-    return {
-      type: 'Crash_Information',
-      before: report === '0',
-      message: messages[command][report]
-    }
   } else if (command === 'GTGSS') {
     return {
       type: 'Gps_Status',
@@ -2718,20 +2712,12 @@ const getAlarm = (command, report, extra = false) => {
       message
     }
   } else if (command === 'GTCRA') {
+    // Los modelos sin <Crash Counter> (GV75W y anteriores) pasan null
+    const counter = report ? parseInt(report, 16) : NaN
     return {
       type: 'Crash',
       status: true,
-      counter: parseInt(report, 16),
-      message: messages[command]
-    }
-  } else if (command === 'GTCRD') {
-    return {
-      type: '3Axis_Information  ',
-      message: messages[command]
-    }
-  } else if (command === 'GTACC') {
-    return {
-      type: 'Accelerometer_Info',
+      counter: isNaN(counter) ? null : counter,
       message: messages[command]
     }
   } else if (command === 'GTDOG') {
@@ -3131,7 +3117,170 @@ const promoteLastPoint = (data, parsedData, firstGnssIx, opts = {}) => {
   return Object.assign(data, top, { moreData })
 }
 
+/*
+  Paquetes que acompañan a un choque (AT+GTCRA): GTCRD (aceleración antes y
+  después), GTACC (75 muestras), GTCRG (GNSS antes y después) y GTCRE (fin de
+  la detección). Son iguales en todos los modelos salvo el <Crash Counter> del
+  GTCRD, que el GV75W no trae, así que los campos se ubican desde el final o
+  desde la hora GNSS.
+*/
+const crashPackets = ['GTCRD', 'GTACC', 'GTCRG', 'GTCRE']
+
+const isCrashPacket = command => crashPackets.includes(command)
+
+/*
+  Muestras de 12 caracteres: X, Y y Z de 4 hex en complemento a dos.
+*/
+const parseAccelerationSamples = data => {
+  const samples = []
+  if (!data) return samples
+  const toInt = h => {
+    const n = parseInt(h, 16)
+    return n > 0x7fff ? n - 0x10000 : n
+  }
+  for (let i = 0; i + 12 <= data.length; i += 12) {
+    samples.push({
+      x: toInt(data.substr(i, 4)),
+      y: toInt(data.substr(i + 4, 4)),
+      z: toInt(data.substr(i + 8, 4))
+    })
+  }
+  return samples
+}
+
+const getCrashPacket = (command, parsedData) => {
+  const messages = langs.es
+  const val = (ix, fn) =>
+    ix >= 0 && parsedData[ix] !== undefined && parsedData[ix] !== ''
+      ? fn(parsedData[ix])
+      : null
+  const last = parsedData.length - 1
+  const sentTime = val(last - 1, parseDate)
+  const result = { datetime: sentTime, loc: null, gpsStatus: false }
+
+  if (command === 'GTCRD') {
+    // ...,[Crash Counter],<Data Type>,<Total Frame>,<Frame Number>,<Data>,<Send Time>,<Count>
+    const dataIx = last - 2
+    const dataType = val(dataIx - 3, x => parseInt(x, 16)) || 0
+    const axis = (detected, negative) =>
+      dataType & detected ? (dataType & negative ? '-' : '+') : null
+    const counter =
+      dataIx - 4 >= 4 ? val(dataIx - 4, x => parseInt(x, 16)) : null
+    const before = (dataType & 1) === 0
+    result.alarm = {
+      type: 'Crash_Acceleration',
+      counter,
+      before,
+      message: messages[command][before ? '0' : '1']
+    }
+    result.crash = {
+      counter,
+      before,
+      direction: { x: axis(2, 4), y: axis(8, 16), z: axis(32, 64) },
+      totalFrames: val(dataIx - 2, x => parseInt(x, 10)),
+      frame: val(dataIx - 1, x => parseInt(x, 10)),
+      samples: parseAccelerationSamples(parsedData[dataIx])
+    }
+  } else if (command === 'GTACC') {
+    result.alarm = { type: 'Acceleration_Data', message: messages[command] }
+    result.crash = { samples: parseAccelerationSamples(parsedData[4]) }
+  } else if (command === 'GTCRG') {
+    // <Data Type>,<GNSS Validity Number>, y por punto: <Index>,<Accuracy>,
+    // <Speed>,<Azimuth>,<Altitude>,<Longitude>,<Latitude>,<GNSS UTC Time>
+    const before = parsedData[4] === '0'
+    const number = val(5, x => parseInt(x, 10)) || 0
+    const points = []
+    for (let i = 0, ix = 6; i < number && ix + 7 < last - 1; i++, ix += 8) {
+      const lng = parseFloat(parsedData[ix + 5])
+      const lat = parseFloat(parsedData[ix + 6])
+      points.push({
+        index: val(ix, x => parseInt(x, 10)),
+        loc: { type: 'Point', coordinates: [lng, lat] },
+        gpsStatus: checkGps(lng, lat),
+        hdop: val(ix + 1, parseFloat),
+        speed: val(ix + 2, parseFloat),
+        azimuth: val(ix + 3, parseFloat),
+        altitude: val(ix + 4, parseFloat),
+        datetime: val(ix + 7, parseDate)
+      })
+    }
+    // El punto principal es el más cercano al choque
+    const main = (before ? points.slice().reverse() : points).find(
+      p => p.gpsStatus
+    )
+    if (main) {
+      Object.assign(result, {
+        loc: main.loc,
+        gpsStatus: true,
+        speed: main.speed,
+        hdop: main.hdop,
+        azimuth: main.azimuth,
+        altitude: main.altitude
+      })
+    }
+    result.alarm = {
+      type: 'Crash_Information',
+      before,
+      message: messages[command][before ? '0' : '1']
+    }
+    result.gnssData = points
+  } else if (command === 'GTCRE') {
+    // Posición alrededor de <GNSS UTC Time>; al final <Max Acceleration Data>,
+    // <Stable Acceleration Data>, <Mileage>, <Send Time>, <Count Number>
+    let t = -1
+    for (let i = 10; i < last - 1; i++) {
+      if (/^\d{14}$/.test(parsedData[i])) {
+        t = i
+        break
+      }
+    }
+    if (t !== -1) {
+      const lng = parseFloat(parsedData[t - 2])
+      const lat = parseFloat(parsedData[t - 1])
+      Object.assign(result, {
+        loc: { type: 'Point', coordinates: [lng, lat] },
+        gpsStatus: checkGps(lng, lat),
+        hdop: val(t - 6, parseFloat),
+        speed: val(t - 5, parseFloat),
+        azimuth: val(t - 4, parseFloat),
+        altitude: val(t - 3, parseFloat),
+        datetime: val(t, parseDate) || sentTime,
+        mcc: val(t + 1, x => latamMcc[parseInt(x, 10)]),
+        mnc:
+          parsedData[t + 1] && parsedData[t + 2]
+            ? getMNC(parsedData[t + 1], parsedData[t + 2])
+            : null,
+        lac: val(t + 3, x => parseInt(x, 16)),
+        cid: val(t + 4, x => parseInt(x, 16))
+      })
+    }
+    // El manual trae campos sin documentar entre medio (ej. "220100" y "37"),
+    // así que las aceleraciones se ubican como los dos campos de 12 hex.
+    const isAcc = x => /^[0-9a-fA-F]{12}$/.test(x || '')
+    let a = -1
+    for (let i = t !== -1 ? t + 5 : 4; i < last - 2; i++) {
+      if (isAcc(parsedData[i]) && isAcc(parsedData[i + 1])) {
+        a = i
+        break
+      }
+    }
+    const [maxAcc] = a !== -1 ? parseAccelerationSamples(parsedData[a]) : []
+    const [stableAcc] =
+      a !== -1 ? parseAccelerationSamples(parsedData[a + 1]) : []
+    result.alarm = { type: 'Crash_End', message: messages[command] }
+    result.crash = {
+      maxAcceleration: maxAcc || null,
+      stableAcceleration: stableAcc || null
+    }
+    result.odometer = val(last - 2, parseFloat)
+  }
+  return result
+}
+
 module.exports = {
+  crashPackets,
+  isCrashPacket,
+  getCrashPacket,
   promoteLastPoint,
   langs,
   patterns,

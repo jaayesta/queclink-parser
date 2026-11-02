@@ -172,6 +172,9 @@ const parse = raw => {
       hourmeter: null,
       canbus: null
     })
+  } else if (utils.isCrashPacket(command[1])) {
+    // GTCRD, GTACC, GTCRG y GTCRE (ver utils.getCrashPacket)
+    data = Object.assign(data, utils.getCrashPacket(command[1], parsedData))
   } else if (
     command[1] === 'GTMPN' ||
     command[1] === 'GTMPF' ||

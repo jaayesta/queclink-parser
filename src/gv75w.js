@@ -710,23 +710,33 @@ const parse = raw => {
       odometer: null,
       hourmeter: null
     })
+  } else if (utils.isCrashPacket(command[1])) {
+    // GTCRD, GTACC, GTCRG y GTCRE (ver utils.getCrashPacket)
+    data = Object.assign(data, utils.getCrashPacket(command[1], parsedData))
   } else if (command[1] === 'GTCRA') {
+    // El manual del GV75W no trae <Crash Counter> y algunos firmwares sí:
+    // se detecta por la posición de <GNSS UTC Time>.
+    const o = /^\d{14}$/.test(parsedData[11]) ? 0 : -1
     data = Object.assign(data, {
-      alarm: utils.getAlarm(command[1], parsedData[4]),
+      alarm: utils.getAlarm(command[1], o === 0 ? parsedData[4] : null),
       loc: {
         type: 'Point',
-        coordinates: [parseFloat(parsedData[9]), parseFloat(parsedData[10])]
+        coordinates: [
+          parseFloat(parsedData[9 + o]),
+          parseFloat(parsedData[10 + o])
+        ]
       },
-      speed: parsedData[6] !== '' ? parseFloat(parsedData[6]) : null,
+      speed: parsedData[6 + o] !== '' ? parseFloat(parsedData[6 + o]) : null,
       gpsStatus: utils.checkGps(
-        parseFloat(parsedData[9]),
-        parseFloat(parsedData[10])
+        parseFloat(parsedData[9 + o]),
+        parseFloat(parsedData[10 + o])
       ),
-      hdop: parsedData[5] !== '' ? parseFloat(parsedData[5]) : null,
+      hdop: parsedData[5 + o] !== '' ? parseFloat(parsedData[5 + o]) : null,
       status: null,
-      azimuth: parsedData[7] !== '' ? parseFloat(parsedData[7]) : null,
-      altitude: parsedData[8] !== '' ? parseFloat(parsedData[8]) : null,
-      datetime: parsedData[11] !== '' ? utils.parseDate(parsedData[11]) : null,
+      azimuth: parsedData[7 + o] !== '' ? parseFloat(parsedData[7 + o]) : null,
+      altitude: parsedData[8 + o] !== '' ? parseFloat(parsedData[8 + o]) : null,
+      datetime:
+        parsedData[11 + o] !== '' ? utils.parseDate(parsedData[11 + o]) : null,
       voltage: {
         battery: null,
         inputCharge: null,
@@ -734,15 +744,15 @@ const parse = raw => {
         adb: null
       },
       mcc:
-        parsedData[12] !== ''
-          ? utils.latamMcc[parseInt(parsedData[12], 10)]
+        parsedData[12 + o] !== ''
+          ? utils.latamMcc[parseInt(parsedData[12 + o], 10)]
           : null,
       mnc:
-        parsedData[13] !== ''
-          ? utils.getMNC(parsedData[12], parsedData[13])
+        parsedData[13 + o] !== ''
+          ? utils.getMNC(parsedData[12 + o], parsedData[13 + o])
           : null,
-      lac: parsedData[14] !== '' ? parseInt(parsedData[14], 16) : null,
-      cid: parsedData[15] !== '' ? parseInt(parsedData[15], 16) : null,
+      lac: parsedData[14 + o] !== '' ? parseInt(parsedData[14 + o], 16) : null,
+      cid: parsedData[15 + o] !== '' ? parseInt(parsedData[15 + o], 16) : null,
       odometer: null,
       hourmeter: null
     })

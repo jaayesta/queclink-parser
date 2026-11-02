@@ -886,6 +886,9 @@ const parse = raw => {
       // odometer: null,
       // hourmeter: null
     })
+  } else if (utils.isCrashPacket(command[1])) {
+    // GTCRD, GTACC, GTCRG y GTCRE (ver utils.getCrashPacket)
+    data = Object.assign(data, utils.getCrashPacket(command[1], parsedData))
   } else if (
     command[1] === 'GTJDR' ||
     command[1] === 'GTANT' ||
