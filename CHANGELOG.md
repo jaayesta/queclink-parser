@@ -1,3 +1,18 @@
+#### 1.9.42 (2026-11-03)
+
+##### Chores
+
+* **deps:**  resuelve los hallazgos de npm audit en dependencias de desarrollo. ([e7511286](https://github.com/jaayesta/queclink-parser/commit/e75112867b89eb7ef1ff6698c3cd14648e34941a))
+
+##### New Features
+
+* **choque:**  GTCRD, GTACC, GTCRG y GTCRE en todos los modelos con GTCRA. ([edd4a130](https://github.com/jaayesta/queclink-parser/commit/edd4a130ce132adb73e28440bcbf99095bc98775))
+* **gtbaa:**  batería baja de accesorios BLE como alarma propia. ([dbb25b6b](https://github.com/jaayesta/queclink-parser/commit/dbb25b6b65b31437f479e2755f86ddce8f260e90))
+
+##### Bug Fixes
+
+* **can:**  los testigos del tablero en 0000 se informan apagados, no como null. ([58935774](https://github.com/jaayesta/queclink-parser/commit/58935774895011003247d4ea2c950c5628a83e4b))
+
 #### 1.9.41 (2026-10-08)
 
 ##### New Features
