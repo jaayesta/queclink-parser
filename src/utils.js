@@ -1623,10 +1623,10 @@ const getCanData = (parsedData, ix, type, options) => {
     canAppendMask[12] === '1' && parsedData[doorIx] !== ''
       ? nHexDigit(hex2bin(parsedData[doorIx]), 8).split('').reverse().join('')
       : null
-  const expansionBin =
-    parsedData[expbIx] !== ''
-      ? nHexDigit(hex2bin(parsedData[expbIx]), 16).split('').reverse().join('')
-      : '0000000000000000'
+  // null only when the field is missing: "0000" means every indicator is off
+  const expansionBin = parsedData[expbIx]
+    ? nHexDigit(hex2bin(parsedData[expbIx]), 16).split('').reverse().join('')
+    : null
   const tachographExpBin =
     canAppendMask[30] === '1' && parsedData[tieIx] !== ''
       ? nHexDigit(hex2bin(parsedData[tieIx]), 16).split('').reverse().join('')
@@ -1925,9 +1925,7 @@ const getCanData = (parsedData, ix, type, options) => {
             ? parsedData[regIx]
             : null,
         expansionInformation:
-          repExpMask &&
-          repExpMask.expansionInformation &&
-          expansionBin !== '0000000000000000'
+          repExpMask && repExpMask.expansionInformation && expansionBin
             ? {
                 raw: parsedData[expbIx] ? parsedData[expbIx] : null,
                 webasto: expansionBin[0] === '1',
