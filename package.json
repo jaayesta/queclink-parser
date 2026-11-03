@@ -43,38 +43,22 @@
   "homepage": "https://github.com/jaayesta/queclink-parser#readme",
   "overrides": {
     "diff": "^8.0.3",
-    "serialize-javascript": "^7.0.5"
+    "serialize-javascript": "^7.0.5",
+    "minimatch": "^11.0.4",
+    "glob": "^14.0.3"
   },
   "devDependencies": {
     "chai": "^4.5.0",
-    "eslint": "^8.57.1",
-    "eslint-config-prettier": "^10.0.1",
-    "eslint-config-standard": "^17.1.0",
-    "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-n": "^16.6.2",
-    "eslint-plugin-promise": "^6.6.0",
+    "eslint": "^10.14.0",
+    "eslint-config-prettier": "^10.1.8",
     "generate-changelog": "^1.8.0",
     "husky": "^9.1.7",
     "lint-staged": "^15.4.3",
-    "mocha": "^11.1.0",
-    "nyc": "^17.1.0",
+    "mocha": "^12.0.3",
+    "neostandard": "^0.14.1",
+    "nyc": "^18.0.0",
     "prettier": "^3.5.0"
   },
-  "eslintConfig": {
-    "extends": [
-      "standard",
-      "prettier"
-    ],
-    "rules": {
-      "no-console": [
-        "error"
-      ]
-    }
-  },
-  "eslintIgnore": [
-    "coverage",
-    "example.js"
-  ],
   "lint-staged": {
     "src/**/*.js": [
       "eslint --fix",

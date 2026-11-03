@@ -108,7 +108,7 @@ const parse = raw => {
           ...utils.getExternalPowerCharge(parsedData[4]),
           state:
             utils.nHexDigit(parsedData[index + 7], 10).substring(4, 6) !== ''
-              ? utils.states[ // eslint-disable-line
+              ? utils.states[
                   utils.nHexDigit(parsedData[index + 7], 10).substring(4, 6)
                 ]
               : null
@@ -351,7 +351,7 @@ const parse = raw => {
         ...utils.getExternalPowerCharge(parsedData[5]),
         state:
           utils.nHexDigit(parsedData[index + 7], 10).substring(4, 6) !== ''
-            ? utils.states[ // eslint-disable-line
+            ? utils.states[
                 utils.nHexDigit(parsedData[index + 7], 10).substring(4, 6)
               ]
             : null
